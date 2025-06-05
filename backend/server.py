@@ -533,6 +533,8 @@ async def update_agent(agent_id: str, agent_update: AgentUpdate):
         update_data["expertise"] = agent_update.expertise
     if agent_update.background is not None:
         update_data["background"] = agent_update.background
+    if agent_update.memory_summary is not None:
+        update_data["memory_summary"] = agent_update.memory_summary
     
     # Update the agent
     await db.agents.update_one(
