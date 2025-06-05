@@ -319,16 +319,23 @@ const ControlPanel = ({
   onStartSimulation, 
   onNextPeriod, 
   onGenerateConversation,
-  onInitResearchStation
+  onInitResearchStation,
+  onToggleAuto
 }) => {
   return (
     <div className="control-panel bg-white rounded-lg shadow-md p-4">
-      <h3 className="text-lg font-bold mb-4">Simulation Control</h3>
+      <h3 className="text-lg font-bold mb-4">🎮 Simulation Control</h3>
       
       <div className="simulation-info mb-4">
         <p className="text-sm"><strong>Day:</strong> {simulationState?.current_day || 1}</p>
         <p className="text-sm"><strong>Time:</strong> {simulationState?.current_time_period || 'morning'}</p>
-        <p className="text-sm"><strong>Scenario:</strong> {simulationState?.scenario || 'None'}</p>
+        <p className="text-sm"><strong>Scenario:</strong> 
+          <span className="text-xs bg-gray-100 px-2 py-1 rounded ml-1">
+            {simulationState?.scenario ? 
+              simulationState.scenario.substring(0, 40) + (simulationState.scenario.length > 40 ? '...' : '') 
+              : 'Research Station'}
+          </span>
+        </p>
         <p className="text-sm"><strong>Status:</strong> 
           <span className={`ml-1 px-2 py-1 rounded text-xs ${
             simulationState?.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -336,6 +343,22 @@ const ControlPanel = ({
             {simulationState?.is_active ? 'Active' : 'Inactive'}
           </span>
         </p>
+        
+        {/* Auto Status Indicators */}
+        <div className="auto-status mt-2 space-y-1">
+          <div className="flex items-center text-xs">
+            <span className={`w-2 h-2 rounded-full mr-2 ${
+              simulationState?.auto_conversations ? 'bg-green-500' : 'bg-gray-300'
+            }`}></span>
+            Auto Conversations: {simulationState?.auto_conversations ? 'ON' : 'OFF'}
+          </div>
+          <div className="flex items-center text-xs">
+            <span className={`w-2 h-2 rounded-full mr-2 ${
+              simulationState?.auto_time ? 'bg-blue-500' : 'bg-gray-300'
+            }`}></span>
+            Auto Time: {simulationState?.auto_time ? 'ON' : 'OFF'}
+          </div>
+        </div>
       </div>
 
       <div className="api-usage mb-4 p-3 bg-gray-50 rounded">
@@ -367,21 +390,24 @@ const ControlPanel = ({
           Start New Simulation
         </button>
         
-        <button 
-          onClick={onNextPeriod}
-          className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
-          disabled={!simulationState?.is_active}
-        >
-          Next Time Period
-        </button>
-        
-        <button 
-          onClick={onGenerateConversation}
-          className="w-full bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 text-sm"
-          disabled={!simulationState?.is_active || (apiUsage?.remaining || 0) <= 0}
-        >
-          Generate Conversation
-        </button>
+        <div className="manual-controls bg-gray-50 rounded p-2">
+          <p className="text-xs font-medium mb-2">Manual Controls</p>
+          <button 
+            onClick={onNextPeriod}
+            className="w-full bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-xs mb-1"
+            disabled={!simulationState?.is_active}
+          >
+            Next Time Period
+          </button>
+          
+          <button 
+            onClick={onGenerateConversation}
+            className="w-full bg-orange-600 text-white px-3 py-2 rounded hover:bg-orange-700 text-xs"
+            disabled={!simulationState?.is_active || (apiUsage?.remaining || 0) <= 0}
+          >
+            Generate Conversation
+          </button>
+        </div>
       </div>
     </div>
   );
