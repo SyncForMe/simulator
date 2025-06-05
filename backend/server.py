@@ -629,7 +629,9 @@ async def update_agent(agent_id: str, agent_update: AgentUpdate):
     if agent_update.background is not None:
         update_data["background"] = agent_update.background
     if agent_update.memory_summary is not None:
-        update_data["memory_summary"] = agent_update.memory_summary
+        # Process URLs in memory before storing
+        processed_memory = await llm_manager.process_memory_with_urls(agent_update.memory_summary)
+        update_data["memory_summary"] = processed_memory
     
     # Update the agent
     await db.agents.update_one(
