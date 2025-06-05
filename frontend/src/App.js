@@ -324,6 +324,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
         goal: agent.goal || '',
         expertise: agent.expertise || '',
         background: agent.background || '',
+        memory_summary: agent.memory_summary || '',
         personality: agent.personality || {
           extroversion: 5,
           optimism: 5,
