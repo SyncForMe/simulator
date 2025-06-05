@@ -266,7 +266,7 @@ class LLMManager:
     async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None):
         """Generate a single agent response with better context and progression"""
         if not await self.can_make_request():
-            return "Agent is resting (daily API limit reached)"
+            return "Agent is taking a moment to think... (daily API limit reached)"
         
         # Get recent conversation history for this agent
         if conversation_history is None:
@@ -282,8 +282,14 @@ class LLMManager:
                     recent_context += f"{msg.get('agent_name', '')}: {msg.get('message', '')} "
                 recent_context += "\n"
         
-        # Process memory to include URL content if any
-        processed_memory = await self.process_memory_with_urls(agent.memory_summary or "")
+        # Process memory but with error handling for URL fetching
+        processed_memory = agent.memory_summary or ""
+        try:
+            if agent.memory_summary and 'http' in agent.memory_summary:
+                processed_memory = await self.process_memory_with_urls(agent.memory_summary)
+        except Exception as e:
+            logging.warning(f"URL processing failed for {agent.name}: {e}")
+            processed_memory = agent.memory_summary or ""
         
         # Create comprehensive background-driven system message
         background_prompt = ""
@@ -324,70 +330,86 @@ MEMORY-BEHAVIOR BALANCE:
 - You show curiosity about others' perspectives, especially when they differ from your experience
 - You acknowledge when others make good points that challenge your assumptions"""
 
-        # Create LLM chat instance for this agent
-        system_message = f"""You are {agent.name}, {AGENT_ARCHETYPES[agent.archetype]['description']}.
+        # Create simplified but effective system message
+        system_message = f"""You are {agent.name}, a {AGENT_ARCHETYPES[agent.archetype]['description']}.
 
 {background_prompt}
 {expertise_prompt}
 
-Your personality traits:
-- Extroversion: {agent.personality.extroversion}/10
-- Optimism: {agent.personality.optimism}/10  
-- Curiosity: {agent.personality.curiosity}/10
-- Cooperativeness: {agent.personality.cooperativeness}/10
-- Energy: {agent.personality.energy}/10
+Your personality: Extroversion {agent.personality.extroversion}/10, Optimism {agent.personality.optimism}/10, Curiosity {agent.personality.curiosity}/10, Cooperativeness {agent.personality.cooperativeness}/10, Energy {agent.personality.energy}/10
 
 Your goal: {agent.goal}
 
 {memory_behavior_prompt}
 
-BEHAVIORAL REQUIREMENTS:
-1. THINK AND RESPOND according to your background - let your professional experience guide your perspective
-2. USE vocabulary, concepts, and approaches from your field of expertise
-3. APPLY your professional problem-solving methods to the current situation  
-4. REFERENCE your memories when they're relevant to the discussion
-5. REMAIN GENUINELY OPEN to new ideas from other agents - show intellectual curiosity
-6. BE WILLING TO CHANGE YOUR MIND when others present compelling arguments
-7. ACKNOWLEDGE good points made by others, even if they contradict your initial thinking
-8. PROGRESS the conversation forward - build on ideas, propose solutions, introduce new angles
-9. Show how your unique background brings value while being receptive to others' expertise
+IMPORTANT INSTRUCTIONS:
+1. Respond authentically based on your background and expertise
+2. Reference your memories when relevant but stay open to new ideas
+3. Build meaningfully on the conversation - don't just repeat what others said
+4. Show genuine interest in others' perspectives
+5. Keep responses to 1-2 sentences maximum
+6. Use your professional knowledge to contribute unique insights
 
 Current scenario: {scenario}
-{recent_context}
+{recent_context}"""
 
-Respond authentically as someone with your background and memories would, in 1-2 sentences. Balance your personal perspective with genuine openness to others' ideas."""
-
-        chat = LlmChat(
-            api_key=self.api_key,
-            session_id=f"agent_{agent.id}_{datetime.now().timestamp()}",
-            system_message=system_message
-        ).with_model("gemini", "gemini-2.0-flash")
-        
         # Generate prompt based on other agents present and context
         other_agents_info = []
         for other_agent in other_agents:
             if other_agent.id != agent.id:
                 agent_info = f"{other_agent.name}"
                 if other_agent.background:
-                    agent_info += f" (background: {other_agent.background})"
-                elif other_agent.expertise:
-                    agent_info += f" (expertise: {other_agent.expertise})"
+                    agent_info += f" ({other_agent.archetype})"
                 other_agents_info.append(agent_info)
         
         prompt = f"""{context} 
 
 Others present: {', '.join(other_agents_info) if other_agents_info else 'no one else'}.
 
-Consider how your background, memories, and expertise make you uniquely qualified to contribute to this discussion. What perspective does your experience bring? But also stay curious about what others might know that you don't."""
+Contribute meaningfully to this discussion using your unique background and expertise."""
         
-        try:
-            user_message = UserMessage(text=prompt)
-            response = await chat.send_message(user_message)
-            await self.increment_usage()
-            return response
-        except Exception as e:
-            logging.error(f"Error generating response for {agent.name}: {e}")
-            return f"{agent.name} seems distracted..."
+        # Enhanced error handling with multiple retry attempts
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                # Create chat instance with simpler configuration
+                chat = LlmChat(
+                    api_key=self.api_key,
+                    session_id=f"agent_{agent.id}_{datetime.now().timestamp()}",
+                    system_message=system_message
+                ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(150)  # Limit tokens for more focused responses
+                
+                user_message = UserMessage(text=prompt)
+                response = await chat.send_message(user_message)
+                await self.increment_usage()
+                
+                # Ensure response is not empty
+                if response and len(response.strip()) > 10:
+                    return response.strip()
+                else:
+                    logging.warning(f"Empty or too short response for {agent.name}, attempt {attempt + 1}")
+                    if attempt == max_retries - 1:
+                        return f"{agent.name} is carefully considering the situation..."
+                        
+            except Exception as e:
+                logging.error(f"Error generating response for {agent.name}, attempt {attempt + 1}: {e}")
+                if attempt == max_retries - 1:
+                    # Return a meaningful fallback based on agent's background
+                    if "scientist" in agent.archetype:
+                        return f"{agent.name} is analyzing the data systematically..."
+                    elif "leader" in agent.archetype:
+                        return f"{agent.name} is assessing the tactical situation..."
+                    elif "optimist" in agent.archetype:
+                        return f"{agent.name} is considering how to support the team..."
+                    elif "skeptic" in agent.archetype:
+                        return f"{agent.name} is questioning the assumptions..."
+                    else:
+                        return f"{agent.name} is reflecting on the situation..."
+                
+                # Wait a bit before retry
+                await asyncio.sleep(1)
+        
+        return f"{agent.name} is processing the information..."
 
     async def update_agent_memory(self, agent: Agent, conversations: List):
         """Update agent's memory summary based on recent conversations"""
