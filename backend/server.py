@@ -1049,35 +1049,46 @@ async def toggle_auto_mode(request: AutoModeRequest):
         "time_interval": request.time_interval
     }
 
-# Initialize Research Station scenario
+# Initialize Default AI Agents (now using diverse backgrounds)
 @api_router.post("/simulation/init-research-station")
 async def init_research_station():
-    """Initialize the Research Station scenario with 3 default agents"""
+    """Initialize default AI agents with diverse backgrounds for meaningful conversations"""
     # Clear existing agents
     await db.agents.delete_many({})
     
-    # Create the 3 research station agents
+    # Create the diverse background agents (these are now the default)
     agents_data = [
         {
-            "name": "Dr. Sarah Chen",
-            "archetype": "scientist",
-            "goal": "Study team dynamics and research efficiency during isolation",
-            "expertise": "Behavioral Psychology and Team Dynamics",
-            "background": "PhD in Psychology, specializes in group behavior in confined environments"
+            "name": "Dr. Elena Vasquez",
+            "archetype": "scientist", 
+            "goal": "Analyze situations from a rigorous scientific perspective",
+            "expertise": "Astrophysics and Signal Analysis",
+            "background": "PhD in Astrophysics, spent 15 years analyzing extraterrestrial signals at SETI. Expert in radio telescopy, pattern recognition in cosmic noise, and first-contact protocols. Thinks in terms of scientific method, data validation, and peer review.",
+            "memory_summary": "I have extensive experience with the famous Wow! signal and other potential extraterrestrial communications. I know that 72% of anomalous signals turn out to be terrestrial interference, but I remain optimistic about finding genuine evidence."
         },
         {
-            "name": "Marcus Rivera", 
+            "name": "Captain Jake Morrison",
+            "archetype": "leader",
+            "goal": "Ensure team safety and mission success through strategic leadership", 
+            "expertise": "Military Strategy and Crisis Management",
+            "background": "Former Navy SEAL with 20 years military experience including special operations and crisis response. Trained in tactical assessment, risk mitigation, command structure, and rapid decision-making under pressure. Views situations through security and operational readiness lens.",
+            "memory_summary": "I've led teams through multiple high-stakes operations including the classified Operation Neptune's Eye. I've learned that the biggest threats often come from overconfidence and poor communication within the team."
+        },
+        {
+            "name": "Dr. Amara Okafor", 
             "archetype": "optimist",
-            "goal": "Keep team morale high and foster collaboration",
-            "expertise": "Communications and Conflict Resolution",
-            "background": "Former team leader with experience in high-stress collaborative projects"
+            "goal": "Maintain team cohesion and psychological well-being",
+            "expertise": "Clinical Psychology and Cross-Cultural Communication", 
+            "background": "Clinical psychologist specializing in multicultural teams and stress management. PhD in Behavioral Psychology with focus on group dynamics in isolated environments. Approaches situations by analyzing interpersonal relationships, communication patterns, and psychological impact.",
+            "memory_summary": "During my work with the Mars simulation project, I observed how isolation and stress can lead to groupthink and poor decision-making. I've developed techniques to keep teams functioning optimally under pressure."
         },
         {
-            "name": "Alex Thompson",
-            "archetype": "skeptic", 
-            "goal": "Ensure mission safety and identify potential problems",
-            "expertise": "Risk Assessment and Safety Protocols",
-            "background": "Safety engineer with experience in mission-critical operations"
+            "name": "Zara Al-Rashid",
+            "archetype": "skeptic",
+            "goal": "Question assumptions and identify potential security threats",
+            "expertise": "Cybersecurity and Information Warfare",
+            "background": "Former CIA analyst specialized in disinformation detection and cybersecurity threats. Expert in recognizing deception, analyzing information sources, and identifying hidden agendas. Approaches everything with suspicion and looks for alternative explanations and potential threats.",
+            "memory_summary": "I've seen too many operations compromised by accepting information at face value. The 2019 deep-fake incident taught me that even the most convincing evidence can be manufactured. Trust must be earned through verification."
         }
     ]
     
@@ -1087,11 +1098,18 @@ async def init_research_station():
         agent = await create_agent(agent_create)
         created_agents.append(agent)
     
-    # Start simulation
+    # Start simulation with compelling scenario
     await start_simulation()
     
+    # Set an engaging default scenario
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {"scenario": "A mysterious, structured signal has been detected coming from the direction of Proxima Centauri. The signal contains mathematical patterns and repeats every 11 hours. Ground control has lost communication and the team must decide how to respond."}},
+        upsert=True
+    )
+    
     return {
-        "message": "Research Station scenario initialized", 
+        "message": "Default AI agents with diverse backgrounds initialized", 
         "agents": created_agents
     }
 
