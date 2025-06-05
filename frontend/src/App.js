@@ -738,6 +738,9 @@ function App() {
   const [summaries, setSummaries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [autoTimers, setAutoTimers] = useState({ conversation: null, time: null });
+  const [showFastForward, setShowFastForward] = useState(false);
+  const [editingAgent, setEditingAgent] = useState(null);
+  const [archetypes, setArchetypes] = useState({});
 
   // Fetch data functions
   const fetchAgents = async () => {
