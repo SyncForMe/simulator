@@ -510,16 +510,34 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
 
   return (
     <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 relative">
-      <button
-        onClick={() => onEdit(agent)}
-        className="absolute top-2 right-2 bg-blue-100 hover:bg-blue-200 text-blue-600 p-1 rounded text-xs"
-        title="Edit Agent"
-      >
-        ✏️
-      </button>
+      <div className="absolute top-2 right-2 flex space-x-1">
+        <button
+          onClick={() => onEdit(agent)}
+          className="bg-blue-100 hover:bg-blue-200 text-blue-600 p-1 rounded text-xs"
+          title="Edit Agent"
+        >
+          ✏️
+        </button>
+        {agent.memory_summary && (
+          <button
+            onClick={() => onClearMemory(agent.id)}
+            className="bg-red-100 hover:bg-red-200 text-red-600 p-1 rounded text-xs"
+            title="Clear Memory"
+          >
+            🧠❌
+          </button>
+        )}
+        <button
+          onClick={() => setShowMemoryInput(!showMemoryInput)}
+          className="bg-green-100 hover:bg-green-200 text-green-600 p-1 rounded text-xs"
+          title="Add Memory"
+        >
+          🧠+
+        </button>
+      </div>
       
       <div className="agent-header">
-        <h3 className="text-lg font-bold text-gray-800">{agent.name}</h3>
+        <h3 className="text-lg font-bold text-gray-800 pr-16">{agent.name}</h3>
         <p className="text-sm text-gray-600">{agent.archetype}</p>
         <p className="text-xs text-gray-500 italic">"{agent.goal}"</p>
         
@@ -535,6 +553,38 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
           </p>
         )}
       </div>
+
+      {/* Add Memory Input */}
+      {showMemoryInput && (
+        <div className="add-memory mt-3 p-3 bg-green-50 rounded border">
+          <form onSubmit={handleAddMemory}>
+            <label className="block text-sm font-medium mb-1">Add Memory</label>
+            <textarea
+              value={newMemory}
+              onChange={(e) => setNewMemory(e.target.value)}
+              placeholder="Add a specific memory, experience, or piece of knowledge..."
+              className="w-full p-2 border rounded text-sm"
+              rows="2"
+            />
+            <div className="flex space-x-2 mt-2">
+              <button
+                type="submit"
+                className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
+                disabled={!newMemory.trim()}
+              >
+                Add
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowMemoryInput(false)}
+                className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
       
       <div className="personality-traits mt-3">
         <h4 className="text-sm font-semibold mb-2">Personality</h4>
@@ -573,8 +623,8 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
 
       {agent.memory_summary && (
         <div className="memory mt-3">
-          <h4 className="text-sm font-semibold mb-1">Memory</h4>
-          <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+          <h4 className="text-sm font-semibold mb-1">🧠 Memory</h4>
+          <p className="text-xs text-gray-600 bg-blue-50 p-2 rounded border">
             {agent.memory_summary}
           </p>
         </div>
