@@ -1,3 +1,9 @@
+/* Weekly Summary - Optimized for wider layout */
+.weekly-summary {
+  border: 1px solid #e5e7eb;
+  max-width: none; /* Remove width restrictions for better use of space */
+}
+
 /* Weekly Summary Structured Layout */
 .structured-summary {
   max-height: none;
@@ -6,15 +12,28 @@
 .key-events-section {
   border: 2px solid #3b82f6;
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px; /* Increased padding for wider layout */
   background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  margin-bottom: 24px; /* Increased margin */
 }
 
 .key-events-section h3 {
-  font-size: 1.25rem;
+  font-size: 1.5rem; /* Larger font for better hierarchy */
   font-weight: 700;
   color: #1d4ed8;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.collapsible-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns for better space usage */
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .collapsible-sections {
+    grid-template-columns: 1fr; /* Single column on smaller screens */
+  }
 }
 
 .collapsible-section {
@@ -24,11 +43,18 @@
 .collapsible-section button {
   font-weight: 600;
   transition: all 0.2s ease-in-out;
+  font-size: 0.95rem; /* Slightly larger text for better readability */
 }
 
 .collapsible-section button:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Expanded content styling */
+.collapsible-section .mt-2 {
+  font-size: 0.9rem;
+  line-height: 1.6; /* Better line spacing for readability */
 }
 
 /* Color variants for different sections */
