@@ -474,14 +474,41 @@ const AgentCard = ({ agent, relationships, onEdit }) => {
     return "bg-green-500";
   };
 
+const AgentCard = ({ agent, relationships, onEdit }) => {
+  const getPersonalityColor = (value) => {
+    if (value <= 3) return "bg-red-500";
+    if (value <= 6) return "bg-yellow-500"; 
+    return "bg-green-500";
+  };
+
   const agentRelationships = relationships.filter(r => r.agent1_id === agent.id);
 
   return (
-    <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2">
+    <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 relative">
+      <button
+        onClick={() => onEdit(agent)}
+        className="absolute top-2 right-2 bg-blue-100 hover:bg-blue-200 text-blue-600 p-1 rounded text-xs"
+        title="Edit Agent"
+      >
+        ✏️
+      </button>
+      
       <div className="agent-header">
         <h3 className="text-lg font-bold text-gray-800">{agent.name}</h3>
         <p className="text-sm text-gray-600">{agent.archetype}</p>
         <p className="text-xs text-gray-500 italic">"{agent.goal}"</p>
+        
+        {agent.expertise && (
+          <p className="text-xs text-blue-600 mt-1">
+            <strong>Expertise:</strong> {agent.expertise}
+          </p>
+        )}
+        
+        {agent.background && (
+          <p className="text-xs text-gray-500 mt-1">
+            {agent.background.substring(0, 80)}{agent.background.length > 80 ? '...' : ''}
+          </p>
+        )}
       </div>
       
       <div className="personality-traits mt-3">
@@ -516,6 +543,15 @@ const AgentCard = ({ agent, relationships, onEdit }) => {
               </span>
             </div>
           ))}
+        </div>
+      )}
+
+      {agent.memory_summary && (
+        <div className="memory mt-3">
+          <h4 className="text-sm font-semibold mb-1">Memory</h4>
+          <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+            {agent.memory_summary}
+          </p>
         </div>
       )}
       
