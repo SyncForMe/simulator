@@ -317,11 +317,16 @@ const ControlPanel = ({
   simulationState, 
   apiUsage, 
   onStartSimulation, 
+  onPauseSimulation,
+  onResumeSimulation,
   onNextPeriod, 
   onGenerateConversation,
   onInitResearchStation,
   onToggleAuto
 }) => {
+  const isActive = simulationState?.is_active || false;
+  const autoRunning = simulationState?.auto_conversations || simulationState?.auto_time;
+
   return (
     <div className="control-panel bg-white rounded-lg shadow-md p-4">
       <h3 className="text-lg font-bold mb-4">🎮 Simulation Control</h3>
@@ -338,9 +343,9 @@ const ControlPanel = ({
         </p>
         <p className="text-sm"><strong>Status:</strong> 
           <span className={`ml-1 px-2 py-1 rounded text-xs ${
-            simulationState?.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
           }`}>
-            {simulationState?.is_active ? 'Active' : 'Inactive'}
+            {isActive ? (autoRunning ? 'Auto Running' : 'Active') : 'Paused'}
           </span>
         </p>
         
@@ -375,27 +380,60 @@ const ControlPanel = ({
         </p>
       </div>
 
-      <div className="controls space-y-2">
-        <button 
-          onClick={onInitResearchStation}
-          className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm"
-        >
-          Initialize Research Station
-        </button>
+      <div className="controls space-y-3">
+        {/* Setup Controls */}
+        <div className="setup-section">
+          <h4 className="text-sm font-semibold mb-2 text-gray-700">Setup</h4>
+          <button 
+            onClick={onInitResearchStation}
+            className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm mb-2"
+          >
+            Create Research Team
+          </button>
+          <p className="text-xs text-gray-500 mb-3">
+            Creates 3 AI agents: Dr. Sarah Chen (Scientist), Marcus Rivera (Optimist), Alex Thompson (Skeptic)
+          </p>
+        </div>
+
+        {/* Simulation Controls */}
+        <div className="simulation-section">
+          <h4 className="text-sm font-semibold mb-2 text-gray-700">Simulation</h4>
+          
+          <button 
+            onClick={onStartSimulation}
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm mb-2"
+          >
+            Start New Simulation
+          </button>
+          <p className="text-xs text-gray-500 mb-3">
+            Resets all conversations and relationships, starts fresh
+          </p>
+
+          {/* Pause/Resume Button */}
+          {isActive ? (
+            <button 
+              onClick={onPauseSimulation}
+              className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm mb-2"
+            >
+              ⏸️ Pause Simulation
+            </button>
+          ) : (
+            <button 
+              onClick={onResumeSimulation}
+              className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm mb-2"
+            >
+              ▶️ Resume Simulation
+            </button>
+          )}
+        </div>
         
-        <button 
-          onClick={onStartSimulation}
-          className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-        >
-          Start New Simulation
-        </button>
-        
-        <div className="manual-controls bg-gray-50 rounded p-2">
-          <p className="text-xs font-medium mb-2">Manual Controls</p>
+        {/* Manual Controls */}
+        <div className="manual-controls bg-gray-50 rounded p-3">
+          <p className="text-xs font-medium mb-2 text-gray-700">Manual Controls</p>
           <button 
             onClick={onNextPeriod}
             className="w-full bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-xs mb-1"
-            disabled={!simulationState?.is_active}
+            disabled={!isActive}
           >
             Next Time Period
           </button>
@@ -403,7 +441,7 @@ const ControlPanel = ({
           <button 
             onClick={onGenerateConversation}
             className="w-full bg-orange-600 text-white px-3 py-2 rounded hover:bg-orange-700 text-xs"
-            disabled={!simulationState?.is_active || (apiUsage?.remaining || 0) <= 0}
+            disabled={!isActive || (apiUsage?.remaining || 0) <= 0}
           >
             Generate Conversation
           </button>
