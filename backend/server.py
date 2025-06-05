@@ -441,7 +441,9 @@ async def create_agent(agent_data: AgentCreate):
         name=agent_data.name,
         archetype=agent_data.archetype,
         personality=agent_data.personality,
-        goal=agent_data.goal
+        goal=agent_data.goal,
+        expertise=agent_data.expertise,
+        background=agent_data.background
     )
     
     await db.agents.insert_one(agent.dict())
