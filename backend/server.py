@@ -533,6 +533,12 @@ def calculate_compatibility(agent1: Agent, agent2: Agent) -> float:
 async def get_summaries():
     """Get all generated summaries"""
     summaries = await db.summaries.find().sort("created_at", -1).to_list(100)
+    
+    # Convert MongoDB ObjectId to string to make it JSON serializable
+    for summary in summaries:
+        if '_id' in summary:
+            summary['_id'] = str(summary['_id'])
+    
     return summaries
 
 @api_router.post("/simulation/toggle-auto-mode")
