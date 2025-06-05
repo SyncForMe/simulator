@@ -600,7 +600,8 @@ const ControlPanel = ({
   onNextPeriod, 
   onGenerateConversation,
   onInitResearchStation,
-  onToggleAuto
+  onToggleAuto,
+  setShowFastForward
 }) => {
   const isActive = simulationState?.is_active || false;
   const autoRunning = simulationState?.auto_conversations || simulationState?.auto_time;
