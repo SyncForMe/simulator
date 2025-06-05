@@ -1552,15 +1552,8 @@ function App() {
             </div>
           </div>
 
-          {/* Middle Column - Observer Input, Conversations & Reports */}
+          {/* Middle Column - Conversations & Reports */}
           <div className="lg:col-span-2">
-            {/* Observer Input at the top */}
-            <ObserverInput 
-              onSendObserverMessage={handleSendObserverMessage}
-              agents={agents}
-              loading={loading}
-            />
-            
             <h2 className="text-xl font-bold mb-4">Conversations</h2>
             <ConversationViewer conversations={conversations} />
             
