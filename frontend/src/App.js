@@ -706,6 +706,21 @@ const ControlPanel = ({
           )}
         </div>
         
+        {/* Fast Forward Section */}
+        <div className="fast-forward-section">
+          <h4 className="text-sm font-semibold mb-2 text-gray-700">Fast Forward</h4>
+          <button 
+            onClick={() => setShowFastForward(true)}
+            className="w-full bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 text-sm mb-2"
+            disabled={!isActive}
+          >
+            ⚡ Fast Forward Days
+          </button>
+          <p className="text-xs text-gray-500 mb-3">
+            Generate multiple days of progressive conversations automatically
+          </p>
+        </div>
+
         {/* Manual Controls */}
         <div className="manual-controls bg-gray-50 rounded p-3">
           <p className="text-xs font-medium mb-2 text-gray-700">Manual Controls</p>
