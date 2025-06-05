@@ -1361,6 +1361,7 @@ function App() {
               <WeeklySummary 
                 onGenerateSummary={handleGenerateSummary}
                 summaries={summaries}
+                onSetupAutoReport={handleSetupAutoReport}
               />
             </div>
 
