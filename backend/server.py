@@ -1109,7 +1109,7 @@ async def clear_agent_memory(agent_id: str):
 
 @api_router.post("/agents/{agent_id}/add-memory")
 async def add_agent_memory(agent_id: str, request: dict):
-    """Add specific memory to an agent"""
+    """Add specific memory to an agent with URL processing"""
     agent = await db.agents.find_one({"id": agent_id})
     if not agent:
         raise HTTPException(status_code=404, detail="Agent not found")
@@ -1118,16 +1118,19 @@ async def add_agent_memory(agent_id: str, request: dict):
     if not new_memory:
         raise HTTPException(status_code=400, detail="Memory content required")
     
+    # Process URLs in the new memory
+    processed_memory = await llm_manager.process_memory_with_urls(new_memory)
+    
     current_memory = agent.get("memory_summary", "")
     
     # Combine memories intelligently
     if current_memory:
-        updated_memory = f"{current_memory} {new_memory}"
-        # Trim if too long (keep last 500 characters)
-        if len(updated_memory) > 500:
-            updated_memory = "..." + updated_memory[-497:]
+        updated_memory = f"{current_memory} {processed_memory}"
+        # Trim if too long (keep last 1000 characters for URL content)
+        if len(updated_memory) > 1000:
+            updated_memory = "..." + updated_memory[-997:]
     else:
-        updated_memory = new_memory
+        updated_memory = processed_memory
     
     await db.agents.update_one(
         {"id": agent_id},
@@ -1137,7 +1140,8 @@ async def add_agent_memory(agent_id: str, request: dict):
     return {
         "message": f"Memory added to {agent['name']}", 
         "agent_id": agent_id,
-        "updated_memory": updated_memory
+        "updated_memory": updated_memory,
+        "urls_processed": len(re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', new_memory))
     }
 
 @api_router.delete("/agents/{agent_id}")
