@@ -1372,6 +1372,118 @@ async def generate_single_response(agent_id: str):
         "agent_id": agent_id
     }
 
+@api_router.post("/observer/message")
+async def send_observer_message(request: dict):
+    """Send a message from the Observer (CEO) to all agents"""
+    message = request.get("message", "")
+    if not message:
+        raise HTTPException(status_code=400, detail="Message required")
+    
+    # Get all agents
+    agents = await db.agents.find().to_list(100)
+    if not agents:
+        raise HTTPException(status_code=400, detail="No agents available")
+    
+    agent_objects = [Agent(**agent) for agent in agents]
+    
+    # Get simulation state for context
+    state = await db.simulation_state.find_one()
+    scenario = state.get("scenario", "Crypto project development") if state else "Crypto project development"
+    
+    responses = []
+    
+    # Generate response from each agent with staggered timing
+    for i, agent in enumerate(agent_objects):
+        # Add delay to respect rate limits
+        if i > 0:
+            await asyncio.sleep(3)
+        
+        try:
+            response = await generate_observer_response(agent, message, scenario, agent_objects)
+            responses.append({
+                "agent_name": agent.name,
+                "response": response
+            })
+        except Exception as e:
+            logging.error(f"Error generating observer response for {agent.name}: {e}")
+            responses.append({
+                "agent_name": agent.name,
+                "response": f"{agent.name} is processing your message..."
+            })
+    
+    # Store the observer interaction in database
+    observer_interaction = {
+        "id": str(uuid.uuid4()),
+        "observer_message": message,
+        "agent_responses": responses,
+        "created_at": datetime.utcnow()
+    }
+    await db.observer_interactions.insert_one(observer_interaction)
+    
+    return {"message": "Observer message sent", "responses": responses}
+
+async def generate_observer_response(agent: Agent, observer_message: str, scenario: str, other_agents: List[Agent]):
+    """Generate agent response to observer message"""
+    if not await llm_manager.can_make_request():
+        return f"{agent.name} acknowledges your message but is currently at capacity to respond in detail."
+    
+    # Process memory but with error handling
+    processed_memory = agent.memory_summary or ""
+    try:
+        if agent.memory_summary and 'http' in agent.memory_summary:
+            processed_memory = await llm_manager.process_memory_with_urls(agent.memory_summary)
+    except Exception as e:
+        logging.warning(f"URL processing failed for {agent.name}: {e}")
+        processed_memory = agent.memory_summary or ""
+    
+    # Create system message for CEO interaction
+    system_message = f"""You are {agent.name}, {AGENT_ARCHETYPES[agent.archetype]['description']}.
+
+**CRITICAL: You are responding to the CEO/Observer who oversees the entire operation.**
+
+Your background: {agent.background}
+Your expertise: {agent.expertise}
+Your personality (be authentic to these traits):
+- Extroversion: {agent.personality.extroversion}/10
+- Optimism: {agent.personality.optimism}/10  
+- Curiosity: {agent.personality.curiosity}/10
+- Cooperativeness: {agent.personality.cooperativeness}/10
+- Energy: {agent.personality.energy}/10
+
+Your memories and experience: {processed_memory}
+
+**CEO INTERACTION PROTOCOL:**
+1. RESPECT: Treat the Observer as the ultimate authority and decision-maker
+2. PROFESSIONALISM: Respond with your expertise while being respectful
+3. AUTHENTICITY: Stay true to your personality and professional background
+4. SUGGESTIONS: You can offer suggestions and insights based on your experience
+5. DISAGREEMENT: You may politely disagree if you see significant risks, but do so respectfully
+6. COLLABORATION: Work with the CEO's guidance while providing your unique perspective
+
+Current project context: {scenario}
+Team members: {', '.join([a.name for a in other_agents if a.id != agent.id])}
+
+Respond to the CEO's message in 2-3 sentences. Be professional, authentic to your personality, and helpful."""
+
+    try:
+        chat = LlmChat(
+            api_key=llm_manager.api_key,
+            session_id=f"observer_{agent.id}_{datetime.now().timestamp()}",
+            system_message=system_message
+        ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(200)
+        
+        prompt = f"The CEO/Observer has sent this message to the team: '{observer_message}'\n\nRespond professionally based on your expertise and personality."
+        
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        await llm_manager.increment_usage()
+        
+        return response.strip() if response else f"{agent.name} acknowledges your guidance and will implement accordingly."
+        
+    except Exception as e:
+        logging.error(f"Error in observer response for {agent.name}: {e}")
+        return f"{agent.name} received your message and will follow your guidance."
+
 @api_router.get("/api-status")
 async def get_api_status():
     """Get current API status and usage"""
