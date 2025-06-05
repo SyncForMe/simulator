@@ -1262,16 +1262,15 @@ function App() {
 
             {/* Scenario Info */}
             <div className="bg-white rounded-lg shadow-md p-4 mt-4">
-              <h3 className="text-lg font-bold mb-2">🛸 Proxima Centauri Signal</h3>
+              <h3 className="text-lg font-bold mb-2">💰 DeFi Crisis Scenario</h3>
               <p className="text-sm text-gray-600 mb-2">
-                A mysterious structured signal from Proxima Centauri with mathematical patterns repeating every 11 hours. 
-                Ground control is offline - the team must decide how to respond.
+                A major DeFi protocol discovered a critical vulnerability that could drain $500M. 
+                Sophisticated actors are probing the system. The team must decide on response strategy.
               </p>
               <div className="text-xs text-gray-500">
-                <p><strong>Dr. Elena Vasquez:</strong> SETI astrophysicist with signal analysis expertise</p>
-                <p><strong>Captain Jake Morrison:</strong> Navy SEAL focused on tactical security</p>
-                <p><strong>Dr. Amara Okafor:</strong> Psychologist managing team dynamics</p>
-                <p><strong>Zara Al-Rashid:</strong> CIA analyst questioning everything</p>
+                <p><strong>Mark Castellano:</strong> Marketing veteran who survived 3 crypto cycles</p>
+                <p><strong>Alex Chen:</strong> Product leader who built $2B+ TVL protocols</p>
+                <p><strong>Dex Rodriguez:</strong> Crypto generalist with 30% hit rate on "crazy" ideas</p>
               </div>
             </div>
           </div>
