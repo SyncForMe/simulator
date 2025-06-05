@@ -172,9 +172,11 @@ const AutoControls = ({ simulationState, onToggleAuto }) => {
   );
 };
 
-const WeeklySummary = ({ onGenerateSummary, summaries }) => {
+const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
   const [loading, setLoading] = useState(false);
   const [latestSummary, setLatestSummary] = useState(null);
+  const [autoReports, setAutoReports] = useState({ enabled: false, interval_hours: 168 });
+  const [expandedSections, setExpandedSections] = useState({});
 
   useEffect(() => {
     if (summaries && summaries.length > 0) {
@@ -191,28 +193,121 @@ const WeeklySummary = ({ onGenerateSummary, summaries }) => {
     setLoading(false);
   };
 
+  const handleAutoReportToggle = async () => {
+    const newEnabled = !autoReports.enabled;
+    setAutoReports(prev => ({ ...prev, enabled: newEnabled }));
+    await onSetupAutoReport({ enabled: newEnabled, interval_hours: autoReports.interval_hours });
+  };
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const renderStructuredSummary = (summary) => {
+    const sections = summary.structured_sections || {};
+    
+    return (
+      <div className="structured-summary">
+        {/* Key Events & Discoveries - Always Visible */}
+        <div className="key-events-section mb-6">
+          <h3 className="text-xl font-bold text-blue-600 mb-3 flex items-center">
+            🔥 <span className="ml-2">KEY EVENTS & DISCOVERIES</span>
+          </h3>
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+            <div className="whitespace-pre-wrap text-gray-800">
+              {sections.key_events || "No key events identified in this period."}
+            </div>
+          </div>
+        </div>
+
+        {/* Collapsible Sections */}
+        <div className="collapsible-sections space-y-3">
+          {[
+            { key: 'relationships', title: '👥 Relationship Developments', color: 'green' },
+            { key: 'personalities', title: '🎭 Emerging Personalities', color: 'purple' },
+            { key: 'social_dynamics', title: '⚖️ Social Dynamics', color: 'yellow' },
+            { key: 'strategic_decisions', title: '🎯 Strategic Decisions', color: 'red' },
+            { key: 'looking_ahead', title: '🔮 Looking Ahead', color: 'indigo' }
+          ].map(section => (
+            sections[section.key] && (
+              <div key={section.key} className="collapsible-section">
+                <button
+                  onClick={() => toggleSection(section.key)}
+                  className={`w-full text-left p-3 bg-${section.color}-100 hover:bg-${section.color}-200 rounded-lg border border-${section.color}-200 transition-colors duration-200 flex justify-between items-center`}
+                >
+                  <span className="font-semibold text-gray-800">{section.title}</span>
+                  <span className="text-gray-500">
+                    {expandedSections[section.key] ? '▼' : '▶'}
+                  </span>
+                </button>
+                
+                {expandedSections[section.key] && (
+                  <div className={`mt-2 p-4 bg-${section.color}-50 border-l-4 border-${section.color}-400 rounded-r-lg`}>
+                    <div className="whitespace-pre-wrap text-gray-700">
+                      {sections[section.key]}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="weekly-summary bg-white rounded-lg shadow-md p-4">
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-bold">📊 Weekly Summary</h3>
-        <button
-          onClick={handleGenerateSummary}
-          disabled={loading}
-          className="bg-indigo-600 text-white px-3 py-1 rounded text-sm hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {loading ? "Generating..." : "Generate Summary"}
-        </button>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-bold">📊 Weekly Report</h3>
+        <div className="flex space-x-2">
+          <button
+            onClick={handleAutoReportToggle}
+            className={`px-3 py-1 rounded text-xs font-medium ${
+              autoReports.enabled 
+                ? 'bg-green-600 text-white' 
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            Auto: {autoReports.enabled ? 'ON' : 'OFF'}
+          </button>
+          <button
+            onClick={handleGenerateSummary}
+            disabled={loading}
+            className="bg-indigo-600 text-white px-3 py-1 rounded text-sm hover:bg-indigo-700 disabled:opacity-50"
+          >
+            {loading ? "Generating..." : "Generate Report"}
+          </button>
+        </div>
       </div>
+
+      {autoReports.enabled && (
+        <div className="auto-report-status mb-4 p-3 bg-green-50 border border-green-200 rounded">
+          <p className="text-sm text-green-800">
+            🤖 <strong>Automatic Reports Enabled</strong> - Reports generate every {autoReports.interval_hours} hours
+          </p>
+        </div>
+      )}
       
       {latestSummary ? (
-        <div className="summary-content bg-gray-50 rounded p-3 text-sm">
-          <div className="mb-2 text-xs text-gray-600">
-            Day {latestSummary.day} • {latestSummary.conversations_count} conversations analyzed
+        <div className="summary-content">
+          <div className="mb-3 text-xs text-gray-600 bg-gray-50 p-2 rounded">
+            <strong>Report Generated:</strong> Day {latestSummary.day} • {latestSummary.conversations_count} conversations analyzed
           </div>
-          <div className="whitespace-pre-wrap">{latestSummary.summary}</div>
+          
+          {latestSummary.structured_sections ? (
+            renderStructuredSummary(latestSummary)
+          ) : (
+            <div className="legacy-summary bg-gray-50 rounded p-3 text-sm">
+              <div className="whitespace-pre-wrap">{latestSummary.summary}</div>
+            </div>
+          )}
         </div>
       ) : (
-        <p className="text-gray-500 text-sm italic">No summary generated yet. Click the button to create one!</p>
+        <p className="text-gray-500 text-sm italic">No reports generated yet. Click the button to create your first weekly report!</p>
       )}
     </div>
   );
