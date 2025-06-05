@@ -275,12 +275,15 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Custom scenario setting endpoint works correctly, updating the simulation state with the new scenario. Empty scenario validation also works as expected."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the custom scenario setting endpoint. It correctly updates the simulation state with the new scenario and properly validates empty scenarios."
 
   - task: "POST /api/simulation/generate-summary - Generate AI-powered weekly summary"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -290,6 +293,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Weekly summary generation endpoint successfully creates meaningful analysis of agent interactions using Gemini LLM and stores it in the database."
+        -working: false
+        -agent: "testing"
+        -comment: "Retested the weekly summary generation endpoint. It's currently failing with a rate limit error from the Gemini API: 'You exceeded your current quota, please check your plan and billing details.' This is a temporary API quota issue rather than a code implementation problem."
 
   - task: "GET /api/summaries - Get all generated summaries"
     implemented: true
@@ -308,6 +314,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Fixed the summaries endpoint by converting MongoDB ObjectId to string to make it JSON serializable."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the summaries endpoint. It correctly returns all generated summaries with proper JSON serialization of MongoDB ObjectIds. The endpoint also includes structured sections for better frontend display."
 
   - task: "POST /api/simulation/toggle-auto-mode - Enable/disable auto conversations and time progression"
     implemented: true
@@ -323,16 +332,20 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Auto mode toggle endpoint correctly enables and disables auto conversations and time progression with the specified intervals."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the auto mode toggle endpoint. It correctly enables and disables auto conversations and time progression with the specified intervals. The settings are properly reflected in the simulation state."
 
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: false
 
 test_plan:
   current_focus: []
-  stuck_tasks: []
+  stuck_tasks: 
+    - "POST /api/simulation/generate-summary - Generate AI-powered weekly summary"
   test_all: true
   test_priority: "high_first"
 
@@ -343,3 +356,5 @@ agent_communication:
     -message: "Completed testing of all backend API endpoints. Fixed two issues: 1) MongoDB ObjectId not being JSON serializable in simulation state endpoint, and 2) relationship.get() method not available on Pydantic model in update_relationships function. All endpoints are now working correctly."
     -agent: "testing"
     -message: "Completed testing of all new backend API endpoints. Fixed one issue: MongoDB ObjectId not being JSON serializable in the summaries endpoint. All new endpoints are now working correctly. The enhanced AI agent simulation backend with the new features is fully functional."
+    -agent: "testing"
+    -message: "Retested all new features. The custom scenario setting, summaries retrieval, and auto mode toggle features are working correctly. However, the weekly summary generation endpoint is currently failing due to a Gemini API rate limit error. This is a temporary API quota issue rather than a code implementation problem. All other features are functioning as expected."
