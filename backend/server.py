@@ -575,20 +575,15 @@ async def get_summaries():
     return summaries
 
 @api_router.post("/simulation/toggle-auto-mode")
-async def toggle_auto_mode(request: dict):
+async def toggle_auto_mode(request: AutoModeRequest):
     """Toggle automatic conversation and time progression"""
-    auto_conversations = request.get("auto_conversations", False)
-    auto_time = request.get("auto_time", False)
-    conversation_interval = request.get("conversation_interval", 5)  # seconds
-    time_interval = request.get("time_interval", 30)  # seconds
-    
     await db.simulation_state.update_one(
         {},
         {"$set": {
-            "auto_conversations": auto_conversations,
-            "auto_time": auto_time,
-            "conversation_interval": conversation_interval,
-            "time_interval": time_interval,
+            "auto_conversations": request.auto_conversations,
+            "auto_time": request.auto_time,
+            "conversation_interval": request.conversation_interval,
+            "time_interval": request.time_interval,
             "last_auto_conversation": datetime.utcnow().isoformat(),
             "last_auto_time": datetime.utcnow().isoformat()
         }},
@@ -597,10 +592,10 @@ async def toggle_auto_mode(request: dict):
     
     return {
         "message": "Auto mode updated",
-        "auto_conversations": auto_conversations,
-        "auto_time": auto_time,
-        "conversation_interval": conversation_interval,
-        "time_interval": time_interval
+        "auto_conversations": request.auto_conversations,
+        "auto_time": request.auto_time,
+        "conversation_interval": request.conversation_interval,
+        "time_interval": request.time_interval
     }
 
 # Initialize Research Station scenario
