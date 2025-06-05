@@ -942,9 +942,10 @@ async def start_simulation():
     await db.simulation_state.delete_many({})
     await db.simulation_state.insert_one(simulation.dict())
     
-    # Clear previous conversations and relationships
+    # Clear previous conversations, relationships, and summaries
     await db.conversations.delete_many({})
     await db.relationships.delete_many({})
+    await db.summaries.delete_many({})  # Clear old weekly reports
     
     return {"message": "Simulation started", "state": simulation}
 
