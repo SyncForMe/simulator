@@ -1110,6 +1110,31 @@ function App() {
     }
   };
 
+  const handleClearMemory = async (agentId) => {
+    if (!confirm('Are you sure you want to clear this agent\'s memory? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      const response = await axios.post(`${API}/agents/${agentId}/clear-memory`);
+      alert(response.data.message);
+      await fetchAgents();
+    } catch (error) {
+      console.error('Error clearing memory:', error);
+      alert('Error clearing memory: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const handleAddMemory = async (agentId, memory) => {
+    try {
+      const response = await axios.post(`${API}/agents/${agentId}/add-memory`, { memory });
+      await fetchAgents();
+    } catch (error) {
+      console.error('Error adding memory:', error);
+      alert('Error adding memory: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
   // Load initial data
   useEffect(() => {
     refreshAllData();
