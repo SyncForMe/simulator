@@ -1443,12 +1443,11 @@ function App() {
 
   const handleSendObserverMessage = async (message) => {
     try {
-      const response = await axios.post(`${API}/observer/message`, { message });
-      return response.data.responses;
+      const response = await axios.post(`${API}/observer/send-message`, { observer_message: message });
+      await refreshAllData();
     } catch (error) {
       console.error('Error sending observer message:', error);
-      alert('Error sending message: ' + (error.response?.data?.detail || error.message));
-      return null;
+      alert('Error sending message. Make sure simulation is running.');
     }
   };
 
