@@ -1135,11 +1135,23 @@ async def get_summaries():
     """Get all generated summaries with structured formatting"""
     summaries = await db.summaries.find().sort("created_at", -1).to_list(100)
     
-    # Parse structured summaries for better frontend display
+    # Convert MongoDB documents to JSON-serializable format
+    processed_summaries = []
     for summary in summaries:
-        if summary.get("report_type") == "weekly_structured":
+        # Remove MongoDB ObjectId and convert to dict
+        summary_dict = {
+            "id": summary.get("id", str(summary.get("_id", ""))),
+            "summary": summary.get("summary", ""),
+            "day_generated": summary.get("day_generated", 1),
+            "conversations_analyzed": summary.get("conversations_analyzed", 0),
+            "report_type": summary.get("report_type", "standard"),
+            "created_at": summary.get("created_at").isoformat() if summary.get("created_at") else ""
+        }
+        
+        # Parse structured summaries for better frontend display
+        if summary_dict.get("report_type") == "weekly_structured":
             # Split summary into sections for collapsible display
-            summary_text = summary.get("summary", "")
+            summary_text = summary_dict.get("summary", "")
             sections = {}
             
             # Parse sections based on headers
@@ -1152,15 +1164,16 @@ async def get_summaries():
                 ("looking_ahead", r"## \*\*🔮 LOOKING AHEAD\*\*(.*?)(?=## \*\*|$)")
             ]
             
-            import re
             for section_key, pattern in section_patterns:
                 match = re.search(pattern, summary_text, re.DOTALL | re.IGNORECASE)
                 if match:
                     sections[section_key] = match.group(1).strip()
             
-            summary["structured_sections"] = sections
+            summary_dict["structured_sections"] = sections
+        
+        processed_summaries.append(summary_dict)
     
-    return summaries
+    return processed_summaries
 
 @api_router.post("/simulation/toggle-auto-mode")
 async def toggle_auto_mode(request: AutoModeRequest):
