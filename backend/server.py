@@ -1156,18 +1156,18 @@ async def init_research_station():
         await db.agents.insert_one(agent.dict())
         created_agents.append(agent)
     
-    # Start simulation with compelling scenario
+    # Start simulation with crypto-focused scenario
     await start_simulation()
     
-    # Set an engaging default scenario
+    # Set an engaging crypto scenario that showcases each team member's expertise
     await db.simulation_state.update_one(
         {},
-        {"$set": {"scenario": "A mysterious, structured signal has been detected coming from the direction of Proxima Centauri. The signal contains mathematical patterns and repeats every 11 hours. Ground control has lost communication and the team must decide how to respond."}},
+        {"$set": {"scenario": "A major DeFi protocol has discovered a critical smart contract vulnerability that could drain $500M in user funds. The exploit hasn't been used yet, but blockchain analytics suggest sophisticated actors are probing the system. The team must decide whether to quietly patch the vulnerability, publicly disclose it, or implement an emergency protocol upgrade. Each decision has massive implications for user trust, legal liability, and market stability."}},
         upsert=True
     )
     
     return {
-        "message": "Default AI agents with diverse backgrounds initialized", 
+        "message": "Crypto team agents initialized with rich personalities and expertise", 
         "agents": created_agents
     }
 
