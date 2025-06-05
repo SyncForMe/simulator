@@ -261,10 +261,73 @@ backend:
         -agent: "testing"
         -comment: "Time period advancement endpoint correctly cycles through morning, afternoon, and evening periods."
 
+  - task: "POST /api/simulation/set-scenario - Set custom scenario for agents"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for setting custom scenario endpoint"
+        -working: true
+        -agent: "testing"
+        -comment: "Custom scenario setting endpoint works correctly, updating the simulation state with the new scenario. Empty scenario validation also works as expected."
+
+  - task: "POST /api/simulation/generate-summary - Generate AI-powered weekly summary"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for weekly summary generation endpoint"
+        -working: true
+        -agent: "testing"
+        -comment: "Weekly summary generation endpoint successfully creates meaningful analysis of agent interactions using Gemini LLM and stores it in the database."
+
+  - task: "GET /api/summaries - Get all generated summaries"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for summaries endpoint"
+        -working: false
+        -agent: "testing"
+        -comment: "Found issue with MongoDB ObjectId not being JSON serializable in the summaries endpoint."
+        -working: true
+        -agent: "testing"
+        -comment: "Fixed the summaries endpoint by converting MongoDB ObjectId to string to make it JSON serializable."
+
+  - task: "POST /api/simulation/toggle-auto-mode - Enable/disable auto conversations and time progression"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for auto mode toggle endpoint"
+        -working: true
+        -agent: "testing"
+        -comment: "Auto mode toggle endpoint correctly enables and disables auto conversations and time progression with the specified intervals."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
@@ -278,3 +341,5 @@ agent_communication:
     -message: "Initializing testing for all backend API endpoints"
     -agent: "testing"
     -message: "Completed testing of all backend API endpoints. Fixed two issues: 1) MongoDB ObjectId not being JSON serializable in simulation state endpoint, and 2) relationship.get() method not available on Pydantic model in update_relationships function. All endpoints are now working correctly."
+    -agent: "testing"
+    -message: "Completed testing of all new backend API endpoints. Fixed one issue: MongoDB ObjectId not being JSON serializable in the summaries endpoint. All new endpoints are now working correctly. The enhanced AI agent simulation backend with the new features is fully functional."
