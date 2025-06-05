@@ -187,17 +187,28 @@ class LLMManager:
         usage = await self.get_usage_today()
         return usage < self.max_daily_requests
     
-    async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = ""):
-        """Generate a single agent response"""
+    async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None):
+        """Generate a single agent response with better context and progression"""
         if not await self.can_make_request():
             return "Agent is resting (daily API limit reached)"
         
+        # Get recent conversation history for this agent
+        if conversation_history is None:
+            conversation_history = []
+        
+        # Build conversation context from recent history
+        recent_context = ""
+        if conversation_history:
+            recent_context = "\nRecent conversation history:\n"
+            for conv in conversation_history[-3:]:  # Last 3 conversations
+                recent_context += f"- {conv.get('time_period', '')}: "
+                for msg in conv.get('messages', []):
+                    recent_context += f"{msg.get('agent_name', '')}: {msg.get('message', '')} "
+                recent_context += "\n"
+        
         # Create LLM chat instance for this agent
-        chat = LlmChat(
-            api_key=self.api_key,
-            session_id=f"agent_{agent.id}_{datetime.now().timestamp()}",
-            system_message=f"""You are {agent.name}, {AGENT_ARCHETYPES[agent.archetype]['description']}.
-            
+        system_message = f"""You are {agent.name}, {AGENT_ARCHETYPES[agent.archetype]['description']}.
+
 Your personality traits:
 - Extroversion: {agent.personality.extroversion}/10
 - Optimism: {agent.personality.optimism}/10  
@@ -205,17 +216,28 @@ Your personality traits:
 - Cooperativeness: {agent.personality.cooperativeness}/10
 - Energy: {agent.personality.energy}/10
 
+Your background: {agent.background or 'Research station team member'}
+Your expertise: {agent.expertise or 'General knowledge'}
 Your goal: {agent.goal}
 
-You are currently in: {scenario}
-Current context: {context}
+{f'Your memory summary: {agent.memory_summary}' if agent.memory_summary else ''}
 
-Respond authentically to your personality in 1-2 sentences. Be natural and conversational."""
+IMPORTANT: You must PROGRESS the conversation forward. Don't just repeat previous topics. Build on ideas, propose solutions, ask deeper questions, or introduce new angles. Show character development over time.
+
+Current scenario: {scenario}
+{recent_context}
+
+Respond authentically to your personality in 1-2 sentences. Focus on ADVANCING the discussion or revealing new insights."""
+
+        chat = LlmChat(
+            api_key=self.api_key,
+            session_id=f"agent_{agent.id}_{datetime.now().timestamp()}",
+            system_message=system_message
         ).with_model("gemini", "gemini-2.0-flash")
         
-        # Generate prompt based on other agents present
+        # Generate prompt based on other agents present and context
         other_names = [a.name for a in other_agents if a.id != agent.id]
-        prompt = f"You are in {scenario}. Others present: {', '.join(other_names) if other_names else 'no one else'}. {context}"
+        prompt = f"{context} Others present: {', '.join(other_names) if other_names else 'no one else'}."
         
         try:
             user_message = UserMessage(text=prompt)
@@ -225,6 +247,44 @@ Respond authentically to your personality in 1-2 sentences. Be natural and conve
         except Exception as e:
             logging.error(f"Error generating response for {agent.name}: {e}")
             return f"{agent.name} seems distracted..."
+
+    async def update_agent_memory(self, agent: Agent, conversations: List):
+        """Update agent's memory summary based on recent conversations"""
+        if not conversations or not await self.can_make_request():
+            return
+        
+        # Create conversation summary for memory update
+        conv_text = ""
+        for conv in conversations[-5:]:  # Last 5 conversations
+            conv_text += f"{conv.get('time_period', '')}: "
+            for msg in conv.get('messages', []):
+                if msg.get('agent_name') == agent.name:
+                    conv_text += f"I said: {msg.get('message', '')} "
+                else:
+                    conv_text += f"{msg.get('agent_name', '')}: {msg.get('message', '')} "
+            conv_text += "\n"
+        
+        # Generate memory summary
+        chat = LlmChat(
+            api_key=self.api_key,
+            session_id=f"memory_{agent.id}_{datetime.now().timestamp()}",
+            system_message=f"""Update {agent.name}'s memory summary. Extract key insights, decisions, relationships, and important developments. Keep it concise (2-3 sentences max).
+            
+Previous memory: {agent.memory_summary or 'None'}"""
+        ).with_model("gemini", "gemini-2.0-flash")
+        
+        try:
+            user_message = UserMessage(text=f"Recent conversations:\n{conv_text}\n\nUpdate my memory with key developments:")
+            response = await chat.send_message(user_message)
+            await self.increment_usage()
+            
+            # Update agent memory in database
+            await db.agents.update_one(
+                {"id": agent.id},
+                {"$set": {"memory_summary": response}}
+            )
+        except Exception as e:
+            logging.error(f"Error updating memory for {agent.name}: {e}")
 
 llm_manager = LLMManager()
 
