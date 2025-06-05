@@ -258,6 +258,11 @@ class LLMManager:
         
         return enhanced_memory
     
+    async def can_make_request(self):
+        """Check if we can make another API request today"""
+        usage = await self.get_usage_today()
+        return usage < self.max_daily_requests
+
     async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None):
         """Generate a single agent response with better context and progression"""
         if not await self.can_make_request():
@@ -276,6 +281,9 @@ class LLMManager:
                 for msg in conv.get('messages', []):
                     recent_context += f"{msg.get('agent_name', '')}: {msg.get('message', '')} "
                 recent_context += "\n"
+        
+        # Process memory to include URL content if any
+        processed_memory = await self.process_memory_with_urls(agent.memory_summary or "")
         
         # Create comprehensive background-driven system message
         background_prompt = ""
@@ -301,6 +309,21 @@ Your expertise in {agent.expertise} means you:
 - Ask questions that experts in this field would ask
 - Reference concepts and methods from this domain"""
 
+        # Enhanced memory-behavior balance prompt
+        memory_behavior_prompt = ""
+        if processed_memory:
+            memory_behavior_prompt = f"""
+Your personal memories and experiences: {processed_memory}
+
+MEMORY-BEHAVIOR BALANCE:
+- Your memories strongly influence your initial perspective and reactions
+- You reference your past experiences when relevant to the discussion
+- However, you remain genuinely open to new ideas and evidence from others
+- You can change your mind when presented with compelling arguments
+- You might initially disagree based on your memories, but can be persuaded
+- You show curiosity about others' perspectives, especially when they differ from your experience
+- You acknowledge when others make good points that challenge your assumptions"""
+
         # Create LLM chat instance for this agent
         system_message = f"""You are {agent.name}, {AGENT_ARCHETYPES[agent.archetype]['description']}.
 
@@ -316,21 +339,23 @@ Your personality traits:
 
 Your goal: {agent.goal}
 
-{f'Your accumulated insights and memories: {agent.memory_summary}' if agent.memory_summary else ''}
+{memory_behavior_prompt}
 
 BEHAVIORAL REQUIREMENTS:
 1. THINK AND RESPOND according to your background - let your professional experience guide your perspective
 2. USE vocabulary, concepts, and approaches from your field of expertise
 3. APPLY your professional problem-solving methods to the current situation  
-4. NOTICE things that someone with your background would notice
-5. ASK questions that reflect your professional curiosity and expertise
-6. PROGRESS the conversation forward - build on ideas, propose solutions, introduce new angles
-7. Show how your unique background brings value to the discussion
+4. REFERENCE your memories when they're relevant to the discussion
+5. REMAIN GENUINELY OPEN to new ideas from other agents - show intellectual curiosity
+6. BE WILLING TO CHANGE YOUR MIND when others present compelling arguments
+7. ACKNOWLEDGE good points made by others, even if they contradict your initial thinking
+8. PROGRESS the conversation forward - build on ideas, propose solutions, introduce new angles
+9. Show how your unique background brings value while being receptive to others' expertise
 
 Current scenario: {scenario}
 {recent_context}
 
-Respond authentically as someone with your background would, in 1-2 sentences. Let your professional experience and expertise drive your perspective and response."""
+Respond authentically as someone with your background and memories would, in 1-2 sentences. Balance your personal perspective with genuine openness to others' ideas."""
 
         chat = LlmChat(
             api_key=self.api_key,
@@ -353,7 +378,7 @@ Respond authentically as someone with your background would, in 1-2 sentences. L
 
 Others present: {', '.join(other_agents_info) if other_agents_info else 'no one else'}.
 
-Consider how your background and expertise make you uniquely qualified to contribute to this discussion. What perspective does your professional experience bring that others might not have?"""
+Consider how your background, memories, and expertise make you uniquely qualified to contribute to this discussion. What perspective does your experience bring? But also stay curious about what others might know that you don't."""
         
         try:
             user_message = UserMessage(text=prompt)
