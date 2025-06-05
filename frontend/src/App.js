@@ -1138,6 +1138,12 @@ function App() {
   const handleAddMemory = async (agentId, memory) => {
     try {
       const response = await axios.post(`${API}/agents/${agentId}/add-memory`, { memory });
+      
+      // Show success message with URL processing info
+      if (response.data.urls_processed > 0) {
+        alert(`Memory added! Processed ${response.data.urls_processed} URL(s) and fetched their content.`);
+      }
+      
       await fetchAgents();
     } catch (error) {
       console.error('Error adding memory:', error);
