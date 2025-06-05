@@ -268,6 +268,12 @@ async def get_simulation_state():
     if not state:
         state = SimulationState().dict()
         await db.simulation_state.insert_one(state)
+        return state
+    
+    # Convert MongoDB ObjectId to string to make it JSON serializable
+    if '_id' in state:
+        state['_id'] = str(state['_id'])
+    
     return state
 
 @api_router.post("/simulation/next-period")
