@@ -1049,6 +1049,7 @@ function App() {
                     key={agent.id} 
                     agent={agent} 
                     relationships={relationships}
+                    onEdit={handleEditAgent}
                   />
                 ))
               ) : (
