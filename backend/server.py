@@ -132,6 +132,15 @@ class ApiUsageTracker(BaseModel):
     requests_used: int
     max_requests: int = 1400  # Buffer under 1500 limit
 
+class ScenarioRequest(BaseModel):
+    scenario: str
+
+class AutoModeRequest(BaseModel):
+    auto_conversations: bool = False
+    auto_time: bool = False
+    conversation_interval: int = 10
+    time_interval: int = 30
+
 # LLM Integration and Request Management
 class LLMManager:
     def __init__(self):
