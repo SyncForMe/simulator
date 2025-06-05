@@ -758,6 +758,18 @@ function App() {
   const [editingAgent, setEditingAgent] = useState(null);
   const [archetypes, setArchetypes] = useState({});
 
+  const handleTestBackgrounds = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API}/test/background-differences`);
+      alert(`Created test agents with diverse backgrounds! Scenario: ${response.data.scenario}`);
+      await refreshAllData();
+    } catch (error) {
+      console.error('Error creating test agents:', error);
+    }
+    setLoading(false);
+  };
+
   // Fetch data functions
   const fetchAgents = async () => {
     try {
