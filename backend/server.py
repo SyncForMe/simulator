@@ -1083,15 +1083,81 @@ def calculate_compatibility(agent1: Agent, agent2: Agent) -> float:
     compatibility = (coop_match / 10) - (extro_diff / 20)
     return max(0, min(1, compatibility))
 
+@api_router.post("/simulation/auto-weekly-report")
+async def setup_auto_weekly_report(request: dict):
+    """Setup automatic weekly report generation"""
+    enabled = request.get("enabled", False)
+    interval_hours = request.get("interval_hours", 168)  # Default 7 days = 168 hours
+    
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {
+            "auto_weekly_reports": enabled,
+            "report_interval_hours": interval_hours,
+            "last_auto_report": datetime.utcnow().isoformat() if enabled else None
+        }},
+        upsert=True
+    )
+    
+    return {
+        "message": f"Auto weekly reports {'enabled' if enabled else 'disabled'}",
+        "interval_hours": interval_hours,
+        "next_report_in": f"{interval_hours} hours" if enabled else "disabled"
+    }
+
+@api_router.get("/reports/check-auto-generation")
+async def check_auto_report_generation():
+    """Check if it's time to generate an automatic weekly report"""
+    state = await db.simulation_state.find_one()
+    if not state or not state.get("auto_weekly_reports"):
+        return {"should_generate": False, "reason": "Auto reports disabled"}
+    
+    last_report = state.get("last_auto_report")
+    if not last_report:
+        return {"should_generate": True, "reason": "No previous auto report"}
+    
+    last_report_time = datetime.fromisoformat(last_report.replace('Z', '+00:00'))
+    interval_hours = state.get("report_interval_hours", 168)
+    time_since_last = datetime.utcnow() - last_report_time.replace(tzinfo=None)
+    
+    should_generate = time_since_last.total_seconds() >= (interval_hours * 3600)
+    
+    return {
+        "should_generate": should_generate,
+        "hours_since_last": time_since_last.total_seconds() / 3600,
+        "interval_hours": interval_hours,
+        "reason": "Time for next report" if should_generate else f"Next report in {interval_hours - (time_since_last.total_seconds() / 3600):.1f} hours"
+    }
+
 @api_router.get("/summaries")
 async def get_summaries():
-    """Get all generated summaries"""
+    """Get all generated summaries with structured formatting"""
     summaries = await db.summaries.find().sort("created_at", -1).to_list(100)
     
-    # Convert MongoDB ObjectId to string to make it JSON serializable
+    # Parse structured summaries for better frontend display
     for summary in summaries:
-        if '_id' in summary:
-            summary['_id'] = str(summary['_id'])
+        if summary.get("report_type") == "weekly_structured":
+            # Split summary into sections for collapsible display
+            summary_text = summary.get("summary", "")
+            sections = {}
+            
+            # Parse sections based on headers
+            section_patterns = [
+                ("key_events", r"## \*\*🔥 KEY EVENTS & DISCOVERIES\*\*(.*?)(?=## \*\*|$)"),
+                ("relationships", r"## \*\*👥 RELATIONSHIP DEVELOPMENTS\*\*(.*?)(?=## \*\*|$)"),
+                ("personalities", r"## \*\*🎭 EMERGING PERSONALITIES\*\*(.*?)(?=## \*\*|$)"),
+                ("social_dynamics", r"## \*\*⚖️ SOCIAL DYNAMICS\*\*(.*?)(?=## \*\*|$)"),
+                ("strategic_decisions", r"## \*\*🎯 STRATEGIC DECISIONS\*\*(.*?)(?=## \*\*|$)"),
+                ("looking_ahead", r"## \*\*🔮 LOOKING AHEAD\*\*(.*?)(?=## \*\*|$)")
+            ]
+            
+            import re
+            for section_key, pattern in section_patterns:
+                match = re.search(pattern, summary_text, re.DOTALL | re.IGNORECASE)
+                if match:
+                    sections[section_key] = match.group(1).strip()
+            
+            summary["structured_sections"] = sections
     
     return summaries
 
