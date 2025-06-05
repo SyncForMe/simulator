@@ -995,6 +995,14 @@ async def init_research_station():
         "agents": created_agents
     }
 
+@api_router.delete("/agents/{agent_id}")
+async def delete_agent(agent_id: str):
+    """Delete an agent"""
+    result = await db.agents.delete_one({"id": agent_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    return {"message": "Agent deleted"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
