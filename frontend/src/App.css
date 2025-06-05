@@ -29,7 +29,7 @@
   border: 1px solid #f3f4f6;
 }
 
-.control-panel {
+.control-panel, .scenario-input, .auto-controls, .weekly-summary {
   border: 1px solid #e5e7eb;
 }
 
@@ -55,10 +55,64 @@
   border: 1px solid #e5e7eb;
 }
 
+.auto-status {
+  background-color: #f8fafc;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.manual-controls {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.scenario-input textarea {
+  border: 1px solid #d1d5db;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.scenario-input textarea:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.auto-controls .bg-gray-50 {
+  border: 1px solid #f3f4f6;
+}
+
+.summary-content {
+  max-height: 300px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+/* Auto mode indicators */
+.auto-status .bg-green-500 {
+  animation: pulse 2s infinite;
+}
+
+.auto-status .bg-blue-500 {
+  animation: pulse 2s infinite;
+}
+
 /* Responsive design */
 @media (max-width: 1024px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+  
+  .lg\\:col-span-4 {
+    grid-column: span 1;
+  }
+  
+  .lg\\:col-span-2 {
+    grid-column: span 1;
+  }
+  
+  .lg\\:col-span-1 {
+    grid-column: span 1;
   }
 }
 
@@ -105,6 +159,21 @@ button:disabled {
   background: #a8a8a8;
 }
 
+/* Summary scrollbar */
+.summary-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.summary-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.summary-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2px;
+}
+
 /* Agent relationship indicators */
 .relationships {
   display: flex;
@@ -140,11 +209,16 @@ button:focus {
   outline-offset: 2px;
 }
 
+input:focus, textarea:focus {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
 /* Card hover effects */
-.agent-card, .control-panel, .conversation-viewer {
+.agent-card, .control-panel, .conversation-viewer, .scenario-input, .auto-controls, .weekly-summary {
   transition: all 0.2s ease-in-out;
 }
 
-.agent-card:hover, .control-panel:hover, .conversation-viewer:hover {
+.agent-card:hover, .control-panel:hover, .conversation-viewer:hover, .scenario-input:hover, .auto-controls:hover, .weekly-summary:hover {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
