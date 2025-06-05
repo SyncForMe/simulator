@@ -1153,6 +1153,15 @@ function App() {
     }
   };
 
+  const handleSetupAutoReport = async (settings) => {
+    try {
+      const response = await axios.post(`${API}/simulation/auto-weekly-report`, settings);
+      console.log('Auto report settings updated:', response.data);
+    } catch (error) {
+      console.error('Error setting up auto reports:', error);
+    }
+  };
+
   const handleInitResearchStation = async () => {
     setLoading(true);
     try {
