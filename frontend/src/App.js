@@ -172,118 +172,78 @@ const AutoControls = ({ simulationState, onToggleAuto }) => {
   );
 };
 
-const ObserverInput = ({ onSendObserverMessage, agents, loading }) => {
-  const [message, setMessage] = useState('');
-  const [responses, setResponses] = useState([]);
+const ObserverInput = ({ onSendMessage }) => {
+  const [message, setMessage] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!message.trim()) return;
-
-    const userMessage = {
-      id: Date.now(),
-      type: 'user',
-      message: message.trim(),
-      timestamp: new Date()
-    };
-
-    setResponses(prev => [...prev, userMessage]);
-    
-    const agentResponses = await onSendObserverMessage(message.trim());
-    
-    if (agentResponses) {
-      const responseMessages = agentResponses.map(response => ({
-        id: Date.now() + Math.random(),
-        type: 'agent',
-        agent_name: response.agent_name,
-        message: response.response,
-        timestamp: new Date()
-      }));
-      setResponses(prev => [...prev, ...responseMessages]);
+    if (message.trim() && !sending) {
+      setSending(true);
+      await onSendMessage(message.trim());
+      setMessage("");
+      setIsExpanded(false);
+      setSending(false);
     }
-
-    setMessage('');
-    setIsExpanded(true);
   };
 
-  return (
-    <div className="observer-input bg-white rounded-lg shadow-md p-4 mb-4">
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-bold text-purple-700 flex items-center">
-          👁️ <span className="ml-2">Observer Input</span>
-          <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded">CEO Mode</span>
-        </h3>
-        {responses.length > 0 && (
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-sm text-gray-600 hover:text-gray-800"
-          >
-            {isExpanded ? 'Hide Responses' : `Show Responses (${responses.filter(r => r.type === 'user').length})`}
-          </button>
-        )}
+  if (!isExpanded) {
+    return (
+      <div className="observer-input-collapsed mt-3">
+        <button 
+          onClick={() => setIsExpanded(true)}
+          className="w-full text-left text-xs text-gray-500 hover:text-gray-700 py-2 px-3 bg-gray-50 hover:bg-gray-100 rounded transition-colors"
+        >
+          💬 Send message to team...
+        </button>
       </div>
+    );
+  }
 
-      <form onSubmit={handleSubmit} className="mb-4">
-        <div className="flex space-x-2">
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Send instructions or questions to your AI team... 
-
-Examples:
-• 'I want you to focus more on user adoption metrics'
-• 'What are your thoughts on pivoting to B2B?'
-• 'We need to be more aggressive with our timeline'
-• 'Can you provide alternative solutions to this problem?'"
-            className="flex-1 p-3 border border-purple-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            rows="3"
-            disabled={loading}
-          />
-          <button
+  return (
+    <div className="observer-input-expanded mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs text-gray-600 font-medium">Observer Message</span>
+        <button 
+          onClick={() => {
+            setIsExpanded(false);
+            setMessage("");
+          }}
+          className="text-xs text-gray-400 hover:text-gray-600"
+        >
+          ✕
+        </button>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="space-y-2">
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Send a brief message to the team..."
+          className="w-full p-2 text-sm border border-gray-300 rounded resize-none h-16 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          autoFocus
+        />
+        <div className="flex gap-2">
+          <button 
             type="submit"
-            disabled={loading || !message.trim()}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 disabled:opacity-50 flex flex-col items-center justify-center"
+            disabled={!message.trim() || sending}
+            className="bg-gray-600 text-white px-3 py-1 rounded text-xs hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
-            <span className="text-xs">Send</span>
+            {sending ? 'Sending...' : 'Send'}
+          </button>
+          <button 
+            type="button"
+            onClick={() => {
+              setIsExpanded(false);
+              setMessage("");
+            }}
+            className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs hover:bg-gray-400"
+          >
+            Cancel
           </button>
         </div>
       </form>
-
-      <div className="text-xs text-purple-600 bg-purple-50 p-2 rounded">
-        💡 <strong>You are the CEO</strong> - Agents will respond to your guidance and can offer suggestions or politely disagree based on their expertise.
-      </div>
-
-      {/* Conversation History */}
-      {isExpanded && responses.length > 0 && (
-        <div className="mt-4 border-t pt-4">
-          <h4 className="font-semibold text-gray-700 mb-3">Recent Interactions</h4>
-          <div className="space-y-3 max-h-64 overflow-y-auto">
-            {responses.map((response) => (
-              <div key={response.id} className={`p-3 rounded-lg ${
-                response.type === 'user' 
-                  ? 'bg-purple-100 border-l-4 border-purple-500' 
-                  : 'bg-gray-50 border-l-4 border-gray-400'
-              }`}>
-                <div className="flex justify-between items-start mb-1">
-                  <span className="font-medium text-sm">
-                    {response.type === 'user' ? '👁️ You (CEO)' : `🤖 ${response.agent_name}`}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    {response.timestamp.toLocaleTimeString()}
-                  </span>
-                </div>
-                <div className="text-sm text-gray-700 whitespace-pre-wrap">
-                  {response.message}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
