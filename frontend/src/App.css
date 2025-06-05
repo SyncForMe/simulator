@@ -194,13 +194,20 @@ button:disabled {
   background-color: #22c55e;
 }
 
-/* Utility classes for consistent spacing */
-.space-y-2 > * + * {
-  margin-top: 0.5rem;
+.setup-section, .simulation-section {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
 }
 
-.space-y-4 > * + * {
-  margin-top: 1rem;
+.setup-section:last-child, .simulation-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.controls .space-y-3 > * + * {
+  margin-top: 0.75rem;
 }
 
 /* Focus states for accessibility */
