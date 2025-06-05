@@ -600,6 +600,7 @@ const ControlPanel = ({
   onNextPeriod, 
   onGenerateConversation,
   onInitResearchStation,
+  onTestBackgrounds,
   onToggleAuto,
   setShowFastForward
 }) => {
