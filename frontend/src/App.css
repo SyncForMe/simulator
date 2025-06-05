@@ -1,231 +1,35 @@
-.App {
-  text-align: left;
+.add-memory {
+  border: 2px dashed #10b981;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
 }
 
-.agent-card {
-  transition: transform 0.2s ease-in-out;
-  border: 1px solid #e5e7eb;
+.add-memory textarea {
+  border: 1px solid #10b981;
+  background: white;
 }
 
-.agent-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.conversation-viewer {
-  border: 1px solid #e5e7eb;
-}
-
-.conversation-round {
-  border-left: 3px solid #3b82f6;
-  background-color: #f9fafb;
-}
-
-.message {
-  background-color: white;
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 4px;
-  border: 1px solid #f3f4f6;
-}
-
-.control-panel, .scenario-input, .auto-controls, .weekly-summary {
-  border: 1px solid #e5e7eb;
-}
-
-.trait-bar {
-  margin-bottom: 6px;
-}
-
-.personality-traits {
-  background-color: #f9fafb;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #f3f4f6;
-}
-
-.simulation-info {
-  background-color: #f9fafb;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #f3f4f6;
-}
-
-.api-usage {
-  border: 1px solid #e5e7eb;
-}
-
-.auto-status {
-  background-color: #f8fafc;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #e2e8f0;
-}
-
-.manual-controls {
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-}
-
-.scenario-input textarea {
-  border: 1px solid #d1d5db;
-  transition: border-color 0.2s ease-in-out;
-}
-
-.scenario-input textarea:focus {
+.add-memory textarea:focus {
   outline: none;
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-.auto-controls .bg-gray-50 {
-  border: 1px solid #f3f4f6;
+.memory {
+  border-left: 3px solid #3b82f6;
 }
 
-.summary-content {
-  max-height: 300px;
-  overflow-y: auto;
-  line-height: 1.5;
+.memory .bg-blue-50 {
+  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+  border: 1px solid #bfdbfe;
 }
 
-/* Auto mode indicators */
-.auto-status .bg-green-500 {
-  animation: pulse 2s infinite;
-}
-
-.auto-status .bg-blue-500 {
-  animation: pulse 2s infinite;
-}
-
-/* Responsive design */
-@media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .lg\\:col-span-4 {
-    grid-column: span 1;
-  }
-  
-  .lg\\:col-span-2 {
-    grid-column: span 1;
-  }
-  
-  .lg\\:col-span-1 {
-    grid-column: span 1;
-  }
-}
-
-/* Loading states */
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Status indicators */
-.status-active {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: .5;
-  }
-}
-
-/* Smooth scrolling for conversation viewer */
-.conversation-viewer {
-  scroll-behavior: smooth;
-}
-
-.conversation-viewer::-webkit-scrollbar {
-  width: 6px;
-}
-
-.conversation-viewer::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.conversation-viewer::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-.conversation-viewer::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Summary scrollbar */
-.summary-content::-webkit-scrollbar {
-  width: 4px;
-}
-
-.summary-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 2px;
-}
-
-.summary-content::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 2px;
-}
-
-/* Agent relationship indicators */
-.relationships {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-/* Personality trait colors */
-.bg-red-500 {
-  background-color: #ef4444;
-}
-
-.bg-yellow-500 {
-  background-color: #eab308;
-}
-
-.bg-green-500 {
-  background-color: #22c55e;
-}
-
-.setup-section, .simulation-section {
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-}
-
-.setup-section:last-child, .simulation-section:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.controls .space-y-3 > * + * {
-  margin-top: 0.75rem;
-}
-
-/* Focus states for accessibility */
-button:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-input:focus, textarea:focus {
-  outline: 2px solid #7c3aed;
-  outline-offset: 2px;
-}
-
-/* Card hover effects */
-.agent-card, .control-panel, .conversation-viewer, .scenario-input, .auto-controls, .weekly-summary {
+/* Memory button styles */
+.agent-card .absolute button {
   transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
 }
 
-.agent-card:hover, .control-panel:hover, .conversation-viewer:hover, .scenario-input:hover, .auto-controls:hover, .weekly-summary:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+.agent-card .absolute button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
