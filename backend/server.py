@@ -998,6 +998,53 @@ async def init_research_station():
         "agents": created_agents
     }
 
+@api_router.post("/agents/{agent_id}/clear-memory")
+async def clear_agent_memory(agent_id: str):
+    """Clear an agent's memory"""
+    agent = await db.agents.find_one({"id": agent_id})
+    if not agent:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    
+    await db.agents.update_one(
+        {"id": agent_id},
+        {"$set": {"memory_summary": ""}}
+    )
+    
+    return {"message": f"Memory cleared for {agent['name']}", "agent_id": agent_id}
+
+@api_router.post("/agents/{agent_id}/add-memory")
+async def add_agent_memory(agent_id: str, request: dict):
+    """Add specific memory to an agent"""
+    agent = await db.agents.find_one({"id": agent_id})
+    if not agent:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    
+    new_memory = request.get("memory", "")
+    if not new_memory:
+        raise HTTPException(status_code=400, detail="Memory content required")
+    
+    current_memory = agent.get("memory_summary", "")
+    
+    # Combine memories intelligently
+    if current_memory:
+        updated_memory = f"{current_memory} {new_memory}"
+        # Trim if too long (keep last 500 characters)
+        if len(updated_memory) > 500:
+            updated_memory = "..." + updated_memory[-497:]
+    else:
+        updated_memory = new_memory
+    
+    await db.agents.update_one(
+        {"id": agent_id},
+        {"$set": {"memory_summary": updated_memory}}
+    )
+    
+    return {
+        "message": f"Memory added to {agent['name']}", 
+        "agent_id": agent_id,
+        "updated_memory": updated_memory
+    }
+
 @api_router.delete("/agents/{agent_id}")
 async def delete_agent(agent_id: str):
     """Delete an agent"""
