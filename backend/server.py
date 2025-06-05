@@ -529,6 +529,41 @@ def calculate_compatibility(agent1: Agent, agent2: Agent) -> float:
     compatibility = (coop_match / 10) - (extro_diff / 20)
     return max(0, min(1, compatibility))
 
+@api_router.get("/summaries")
+async def get_summaries():
+    """Get all generated summaries"""
+    summaries = await db.summaries.find().sort("created_at", -1).to_list(100)
+    return summaries
+
+@api_router.post("/simulation/toggle-auto-mode")
+async def toggle_auto_mode(request: dict):
+    """Toggle automatic conversation and time progression"""
+    auto_conversations = request.get("auto_conversations", False)
+    auto_time = request.get("auto_time", False)
+    conversation_interval = request.get("conversation_interval", 5)  # seconds
+    time_interval = request.get("time_interval", 30)  # seconds
+    
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {
+            "auto_conversations": auto_conversations,
+            "auto_time": auto_time,
+            "conversation_interval": conversation_interval,
+            "time_interval": time_interval,
+            "last_auto_conversation": datetime.utcnow().isoformat(),
+            "last_auto_time": datetime.utcnow().isoformat()
+        }},
+        upsert=True
+    )
+    
+    return {
+        "message": "Auto mode updated",
+        "auto_conversations": auto_conversations,
+        "auto_time": auto_time,
+        "conversation_interval": conversation_interval,
+        "time_interval": time_interval
+    }
+
 # Initialize Research Station scenario
 @api_router.post("/simulation/init-research-station")
 async def init_research_station():
