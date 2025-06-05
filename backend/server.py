@@ -663,13 +663,65 @@ async def fast_forward_simulation(request: FastForwardRequest):
         logging.error(f"Error during fast forward: {e}")
         raise HTTPException(status_code=500, detail=f"Fast forward failed: {str(e)}")
 
-@api_router.delete("/agents/{agent_id}")
-async def delete_agent(agent_id: str):
-    """Delete an agent"""
-    result = await db.agents.delete_one({"id": agent_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Agent not found")
-    return {"message": "Agent deleted"}
+@api_router.post("/test/background-differences")
+async def test_background_differences():
+    """Create test agents with different backgrounds to demonstrate behavioral differences"""
+    # Clear existing agents
+    await db.agents.delete_many({})
+    
+    # Create agents with dramatically different backgrounds
+    test_agents = [
+        {
+            "name": "Dr. Elena Vasquez",
+            "archetype": "scientist", 
+            "goal": "Analyze the situation from a scientific perspective",
+            "expertise": "Astrophysics and Signal Analysis",
+            "background": "PhD in Astrophysics, spent 15 years analyzing extraterrestrial signals at SETI. Expert in radio telescopy, pattern recognition in cosmic noise, and first-contact protocols. Thinks in terms of scientific method, data validation, and peer review."
+        },
+        {
+            "name": "Captain Jake Morrison",
+            "archetype": "leader",
+            "goal": "Ensure team safety and mission success", 
+            "expertise": "Military Strategy and Crisis Management",
+            "background": "Former Navy SEAL with 20 years military experience including special operations and crisis response. Trained in tactical assessment, risk mitigation, command structure, and rapid decision-making under pressure. Views situations through security and operational readiness lens."
+        },
+        {
+            "name": "Dr. Amara Okafor", 
+            "archetype": "optimist",
+            "goal": "Maintain team cohesion and psychological well-being",
+            "expertise": "Clinical Psychology and Cross-Cultural Communication", 
+            "background": "Clinical psychologist specializing in multicultural teams and stress management. PhD in Behavioral Psychology with focus on group dynamics in isolated environments. Approaches situations by analyzing interpersonal relationships, communication patterns, and psychological impact."
+        },
+        {
+            "name": "Zara Al-Rashid",
+            "archetype": "skeptic",
+            "goal": "Question assumptions and identify potential risks",
+            "expertise": "Cybersecurity and Information Warfare",
+            "background": "Former CIA analyst specialized in disinformation detection and cybersecurity threats. Expert in recognizing deception, analyzing information sources, and identifying hidden agendas. Approaches everything with suspicion and looks for alternative explanations and potential threats."
+        }
+    ]
+    
+    created_agents = []
+    for agent_data in test_agents:
+        agent_create = AgentCreate(**agent_data)
+        agent = await create_agent(agent_create)
+        created_agents.append(agent)
+    
+    # Start simulation with a compelling scenario
+    await start_simulation()
+    
+    # Set a scenario that will highlight background differences
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {"scenario": "A mysterious, structured signal has been detected coming from the direction of Proxima Centauri. The signal contains mathematical patterns and repeats every 11 hours. Ground control has lost communication and the team must decide how to respond."}},
+        upsert=True
+    )
+    
+    return {
+        "message": "Test agents with diverse backgrounds created",
+        "agents": created_agents,
+        "scenario": "Mysterious signal from Proxima Centauri - watch how each agent's background influences their analysis and recommendations"
+    }
 
 @api_router.post("/simulation/start")
 async def start_simulation():
