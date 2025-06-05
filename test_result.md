@@ -101,3 +101,152 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test the AI agent simulation backend I just built."
+
+backend:
+  - task: "GET /api/ - Basic health check"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for basic API health check"
+
+  - task: "GET /api/archetypes - Get all 8 agent personality archetypes"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for archetypes endpoint"
+
+  - task: "POST /api/simulation/init-research-station - Initialize the 3 default agents"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for research station initialization"
+
+  - task: "GET /api/agents - Get all created agents"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for agents endpoint"
+
+  - task: "POST /api/simulation/start - Start the simulation"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for simulation start endpoint"
+
+  - task: "GET /api/simulation/state - Get current simulation state"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for simulation state endpoint"
+
+  - task: "POST /api/conversation/generate - Generate conversation between agents"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for conversation generation endpoint"
+
+  - task: "GET /api/conversations - Get conversation history"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for conversations endpoint"
+
+  - task: "GET /api/api-usage - Check API usage tracking"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for API usage tracking endpoint"
+
+  - task: "POST /api/simulation/next-period - Advance time period"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for advancing time period endpoint"
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "GET /api/ - Basic health check"
+    - "GET /api/archetypes - Get all 8 agent personality archetypes"
+    - "POST /api/simulation/init-research-station - Initialize the 3 default agents"
+    - "GET /api/agents - Get all created agents"
+    - "POST /api/simulation/start - Start the simulation"
+    - "GET /api/simulation/state - Get current simulation state"
+    - "POST /api/conversation/generate - Generate conversation between agents"
+    - "GET /api/conversations - Get conversation history"
+    - "GET /api/api-usage - Check API usage tracking"
+    - "POST /api/simulation/next-period - Advance time period"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+    -agent: "testing"
+    -message: "Initializing testing for all backend API endpoints"
