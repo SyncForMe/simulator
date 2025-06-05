@@ -358,7 +358,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-96 overflow-y-auto">
+      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg font-bold mb-4">✏️ Edit Agent: {agent.name}</h3>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -416,10 +416,30 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                 value={formData.background}
                 onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
                 className="w-full p-2 border rounded"
-                rows="2"
+                rows="3"
                 placeholder="Professional background and experience"
                 disabled={loading}
               />
+            </div>
+            
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1">
+                🧠 Memory & Knowledge 
+                <span className="text-xs text-gray-500 ml-2">
+                  (What the agent remembers from previous conversations and important experiences)
+                </span>
+              </label>
+              <textarea
+                value={formData.memory_summary}
+                onChange={(e) => setFormData(prev => ({...prev, memory_summary: e.target.value}))}
+                className="w-full p-2 border rounded bg-blue-50"
+                rows="4"
+                placeholder="Key memories, insights, relationships, and important developments the agent should remember..."
+                disabled={loading}
+              />
+              <p className="text-xs text-blue-600 mt-1">
+                💡 <strong>Pro tip:</strong> Use this to give agents specific knowledge, past experiences, or relationships that will influence their behavior
+              </p>
             </div>
           </div>
 
