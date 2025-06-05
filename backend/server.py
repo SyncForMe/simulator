@@ -96,6 +96,8 @@ class AgentCreate(BaseModel):
     archetype: str
     personality: Optional[AgentPersonality] = None
     goal: str
+    expertise: str = ""
+    background: str = ""
 
 class ConversationMessage(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
