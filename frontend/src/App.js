@@ -1180,6 +1180,8 @@ function App() {
                     agent={agent} 
                     relationships={relationships}
                     onEdit={handleEditAgent}
+                    onClearMemory={handleClearMemory}
+                    onAddMemory={handleAddMemory}
                   />
                 ))
               ) : (
