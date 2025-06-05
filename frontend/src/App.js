@@ -1564,6 +1564,9 @@ function App() {
             <h2 className="text-xl font-bold mb-4">Conversations</h2>
             <ConversationViewer conversations={conversations} />
             
+            {/* Observer Input - Subtle placement below conversations */}
+            <ObserverInput onSendMessage={handleSendObserverMessage} />
+            
             {/* Weekly Summary underneath conversations */}
             <div className="mt-6">
               <WeeklySummary 
