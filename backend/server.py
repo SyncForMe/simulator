@@ -453,6 +453,161 @@ async def get_agents():
     agents = await db.agents.find().to_list(100)
     return [Agent(**agent) for agent in agents]
 
+@api_router.put("/agents/{agent_id}")
+async def update_agent(agent_id: str, agent_update: AgentUpdate):
+    """Update an existing agent"""
+    # Find the agent
+    agent = await db.agents.find_one({"id": agent_id})
+    if not agent:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    
+    # Prepare update data
+    update_data = {}
+    if agent_update.name is not None:
+        update_data["name"] = agent_update.name
+    if agent_update.archetype is not None:
+        if agent_update.archetype not in AGENT_ARCHETYPES:
+            raise HTTPException(status_code=400, detail="Invalid archetype")
+        update_data["archetype"] = agent_update.archetype
+    if agent_update.personality is not None:
+        update_data["personality"] = agent_update.personality.dict()
+    if agent_update.goal is not None:
+        update_data["goal"] = agent_update.goal
+    if agent_update.expertise is not None:
+        update_data["expertise"] = agent_update.expertise
+    if agent_update.background is not None:
+        update_data["background"] = agent_update.background
+    
+    # Update the agent
+    await db.agents.update_one(
+        {"id": agent_id},
+        {"$set": update_data}
+    )
+    
+    # Return updated agent
+    updated_agent = await db.agents.find_one({"id": agent_id})
+    return Agent(**updated_agent)
+
+@api_router.post("/simulation/fast-forward")
+async def fast_forward_simulation(request: FastForwardRequest):
+    """Fast forward the simulation by generating multiple days of conversations"""
+    # Get current simulation state
+    state = await db.simulation_state.find_one()
+    if not state or not state.get("is_active"):
+        raise HTTPException(status_code=400, detail="Simulation not active")
+    
+    # Get agents
+    agents = await db.agents.find().to_list(100)
+    if len(agents) < 2:
+        raise HTTPException(status_code=400, detail="Need at least 2 agents")
+    
+    agent_objects = [Agent(**agent) for agent in agents]
+    
+    current_day = state.get("current_day", 1)
+    current_period = state.get("current_time_period", "morning")
+    scenario = state.get("scenario", "Research Station")
+    
+    periods = ["morning", "afternoon", "evening"]
+    generated_conversations = []
+    
+    # Check if we have enough API requests
+    usage = await llm_manager.get_usage_today()
+    estimated_requests = request.target_days * 3 * request.conversations_per_period * len(agent_objects)
+    if usage + estimated_requests > llm_manager.max_daily_requests:
+        raise HTTPException(status_code=400, detail=f"Not enough API requests remaining. Need {estimated_requests}, have {llm_manager.max_daily_requests - usage}")
+    
+    try:
+        for day_offset in range(request.target_days):
+            target_day = current_day + day_offset
+            
+            for period in periods:
+                # Skip periods we've already passed today
+                if day_offset == 0:
+                    current_period_index = periods.index(current_period)
+                    period_index = periods.index(period)
+                    if period_index <= current_period_index:
+                        continue
+                
+                # Generate conversations for this period
+                for conv_num in range(request.conversations_per_period):
+                    # Get conversation history for context
+                    conversation_history = await db.conversations.find().sort("created_at", -1).limit(10).to_list(10)
+                    
+                    # Create progressive context based on day and time
+                    day_context = f"Day {target_day}, {period}. "
+                    if target_day > current_day:
+                        day_context += f"Several days have passed. "
+                    
+                    if period == "morning":
+                        day_context += "Starting a new day with fresh energy. "
+                    elif period == "afternoon":
+                        day_context += "Midday progress check and developments. "
+                    else:
+                        day_context += "Evening reflection and planning. "
+                    
+                    # Add progression context
+                    if conversation_history:
+                        day_context += "Build upon previous discussions and introduce new developments. "
+                    
+                    # Generate responses from each agent
+                    messages = []
+                    for agent in agent_objects:
+                        response = await llm_manager.generate_agent_response(
+                            agent, scenario, agent_objects, day_context, conversation_history
+                        )
+                        
+                        message = ConversationMessage(
+                            agent_id=agent.id,
+                            agent_name=agent.name,
+                            message=response,
+                            mood=agent.current_mood
+                        )
+                        messages.append(message)
+                    
+                    # Create conversation round
+                    conversation_count = await db.conversations.count_documents({})
+                    conversation_round = ConversationRound(
+                        round_number=conversation_count + 1,
+                        time_period=f"Day {target_day} - {period} (#{conv_num + 1})",
+                        scenario=scenario,
+                        messages=messages
+                    )
+                    
+                    await db.conversations.insert_one(conversation_round.dict())
+                    generated_conversations.append(conversation_round)
+                    
+                    # Update relationships
+                    await update_relationships(agent_objects, messages)
+                    
+                    # Update agent memories periodically
+                    if conv_num == request.conversations_per_period - 1:  # Last conversation of the period
+                        for agent in agent_objects:
+                            await llm_manager.update_agent_memory(agent, conversation_history + [conversation_round.dict()])
+        
+        # Update simulation state
+        final_day = current_day + request.target_days - 1
+        final_period = "evening"  # Always end on evening
+        
+        await db.simulation_state.update_one(
+            {"id": state["id"]},
+            {"$set": {
+                "current_day": final_day,
+                "current_time_period": final_period
+            }}
+        )
+        
+        return {
+            "message": f"Fast forwarded {request.target_days} days",
+            "conversations_generated": len(generated_conversations),
+            "final_day": final_day,
+            "final_period": final_period,
+            "api_requests_used": len(generated_conversations) * len(agent_objects)
+        }
+        
+    except Exception as e:
+        logging.error(f"Error during fast forward: {e}")
+        raise HTTPException(status_code=500, detail=f"Fast forward failed: {str(e)}")
+
 @api_router.delete("/agents/{agent_id}")
 async def delete_agent(agent_id: str):
     """Delete an agent"""
