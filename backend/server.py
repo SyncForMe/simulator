@@ -206,8 +206,35 @@ class LLMManager:
                     recent_context += f"{msg.get('agent_name', '')}: {msg.get('message', '')} "
                 recent_context += "\n"
         
+        # Create comprehensive background-driven system message
+        background_prompt = ""
+        if agent.background:
+            background_prompt = f"""
+CRITICAL: Your background fundamentally shapes how you think and respond:
+Background: {agent.background}
+
+This background means you:
+- Process information through the lens of your professional experience
+- Use terminology and concepts from your field
+- Apply problem-solving methods from your domain
+- Have specific knowledge areas where you excel
+- Approach situations with your professional mindset
+- Communicate in a style typical of your field"""
+
+        expertise_prompt = ""
+        if agent.expertise:
+            expertise_prompt = f"""
+Your expertise in {agent.expertise} means you:
+- Notice details others might miss in this area
+- Can provide insights from this specialized knowledge
+- Ask questions that experts in this field would ask
+- Reference concepts and methods from this domain"""
+
         # Create LLM chat instance for this agent
         system_message = f"""You are {agent.name}, {AGENT_ARCHETYPES[agent.archetype]['description']}.
+
+{background_prompt}
+{expertise_prompt}
 
 Your personality traits:
 - Extroversion: {agent.personality.extroversion}/10
@@ -216,18 +243,23 @@ Your personality traits:
 - Cooperativeness: {agent.personality.cooperativeness}/10
 - Energy: {agent.personality.energy}/10
 
-Your background: {agent.background or 'Research station team member'}
-Your expertise: {agent.expertise or 'General knowledge'}
 Your goal: {agent.goal}
 
-{f'Your memory summary: {agent.memory_summary}' if agent.memory_summary else ''}
+{f'Your accumulated insights and memories: {agent.memory_summary}' if agent.memory_summary else ''}
 
-IMPORTANT: You must PROGRESS the conversation forward. Don't just repeat previous topics. Build on ideas, propose solutions, ask deeper questions, or introduce new angles. Show character development over time.
+BEHAVIORAL REQUIREMENTS:
+1. THINK AND RESPOND according to your background - let your professional experience guide your perspective
+2. USE vocabulary, concepts, and approaches from your field of expertise
+3. APPLY your professional problem-solving methods to the current situation  
+4. NOTICE things that someone with your background would notice
+5. ASK questions that reflect your professional curiosity and expertise
+6. PROGRESS the conversation forward - build on ideas, propose solutions, introduce new angles
+7. Show how your unique background brings value to the discussion
 
 Current scenario: {scenario}
 {recent_context}
 
-Respond authentically to your personality in 1-2 sentences. Focus on ADVANCING the discussion or revealing new insights."""
+Respond authentically as someone with your background would, in 1-2 sentences. Let your professional experience and expertise drive your perspective and response."""
 
         chat = LlmChat(
             api_key=self.api_key,
@@ -236,8 +268,21 @@ Respond authentically to your personality in 1-2 sentences. Focus on ADVANCING t
         ).with_model("gemini", "gemini-2.0-flash")
         
         # Generate prompt based on other agents present and context
-        other_names = [a.name for a in other_agents if a.id != agent.id]
-        prompt = f"{context} Others present: {', '.join(other_names) if other_names else 'no one else'}."
+        other_agents_info = []
+        for other_agent in other_agents:
+            if other_agent.id != agent.id:
+                agent_info = f"{other_agent.name}"
+                if other_agent.background:
+                    agent_info += f" (background: {other_agent.background})"
+                elif other_agent.expertise:
+                    agent_info += f" (expertise: {other_agent.expertise})"
+                other_agents_info.append(agent_info)
+        
+        prompt = f"""{context} 
+
+Others present: {', '.join(other_agents_info) if other_agents_info else 'no one else'}.
+
+Consider how your background and expertise make you uniquely qualified to contribute to this discussion. What perspective does your professional experience bring that others might not have?"""
         
         try:
             user_message = UserMessage(text=prompt)
@@ -264,17 +309,25 @@ Respond authentically to your personality in 1-2 sentences. Focus on ADVANCING t
                     conv_text += f"{msg.get('agent_name', '')}: {msg.get('message', '')} "
             conv_text += "\n"
         
-        # Generate memory summary
+        # Generate memory summary with background context
+        background_context = ""
+        if agent.background:
+            background_context = f"Remember, you process and remember things through your background as: {agent.background}"
+        
         chat = LlmChat(
             api_key=self.api_key,
             session_id=f"memory_{agent.id}_{datetime.now().timestamp()}",
-            system_message=f"""Update {agent.name}'s memory summary. Extract key insights, decisions, relationships, and important developments. Keep it concise (2-3 sentences max).
+            system_message=f"""Update {agent.name}'s memory summary. Focus on key insights, decisions, relationships, and important developments that someone with their background would find significant.
+
+{background_context}
+
+Extract information that's relevant to your professional perspective and expertise. Keep it concise (2-3 sentences max).
             
 Previous memory: {agent.memory_summary or 'None'}"""
         ).with_model("gemini", "gemini-2.0-flash")
         
         try:
-            user_message = UserMessage(text=f"Recent conversations:\n{conv_text}\n\nUpdate my memory with key developments:")
+            user_message = UserMessage(text=f"Recent conversations:\n{conv_text}\n\nUpdate my memory focusing on developments relevant to my background and expertise:")
             response = await chat.send_message(user_message)
             await self.increment_usage()
             
