@@ -773,10 +773,10 @@ const ControlPanel = ({
             onClick={onInitResearchStation}
             className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm mb-2"
           >
-            Create Default AI Team
+            Create Crypto Team
           </button>
           <p className="text-xs text-gray-500 mb-2">
-            Creates 4 AI agents with diverse backgrounds: Dr. Elena (Astrophysicist), Captain Jake (Military), Dr. Amara (Psychologist), Zara (CIA Analyst)
+            Creates 3 crypto experts: Mark (Marketing Veteran), Alex (DeFi Product Leader), Dex (Trend-Spotting Generalist)
           </p>
           
           <button 
