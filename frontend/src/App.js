@@ -558,13 +558,18 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
       {showMemoryInput && (
         <div className="add-memory mt-3 p-3 bg-green-50 rounded border">
           <form onSubmit={handleAddMemory}>
-            <label className="block text-sm font-medium mb-1">Add Memory</label>
+            <label className="block text-sm font-medium mb-1">🧠 Add Memory</label>
             <textarea
               value={newMemory}
               onChange={(e) => setNewMemory(e.target.value)}
-              placeholder="Add a specific memory, experience, or piece of knowledge..."
+              placeholder="Add a specific memory, experience, or knowledge... 
+
+💡 Pro tips:
+• Include URLs to real websites/social media for additional context
+• Example: 'I read this article https://example.com/ai-research that changed my perspective on AI safety'
+• URLs will be automatically processed and summarized"
               className="w-full p-2 border rounded text-sm"
-              rows="2"
+              rows="4"
             />
             <div className="flex space-x-2 mt-2">
               <button
@@ -572,7 +577,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
                 className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
                 disabled={!newMemory.trim()}
               >
-                Add
+                {newMemory.includes('http') ? '🌐 Add with URL Processing' : 'Add Memory'}
               </button>
               <button
                 type="button"
@@ -582,6 +587,11 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
                 Cancel
               </button>
             </div>
+            {newMemory.includes('http') && (
+              <p className="text-xs text-blue-600 mt-1">
+                🌐 URLs detected! They will be fetched and summarized automatically.
+              </p>
+            )}
           </form>
         </div>
       )}
