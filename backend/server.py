@@ -217,9 +217,9 @@ async def root():
     return {"message": "AI Agent Simulation API"}
 
 @api_router.post("/simulation/set-scenario")
-async def set_scenario(request: dict):
+async def set_scenario(request: ScenarioRequest):
     """Set a custom scenario for the simulation"""
-    scenario = request.get("scenario", "")
+    scenario = request.scenario.strip()
     if not scenario:
         raise HTTPException(status_code=400, detail="Scenario text required")
     
@@ -231,6 +231,30 @@ async def set_scenario(request: dict):
     )
     
     return {"message": "Scenario updated", "scenario": scenario}
+
+@api_router.post("/simulation/pause")
+async def pause_simulation():
+    """Pause the simulation (stops auto-generation)"""
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {
+            "is_active": False,
+            "auto_conversations": False,
+            "auto_time": False
+        }},
+        upsert=True
+    )
+    return {"message": "Simulation paused", "is_active": False}
+
+@api_router.post("/simulation/resume")
+async def resume_simulation():
+    """Resume the simulation"""
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {"is_active": True}},
+        upsert=True
+    )
+    return {"message": "Simulation resumed", "is_active": True}
 
 @api_router.post("/simulation/generate-summary")
 async def generate_weekly_summary():
