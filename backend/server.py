@@ -692,13 +692,20 @@ async def generate_conversation():
     day = state["current_day"]
     scenario = state["scenario"]
     
-    context = f"Day {day}, {time_period}. The research team is settling into their routine."
+    # Get recent conversation history for better context
+    conversation_history = await db.conversations.find().sort("created_at", -1).limit(5).to_list(5)
+    
+    context = f"Day {day}, {time_period}. "
+    if conversation_history:
+        context += "Continue the ongoing discussion with new insights or developments. "
+    else:
+        context += "Begin your interaction in this scenario. "
     
     # Generate responses from each agent
     messages = []
     for agent in agent_objects:
         response = await llm_manager.generate_agent_response(
-            agent, scenario, agent_objects, context
+            agent, scenario, agent_objects, context, conversation_history
         )
         
         message = ConversationMessage(
@@ -724,6 +731,11 @@ async def generate_conversation():
     
     # Update agent relationships based on interactions
     await update_relationships(agent_objects, messages)
+    
+    # Update agent memories if this is a significant conversation (every 5th conversation)
+    if conversation_count % 5 == 0:
+        for agent in agent_objects:
+            await llm_manager.update_agent_memory(agent, conversation_history + [conversation_round.dict()])
     
     return conversation_round
 
