@@ -797,6 +797,15 @@ function App() {
     }
   };
 
+  const fetchArchetypes = async () => {
+    try {
+      const response = await axios.get(`${API}/archetypes`);
+      setArchetypes(response.data);
+    } catch (error) {
+      console.error('Error fetching archetypes:', error);
+    }
+  };
+
   const refreshAllData = async () => {
     setLoading(true);
     await Promise.all([
