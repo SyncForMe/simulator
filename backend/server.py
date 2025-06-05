@@ -924,7 +924,7 @@ async def advance_time_period():
 
 @api_router.post("/conversation/generate")
 async def generate_conversation():
-    """Generate a conversation round between agents"""
+    """Generate a conversation round between agents with rate limiting"""
     # Get current agents
     agents = await db.agents.find().to_list(100)
     if len(agents) < 2:
@@ -951,9 +951,13 @@ async def generate_conversation():
     else:
         context += "Begin your interaction in this scenario. "
     
-    # Generate responses from each agent
+    # Generate responses from each agent with staggered timing for rate limiting
     messages = []
-    for agent in agent_objects:
+    for i, agent in enumerate(agent_objects):
+        # Add a small delay between requests to avoid rate limiting
+        if i > 0:
+            await asyncio.sleep(5)  # 5 second delay between agents
+        
         response = await llm_manager.generate_agent_response(
             agent, scenario, agent_objects, context, conversation_history
         )
