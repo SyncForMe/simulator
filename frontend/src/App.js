@@ -172,6 +172,122 @@ const AutoControls = ({ simulationState, onToggleAuto }) => {
   );
 };
 
+const ObserverInput = ({ onSendObserverMessage, agents, loading }) => {
+  const [message, setMessage] = useState('');
+  const [responses, setResponses] = useState([]);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!message.trim()) return;
+
+    const userMessage = {
+      id: Date.now(),
+      type: 'user',
+      message: message.trim(),
+      timestamp: new Date()
+    };
+
+    setResponses(prev => [...prev, userMessage]);
+    
+    const agentResponses = await onSendObserverMessage(message.trim());
+    
+    if (agentResponses) {
+      const responseMessages = agentResponses.map(response => ({
+        id: Date.now() + Math.random(),
+        type: 'agent',
+        agent_name: response.agent_name,
+        message: response.response,
+        timestamp: new Date()
+      }));
+      setResponses(prev => [...prev, ...responseMessages]);
+    }
+
+    setMessage('');
+    setIsExpanded(true);
+  };
+
+  return (
+    <div className="observer-input bg-white rounded-lg shadow-md p-4 mb-4">
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-lg font-bold text-purple-700 flex items-center">
+          👁️ <span className="ml-2">Observer Input</span>
+          <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded">CEO Mode</span>
+        </h3>
+        {responses.length > 0 && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-sm text-gray-600 hover:text-gray-800"
+          >
+            {isExpanded ? 'Hide Responses' : `Show Responses (${responses.filter(r => r.type === 'user').length})`}
+          </button>
+        )}
+      </div>
+
+      <form onSubmit={handleSubmit} className="mb-4">
+        <div className="flex space-x-2">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Send instructions or questions to your AI team... 
+
+Examples:
+• 'I want you to focus more on user adoption metrics'
+• 'What are your thoughts on pivoting to B2B?'
+• 'We need to be more aggressive with our timeline'
+• 'Can you provide alternative solutions to this problem?'"
+            className="flex-1 p-3 border border-purple-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            rows="3"
+            disabled={loading}
+          />
+          <button
+            type="submit"
+            disabled={loading || !message.trim()}
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 disabled:opacity-50 flex flex-col items-center justify-center"
+          >
+            <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+            <span className="text-xs">Send</span>
+          </button>
+        </div>
+      </form>
+
+      <div className="text-xs text-purple-600 bg-purple-50 p-2 rounded">
+        💡 <strong>You are the CEO</strong> - Agents will respond to your guidance and can offer suggestions or politely disagree based on their expertise.
+      </div>
+
+      {/* Conversation History */}
+      {isExpanded && responses.length > 0 && (
+        <div className="mt-4 border-t pt-4">
+          <h4 className="font-semibold text-gray-700 mb-3">Recent Interactions</h4>
+          <div className="space-y-3 max-h-64 overflow-y-auto">
+            {responses.map((response) => (
+              <div key={response.id} className={`p-3 rounded-lg ${
+                response.type === 'user' 
+                  ? 'bg-purple-100 border-l-4 border-purple-500' 
+                  : 'bg-gray-50 border-l-4 border-gray-400'
+              }`}>
+                <div className="flex justify-between items-start mb-1">
+                  <span className="font-medium text-sm">
+                    {response.type === 'user' ? '👁️ You (CEO)' : `🤖 ${response.agent_name}`}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {response.timestamp.toLocaleTimeString()}
+                  </span>
+                </div>
+                <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                  {response.message}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
   const [loading, setLoading] = useState(false);
   const [latestSummary, setLatestSummary] = useState(null);
