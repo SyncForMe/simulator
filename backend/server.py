@@ -189,8 +189,13 @@ class LLMManager:
         """Fetch and summarize content from a URL for agent memory"""
         try:
             import aiohttp
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, timeout=10) as response:
+            timeout = aiohttp.ClientTimeout(total=5)  # 5 second timeout
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+            
+            async with aiohttp.ClientSession(timeout=timeout, headers=headers) as session:
+                async with session.get(url) as response:
                     if response.status == 200:
                         content = await response.text()
                         # Simple content extraction - remove HTML tags and limit length
@@ -198,15 +203,18 @@ class LLMManager:
                         text_content = re.sub(r'<[^>]+>', ' ', content)
                         text_content = re.sub(r'\s+', ' ', text_content).strip()
                         
-                        # Limit to first 2000 characters
-                        if len(text_content) > 2000:
-                            text_content = text_content[:2000] + "..."
+                        # Limit to first 1500 characters
+                        if len(text_content) > 1500:
+                            text_content = text_content[:1500] + "..."
                         
                         return text_content
                     else:
-                        return f"Could not access URL (status: {response.status})"
+                        return f"Could not access {url} (status: {response.status})"
+        except asyncio.TimeoutError:
+            return f"Timeout accessing {url}"
         except Exception as e:
-            return f"Error accessing URL: {str(e)}"
+            logging.warning(f"Error fetching {url}: {e}")
+            return f"Could not access {url}"
 
     async def process_memory_with_urls(self, memory_text: str) -> str:
         """Process memory text and fetch content from any URLs found"""
@@ -222,39 +230,52 @@ class LLMManager:
         
         enhanced_memory = memory_text
         
-        for url in urls:
-            # Fetch content from URL
-            url_content = await self.fetch_url_content(url)
-            
-            # Create a summary of the URL content using LLM
-            if url_content and len(url_content) > 50:
-                try:
-                    if await self.can_make_request():
-                        chat = LlmChat(
-                            api_key=self.api_key,
-                            session_id=f"url_summary_{hash(url)}",
-                            system_message="Summarize web content into key facts and insights that would be relevant for an AI agent's memory. Focus on important information, facts, opinions, or context that could influence behavior."
-                        ).with_model("gemini", "gemini-2.0-flash")
-                        
-                        user_message = UserMessage(text=f"Summarize this web content from {url}:\n\n{url_content}")
-                        summary = await chat.send_message(user_message)
-                        await self.increment_usage()
-                        
-                        # Replace the URL with enriched content
-                        enhanced_memory = enhanced_memory.replace(
-                            url, 
-                            f"[URL: {url}] Content Summary: {summary}"
-                        )
-                    else:
+        for url in urls[:2]:  # Limit to 2 URLs to avoid timeout issues
+            try:
+                # Fetch content from URL
+                url_content = await self.fetch_url_content(url)
+                
+                # Create a summary of the URL content using LLM only if we have substantial content
+                if url_content and len(url_content) > 100 and "Could not access" not in url_content:
+                    try:
+                        if await self.can_make_request():
+                            chat = LlmChat(
+                                api_key=self.api_key,
+                                session_id=f"url_summary_{hash(url)}",
+                                system_message="Summarize web content into 2-3 key facts that would be relevant for an AI agent's memory. Focus on the most important information."
+                            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(100)
+                            
+                            user_message = UserMessage(text=f"Summarize this web content concisely:\n\n{url_content}")
+                            summary = await chat.send_message(user_message)
+                            await self.increment_usage()
+                            
+                            # Replace the URL with enriched content
+                            enhanced_memory = enhanced_memory.replace(
+                                url, 
+                                f"[Knowledge from {url}]: {summary}"
+                            )
+                        else:
+                            enhanced_memory = enhanced_memory.replace(
+                                url,
+                                f"[Reference: {url}] (Content processing skipped - API limit)"
+                            )
+                    except Exception as e:
+                        logging.warning(f"Error summarizing {url}: {e}")
                         enhanced_memory = enhanced_memory.replace(
                             url,
-                            f"[URL: {url}] (Content not accessible - API limit reached)"
+                            f"[Reference: {url}] (Content available but not processed)"
                         )
-                except Exception as e:
+                else:
                     enhanced_memory = enhanced_memory.replace(
                         url,
-                        f"[URL: {url}] (Error processing content: {str(e)})"
+                        f"[Reference: {url}] (Could not access content)"
                     )
+            except Exception as e:
+                logging.warning(f"Error processing URL {url}: {e}")
+                enhanced_memory = enhanced_memory.replace(
+                    url,
+                    f"[Reference: {url}] (Processing error)"
+                )
         
         return enhanced_memory
     
