@@ -1108,6 +1108,13 @@ async def init_research_station():
         {
             "name": "Marcus \"Mark\" Castellano",
             "archetype": "skeptic", 
+            "personality": {
+                "extroversion": 6,
+                "optimism": 7,
+                "curiosity": 8,
+                "cooperativeness": 8,
+                "energy": 5
+            },
             "goal": "Develop data-driven marketing strategies that navigate volatile crypto markets",
             "expertise": "Multi-cycle crypto marketing, Brand positioning, Community building, Regulatory compliance",
             "background": "A seasoned marketing veteran with 17 years of experience spanning traditional finance and digital marketing. Mark cut his teeth at Goldman Sachs' marketing division before transitioning to crypto in 2018. He's witnessed three major crypto cycles and has developed an intuitive understanding of market psychology. Known for his data-driven approach and ability to craft narratives that resonate with both retail and institutional investors.",
@@ -1116,6 +1123,13 @@ async def init_research_station():
         {
             "name": "Alexandra \"Alex\" Chen",
             "archetype": "leader",
+            "personality": {
+                "extroversion": 9,
+                "optimism": 9,
+                "curiosity": 7,
+                "cooperativeness": 6,
+                "energy": 9
+            },
             "goal": "Build and ship revolutionary DeFi products that reshape how people interact with money", 
             "expertise": "DeFi protocol architecture, Tokenomics design, User experience optimization, Go-to-market strategy",
             "background": "A charismatic product visionary who led the development of three major DeFi protocols that collectively manage over $2B in TVL. Former Head of Product at a unicorn crypto exchange, Alex has the rare combination of technical depth and executive presence. She's known for her ability to rally teams around ambitious visions and has been featured on major crypto podcasts as a thought leader.",
@@ -1124,6 +1138,13 @@ async def init_research_station():
         {
             "name": "Diego \"Dex\" Rodriguez", 
             "archetype": "optimist",
+            "personality": {
+                "extroversion": 4,
+                "optimism": 8,
+                "curiosity": 10,
+                "cooperativeness": 5,
+                "energy": 7
+            },
             "goal": "Discover and capitalize on emerging crypto trends before they become mainstream",
             "expertise": "Emerging crypto ecosystems, Yield optimization, DAO governance, MEV strategies, On-chain analysis",
             "background": "A crypto polymath who's worn almost every hat imaginable in the space. Started as a Bitcoin miner in 2017, became a DeFi yield farmer, tried his hand at NFT curation, worked as a DAO contributor, and even spent six months as a crypto journalist. Dex has an uncanny ability to spot emerging trends before they become mainstream, though his hit rate on 'crazy' ideas is about 30% - which in crypto, makes him a visionary.",
