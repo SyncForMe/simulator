@@ -1328,10 +1328,19 @@ function App() {
             </div>
           </div>
 
-          {/* Middle Column - Conversations */}
+          {/* Middle Column - Conversations & Reports */}
           <div className="lg:col-span-2">
             <h2 className="text-xl font-bold mb-4">Conversations</h2>
             <ConversationViewer conversations={conversations} />
+            
+            {/* Weekly Summary underneath conversations */}
+            <div className="mt-6">
+              <WeeklySummary 
+                onGenerateSummary={handleGenerateSummary}
+                summaries={summaries}
+                onSetupAutoReport={handleSetupAutoReport}
+              />
+            </div>
           </div>
 
           {/* Right Column - Controls */}
