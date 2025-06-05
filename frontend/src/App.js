@@ -532,10 +532,39 @@ function App() {
   // Control functions
   const handleSetScenario = async (scenario) => {
     try {
-      await axios.post(`${API}/simulation/set-scenario`, { scenario });
+      const response = await axios.post(`${API}/simulation/set-scenario`, { scenario: scenario });
+      console.log('Scenario set response:', response.data);
       await fetchSimulationState();
     } catch (error) {
       console.error('Error setting scenario:', error);
+      alert('Error setting scenario: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const handlePauseSimulation = async () => {
+    try {
+      await axios.post(`${API}/simulation/pause`);
+      await fetchSimulationState();
+      
+      // Clear timers when pausing
+      if (autoTimers.conversation) {
+        clearInterval(autoTimers.conversation);
+      }
+      if (autoTimers.time) {
+        clearInterval(autoTimers.time);
+      }
+      setAutoTimers({ conversation: null, time: null });
+    } catch (error) {
+      console.error('Error pausing simulation:', error);
+    }
+  };
+
+  const handleResumeSimulation = async () => {
+    try {
+      await axios.post(`${API}/simulation/resume`);
+      await fetchSimulationState();
+    } catch (error) {
+      console.error('Error resuming simulation:', error);
     }
   };
 
