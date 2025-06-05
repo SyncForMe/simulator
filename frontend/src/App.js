@@ -1366,14 +1366,6 @@ function App() {
               setShowFastForward={setShowFastForward}
             />
 
-            <div className="mt-4">
-              <WeeklySummary 
-                onGenerateSummary={handleGenerateSummary}
-                summaries={summaries}
-                onSetupAutoReport={handleSetupAutoReport}
-              />
-            </div>
-
             {/* Scenario Info */}
             <div className="bg-white rounded-lg shadow-md p-4 mt-4">
               <h3 className="text-lg font-bold mb-2">💰 DeFi Crisis Scenario</h3>
