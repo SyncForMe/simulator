@@ -474,13 +474,6 @@ const AgentCard = ({ agent, relationships, onEdit }) => {
     return "bg-green-500";
   };
 
-const AgentCard = ({ agent, relationships, onEdit }) => {
-  const getPersonalityColor = (value) => {
-    if (value <= 3) return "bg-red-500";
-    if (value <= 6) return "bg-yellow-500"; 
-    return "bg-green-500";
-  };
-
   const agentRelationships = relationships.filter(r => r.agent1_id === agent.id);
 
   return (
