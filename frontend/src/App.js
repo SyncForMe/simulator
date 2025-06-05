@@ -1114,6 +1114,21 @@ function App() {
           </div>
         </div>
       </main>
+
+      {/* Modals */}
+      <FastForwardModal
+        isOpen={showFastForward}
+        onClose={() => setShowFastForward(false)}
+        onFastForward={handleFastForward}
+      />
+
+      <EditAgentModal
+        agent={editingAgent}
+        isOpen={!!editingAgent}
+        onClose={() => setEditingAgent(null)}
+        onSave={handleSaveAgent}
+        archetypes={archetypes}
+      />
     </div>
   );
 }
