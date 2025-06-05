@@ -141,6 +141,18 @@ class AutoModeRequest(BaseModel):
     conversation_interval: int = 10
     time_interval: int = 30
 
+class FastForwardRequest(BaseModel):
+    target_days: int = Field(ge=1, le=30)  # 1-30 days max
+    conversations_per_period: int = Field(ge=1, le=5, default=2)  # 1-5 conversations per time period
+
+class AgentUpdate(BaseModel):
+    name: Optional[str] = None
+    archetype: Optional[str] = None
+    personality: Optional[AgentPersonality] = None
+    goal: Optional[str] = None
+    expertise: Optional[str] = None
+    background: Optional[str] = None
+
 # LLM Integration and Request Management
 class LLMManager:
     def __init__(self):
