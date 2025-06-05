@@ -959,6 +959,36 @@ function App() {
     setLoading(false);
   };
 
+  const handleFastForward = async (targetDays, conversationsPerPeriod) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API}/simulation/fast-forward`, {
+        target_days: targetDays,
+        conversations_per_period: conversationsPerPeriod
+      });
+      alert(`Fast forwarded ${targetDays} days! Generated ${response.data.conversations_generated} conversations.`);
+      await refreshAllData();
+    } catch (error) {
+      console.error('Error fast forwarding:', error);
+      alert('Error fast forwarding: ' + (error.response?.data?.detail || error.message));
+    }
+    setLoading(false);
+  };
+
+  const handleEditAgent = (agent) => {
+    setEditingAgent(agent);
+  };
+
+  const handleSaveAgent = async (agentId, agentData) => {
+    try {
+      await axios.put(`${API}/agents/${agentId}`, agentData);
+      await fetchAgents();
+    } catch (error) {
+      console.error('Error updating agent:', error);
+      alert('Error updating agent: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
   // Load initial data
   useEffect(() => {
     refreshAllData();
