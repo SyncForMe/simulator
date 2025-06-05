@@ -218,7 +218,256 @@ const WeeklySummary = ({ onGenerateSummary, summaries }) => {
   );
 };
 
-const AgentCard = ({ agent, relationships }) => {
+const FastForwardModal = ({ isOpen, onClose, onFastForward }) => {
+  const [targetDays, setTargetDays] = useState(3);
+  const [conversationsPerPeriod, setConversationsPerPeriod] = useState(2);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await onFastForward(targetDays, conversationsPerPeriod);
+    setLoading(false);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-96">
+        <h3 className="text-lg font-bold mb-4">⚡ Fast Forward Simulation</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">Days to Fast Forward</label>
+            <input
+              type="number"
+              min="1"
+              max="30"
+              value={targetDays}
+              onChange={(e) => setTargetDays(parseInt(e.target.value))}
+              className="w-full p-2 border rounded"
+              disabled={loading}
+            />
+            <p className="text-xs text-gray-500 mt-1">1-30 days maximum</p>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">Conversations per Time Period</label>
+            <input
+              type="number"
+              min="1"
+              max="5"
+              value={conversationsPerPeriod}
+              onChange={(e) => setConversationsPerPeriod(parseInt(e.target.value))}
+              className="w-full p-2 border rounded"
+              disabled={loading}
+            />
+            <p className="text-xs text-gray-500 mt-1">1-5 conversations per morning/afternoon/evening</p>
+          </div>
+
+          <div className="mb-4 p-3 bg-yellow-50 rounded">
+            <p className="text-sm text-yellow-800">
+              <strong>Estimated API calls:</strong> {targetDays * 3 * conversationsPerPeriod * 3} requests
+            </p>
+            <p className="text-xs text-yellow-600 mt-1">
+              This will generate meaningful progression over time with agents developing ideas and relationships.
+            </p>
+          </div>
+
+          <div className="flex space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              disabled={loading}
+            >
+              {loading ? 'Fast Forwarding...' : 'Fast Forward'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    archetype: '',
+    goal: '',
+    expertise: '',
+    background: '',
+    personality: {
+      extroversion: 5,
+      optimism: 5,
+      curiosity: 5,
+      cooperativeness: 5,
+      energy: 5
+    }
+  });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (agent) {
+      setFormData({
+        name: agent.name || '',
+        archetype: agent.archetype || '',
+        goal: agent.goal || '',
+        expertise: agent.expertise || '',
+        background: agent.background || '',
+        personality: agent.personality || {
+          extroversion: 5,
+          optimism: 5,
+          curiosity: 5,
+          cooperativeness: 5,
+          energy: 5
+        }
+      });
+    }
+  }, [agent]);
+
+  const handlePersonalityChange = (trait, value) => {
+    setFormData(prev => ({
+      ...prev,
+      personality: {
+        ...prev.personality,
+        [trait]: parseInt(value)
+      }
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await onSave(agent.id, formData);
+    setLoading(false);
+    onClose();
+  };
+
+  if (!isOpen || !agent) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-96 overflow-y-auto">
+        <h3 className="text-lg font-bold mb-4">✏️ Edit Agent: {agent.name}</h3>
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
+                className="w-full p-2 border rounded"
+                disabled={loading}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Archetype</label>
+              <select
+                value={formData.archetype}
+                onChange={(e) => setFormData(prev => ({...prev, archetype: e.target.value}))}
+                className="w-full p-2 border rounded"
+                disabled={loading}
+              >
+                {Object.entries(archetypes).map(([key, value]) => (
+                  <option key={key} value={key}>{value.name}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium mb-1">Goal</label>
+              <textarea
+                value={formData.goal}
+                onChange={(e) => setFormData(prev => ({...prev, goal: e.target.value}))}
+                className="w-full p-2 border rounded"
+                rows="2"
+                disabled={loading}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Expertise</label>
+              <input
+                type="text"
+                value={formData.expertise}
+                onChange={(e) => setFormData(prev => ({...prev, expertise: e.target.value}))}
+                className="w-full p-2 border rounded"
+                placeholder="e.g., Machine Learning, Psychology"
+                disabled={loading}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1">Background</label>
+              <textarea
+                value={formData.background}
+                onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
+                className="w-full p-2 border rounded"
+                rows="2"
+                placeholder="Professional background and experience"
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <h4 className="font-medium mb-3">Personality Traits</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {Object.entries(formData.personality).map(([trait, value]) => (
+                <div key={trait}>
+                  <label className="block text-sm font-medium mb-1 capitalize">{trait}</label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      value={value}
+                      onChange={(e) => handlePersonalityChange(trait, e.target.value)}
+                      className="flex-1"
+                      disabled={loading}
+                    />
+                    <span className="w-8 text-sm">{value}/10</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex space-x-3 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              disabled={loading}
+            >
+              {loading ? 'Saving...' : 'Save Changes'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const AgentCard = ({ agent, relationships, onEdit }) => {
   const getPersonalityColor = (value) => {
     if (value <= 3) return "bg-red-500";
     if (value <= 6) return "bg-yellow-500"; 
