@@ -5,6 +5,219 @@ import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+const ScenarioInput = ({ onSetScenario }) => {
+  const [scenario, setScenario] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!scenario.trim()) return;
+    
+    setLoading(true);
+    await onSetScenario(scenario);
+    setScenario("");
+    setLoading(false);
+  };
+
+  return (
+    <div className="scenario-input bg-white rounded-lg shadow-md p-4 mb-4">
+      <h3 className="text-lg font-bold mb-3">🎭 Custom Scenario</h3>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <textarea
+            value={scenario}
+            onChange={(e) => setScenario(e.target.value)}
+            placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.')"
+            className="w-full p-3 border rounded-lg resize-none"
+            rows="3"
+            disabled={loading}
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={loading || !scenario.trim()}
+          className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+        >
+          {loading ? "Setting Scenario..." : "Set New Scenario"}
+        </button>
+      </form>
+    </div>
+  );
+};
+
+const AutoControls = ({ simulationState, onToggleAuto }) => {
+  const [autoConversations, setAutoConversations] = useState(false);
+  const [autoTime, setAutoTime] = useState(false);
+  const [conversationInterval, setConversationInterval] = useState(10);
+  const [timeInterval, setTimeInterval] = useState(60);
+
+  useEffect(() => {
+    if (simulationState) {
+      setAutoConversations(simulationState.auto_conversations || false);
+      setAutoTime(simulationState.auto_time || false);
+      setConversationInterval(simulationState.conversation_interval || 10);
+      setTimeInterval(simulationState.time_interval || 60);
+    }
+  }, [simulationState]);
+
+  const handleToggleAutoConversations = async () => {
+    const newValue = !autoConversations;
+    setAutoConversations(newValue);
+    await onToggleAuto({
+      auto_conversations: newValue,
+      auto_time: autoTime,
+      conversation_interval: conversationInterval,
+      time_interval: timeInterval
+    });
+  };
+
+  const handleToggleAutoTime = async () => {
+    const newValue = !autoTime;
+    setAutoTime(newValue);
+    await onToggleAuto({
+      auto_conversations: autoConversations,
+      auto_time: newValue,
+      conversation_interval: conversationInterval,
+      time_interval: timeInterval
+    });
+  };
+
+  const handleIntervalChange = async (type, value) => {
+    const newData = {
+      auto_conversations: autoConversations,
+      auto_time: autoTime,
+      conversation_interval: type === 'conversation' ? value : conversationInterval,
+      time_interval: type === 'time' ? value : timeInterval
+    };
+    
+    if (type === 'conversation') {
+      setConversationInterval(value);
+    } else {
+      setTimeInterval(value);
+    }
+    
+    await onToggleAuto(newData);
+  };
+
+  return (
+    <div className="auto-controls bg-white rounded-lg shadow-md p-4 mb-4">
+      <h3 className="text-lg font-bold mb-3">🤖 Automation Controls</h3>
+      
+      <div className="space-y-4">
+        {/* Auto Conversations */}
+        <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
+          <div>
+            <h4 className="font-semibold">Auto Conversations</h4>
+            <p className="text-xs text-gray-600">Generate conversations automatically</p>
+          </div>
+          <button
+            onClick={handleToggleAutoConversations}
+            className={`px-4 py-2 rounded text-sm font-medium ${
+              autoConversations 
+                ? 'bg-green-600 text-white' 
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            {autoConversations ? 'ON' : 'OFF'}
+          </button>
+        </div>
+
+        {autoConversations && (
+          <div className="ml-4">
+            <label className="block text-xs font-medium mb-1">Interval (seconds)</label>
+            <input
+              type="number"
+              min="5"
+              max="300"
+              value={conversationInterval}
+              onChange={(e) => handleIntervalChange('conversation', parseInt(e.target.value))}
+              className="w-20 px-2 py-1 border rounded text-sm"
+            />
+          </div>
+        )}
+
+        {/* Auto Time */}
+        <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
+          <div>
+            <h4 className="font-semibold">Auto Time Progression</h4>
+            <p className="text-xs text-gray-600">Advance time periods automatically</p>
+          </div>
+          <button
+            onClick={handleToggleAutoTime}
+            className={`px-4 py-2 rounded text-sm font-medium ${
+              autoTime 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-gray-300 text-gray-700'
+            }`}
+          >
+            {autoTime ? 'ON' : 'OFF'}
+          </button>
+        </div>
+
+        {autoTime && (
+          <div className="ml-4">
+            <label className="block text-xs font-medium mb-1">Interval (seconds)</label>
+            <input
+              type="number"
+              min="30"
+              max="600"
+              value={timeInterval}
+              onChange={(e) => handleIntervalChange('time', parseInt(e.target.value))}
+              className="w-20 px-2 py-1 border rounded text-sm"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const WeeklySummary = ({ onGenerateSummary, summaries }) => {
+  const [loading, setLoading] = useState(false);
+  const [latestSummary, setLatestSummary] = useState(null);
+
+  useEffect(() => {
+    if (summaries && summaries.length > 0) {
+      setLatestSummary(summaries[0]);
+    }
+  }, [summaries]);
+
+  const handleGenerateSummary = async () => {
+    setLoading(true);
+    const summary = await onGenerateSummary();
+    if (summary) {
+      setLatestSummary(summary);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="weekly-summary bg-white rounded-lg shadow-md p-4">
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-lg font-bold">📊 Weekly Summary</h3>
+        <button
+          onClick={handleGenerateSummary}
+          disabled={loading}
+          className="bg-indigo-600 text-white px-3 py-1 rounded text-sm hover:bg-indigo-700 disabled:opacity-50"
+        >
+          {loading ? "Generating..." : "Generate Summary"}
+        </button>
+      </div>
+      
+      {latestSummary ? (
+        <div className="summary-content bg-gray-50 rounded p-3 text-sm">
+          <div className="mb-2 text-xs text-gray-600">
+            Day {latestSummary.day} • {latestSummary.conversations_count} conversations analyzed
+          </div>
+          <div className="whitespace-pre-wrap">{latestSummary.summary}</div>
+        </div>
+      ) : (
+        <p className="text-gray-500 text-sm italic">No summary generated yet. Click the button to create one!</p>
+      )}
+    </div>
+  );
+};
+
 const AgentCard = ({ agent, relationships }) => {
   const getPersonalityColor = (value) => {
     if (value <= 3) return "bg-red-500";
