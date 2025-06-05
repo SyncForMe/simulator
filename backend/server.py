@@ -207,6 +207,110 @@ llm_manager = LLMManager()
 async def root():
     return {"message": "AI Agent Simulation API"}
 
+@api_router.post("/simulation/set-scenario")
+async def set_scenario(request: dict):
+    """Set a custom scenario for the simulation"""
+    scenario = request.get("scenario", "")
+    if not scenario:
+        raise HTTPException(status_code=400, detail="Scenario text required")
+    
+    # Update simulation state with new scenario
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {"scenario": scenario}},
+        upsert=True
+    )
+    
+    return {"message": "Scenario updated", "scenario": scenario}
+
+@api_router.post("/simulation/generate-summary")
+async def generate_weekly_summary():
+    """Generate AI summary of conversations from the past week"""
+    # Get all conversations
+    conversations = await db.conversations.find().sort("created_at", -1).to_list(100)
+    
+    if not conversations:
+        return {"summary": "No conversations to summarize yet."}
+    
+    # Get current simulation state
+    state = await db.simulation_state.find_one()
+    current_day = state.get("current_day", 1) if state else 1
+    
+    # Filter conversations from recent days (last 7 days or all if less than 7)
+    recent_conversations = conversations[:min(21, len(conversations))]  # Last 21 rounds (7 days * 3 periods)
+    
+    if not recent_conversations:
+        return {"summary": "No recent conversations to summarize."}
+    
+    # Check API usage
+    if not await llm_manager.can_make_request():
+        return {"summary": "Cannot generate summary - daily API limit reached"}
+    
+    # Prepare conversation text for summary
+    conv_text = ""
+    for conv in recent_conversations:
+        conv_text += f"\n{conv['time_period']}:\n"
+        for msg in conv.get('messages', []):
+            conv_text += f"- {msg['agent_name']}: {msg['message']}\n"
+    
+    # Generate summary using LLM
+    chat = LlmChat(
+        api_key=llm_manager.api_key,
+        session_id=f"summary_{datetime.now().timestamp()}",
+        system_message="""You are analyzing AI agent interactions over time. 
+        Create a concise summary highlighting:
+        1. Key relationship developments
+        2. Personality traits that emerged
+        3. Conflicts or agreements
+        4. Notable behavioral patterns
+        5. Any emergent discoveries or realizations
+        
+        Be analytical but engaging. Focus on the most interesting social dynamics."""
+    ).with_model("gemini", "gemini-2.0-flash")
+    
+    prompt = f"""Analyze these AI agent conversations from the Research Station simulation:
+
+{conv_text}
+
+Provide a weekly summary in this format:
+**Week Summary - Day {current_day}**
+
+**Relationship Developments:**
+[Key changes in how agents interact with each other]
+
+**Emerging Personalities:** 
+[How each agent's personality manifested]
+
+**Key Events & Discoveries:**
+[Important moments, agreements, conflicts, or insights]
+
+**Social Dynamics:**
+[Overall team cohesion, leadership patterns, group behavior]
+
+**Looking Ahead:**
+[Predictions for future developments]"""
+    
+    try:
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        await llm_manager.increment_usage()
+        
+        # Store summary in database
+        summary_doc = {
+            "id": str(uuid.uuid4()),
+            "summary": response,
+            "day_generated": current_day,
+            "conversations_analyzed": len(recent_conversations),
+            "created_at": datetime.utcnow()
+        }
+        await db.summaries.insert_one(summary_doc)
+        
+        return {"summary": response, "day": current_day, "conversations_count": len(recent_conversations)}
+        
+    except Exception as e:
+        logging.error(f"Error generating summary: {e}")
+        return {"summary": f"Error generating summary: {str(e)}"}
+
 @api_router.get("/archetypes")
 async def get_archetypes():
     """Get all available agent archetypes"""
