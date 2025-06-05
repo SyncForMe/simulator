@@ -84,8 +84,11 @@ class Agent(BaseModel):
     archetype: str
     personality: AgentPersonality
     goal: str
+    expertise: str = ""
+    background: str = ""
     current_mood: str = "neutral"
     current_activity: str = "idle"
+    memory_summary: str = ""  # Summary of important memories/developments
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class AgentCreate(BaseModel):
