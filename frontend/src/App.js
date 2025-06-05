@@ -1087,6 +1087,7 @@ function App() {
               onGenerateConversation={handleGenerateConversation}
               onInitResearchStation={handleInitResearchStation}
               onToggleAuto={handleToggleAuto}
+              setShowFastForward={setShowFastForward}
             />
 
             <div className="mt-4">
