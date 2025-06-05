@@ -985,7 +985,11 @@ const ConversationViewer = ({ conversations }) => {
             {round.messages.map((message) => (
               <div key={message.id} className="message mb-2">
                 <div className="flex items-start">
-                  <span className="font-medium text-blue-600 mr-2">{message.agent_name}:</span>
+                  <span className={`font-medium mr-2 ${
+                    round.time_period.includes('Observer Input') ? 'text-purple-600' : 'text-blue-600'
+                  }`}>
+                    {message.agent_name}:
+                  </span>
                   <span className="text-gray-800">{message.message}</span>
                 </div>
                 <span className="text-xs text-gray-500 ml-2">({message.mood})</span>
@@ -994,6 +998,82 @@ const ConversationViewer = ({ conversations }) => {
           </div>
         </div>
       ))}
+    </div>
+  );
+};
+
+const ObserverInput = ({ onSendMessage }) => {
+  const [message, setMessage] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (message.trim() && !sending) {
+      setSending(true);
+      await onSendMessage(message.trim());
+      setMessage("");
+      setIsExpanded(false);
+      setSending(false);
+    }
+  };
+
+  if (!isExpanded) {
+    return (
+      <div className="observer-input-collapsed mt-3">
+        <button 
+          onClick={() => setIsExpanded(true)}
+          className="w-full text-left text-xs text-gray-500 hover:text-gray-700 py-2 px-3 bg-gray-50 hover:bg-gray-100 rounded transition-colors"
+        >
+          💬 Send message to team...
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="observer-input-expanded mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs text-gray-600 font-medium">Observer Message</span>
+        <button 
+          onClick={() => {
+            setIsExpanded(false);
+            setMessage("");
+          }}
+          className="text-xs text-gray-400 hover:text-gray-600"
+        >
+          ✕
+        </button>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="space-y-2">
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Send a brief message to the team..."
+          className="w-full p-2 text-sm border border-gray-300 rounded resize-none h-16 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          autoFocus
+        />
+        <div className="flex gap-2">
+          <button 
+            type="submit"
+            disabled={!message.trim() || sending}
+            className="bg-gray-600 text-white px-3 py-1 rounded text-xs hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {sending ? 'Sending...' : 'Send'}
+          </button>
+          <button 
+            type="button"
+            onClick={() => {
+              setIsExpanded(false);
+              setMessage("");
+            }}
+            className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
