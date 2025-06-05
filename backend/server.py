@@ -1154,24 +1154,17 @@ async def init_research_station():
     
     created_agents = []
     for agent_data in agents_data:
-        agent_create = AgentCreate(**agent_data)
-        
-        # Create agent first
-        if not agent_create.personality:
-            if agent_create.archetype in AGENT_ARCHETYPES:
-                default_traits = AGENT_ARCHETYPES[agent_create.archetype]["default_traits"]
-                agent_create.personality = AgentPersonality(**default_traits)
-            else:
-                raise HTTPException(status_code=400, detail="Invalid archetype")
+        # Create personality from provided data
+        personality = AgentPersonality(**agent_data["personality"])
         
         agent = Agent(
-            name=agent_create.name,
-            archetype=agent_create.archetype,
-            personality=agent_create.personality,
-            goal=agent_create.goal,
-            expertise=agent_create.expertise,
-            background=agent_create.background,
-            memory_summary=agent_data.get("memory_summary", "")  # Set the memory directly
+            name=agent_data["name"],
+            archetype=agent_data["archetype"],
+            personality=personality,
+            goal=agent_data["goal"],
+            expertise=agent_data["expertise"],
+            background=agent_data["background"],
+            memory_summary=agent_data.get("memory_summary", "")
         )
         
         await db.agents.insert_one(agent.dict())
