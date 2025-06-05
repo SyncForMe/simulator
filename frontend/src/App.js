@@ -426,7 +426,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
               <label className="block text-sm font-medium mb-1">
                 🧠 Memory & Knowledge 
                 <span className="text-xs text-gray-500 ml-2">
-                  (What the agent remembers from previous conversations and important experiences)
+                  (What the agent remembers + real-world URLs for additional context)
                 </span>
               </label>
               <textarea
@@ -434,12 +434,25 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                 onChange={(e) => setFormData(prev => ({...prev, memory_summary: e.target.value}))}
                 className="w-full p-2 border rounded bg-blue-50"
                 rows="4"
-                placeholder="Key memories, insights, relationships, and important developments the agent should remember..."
+                placeholder="Key memories, insights, relationships, and important developments...
+
+🌐 Include URLs for real-world context:
+• Social media profiles (LinkedIn, Twitter)
+• News articles, research papers
+• Company websites, personal blogs
+• Any web content that should influence this agent's thinking
+
+URLs will be automatically fetched and summarized!"
                 disabled={loading}
               />
               <p className="text-xs text-blue-600 mt-1">
-                💡 <strong>Pro tip:</strong> Use this to give agents specific knowledge, past experiences, or relationships that will influence their behavior
+                💡 <strong>Pro tip:</strong> Add URLs to give agents real-world knowledge that will shape their responses
               </p>
+              {formData.memory_summary.includes('http') && (
+                <p className="text-xs text-green-600 mt-1">
+                  🌐 URLs detected! They will be processed when you save.
+                </p>
+              )}
             </div>
           </div>
 
