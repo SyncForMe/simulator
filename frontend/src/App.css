@@ -1,3 +1,71 @@
+/* Observer Input Styles */
+.observer-input {
+  border: 2px solid #7c3aed;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+}
+
+.observer-input textarea {
+  border: 1px solid #c084fc;
+  background: white;
+}
+
+.observer-input textarea:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.observer-input .text-purple-700 {
+  color: #6d28d9;
+}
+
+.observer-input .bg-purple-100 {
+  background-color: #f3e8ff;
+}
+
+.observer-input .text-purple-600 {
+  color: #7c3aed;
+}
+
+.observer-input .bg-purple-50 {
+  background-color: #faf5ff;
+}
+
+.observer-input .border-purple-200 {
+  border-color: #e9d5ff;
+}
+
+.observer-input .border-purple-500 {
+  border-color: #8b5cf6;
+}
+
+.observer-input .bg-purple-600 {
+  background-color: #7c3aed;
+}
+
+.observer-input .bg-purple-600:hover {
+  background-color: #6d28d9;
+}
+
+/* Copy functionality styles */
+.copy-button {
+  transition: all 0.2s ease-in-out;
+}
+
+.copy-button:hover {
+  transform: scale(1.05);
+}
+
+.copy-status {
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  20%, 80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
 /* Weekly Summary - Optimized for wider layout */
 .weekly-summary {
   border: 1px solid #e5e7eb;
