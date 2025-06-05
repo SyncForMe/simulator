@@ -814,7 +814,8 @@ function App() {
       fetchRelationships(),
       fetchSimulationState(),
       fetchApiUsage(),
-      fetchSummaries()
+      fetchSummaries(),
+      fetchArchetypes()
     ]);
     setLoading(false);
   };
