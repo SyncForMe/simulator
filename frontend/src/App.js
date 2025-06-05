@@ -1420,16 +1420,6 @@ function App() {
     setLoading(false);
   };
 
-  const handleSendObserverMessage = async (message) => {
-    try {
-      await axios.post(`${API}/observer/send-message`, { observer_message: message });
-      await refreshAllData();
-    } catch (error) {
-      console.error('Error sending observer message:', error);
-      alert('Error sending message. Make sure simulation is running.');
-    }
-  };
-
   const handleFastForward = async (targetDays, conversationsPerPeriod) => {
     setLoading(true);
     try {
