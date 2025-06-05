@@ -527,7 +527,7 @@ async def resume_simulation():
 
 @api_router.post("/simulation/generate-summary")
 async def generate_weekly_summary():
-    """Generate AI summary of conversations from the past week"""
+    """Generate structured AI summary of conversations with focus on key discoveries"""
     # Get all conversations
     conversations = await db.conversations.find().sort("created_at", -1).to_list(100)
     
@@ -550,64 +550,87 @@ async def generate_weekly_summary():
     
     # Prepare conversation text for summary
     conv_text = ""
-    for conv in recent_conversations:
-        conv_text += f"\n{conv['time_period']}:\n"
-        for msg in conv.get('messages', []):
-            conv_text += f"- {msg['agent_name']}: {msg['message']}\n"
+    key_decisions = []
+    agent_interactions = []
     
-    # Generate summary using LLM
+    for conv in recent_conversations:
+        conv_text += f"\n**{conv['time_period']}:**\n"
+        for msg in conv.get('messages', []):
+            conv_text += f"- **{msg['agent_name']}**: {msg['message']}\n"
+            # Track significant statements for key events
+            if any(keyword in msg['message'].lower() for keyword in ['decide', 'discovery', 'found', 'breakthrough', 'crisis', 'solution', 'agreement', 'conflict']):
+                key_decisions.append(f"{msg['agent_name']}: {msg['message']}")
+    
+    # Generate structured summary using LLM
     chat = LlmChat(
         api_key=llm_manager.api_key,
-        session_id=f"summary_{datetime.now().timestamp()}",
-        system_message="""You are analyzing AI agent interactions over time. 
-        Create a concise summary highlighting:
-        1. Key relationship developments
-        2. Personality traits that emerged
-        3. Conflicts or agreements
-        4. Notable behavioral patterns
-        5. Any emergent discoveries or realizations
+        session_id=f"weekly_summary_{datetime.now().timestamp()}",
+        system_message="""You are analyzing AI agent interactions to create a structured weekly report. 
+        Focus on concrete discoveries, decisions, breakthroughs, and significant developments.
         
-        Be analytical but engaging. Focus on the most interesting social dynamics."""
+        Create a report with these sections:
+        1. KEY EVENTS & DISCOVERIES (main focus - most important developments, decisions, breakthroughs)
+        2. RELATIONSHIP DEVELOPMENTS (how agent relationships changed)
+        3. EMERGING PERSONALITIES (how each agent's personality manifested)
+        4. SOCIAL DYNAMICS (team cohesion, leadership patterns, conflicts)
+        5. STRATEGIC DECISIONS (important choices made by the team)
+        6. LOOKING AHEAD (predictions for future developments)
+        
+        Use **bold** for section headers and important points. Be specific and actionable."""
     ).with_model("gemini", "gemini-2.0-flash")
     
-    prompt = f"""Analyze these AI agent conversations from the Research Station simulation:
+    prompt = f"""Analyze these AI agent conversations and create a structured weekly report:
 
+**Simulation Context:** Day {current_day}
+**Total Conversations Analyzed:** {len(recent_conversations)}
+
+**Conversation Log:**
 {conv_text}
 
-Provide a weekly summary in this format:
-**Week Summary - Day {current_day}**
+Create a weekly report with this structure:
 
-**Relationship Developments:**
-[Key changes in how agents interact with each other]
+## **🔥 KEY EVENTS & DISCOVERIES**
+[Focus on the most important breakthroughs, decisions, conflicts, or discoveries. What actually happened? What was decided? What problems were solved or identified?]
 
-**Emerging Personalities:** 
-[How each agent's personality manifested]
+## **👥 RELATIONSHIP DEVELOPMENTS** 
+[How did agent relationships evolve? New alliances, tensions, collaborations?]
 
-**Key Events & Discoveries:**
-[Important moments, agreements, conflicts, or insights]
+## **🎭 EMERGING PERSONALITIES**
+[How did each agent's unique personality traits manifest in their behavior?]
 
-**Social Dynamics:**
-[Overall team cohesion, leadership patterns, group behavior]
+## **⚖️ SOCIAL DYNAMICS**
+[Team leadership, decision-making patterns, group behavior]
 
-**Looking Ahead:**
-[Predictions for future developments]"""
+## **🎯 STRATEGIC DECISIONS**
+[Important choices, strategies, or plans the team developed]
+
+## **🔮 LOOKING AHEAD**
+[What trends are emerging? What might happen next?]
+
+Make this actionable and specific. Focus on concrete events and developments."""
     
     try:
         user_message = UserMessage(text=prompt)
         response = await chat.send_message(user_message)
         await llm_manager.increment_usage()
         
-        # Store summary in database
+        # Store structured summary in database
         summary_doc = {
             "id": str(uuid.uuid4()),
             "summary": response,
             "day_generated": current_day,
             "conversations_analyzed": len(recent_conversations),
+            "report_type": "weekly_structured",
             "created_at": datetime.utcnow()
         }
         await db.summaries.insert_one(summary_doc)
         
-        return {"summary": response, "day": current_day, "conversations_count": len(recent_conversations)}
+        return {
+            "summary": response, 
+            "day": current_day, 
+            "conversations_count": len(recent_conversations),
+            "report_type": "weekly_structured"
+        }
         
     except Exception as e:
         logging.error(f"Error generating summary: {e}")
