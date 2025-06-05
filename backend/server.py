@@ -854,17 +854,23 @@ async def init_research_station():
         {
             "name": "Dr. Sarah Chen",
             "archetype": "scientist",
-            "goal": "Study team dynamics and research efficiency during isolation"
+            "goal": "Study team dynamics and research efficiency during isolation",
+            "expertise": "Behavioral Psychology and Team Dynamics",
+            "background": "PhD in Psychology, specializes in group behavior in confined environments"
         },
         {
             "name": "Marcus Rivera", 
             "archetype": "optimist",
-            "goal": "Keep team morale high and foster collaboration"
+            "goal": "Keep team morale high and foster collaboration",
+            "expertise": "Communications and Conflict Resolution",
+            "background": "Former team leader with experience in high-stress collaborative projects"
         },
         {
             "name": "Alex Thompson",
             "archetype": "skeptic", 
-            "goal": "Ensure mission safety and identify potential problems"
+            "goal": "Ensure mission safety and identify potential problems",
+            "expertise": "Risk Assessment and Safety Protocols",
+            "background": "Safety engineer with experience in mission-critical operations"
         }
     ]
     
