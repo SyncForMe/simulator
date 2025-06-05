@@ -1110,6 +1110,7 @@ function App() {
               onNextPeriod={handleNextPeriod}
               onGenerateConversation={handleGenerateConversation}
               onInitResearchStation={handleInitResearchStation}
+              onTestBackgrounds={handleTestBackgrounds}
               onToggleAuto={handleToggleAuto}
               setShowFastForward={setShowFastForward}
             />
