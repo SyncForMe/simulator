@@ -177,6 +177,7 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
   const [latestSummary, setLatestSummary] = useState(null);
   const [autoReports, setAutoReports] = useState({ enabled: false, interval_hours: 168 });
   const [expandedSections, setExpandedSections] = useState({});
+  const [copyStatus, setCopyStatus] = useState(null);
 
   useEffect(() => {
     if (summaries && summaries.length > 0) {
@@ -206,16 +207,80 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
     }));
   };
 
+  const copyToClipboard = async (text, label) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus(label);
+      setTimeout(() => setCopyStatus(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopyStatus(label);
+      setTimeout(() => setCopyStatus(null), 2000);
+    }
+  };
+
+  const copyFullReport = () => {
+    if (!latestSummary) return;
+    const fullText = latestSummary.summary || "No report content available";
+    copyToClipboard(fullText, "Full Report");
+  };
+
+  const copySectionContent = (sectionKey, sectionTitle) => {
+    if (!latestSummary?.structured_sections?.[sectionKey]) return;
+    const sectionText = `## ${sectionTitle}\n\n${latestSummary.structured_sections[sectionKey]}`;
+    copyToClipboard(sectionText, sectionTitle);
+  };
+
   const renderStructuredSummary = (summary) => {
     const sections = summary.structured_sections || {};
     
     return (
       <div className="structured-summary">
+        {/* Copy Full Report Button */}
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="text-lg font-semibold text-gray-800">Weekly Analysis Report</h4>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={copyFullReport}
+              className="flex items-center space-x-1 bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-2 rounded-lg transition-colors duration-200"
+              title="Copy entire report"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span className="text-sm font-medium">Copy All</span>
+            </button>
+            {copyStatus && (
+              <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">
+                ✓ {copyStatus} copied!
+              </span>
+            )}
+          </div>
+        </div>
+
         {/* Key Events & Discoveries - Always Visible */}
         <div className="key-events-section mb-6">
-          <h3 className="text-xl font-bold text-blue-600 mb-3 flex items-center">
-            🔥 <span className="ml-2">KEY EVENTS & DISCOVERIES</span>
-          </h3>
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-xl font-bold text-blue-600 flex items-center">
+              🔥 <span className="ml-2">KEY EVENTS & DISCOVERIES</span>
+            </h3>
+            <button
+              onClick={() => copySectionContent('key_events', '🔥 KEY EVENTS & DISCOVERIES')}
+              className="flex items-center space-x-1 bg-blue-50 hover:bg-blue-100 text-blue-600 px-2 py-1 rounded transition-colors duration-200"
+              title="Copy this section"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
           <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
             <div className="whitespace-pre-wrap text-gray-800">
               {sections.key_events || "No key events identified in this period."}
@@ -239,9 +304,23 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
                   className={`w-full text-left p-3 bg-${section.color}-100 hover:bg-${section.color}-200 rounded-lg border border-${section.color}-200 transition-colors duration-200 flex justify-between items-center`}
                 >
                   <span className="font-semibold text-gray-800">{section.title}</span>
-                  <span className="text-gray-500">
-                    {expandedSections[section.key] ? '▼' : '▶'}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copySectionContent(section.key, section.title);
+                      }}
+                      className={`p-1 bg-${section.color}-50 hover:bg-${section.color}-100 rounded transition-colors duration-200`}
+                      title="Copy this section"
+                    >
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </button>
+                    <span className="text-gray-500">
+                      {expandedSections[section.key] ? '▼' : '▶'}
+                    </span>
+                  </div>
                 </button>
                 
                 {expandedSections[section.key] && (
@@ -302,6 +381,18 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
             renderStructuredSummary(latestSummary)
           ) : (
             <div className="legacy-summary bg-gray-50 rounded p-3 text-sm">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Report Content</span>
+                <button
+                  onClick={copyFullReport}
+                  className="flex items-center space-x-1 bg-gray-100 hover:bg-gray-200 text-gray-600 px-2 py-1 rounded text-xs"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
               <div className="whitespace-pre-wrap">{latestSummary.summary}</div>
             </div>
           )}
