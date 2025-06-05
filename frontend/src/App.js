@@ -1475,6 +1475,17 @@ function App() {
     }
   };
 
+  const handleSendObserverMessage = async (message) => {
+    try {
+      const response = await axios.post(`${API}/observer/message`, { message });
+      return response.data.responses;
+    } catch (error) {
+      console.error('Error sending observer message:', error);
+      alert('Error sending message: ' + (error.response?.data?.detail || error.message));
+      return null;
+    }
+  };
+
   // Load initial data
   useEffect(() => {
     refreshAllData();
