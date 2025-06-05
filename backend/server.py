@@ -10,6 +10,8 @@ from typing import List, Dict, Optional
 import uuid
 from datetime import datetime, date
 import asyncio
+import re
+import urllib.parse
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 ROOT_DIR = Path(__file__).parent
