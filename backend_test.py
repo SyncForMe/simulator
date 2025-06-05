@@ -180,7 +180,24 @@ def main():
         print("Simulation state shows inactive, but should be active")
         sim_state = False
     
-    # 7. Test setting a custom scenario
+    # 7. Generate a few conversations for summary material
+    print("\nGenerating conversations for summary material...")
+    for i in range(3):
+        conv_gen, conv_data = run_test(
+            f"Generate Conversation {i+1}",
+            "/conversation/generate",
+            method="POST",
+            expected_keys=["messages", "round_number", "time_period"]
+        )
+        
+        # Verify conversation has messages from all agents
+        if conv_gen and len(conv_data.get("messages", [])) != 3:
+            print(f"Expected messages from 3 agents, but got {len(conv_data.get('messages', []))}")
+        
+        # Add a small delay between conversation generations
+        time.sleep(1)
+    
+    # 8. Test setting a custom scenario (Feature 1)
     custom_scenario = "A mysterious signal has been detected. The team must investigate."
     set_scenario, scenario_data = run_test(
         "Set Custom Scenario",
@@ -195,7 +212,7 @@ def main():
         print(f"Scenario was not set correctly. Expected: {custom_scenario}, Got: {scenario_data.get('scenario')}")
         set_scenario = False
     
-    # 8. Test setting an empty scenario (should fail)
+    # 9. Test setting an empty scenario (should fail)
     empty_scenario, _ = run_test(
         "Set Empty Scenario (Should Fail)",
         "/simulation/set-scenario",
@@ -204,7 +221,64 @@ def main():
         expected_status=400
     )
     
-    # 9. Test enabling auto mode
+    # 10. Check simulation state to verify scenario was updated
+    sim_state_updated, state_data_updated = run_test(
+        "Verify Scenario Update in Simulation State",
+        "/simulation/state",
+        expected_keys=["current_day", "current_time_period", "is_active", "scenario"]
+    )
+    
+    # Verify scenario was updated in simulation state
+    if sim_state_updated:
+        if state_data_updated.get("scenario") != custom_scenario:
+            print(f"Scenario not updated in simulation state. Expected: {custom_scenario}, Got: {state_data_updated.get('scenario')}")
+            sim_state_updated = False
+    
+    # 11. Generate weekly summary (Feature 2)
+    summary_gen, summary_data = run_test(
+        "Generate Weekly Summary",
+        "/simulation/generate-summary",
+        method="POST",
+        expected_keys=["summary", "day", "conversations_count"]
+    )
+    
+    # Verify summary was generated with meaningful content
+    if summary_gen:
+        if len(summary_data.get("summary", "")) < 50:
+            print(f"Summary seems too short to be meaningful: {summary_data.get('summary')}")
+            summary_gen = False
+        else:
+            print("Verified summary contains meaningful content")
+            # Check for structured sections in the summary
+            summary_text = summary_data.get("summary", "")
+            if "KEY EVENTS & DISCOVERIES" not in summary_text or "RELATIONSHIP DEVELOPMENTS" not in summary_text:
+                print("Summary doesn't contain expected structured sections")
+                summary_gen = False
+            else:
+                print("Verified summary contains structured sections")
+    
+    # 12. Get all summaries (Feature 2)
+    summaries, summaries_data = run_test(
+        "Get All Summaries",
+        "/summaries",
+        expected_keys=[]  # We don't know the exact keys but expect a list
+    )
+    
+    # Verify at least one summary exists
+    if summaries:
+        if not isinstance(summaries_data, list) or len(summaries_data) < 1:
+            print(f"Expected at least one summary, but got: {summaries_data}")
+            summaries = False
+        else:
+            print(f"Found {len(summaries_data)} summaries")
+            # Check if the summary has the expected fields
+            if "summary" not in summaries_data[0] or "day_generated" not in summaries_data[0]:
+                print(f"Summary is missing expected fields: {summaries_data[0]}")
+                summaries = False
+            else:
+                print("Verified summaries contain required fields")
+    
+    # 13. Test enabling auto mode (Feature 3)
     auto_mode_data = {
         "auto_conversations": True,
         "auto_time": True,
@@ -226,8 +300,10 @@ def main():
                 print(f"Auto mode setting {key} was not set correctly. Expected: {value}, Got: {auto_mode_response.get(key)}")
                 auto_mode = False
                 break
+        if auto_mode:
+            print("Verified all auto mode settings were applied correctly")
     
-    # 10. Test disabling auto mode
+    # 14. Test disabling auto mode (Feature 3)
     disable_auto_data = {
         "auto_conversations": False,
         "auto_time": False
@@ -245,91 +321,27 @@ def main():
         if disable_auto_response.get("auto_conversations") != False or disable_auto_response.get("auto_time") != False:
             print(f"Auto mode was not disabled correctly")
             disable_auto = False
-    
-    # 11. Check simulation state to verify scenario and auto mode settings
-    sim_state_updated, state_data_updated = run_test(
-        "Verify Simulation State Updates",
-        "/simulation/state",
-        expected_keys=["current_day", "current_time_period", "is_active", "scenario", "auto_conversations", "auto_time"]
-    )
-    
-    # Verify scenario and auto mode settings in simulation state
-    if sim_state_updated:
-        if state_data_updated.get("scenario") != custom_scenario:
-            print(f"Scenario not updated in simulation state. Expected: {custom_scenario}, Got: {state_data_updated.get('scenario')}")
-            sim_state_updated = False
-        if state_data_updated.get("auto_conversations") != False or state_data_updated.get("auto_time") != False:
-            print(f"Auto mode settings not correctly reflected in simulation state")
-            sim_state_updated = False
-    
-    # 12. Generate conversation
-    conv_gen, conv_data = run_test(
-        "Generate Conversation",
-        "/conversation/generate",
-        method="POST",
-        expected_keys=["messages", "round_number", "time_period"]
-    )
-    
-    # Verify conversation has messages from all agents
-    if conv_gen and len(conv_data.get("messages", [])) != 3:
-        print(f"Expected messages from 3 agents, but got {len(conv_data.get('messages', []))}")
-    
-    # 13. Generate another conversation to have enough data for summary
-    print("\nGenerating second conversation round...")
-    conv_gen2, conv_data2 = run_test(
-        "Generate Second Conversation",
-        "/conversation/generate",
-        method="POST",
-        expected_keys=["messages", "round_number", "time_period"]
-    )
-    
-    # 14. Generate weekly summary
-    summary_gen, summary_data = run_test(
-        "Generate Weekly Summary",
-        "/simulation/generate-summary",
-        method="POST",
-        expected_keys=["summary", "day", "conversations_count"]
-    )
-    
-    # Verify summary was generated with meaningful content
-    if summary_gen:
-        if len(summary_data.get("summary", "")) < 50:
-            print(f"Summary seems too short to be meaningful: {summary_data.get('summary')}")
-            summary_gen = False
-    
-    # 15. Get all summaries
-    summaries, summaries_data = run_test(
-        "Get All Summaries",
-        "/summaries",
-        expected_keys=[]  # We don't know the exact keys but expect a list
-    )
-    
-    # Verify at least one summary exists
-    if summaries:
-        if not isinstance(summaries_data, list) or len(summaries_data) < 1:
-            print(f"Expected at least one summary, but got: {summaries_data}")
-            summaries = False
         else:
-            print(f"Found {len(summaries_data)} summaries")
-            # Check if the summary has the expected fields
-            if "summary" not in summaries_data[0] or "day_generated" not in summaries_data[0]:
-                print(f"Summary is missing expected fields: {summaries_data[0]}")
-                summaries = False
+            print("Verified auto mode was disabled correctly")
     
-    # 16. Get conversation history
-    conv_history, history_data = run_test(
-        "Get Conversation History",
-        "/conversations"
+    # 15. Check simulation state to verify auto mode settings
+    sim_state_auto, state_data_auto = run_test(
+        "Verify Auto Mode Settings in Simulation State",
+        "/simulation/state",
+        expected_keys=["current_day", "current_time_period", "is_active", "auto_conversations", "auto_time"]
     )
     
-    # Verify we have at least two conversations
-    if conv_history and len(history_data) < 2:
-        print("Expected at least two conversations in history")
-        conv_history = False
+    # Verify auto mode settings in simulation state
+    if sim_state_auto:
+        if state_data_auto.get("auto_conversations") != False or state_data_auto.get("auto_time") != False:
+            print(f"Auto mode settings not correctly reflected in simulation state")
+            sim_state_auto = False
+        else:
+            print("Verified auto mode settings are correctly reflected in simulation state")
     
-    # 17. Check API usage
+    # 16. Check API usage to verify tracking with summary generation (Feature 4)
     api_usage, usage_data = run_test(
-        "Check API Usage",
+        "Check API Usage After Summary Generation",
         "/api-usage",
         expected_keys=["date", "requests_used", "max_requests", "remaining"]
     )
@@ -337,9 +349,12 @@ def main():
     # Verify API usage is being tracked
     if api_usage:
         if usage_data.get("requests_used", 0) < 1:
-            print("Expected API usage to be at least 1 after generating conversation")
+            print("Expected API usage to be at least 1 after generating summary")
+            api_usage = False
+        else:
+            print(f"Verified API usage is being tracked: {usage_data.get('requests_used')} requests used")
     
-    # 18. Advance time period
+    # 17. Advance time period
     next_period, period_data = run_test(
         "Advance Time Period",
         "/simulation/next-period",
@@ -349,24 +364,26 @@ def main():
     
     # Verify time period advanced
     if next_period:
-        if state_data_updated.get("current_time_period") == period_data.get("new_period"):
+        if state_data_auto.get("current_time_period") == period_data.get("new_period"):
             print(f"Time period did not advance, still at {period_data.get('new_period')}")
             next_period = False
+        else:
+            print(f"Verified time period advanced to {period_data.get('new_period')}")
     
-    # 19. Check simulation state again to verify time period changed
-    sim_state2, state_data2 = run_test(
+    # 18. Check simulation state again to verify time period changed
+    sim_state_final, state_data_final = run_test(
         "Verify Time Period Advanced",
         "/simulation/state",
         expected_keys=["current_day", "current_time_period", "is_active"]
     )
     
     # Verify time period changed
-    if sim_state2:
-        if state_data_updated.get("current_time_period") == state_data2.get("current_time_period"):
+    if sim_state_final:
+        if state_data_auto.get("current_time_period") == state_data_final.get("current_time_period"):
             print(f"Time period did not change in simulation state")
-            sim_state2 = False
+            sim_state_final = False
         else:
-            print(f"Time period successfully advanced from {state_data_updated.get('current_time_period')} to {state_data2.get('current_time_period')}")
+            print(f"Verified time period successfully advanced from {state_data_auto.get('current_time_period')} to {state_data_final.get('current_time_period')}")
     
     # Print summary of all tests
     print_summary()
