@@ -1,52 +1,373 @@
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
+const AgentCard = ({ agent, relationships }) => {
+  const getPersonalityColor = (value) => {
+    if (value <= 3) return "bg-red-500";
+    if (value <= 6) return "bg-yellow-500"; 
+    return "bg-green-500";
   };
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
+  const agentRelationships = relationships.filter(r => r.agent1_id === agent.id);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2">
+      <div className="agent-header">
+        <h3 className="text-lg font-bold text-gray-800">{agent.name}</h3>
+        <p className="text-sm text-gray-600">{agent.archetype}</p>
+        <p className="text-xs text-gray-500 italic">"{agent.goal}"</p>
+      </div>
+      
+      <div className="personality-traits mt-3">
+        <h4 className="text-sm font-semibold mb-2">Personality</h4>
+        {Object.entries(agent.personality).map(([trait, value]) => (
+          <div key={trait} className="trait-bar mb-1">
+            <div className="flex justify-between items-center">
+              <span className="text-xs capitalize">{trait}</span>
+              <span className="text-xs">{value}/10</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className={`h-2 rounded-full ${getPersonalityColor(value)}`}
+                style={{width: `${value * 10}%`}}
+              ></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {agentRelationships.length > 0 && (
+        <div className="relationships mt-3">
+          <h4 className="text-sm font-semibold mb-2">Relationships</h4>
+          {agentRelationships.map(rel => (
+            <div key={rel.id} className="text-xs">
+              <span className={`px-2 py-1 rounded ${
+                rel.status === 'friends' ? 'bg-green-100 text-green-800' :
+                rel.status === 'tension' ? 'bg-red-100 text-red-800' :
+                'bg-gray-100 text-gray-800'
+              }`}>
+                {rel.status} ({rel.score})
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      <div className="agent-status mt-3">
+        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+          {agent.current_mood} • {agent.current_activity}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const ConversationViewer = ({ conversations }) => {
+  if (!conversations.length) {
+    return (
+      <div className="conversation-viewer bg-gray-50 rounded-lg p-4">
+        <p className="text-gray-500 text-center">No conversations yet. Start the simulation!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="conversation-viewer bg-white rounded-lg shadow-md p-4 max-h-96 overflow-y-auto">
+      <h3 className="text-lg font-bold mb-4">Agent Conversations</h3>
+      {conversations.map((round) => (
+        <div key={round.id} className="conversation-round mb-4 p-3 bg-gray-50 rounded">
+          <h4 className="font-semibold text-sm text-gray-700 mb-2">
+            Round {round.round_number} - {round.time_period}
+          </h4>
+          <div className="messages">
+            {round.messages.map((message) => (
+              <div key={message.id} className="message mb-2">
+                <div className="flex items-start">
+                  <span className="font-medium text-blue-600 mr-2">{message.agent_name}:</span>
+                  <span className="text-gray-800">{message.message}</span>
+                </div>
+                <span className="text-xs text-gray-500 ml-2">({message.mood})</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const ControlPanel = ({ 
+  simulationState, 
+  apiUsage, 
+  onStartSimulation, 
+  onNextPeriod, 
+  onGenerateConversation,
+  onInitResearchStation
+}) => {
+  return (
+    <div className="control-panel bg-white rounded-lg shadow-md p-4">
+      <h3 className="text-lg font-bold mb-4">Simulation Control</h3>
+      
+      <div className="simulation-info mb-4">
+        <p className="text-sm"><strong>Day:</strong> {simulationState?.current_day || 1}</p>
+        <p className="text-sm"><strong>Time:</strong> {simulationState?.current_time_period || 'morning'}</p>
+        <p className="text-sm"><strong>Scenario:</strong> {simulationState?.scenario || 'None'}</p>
+        <p className="text-sm"><strong>Status:</strong> 
+          <span className={`ml-1 px-2 py-1 rounded text-xs ${
+            simulationState?.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}>
+            {simulationState?.is_active ? 'Active' : 'Inactive'}
+          </span>
+        </p>
+      </div>
+
+      <div className="api-usage mb-4 p-3 bg-gray-50 rounded">
+        <h4 className="font-semibold text-sm mb-2">API Usage Today</h4>
+        <div className="w-full bg-gray-200 rounded-full h-3">
+          <div 
+            className="bg-blue-500 h-3 rounded-full"
+            style={{width: `${(apiUsage?.requests_used || 0) / (apiUsage?.max_requests || 1400) * 100}%`}}
+          ></div>
+        </div>
+        <p className="text-xs mt-1">
+          {apiUsage?.requests_used || 0} / {apiUsage?.max_requests || 1400} requests
+          ({apiUsage?.remaining || 1400} remaining)
+        </p>
+      </div>
+
+      <div className="controls space-y-2">
+        <button 
+          onClick={onInitResearchStation}
+          className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm"
         >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+          Initialize Research Station
+        </button>
+        
+        <button 
+          onClick={onStartSimulation}
+          className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
+        >
+          Start New Simulation
+        </button>
+        
+        <button 
+          onClick={onNextPeriod}
+          className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
+          disabled={!simulationState?.is_active}
+        >
+          Next Time Period
+        </button>
+        
+        <button 
+          onClick={onGenerateConversation}
+          className="w-full bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 text-sm"
+          disabled={!simulationState?.is_active || (apiUsage?.remaining || 0) <= 0}
+        >
+          Generate Conversation
+        </button>
+      </div>
     </div>
   );
 };
 
 function App() {
+  const [agents, setAgents] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [relationships, setRelationships] = useState([]);
+  const [simulationState, setSimulationState] = useState(null);
+  const [apiUsage, setApiUsage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch data functions
+  const fetchAgents = async () => {
+    try {
+      const response = await axios.get(`${API}/agents`);
+      setAgents(response.data);
+    } catch (error) {
+      console.error('Error fetching agents:', error);
+    }
+  };
+
+  const fetchConversations = async () => {
+    try {
+      const response = await axios.get(`${API}/conversations`);
+      setConversations(response.data);
+    } catch (error) {
+      console.error('Error fetching conversations:', error);
+    }
+  };
+
+  const fetchRelationships = async () => {
+    try {
+      const response = await axios.get(`${API}/relationships`);
+      setRelationships(response.data);
+    } catch (error) {
+      console.error('Error fetching relationships:', error);
+    }
+  };
+
+  const fetchSimulationState = async () => {
+    try {
+      const response = await axios.get(`${API}/simulation/state`);
+      setSimulationState(response.data);
+    } catch (error) {
+      console.error('Error fetching simulation state:', error);
+    }
+  };
+
+  const fetchApiUsage = async () => {
+    try {
+      const response = await axios.get(`${API}/api-usage`);
+      setApiUsage(response.data);
+    } catch (error) {
+      console.error('Error fetching API usage:', error);
+    }
+  };
+
+  const refreshAllData = async () => {
+    setLoading(true);
+    await Promise.all([
+      fetchAgents(),
+      fetchConversations(), 
+      fetchRelationships(),
+      fetchSimulationState(),
+      fetchApiUsage()
+    ]);
+    setLoading(false);
+  };
+
+  // Control functions
+  const handleInitResearchStation = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/simulation/init-research-station`);
+      await refreshAllData();
+    } catch (error) {
+      console.error('Error initializing research station:', error);
+    }
+    setLoading(false);
+  };
+
+  const handleStartSimulation = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/simulation/start`);
+      await refreshAllData();
+    } catch (error) {
+      console.error('Error starting simulation:', error);
+    }
+    setLoading(false);
+  };
+
+  const handleNextPeriod = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/simulation/next-period`);
+      await refreshAllData();
+    } catch (error) {
+      console.error('Error advancing time period:', error);
+    }
+    setLoading(false);
+  };
+
+  const handleGenerateConversation = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`${API}/conversation/generate`);
+      await refreshAllData();
+    } catch (error) {
+      console.error('Error generating conversation:', error);
+      alert('Error generating conversation. Check API usage limits.');
+    }
+    setLoading(false);
+  };
+
+  // Load initial data
+  useEffect(() => {
+    refreshAllData();
+  }, []);
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+    <div className="App min-h-screen bg-gray-100">
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <h1 className="text-2xl font-bold text-gray-900">
+              🤖 AI Agent Simulation
+            </h1>
+            <button 
+              onClick={refreshAllData}
+              disabled={loading}
+              className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm"
+            >
+              {loading ? 'Loading...' : 'Refresh'}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Agents */}
+          <div className="lg:col-span-1">
+            <h2 className="text-xl font-bold mb-4">AI Agents ({agents.length}/5)</h2>
+            <div className="agent-grid">
+              {agents.length > 0 ? (
+                agents.map(agent => (
+                  <AgentCard 
+                    key={agent.id} 
+                    agent={agent} 
+                    relationships={relationships}
+                  />
+                ))
+              ) : (
+                <div className="bg-white rounded-lg shadow-md p-4 text-center">
+                  <p className="text-gray-500">No agents created yet.</p>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Click "Initialize Research Station" to create the default 3 agents.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Middle Column - Conversations */}
+          <div className="lg:col-span-1">
+            <h2 className="text-xl font-bold mb-4">Conversations</h2>
+            <ConversationViewer conversations={conversations} />
+          </div>
+
+          {/* Right Column - Controls */}
+          <div className="lg:col-span-1">
+            <ControlPanel
+              simulationState={simulationState}
+              apiUsage={apiUsage}
+              onStartSimulation={handleStartSimulation}
+              onNextPeriod={handleNextPeriod}
+              onGenerateConversation={handleGenerateConversation}
+              onInitResearchStation={handleInitResearchStation}
+            />
+
+            {/* Scenario Info */}
+            <div className="bg-white rounded-lg shadow-md p-4 mt-4">
+              <h3 className="text-lg font-bold mb-2">Research Station Scenario</h3>
+              <p className="text-sm text-gray-600 mb-2">
+                Three researchers are stationed together for a month-long study. 
+                They're getting to know each other and establishing team dynamics.
+              </p>
+              <div className="text-xs text-gray-500">
+                <p><strong>Dr. Sarah Chen:</strong> Analytical scientist studying team behavior</p>
+                <p><strong>Marcus Rivera:</strong> Optimistic team member focused on collaboration</p>
+                <p><strong>Alex Thompson:</strong> Skeptical researcher concerned about mission safety</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
