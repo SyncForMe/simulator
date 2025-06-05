@@ -631,23 +631,23 @@ Provide a weekly summary in this format:
         # Create a fallback summary when API fails
         fallback_summary = f"""**Week Summary - Day {current_day}**
 
-**🔥 KEY EVENTS & DISCOVERIES:**
+**1. 🔥 KEY EVENTS & DISCOVERIES**
 - {len(recent_conversations)} conversations analyzed from recent simulation periods
 - Team dynamics continue to evolve between {len(set([msg['agent_name'] for conv in recent_conversations for msg in conv.get('messages', [])]))} active agents
 
-**Relationship Developments:**
+**2. 📈 RELATIONSHIP DEVELOPMENTS**
 - Ongoing interactions between team members showing personality-driven responses
 - Relationship patterns emerging based on agent archetypes and conversation contexts
 
-**Emerging Personalities:**
+**3. 🎭 EMERGING PERSONALITIES**
 - Each agent continues to demonstrate their unique archetype characteristics
 - Personality traits influencing conversation styles and decision-making approaches
 
-**Social Dynamics:**
+**4. 🤝 SOCIAL DYNAMICS**
 - Team coordination and communication patterns developing
 - Individual agent strengths contributing to group discussions
 
-**Looking Ahead:**
+**5. 🔮 LOOKING AHEAD**
 - Continued monitoring of agent interactions and relationship evolution
 - Further development of personality-based conversation patterns
 
