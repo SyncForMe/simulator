@@ -489,7 +489,17 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
   );
 };
 
-const AgentCard = ({ agent, relationships, onEdit }) => {
+const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory }) => {
+  const [showMemoryInput, setShowMemoryInput] = useState(false);
+  const [newMemory, setNewMemory] = useState('');
+
+  const handleAddMemory = async (e) => {
+    e.preventDefault();
+    if (!newMemory.trim()) return;
+    await onAddMemory(agent.id, newMemory);
+    setNewMemory('');
+    setShowMemoryInput(false);
+  };
   const getPersonalityColor = (value) => {
     if (value <= 3) return "bg-red-500";
     if (value <= 6) return "bg-yellow-500"; 
