@@ -744,6 +744,8 @@ function App() {
               simulationState={simulationState}
               apiUsage={apiUsage}
               onStartSimulation={handleStartSimulation}
+              onPauseSimulation={handlePauseSimulation}
+              onResumeSimulation={handleResumeSimulation}
               onNextPeriod={handleNextPeriod}
               onGenerateConversation={handleGenerateConversation}
               onInitResearchStation={handleInitResearchStation}
