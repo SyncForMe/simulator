@@ -419,7 +419,9 @@ function App() {
   const [relationships, setRelationships] = useState([]);
   const [simulationState, setSimulationState] = useState(null);
   const [apiUsage, setApiUsage] = useState(null);
+  const [summaries, setSummaries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [autoTimers, setAutoTimers] = useState({ conversation: null, time: null });
 
   // Fetch data functions
   const fetchAgents = async () => {
@@ -467,6 +469,15 @@ function App() {
     }
   };
 
+  const fetchSummaries = async () => {
+    try {
+      const response = await axios.get(`${API}/summaries`);
+      setSummaries(response.data);
+    } catch (error) {
+      console.error('Error fetching summaries:', error);
+    }
+  };
+
   const refreshAllData = async () => {
     setLoading(true);
     await Promise.all([
@@ -474,12 +485,77 @@ function App() {
       fetchConversations(), 
       fetchRelationships(),
       fetchSimulationState(),
-      fetchApiUsage()
+      fetchApiUsage(),
+      fetchSummaries()
     ]);
     setLoading(false);
   };
 
   // Control functions
+  const handleSetScenario = async (scenario) => {
+    try {
+      await axios.post(`${API}/simulation/set-scenario`, { scenario });
+      await fetchSimulationState();
+    } catch (error) {
+      console.error('Error setting scenario:', error);
+    }
+  };
+
+  const handleToggleAuto = async (autoSettings) => {
+    try {
+      await axios.post(`${API}/simulation/toggle-auto-mode`, autoSettings);
+      await fetchSimulationState();
+      
+      // Clear existing timers
+      if (autoTimers.conversation) {
+        clearInterval(autoTimers.conversation);
+      }
+      if (autoTimers.time) {
+        clearInterval(autoTimers.time);
+      }
+      
+      // Set up new timers if enabled
+      const newTimers = { conversation: null, time: null };
+      
+      if (autoSettings.auto_conversations) {
+        newTimers.conversation = setInterval(async () => {
+          try {
+            await axios.post(`${API}/conversation/generate`);
+            await refreshAllData();
+          } catch (error) {
+            console.error('Auto conversation error:', error);
+          }
+        }, autoSettings.conversation_interval * 1000);
+      }
+      
+      if (autoSettings.auto_time) {
+        newTimers.time = setInterval(async () => {
+          try {
+            await axios.post(`${API}/simulation/next-period`);
+            await fetchSimulationState();
+          } catch (error) {
+            console.error('Auto time error:', error);
+          }
+        }, autoSettings.time_interval * 1000);
+      }
+      
+      setAutoTimers(newTimers);
+    } catch (error) {
+      console.error('Error toggling auto mode:', error);
+    }
+  };
+
+  const handleGenerateSummary = async () => {
+    try {
+      const response = await axios.post(`${API}/simulation/generate-summary`);
+      await fetchSummaries();
+      return response.data;
+    } catch (error) {
+      console.error('Error generating summary:', error);
+      return null;
+    }
+  };
+
   const handleInitResearchStation = async () => {
     setLoading(true);
     try {
@@ -530,6 +606,14 @@ function App() {
     refreshAllData();
   }, []);
 
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (autoTimers.conversation) clearInterval(autoTimers.conversation);
+      if (autoTimers.time) clearInterval(autoTimers.time);
+    };
+  }, [autoTimers]);
+
   return (
     <div className="App min-h-screen bg-gray-100">
       <header className="bg-white shadow-sm border-b">
@@ -550,7 +634,7 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - Agents */}
           <div className="lg:col-span-1">
             <h2 className="text-xl font-bold mb-4">AI Agents ({agents.length}/5)</h2>
@@ -575,13 +659,20 @@ function App() {
           </div>
 
           {/* Middle Column - Conversations */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <h2 className="text-xl font-bold mb-4">Conversations</h2>
             <ConversationViewer conversations={conversations} />
           </div>
 
           {/* Right Column - Controls */}
           <div className="lg:col-span-1">
+            <ScenarioInput onSetScenario={handleSetScenario} />
+            
+            <AutoControls 
+              simulationState={simulationState}
+              onToggleAuto={handleToggleAuto}
+            />
+            
             <ControlPanel
               simulationState={simulationState}
               apiUsage={apiUsage}
@@ -589,7 +680,15 @@ function App() {
               onNextPeriod={handleNextPeriod}
               onGenerateConversation={handleGenerateConversation}
               onInitResearchStation={handleInitResearchStation}
+              onToggleAuto={handleToggleAuto}
             />
+
+            <div className="mt-4">
+              <WeeklySummary 
+                onGenerateSummary={handleGenerateSummary}
+                summaries={summaries}
+              />
+            </div>
 
             {/* Scenario Info */}
             <div className="bg-white rounded-lg shadow-md p-4 mt-4">
