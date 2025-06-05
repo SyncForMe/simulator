@@ -1262,15 +1262,16 @@ function App() {
 
             {/* Scenario Info */}
             <div className="bg-white rounded-lg shadow-md p-4 mt-4">
-              <h3 className="text-lg font-bold mb-2">Research Station Scenario</h3>
+              <h3 className="text-lg font-bold mb-2">🛸 Proxima Centauri Signal</h3>
               <p className="text-sm text-gray-600 mb-2">
-                Three researchers are stationed together for a month-long study. 
-                They're getting to know each other and establishing team dynamics.
+                A mysterious structured signal from Proxima Centauri with mathematical patterns repeating every 11 hours. 
+                Ground control is offline - the team must decide how to respond.
               </p>
               <div className="text-xs text-gray-500">
-                <p><strong>Dr. Sarah Chen:</strong> Analytical scientist studying team behavior</p>
-                <p><strong>Marcus Rivera:</strong> Optimistic team member focused on collaboration</p>
-                <p><strong>Alex Thompson:</strong> Skeptical researcher concerned about mission safety</p>
+                <p><strong>Dr. Elena Vasquez:</strong> SETI astrophysicist with signal analysis expertise</p>
+                <p><strong>Captain Jake Morrison:</strong> Navy SEAL focused on tactical security</p>
+                <p><strong>Dr. Amara Okafor:</strong> Psychologist managing team dynamics</p>
+                <p><strong>Zara Al-Rashid:</strong> CIA analyst questioning everything</p>
               </div>
             </div>
           </div>
