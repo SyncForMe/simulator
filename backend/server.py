@@ -580,35 +580,27 @@ async def generate_weekly_summary():
         Use **bold** for section headers and important points. Be specific and actionable."""
     ).with_model("gemini", "gemini-2.0-flash")
     
-    prompt = f"""Analyze these AI agent conversations and create a structured weekly report:
+    prompt = f"""Analyze these AI agent conversations from the Research Station simulation:
 
-**Simulation Context:** Day {current_day}
-**Total Conversations Analyzed:** {len(recent_conversations)}
-
-**Conversation Log:**
 {conv_text}
 
-Create a weekly report with this structure:
+Provide a weekly summary in this format:
+**Week Summary - Day {current_day}**
 
-## **🔥 KEY EVENTS & DISCOVERIES**
-[Focus on the most important breakthroughs, decisions, conflicts, or discoveries. What actually happened? What was decided? What problems were solved or identified?]
+**1. 🔥 KEY EVENTS & DISCOVERIES**
+[Key changes and important developments that occurred]
 
-## **👥 RELATIONSHIP DEVELOPMENTS** 
-[How did agent relationships evolve? New alliances, tensions, collaborations?]
+**2. 📈 RELATIONSHIP DEVELOPMENTS**
+[How agent relationships evolved - friendships, tensions, alliances]
 
-## **🎭 EMERGING PERSONALITIES**
-[How did each agent's unique personality traits manifest in their behavior?]
+**3. 🎭 EMERGING PERSONALITIES** 
+[How each agent's personality traits manifested in their behavior]
 
-## **⚖️ SOCIAL DYNAMICS**
-[Team leadership, decision-making patterns, group behavior]
+**4. 🤝 SOCIAL DYNAMICS**
+[Overall team cohesion, leadership patterns, group behavior]
 
-## **🎯 STRATEGIC DECISIONS**
-[Important choices, strategies, or plans the team developed]
-
-## **🔮 LOOKING AHEAD**
-[What trends are emerging? What might happen next?]
-
-Make this actionable and specific. Focus on concrete events and developments."""
+**5. 🔮 LOOKING AHEAD**
+[Predictions for future developments and relationship trends]"""
     
     try:
         user_message = UserMessage(text=prompt)
