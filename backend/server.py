@@ -398,7 +398,9 @@ async def update_relationships(agents: List[Agent], messages: List[ConversationM
                 compatibility = calculate_compatibility(agent1, agent2)
                 score_change = 1 if compatibility > 0.5 else -1
                 
-                new_score = max(-10, min(10, relationship.get("score", 0) + score_change))
+                # Handle both dict and Pydantic model cases
+                current_score = relationship["score"] if isinstance(relationship, dict) else relationship.score
+                new_score = max(-10, min(10, current_score + score_change))
                 status = "friends" if new_score > 3 else "tension" if new_score < -3 else "neutral"
                 
                 await db.relationships.update_one(
