@@ -73,6 +73,106 @@ AGENT_ARCHETYPES = {
     }
 }
 
+class ObserverMessage(BaseModel):
+    message: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+class ObserverInput(BaseModel):
+    observer_message: str
+
+@api_router.post("/observer/send-message")
+async def send_observer_message(input_data: ObserverInput):
+    """Send a message from the observer (user) to the AI agents"""
+    observer_message = input_data.observer_message.strip()
+    
+    if not observer_message:
+        raise HTTPException(status_code=400, detail="Observer message cannot be empty")
+    
+    # Get current agents
+    agents = await db.agents.find().to_list(100)
+    if len(agents) < 1:
+        raise HTTPException(status_code=400, detail="No agents available to respond")
+    
+    agent_objects = [Agent(**agent) for agent in agents]
+    
+    # Get simulation state
+    state = await db.simulation_state.find_one()
+    if not state:
+        raise HTTPException(status_code=404, detail="Simulation not started")
+    
+    scenario = state.get("scenario", "Research Station")
+    
+    # Store observer message
+    observer_msg = ObserverMessage(message=observer_message)
+    await db.observer_messages.insert_one(observer_msg.dict())
+    
+    # Generate responses from each agent to the observer
+    messages = []
+    for agent in agent_objects:
+        if not await llm_manager.can_make_request():
+            response = f"{agent.name} is listening but cannot respond right now (API limit reached)."
+        else:
+            # Create LLM chat instance for this agent responding to observer
+            chat = LlmChat(
+                api_key=llm_manager.api_key,
+                session_id=f"observer_{agent.id}_{datetime.now().timestamp()}",
+                system_message=f"""You are {agent.name}, {AGENT_ARCHETYPES[agent.archetype]['description']}.
+                
+Your personality traits:
+- Extroversion: {agent.personality.extroversion}/10
+- Optimism: {agent.personality.optimism}/10  
+- Curiosity: {agent.personality.curiosity}/10
+- Cooperativeness: {agent.personality.cooperativeness}/10
+- Energy: {agent.personality.energy}/10
+
+Your goal: {agent.goal}
+
+You are in {scenario}. The Observer (project lead/supervisor) has just spoken to you and your team.
+Respond professionally and authentically to your personality. Keep it brief (1-2 sentences).
+Address the Observer respectfully but naturally according to your personality."""
+            ).with_model("gemini", "gemini-2.0-flash")
+            
+            try:
+                user_message = UserMessage(text=f"Observer says: '{observer_message}'\n\nRespond to the Observer professionally according to your personality.")
+                response = await chat.send_message(user_message)
+                await llm_manager.increment_usage()
+            except Exception as e:
+                logging.error(f"Error generating observer response for {agent.name}: {e}")
+                response = f"{agent.name} nods thoughtfully in response."
+        
+        message = ConversationMessage(
+            agent_id=agent.id,
+            agent_name=agent.name,
+            message=response,
+            mood=agent.current_mood
+        )
+        messages.append(message)
+    
+    # Get current round number
+    conversation_count = await db.conversations.count_documents({})
+    
+    # Create special observer conversation round
+    conversation_round = ConversationRound(
+        round_number=conversation_count + 1,
+        time_period=f"Observer Input - {datetime.now().strftime('%H:%M')}",
+        scenario=f"Observer: {observer_message}",
+        messages=messages
+    )
+    
+    await db.conversations.insert_one(conversation_round.dict())
+    
+    return {
+        "message": "Observer message sent and responses received",
+        "observer_message": observer_message,
+        "agent_responses": conversation_round
+    }
+
+@api_router.get("/observer/messages")
+async def get_observer_messages():
+    """Get all observer messages"""
+    messages = await db.observer_messages.find().sort("timestamp", -1).to_list(100)
+    return messages
+
 # Pydantic Models
 class AgentPersonality(BaseModel):
     extroversion: int = Field(ge=1, le=10)
