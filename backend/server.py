@@ -1230,6 +1230,53 @@ async def add_agent_memory(agent_id: str, request: dict):
         "urls_processed": len(re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', new_memory))
     }
 
+@api_router.post("/conversation/generate-single/{agent_id}")
+async def generate_single_response(agent_id: str):
+    """Generate a single response from one agent - useful for testing"""
+    # Get the specific agent
+    agent_doc = await db.agents.find_one({"id": agent_id})
+    if not agent_doc:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    
+    agent = Agent(**agent_doc)
+    
+    # Get all agents for context
+    all_agents = await db.agents.find().to_list(100)
+    agent_objects = [Agent(**a) for a in all_agents]
+    
+    # Get simulation state
+    state = await db.simulation_state.find_one()
+    if not state:
+        raise HTTPException(status_code=404, detail="Simulation not started")
+    
+    scenario = state["scenario"]
+    context = f"Day {state['current_day']}, {state['current_time_period']}. Continue the discussion."
+    
+    # Generate single response
+    response = await llm_manager.generate_agent_response(
+        agent, scenario, agent_objects, context, []
+    )
+    
+    return {
+        "agent_name": agent.name,
+        "response": response,
+        "agent_id": agent_id
+    }
+
+@api_router.get("/api-status")
+async def get_api_status():
+    """Get current API status and usage"""
+    usage = await llm_manager.get_usage_today()
+    can_make_request = await llm_manager.can_make_request()
+    
+    return {
+        "requests_used_today": usage,
+        "max_requests": llm_manager.max_daily_requests,
+        "remaining": llm_manager.max_daily_requests - usage,
+        "can_make_request": can_make_request,
+        "rate_limit_info": "Gemini free tier: 15 requests/minute, 1500/day"
+    }
+
 @api_router.delete("/agents/{agent_id}")
 async def delete_agent(agent_id: str):
     """Delete an agent"""
