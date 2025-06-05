@@ -185,10 +185,78 @@ class LLMManager:
             upsert=True
         )
     
-    async def can_make_request(self):
-        """Check if we can make another API request today"""
-        usage = await self.get_usage_today()
-        return usage < self.max_daily_requests
+    async def fetch_url_content(self, url: str) -> str:
+        """Fetch and summarize content from a URL for agent memory"""
+        try:
+            import aiohttp
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, timeout=10) as response:
+                    if response.status == 200:
+                        content = await response.text()
+                        # Simple content extraction - remove HTML tags and limit length
+                        import re
+                        text_content = re.sub(r'<[^>]+>', ' ', content)
+                        text_content = re.sub(r'\s+', ' ', text_content).strip()
+                        
+                        # Limit to first 2000 characters
+                        if len(text_content) > 2000:
+                            text_content = text_content[:2000] + "..."
+                        
+                        return text_content
+                    else:
+                        return f"Could not access URL (status: {response.status})"
+        except Exception as e:
+            return f"Error accessing URL: {str(e)}"
+
+    async def process_memory_with_urls(self, memory_text: str) -> str:
+        """Process memory text and fetch content from any URLs found"""
+        if not memory_text:
+            return memory_text
+        
+        # Find URLs in memory text
+        url_pattern = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+        urls = re.findall(url_pattern, memory_text)
+        
+        if not urls:
+            return memory_text
+        
+        enhanced_memory = memory_text
+        
+        for url in urls:
+            # Fetch content from URL
+            url_content = await self.fetch_url_content(url)
+            
+            # Create a summary of the URL content using LLM
+            if url_content and len(url_content) > 50:
+                try:
+                    if await self.can_make_request():
+                        chat = LlmChat(
+                            api_key=self.api_key,
+                            session_id=f"url_summary_{hash(url)}",
+                            system_message="Summarize web content into key facts and insights that would be relevant for an AI agent's memory. Focus on important information, facts, opinions, or context that could influence behavior."
+                        ).with_model("gemini", "gemini-2.0-flash")
+                        
+                        user_message = UserMessage(text=f"Summarize this web content from {url}:\n\n{url_content}")
+                        summary = await chat.send_message(user_message)
+                        await self.increment_usage()
+                        
+                        # Replace the URL with enriched content
+                        enhanced_memory = enhanced_memory.replace(
+                            url, 
+                            f"[URL: {url}] Content Summary: {summary}"
+                        )
+                    else:
+                        enhanced_memory = enhanced_memory.replace(
+                            url,
+                            f"[URL: {url}] (Content not accessible - API limit reached)"
+                        )
+                except Exception as e:
+                    enhanced_memory = enhanced_memory.replace(
+                        url,
+                        f"[URL: {url}] (Error processing content: {str(e)})"
+                    )
+        
+        return enhanced_memory
     
     async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None):
         """Generate a single agent response with better context and progression"""
