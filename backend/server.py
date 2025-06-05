@@ -1096,46 +1096,38 @@ async def toggle_auto_mode(request: AutoModeRequest):
         "time_interval": request.time_interval
     }
 
-# Initialize Default AI Agents (now using diverse backgrounds)
+# Initialize Default AI Agents (Crypto Team)
 @api_router.post("/simulation/init-research-station")
 async def init_research_station():
-    """Initialize default AI agents with diverse backgrounds for meaningful conversations"""
+    """Initialize default crypto team AI agents with rich personalities and expertise"""
     # Clear existing agents
     await db.agents.delete_many({})
     
-    # Create the diverse background agents (these are now the default)
+    # Create the crypto team agents
     agents_data = [
         {
-            "name": "Dr. Elena Vasquez",
-            "archetype": "scientist", 
-            "goal": "Analyze situations from a rigorous scientific perspective",
-            "expertise": "Astrophysics and Signal Analysis",
-            "background": "PhD in Astrophysics, spent 15 years analyzing extraterrestrial signals at SETI. Expert in radio telescopy, pattern recognition in cosmic noise, and first-contact protocols. Thinks in terms of scientific method, data validation, and peer review.",
-            "memory_summary": "I have extensive experience with the famous Wow! signal and other potential extraterrestrial communications. I know that 72% of anomalous signals turn out to be terrestrial interference, but I remain optimistic about finding genuine evidence."
+            "name": "Marcus \"Mark\" Castellano",
+            "archetype": "skeptic", 
+            "goal": "Develop data-driven marketing strategies that navigate volatile crypto markets",
+            "expertise": "Multi-cycle crypto marketing, Brand positioning, Community building, Regulatory compliance",
+            "background": "A seasoned marketing veteran with 17 years of experience spanning traditional finance and digital marketing. Mark cut his teeth at Goldman Sachs' marketing division before transitioning to crypto in 2018. He's witnessed three major crypto cycles and has developed an intuitive understanding of market psychology. Known for his data-driven approach and ability to craft narratives that resonate with both retail and institutional investors.",
+            "memory_summary": "I've survived the 2018 crypto winter, the 2020 DeFi summer, and the 2022 Luna/FTX collapse. Each cycle taught me that sustainable growth beats hype every time. My most successful campaign was during the bear market when everyone else went quiet - we gained 40% market share by staying consistent and honest about our product's limitations."
         },
         {
-            "name": "Captain Jake Morrison",
+            "name": "Alexandra \"Alex\" Chen",
             "archetype": "leader",
-            "goal": "Ensure team safety and mission success through strategic leadership", 
-            "expertise": "Military Strategy and Crisis Management",
-            "background": "Former Navy SEAL with 20 years military experience including special operations and crisis response. Trained in tactical assessment, risk mitigation, command structure, and rapid decision-making under pressure. Views situations through security and operational readiness lens.",
-            "memory_summary": "I've led teams through multiple high-stakes operations including the classified Operation Neptune's Eye. I've learned that the biggest threats often come from overconfidence and poor communication within the team."
+            "goal": "Build and ship revolutionary DeFi products that reshape how people interact with money", 
+            "expertise": "DeFi protocol architecture, Tokenomics design, User experience optimization, Go-to-market strategy",
+            "background": "A charismatic product visionary who led the development of three major DeFi protocols that collectively manage over $2B in TVL. Former Head of Product at a unicorn crypto exchange, Alex has the rare combination of technical depth and executive presence. She's known for her ability to rally teams around ambitious visions and has been featured on major crypto podcasts as a thought leader.",
+            "memory_summary": "My first protocol launched during the 2020 DeFi explosion and hit $500M TVL in two weeks - then lost 90% during the crash. That failure taught me the importance of sustainable tokenomics over viral growth. My latest protocol has maintained steady growth for 18 months through multiple market cycles by focusing on real user needs."
         },
         {
-            "name": "Dr. Amara Okafor", 
+            "name": "Diego \"Dex\" Rodriguez", 
             "archetype": "optimist",
-            "goal": "Maintain team cohesion and psychological well-being",
-            "expertise": "Clinical Psychology and Cross-Cultural Communication", 
-            "background": "Clinical psychologist specializing in multicultural teams and stress management. PhD in Behavioral Psychology with focus on group dynamics in isolated environments. Approaches situations by analyzing interpersonal relationships, communication patterns, and psychological impact.",
-            "memory_summary": "During my work with the Mars simulation project, I observed how isolation and stress can lead to groupthink and poor decision-making. I've developed techniques to keep teams functioning optimally under pressure."
-        },
-        {
-            "name": "Zara Al-Rashid",
-            "archetype": "skeptic",
-            "goal": "Question assumptions and identify potential security threats",
-            "expertise": "Cybersecurity and Information Warfare",
-            "background": "Former CIA analyst specialized in disinformation detection and cybersecurity threats. Expert in recognizing deception, analyzing information sources, and identifying hidden agendas. Approaches everything with suspicion and looks for alternative explanations and potential threats.",
-            "memory_summary": "I've seen too many operations compromised by accepting information at face value. The 2019 deep-fake incident taught me that even the most convincing evidence can be manufactured. Trust must be earned through verification."
+            "goal": "Discover and capitalize on emerging crypto trends before they become mainstream",
+            "expertise": "Emerging crypto ecosystems, Yield optimization, DAO governance, MEV strategies, On-chain analysis",
+            "background": "A crypto polymath who's worn almost every hat imaginable in the space. Started as a Bitcoin miner in 2017, became a DeFi yield farmer, tried his hand at NFT curation, worked as a DAO contributor, and even spent six months as a crypto journalist. Dex has an uncanny ability to spot emerging trends before they become mainstream, though his hit rate on 'crazy' ideas is about 30% - which in crypto, makes him a visionary.",
+            "memory_summary": "I called the Solana ecosystem explosion 6 months early and made 50x on SOL. I also lost 80% of my portfolio on Terra Luna because I was too bullish on algorithmic stablecoins. My biggest win was discovering a yield farm on Arbitrum that nobody was talking about - turned $5K into $200K in three months. Currently obsessing over some obscure Layer 2 that might be the next big thing."
         }
     ]
     
