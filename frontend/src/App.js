@@ -8,6 +8,7 @@ const API = `${BACKEND_URL}/api`;
 const ScenarioInput = ({ onSetScenario }) => {
   const [scenario, setScenario] = useState("");
   const [loading, setLoading] = useState(false);
+  const [justSubmitted, setJustSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
     if (e && e.preventDefault) {
@@ -16,9 +17,15 @@ const ScenarioInput = ({ onSetScenario }) => {
     if (!scenario.trim()) return;
     
     setLoading(true);
+    setJustSubmitted(true);
     await onSetScenario(scenario);
-    setScenario("");
     setLoading(false);
+    
+    // Keep the text visible for 3 seconds to show it was applied
+    setTimeout(() => {
+      setScenario("");
+      setJustSubmitted(false);
+    }, 3000);
   };
 
   return (
@@ -30,17 +37,22 @@ const ScenarioInput = ({ onSetScenario }) => {
             value={scenario}
             onChange={(e) => setScenario(e.target.value)}
             placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.')"
-            className="w-full p-3 border rounded-lg resize-none"
+            className={`w-full p-3 border rounded-lg resize-none ${justSubmitted ? 'bg-green-50 border-green-300' : ''}`}
             rows="3"
-            disabled={loading}
+            disabled={loading || justSubmitted}
           />
+          {justSubmitted && (
+            <p className="text-xs text-green-600 mt-1">
+              ✅ Scenario applied! Text will clear in a moment...
+            </p>
+          )}
         </div>
         <button
           type="submit"
-          disabled={loading || !scenario.trim()}
+          disabled={loading || !scenario.trim() || justSubmitted}
           className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
         >
-          {loading ? "Setting Scenario..." : "Set New Scenario"}
+          {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Set New Scenario"}
         </button>
       </form>
     </div>
