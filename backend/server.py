@@ -438,15 +438,61 @@ Scenario: {scenario}
                 
         except Exception as e:
             logging.error(f"LLM error for {agent.name}: {e}")
-            # Return a more natural fallback based on personality
-            if agent.personality.optimism > 7:
-                return f"{agent.name}: I think we can find a positive solution to this."
-            elif agent.personality.curiosity > 7:
-                return f"{agent.name}: This is fascinating - I'd like to explore this further."
-            elif agent.personality.cooperativeness > 7:
-                return f"{agent.name}: Let's work together on this challenge."
+            
+            # Check if it's a quota error specifically
+            if "quota" in str(e).lower() or "429" in str(e):
+                logging.warning("API quota exceeded - using intelligent fallbacks")
+            
+            # Create varied fallback responses based on agent's background and current context
+            import random
+            
+            # Get conversation context for more varied responses
+            context_lower = context.lower()
+            
+            # Agent-specific responses based on their background and personality
+            if agent.name == "Marcus \"Mark\" Castellano":
+                responses = [
+                    "From my experience across three crypto cycles, I think we need to focus on data-driven decisions here.",
+                    "This reminds me of the 2018 winter - we need sustainable approaches, not just hype.",
+                    "My marketing instincts say we should craft a narrative that resonates with both retail and institutional players.",
+                    "Based on what I've seen in previous cycles, timing is crucial for this kind of decision."
+                ]
+            elif agent.name == "Alexandra \"Alex\" Chen":
+                responses = [
+                    "As someone who's built protocols managing $2B+ TVL, I believe we can architect a solution that scales.",
+                    "This is exactly the kind of challenge that excites me - let's think about the user experience first.",
+                    "My experience with DeFi protocols tells me we need to balance innovation with stability here.",
+                    "I've rallied teams around bigger visions than this - we just need the right strategy."
+                ]
+            elif agent.name == "Diego \"Dex\" Rodriguez":
+                responses = [
+                    "My crypto polymath experience suggests there might be an emerging trend here we're missing.",
+                    "This feels like one of those 30% opportunities I actually get right - let me think differently about this.",
+                    "Having worn every hat in crypto, I see potential connections others might miss.",
+                    "My on-chain analysis background tells me there's more data we should be looking at."
+                ]
             else:
-                return f"{agent.name}: I need to think about this carefully."
+                # Generic fallbacks for other agents
+                if agent.personality.optimism > 7:
+                    responses = [
+                        f"{agent.name}: I believe we can turn this into an opportunity.",
+                        f"{agent.name}: There's definitely a positive path forward here.",
+                        f"{agent.name}: I'm confident we can find a solution that works for everyone."
+                    ]
+                elif agent.personality.curiosity > 7:
+                    responses = [
+                        f"{agent.name}: This raises some fascinating questions we should explore.",
+                        f"{agent.name}: I'm intrigued by the implications here.",
+                        f"{agent.name}: There are interesting angles we haven't considered yet."
+                    ]
+                else:
+                    responses = [
+                        f"{agent.name}: Let me think through this systematically.",
+                        f"{agent.name}: We need to carefully weigh our options here.",
+                        f"{agent.name}: This requires a thoughtful approach."
+                    ]
+            
+            return random.choice(responses)
 
     async def update_agent_memory(self, agent: Agent, conversations: List):
         """Update agent's memory summary based on recent conversations"""
