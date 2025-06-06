@@ -335,7 +335,7 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
 
   const renderStructuredSummary = (summary) => {
     // Try to extract sections from the summary text
-    const summaryText = summary.summary || "";
+    const summaryText = summary?.summary || "";
     const sections = {};
     
     // Updated parsing patterns that match the actual backend format
