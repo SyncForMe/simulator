@@ -229,11 +229,29 @@ input:checked + .slider:before {
 /* Simulation Status Bar */
 .simulation-status {
   transition: all 0.3s ease-in-out;
+  overflow: hidden; /* Prevent content from overflowing */
 }
 
 .simulation-status:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure proper flex wrapping and spacing */
+.simulation-status .flex-wrap {
+  flex-wrap: wrap;
+}
+
+.simulation-status .whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.simulation-status .min-w-0 {
+  min-width: 0;
+}
+
+.simulation-status .flex-shrink-0 {
+  flex-shrink: 0;
 }
 
 @keyframes pulse {
@@ -247,4 +265,17 @@ input:checked + .slider:before {
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Responsive adjustments for simulation status */
+@media (max-width: 640px) {
+  .simulation-status .flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .simulation-status .ml-4 {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
 }
