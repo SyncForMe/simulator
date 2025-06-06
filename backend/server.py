@@ -477,62 +477,94 @@ Scenario: {scenario}
             if agent.name == "Marcus \"Mark\" Castellano":
                 if is_responding_to_others:
                     responses = [
-                        "I agree with the direction you're taking, but from my marketing perspective, we need to consider the narrative implications.",
-                        "That's an interesting point - in my experience across three crypto cycles, timing is everything here.",
-                        "Building on what you said, I think we should also factor in how this affects our positioning with institutional investors."
+                        "I see your point, but from my marketing perspective, we need to consider the narrative implications first.",
+                        "That's solid thinking. In my experience across three crypto cycles, execution is everything here.",
+                        "I agree with the direction, though we should factor in how this affects our positioning with institutional investors.",
+                        "Good point. Let me build on that - I think we're onto something that could really differentiate us.",
+                        "Actually, I disagree. Based on what I've seen in previous cycles, that approach tends to backfire."
                     ]
                 else:
                     responses = [
-                        "From my experience across three crypto cycles, I think we need to focus on data-driven decisions here.",
-                        "This reminds me of the 2018 winter - we need sustainable approaches, not just hype.",
-                        "My marketing instincts say we should craft a narrative that resonates with both retail and institutional players."
+                        "From my experience across three crypto cycles, I think we need to focus on sustainable growth strategies.",
+                        "This reminds me of 2018 - we need approaches that can survive market downturns.",
+                        "My marketing instincts tell me we should craft a narrative that resonates with both retail and institutions.",
+                        "I've seen this pattern before. We need to act fast but think long-term.",
+                        "Based on my track record, I believe we should prioritize user acquisition over price action."
                     ]
             elif agent.name == "Alexandra \"Alex\" Chen":
                 if is_responding_to_others:
                     responses = [
-                        "I hear what you're saying, and from a product perspective, we need to make sure the user experience supports that strategy.",
-                        "Good point - but as someone who's built protocols managing $2B+ TVL, I think we're missing the scalability angle.",
-                        "I like that approach, though we should also consider how this impacts our go-to-market timeline."
+                        "I hear you, but from a product perspective, we need to ensure the user experience supports that strategy.",
+                        "That makes sense. As someone who's built $2B+ TVL protocols, I think we can scale that approach.",
+                        "I like where you're going with this, though we should consider the technical implementation challenges.",
+                        "Exactly. That aligns perfectly with my experience building successful DeFi products.",
+                        "I'm not convinced. We tried something similar at my last protocol and it didn't work as expected."
                     ]
                 else:
                     responses = [
-                        "As someone who's built protocols managing $2B+ TVL, I believe we can architect a solution that scales.",
-                        "This is exactly the kind of challenge that excites me - let's think about the user experience first.",
-                        "My experience with DeFi protocols tells me we need to balance innovation with stability here."
+                        "As someone who's built protocols managing $2B+ TVL, I believe we need to prioritize user experience.",
+                        "This is exactly the kind of challenge that excites me - let's think about scalable solutions.",
+                        "My experience with DeFi protocols tells me we need to balance innovation with proven patterns.",
+                        "I've rallied teams around bigger visions than this. We just need focused execution.",
+                        "Based on my product leadership experience, I think we should start with an MVP approach."
                     ]
             elif agent.name == "Diego \"Dex\" Rodriguez":
                 if is_responding_to_others:
                     responses = [
-                        "Interesting take - my crypto polymath experience suggests there might be an angle we're missing though.",
-                        "I see your point, but having worn every hat in crypto, I think there's a more creative solution here.",
-                        "That makes sense, though my on-chain analysis background tells me we should look at the data differently."
+                        "Interesting perspective. My crypto experience suggests there might be a more creative angle here.",
+                        "I see what you mean, but having worn every hat in crypto, I think we're missing something.",
+                        "That's a good foundation. Let me add something from my on-chain analysis background.",
+                        "You're onto something. This reminds me of a pattern I've seen in emerging trends.",
+                        "I'm skeptical about that approach. My track record suggests a different strategy might work better."
                     ]
                 else:
                     responses = [
-                        "My crypto polymath experience suggests there might be an emerging trend here we're missing.",
-                        "This feels like one of those 30% opportunities I actually get right - let me think differently about this.",
-                        "Having worn every hat in crypto, I see potential connections others might miss."
+                        "My crypto polymath experience suggests there's an emerging trend here we could capitalize on.",
+                        "This feels like one of those 30% opportunities I actually get right - hear me out.",
+                        "Having worn every hat in crypto, I see connections others might miss in this situation.",
+                        "My on-chain analysis background tells me the data is pointing toward a specific solution.",
+                        "Based on my generalist perspective, I think we're approaching this from the wrong angle entirely."
                     ]
             else:
-                # Generic fallbacks for other agents
-                if agent.personality.optimism > 7:
-                    responses = [
-                        f"I believe we can turn this into an opportunity.",
-                        f"There's definitely a positive path forward here.",
-                        f"I'm confident we can find a solution that works for everyone."
-                    ]
-                elif agent.personality.curiosity > 7:
-                    responses = [
-                        f"This raises some fascinating questions we should explore.",
-                        f"I'm intrigued by the implications here.",
-                        f"There are interesting angles we haven't considered yet."
-                    ]
+                # Generic fallbacks for other agents based on personality
+                if is_responding_to_others:
+                    if agent.personality.cooperativeness > 7:
+                        responses = [
+                            "I think you're right. Let's build on that idea together.",
+                            "That's a solid approach. Here's how we could make it even better.",
+                            "I agree completely. We should move forward with that strategy."
+                        ]
+                    elif agent.personality.curiosity > 7:
+                        responses = [
+                            "That's fascinating. I wonder if we could take it even further.",
+                            "Interesting point. That opens up some new possibilities I hadn't considered.",
+                            "Good thinking. That gives me an idea for a different approach."
+                        ]
+                    else:
+                        responses = [
+                            "I'm not entirely convinced. We should think through the risks more carefully.",
+                            "That could work, but I think we need more analysis first.",
+                            "Let me play devil's advocate here - what if that backfires?"
+                        ]
                 else:
-                    responses = [
-                        f"Let me think through this systematically.",
-                        f"We need to carefully weigh our options here.",
-                        f"This requires a thoughtful approach."
-                    ]
+                    if agent.personality.optimism > 7:
+                        responses = [
+                            "I believe we can turn this challenge into a major opportunity.",
+                            "This is exactly the kind of situation where we can really shine.",
+                            "I'm confident we have the right team to solve this problem."
+                        ]
+                    elif agent.personality.curiosity > 7:
+                        responses = [
+                            "This raises some fascinating questions we should explore systematically.",
+                            "I'm intrigued by the implications of this situation.",
+                            "There are several interesting angles we haven't fully considered yet."
+                        ]
+                    else:
+                        responses = [
+                            "We need to think through this carefully before making any decisions.",
+                            "I recommend we analyze all our options systematically.",
+                            "This requires a methodical approach to avoid costly mistakes."
+                        ]
             
             return random.choice(responses)
 
