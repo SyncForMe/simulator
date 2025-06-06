@@ -274,6 +274,9 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
   useEffect(() => {
     if (summaries && summaries.length > 0) {
       setLatestSummary(summaries[0]);
+    } else {
+      // Clear the latest summary when summaries array is empty
+      setLatestSummary(null);
     }
   }, [summaries]);
 
