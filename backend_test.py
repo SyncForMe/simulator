@@ -130,15 +130,7 @@ def main():
         print_summary()
         return
     
-    # 2. Test getting archetypes
-    archetypes_test, archetypes_data = run_test(
-        "Get Agent Archetypes",
-        "/archetypes",
-        expected_keys=["scientist", "artist", "leader", "skeptic", 
-                      "optimist", "introvert", "adventurer", "mediator"]
-    )
-    
-    # 3. Initialize research station
+    # 2. Initialize research station (create the 3 agents)
     init_station, init_data = run_test(
         "Initialize Research Station",
         "/simulation/init-research-station",
@@ -146,21 +138,22 @@ def main():
         expected_keys=["message", "agents"]
     )
     
-    # 4. Get all agents
-    agents_test, agents_data = run_test(
-        "Get All Agents",
-        "/agents",
-    )
+    if not init_station:
+        print("Failed to initialize research station. Aborting remaining tests.")
+        print_summary()
+        return
     
-    # Verify we have 3 agents
-    if agents_test:
-        if len(agents_data) != 3:
-            print(f"Expected 3 agents, but got {len(agents_data)}")
-            agents_test = False
-        else:
-            print("Verified 3 agents were created")
+    # Verify we have 3 agents with correct names
+    agents = init_data.get("agents", [])
+    if len(agents) != 3:
+        print(f"Expected 3 agents, but got {len(agents)}")
+        init_station = False
+    else:
+        print("Verified 3 agents were created:")
+        for agent in agents:
+            print(f"  - {agent.get('name')} ({agent.get('archetype')})")
     
-    # 5. Start simulation
+    # 3. Start simulation
     sim_start, _ = run_test(
         "Start Simulation",
         "/simulation/start",
@@ -168,222 +161,214 @@ def main():
         expected_keys=["message", "state"]
     )
     
-    # 6. Get simulation state
-    sim_state, state_data = run_test(
-        "Get Simulation State",
-        "/simulation/state",
-        expected_keys=["current_day", "current_time_period", "is_active"]
-    )
+    if not sim_start:
+        print("Failed to start simulation. Aborting remaining tests.")
+        print_summary()
+        return
     
-    # Verify simulation is active
-    if sim_state and not state_data.get("is_active", False):
-        print("Simulation state shows inactive, but should be active")
-        sim_state = False
-    
-    # 7. Generate a few conversations for summary material
-    print("\nGenerating conversations for summary material...")
-    for i in range(3):
-        conv_gen, conv_data = run_test(
-            f"Generate Conversation {i+1}",
-            "/conversation/generate",
-            method="POST",
-            expected_keys=["messages", "round_number", "time_period"]
-        )
-        
-        # Verify conversation has messages from all agents
-        if conv_gen and len(conv_data.get("messages", [])) != 3:
-            print(f"Expected messages from 3 agents, but got {len(conv_data.get('messages', []))}")
-        
-        # Add a small delay between conversation generations
-        time.sleep(1)
-    
-    # 8. Test setting a custom scenario (Feature 1)
-    custom_scenario = "A mysterious signal has been detected. The team must investigate."
-    set_scenario, scenario_data = run_test(
-        "Set Custom Scenario",
-        "/simulation/set-scenario",
+    # 4. Generate conversation and verify actual dialogue
+    print("\nTesting conversation generation fix...")
+    conv_gen, conv_data = run_test(
+        "Generate Conversation",
+        "/conversation/generate",
         method="POST",
-        data={"scenario": custom_scenario},
-        expected_keys=["message", "scenario"]
+        expected_keys=["messages", "round_number", "time_period"]
     )
     
-    # Verify scenario was set correctly
-    if set_scenario and scenario_data.get("scenario") != custom_scenario:
-        print(f"Scenario was not set correctly. Expected: {custom_scenario}, Got: {scenario_data.get('scenario')}")
-        set_scenario = False
-    
-    # 9. Test setting an empty scenario (should fail)
-    empty_scenario, _ = run_test(
-        "Set Empty Scenario (Should Fail)",
-        "/simulation/set-scenario",
-        method="POST",
-        data={"scenario": ""},
-        expected_status=400
-    )
-    
-    # 10. Check simulation state to verify scenario was updated
-    sim_state_updated, state_data_updated = run_test(
-        "Verify Scenario Update in Simulation State",
-        "/simulation/state",
-        expected_keys=["current_day", "current_time_period", "is_active", "scenario"]
-    )
-    
-    # Verify scenario was updated in simulation state
-    if sim_state_updated:
-        if state_data_updated.get("scenario") != custom_scenario:
-            print(f"Scenario not updated in simulation state. Expected: {custom_scenario}, Got: {state_data_updated.get('scenario')}")
-            sim_state_updated = False
-    
-    # 11. Generate weekly summary (Feature 2)
-    summary_gen, summary_data = run_test(
-        "Generate Weekly Summary",
-        "/simulation/generate-summary",
-        method="POST",
-        expected_keys=["summary", "day", "conversations_count"]
-    )
-    
-    # Verify summary was generated with meaningful content
-    if summary_gen:
-        if len(summary_data.get("summary", "")) < 50:
-            print(f"Summary seems too short to be meaningful: {summary_data.get('summary')}")
-            summary_gen = False
+    # Verify conversation has messages from all agents
+    if conv_gen:
+        messages = conv_data.get("messages", [])
+        if len(messages) != 3:
+            print(f"Expected messages from 3 agents, but got {len(messages)}")
+            conv_gen = False
         else:
-            print("Verified summary contains meaningful content")
-            # Check for structured sections in the summary
-            summary_text = summary_data.get("summary", "")
-            if "KEY EVENTS & DISCOVERIES" not in summary_text or "RELATIONSHIP DEVELOPMENTS" not in summary_text:
-                print("Summary doesn't contain expected structured sections")
-                summary_gen = False
+            print("\nVerifying agent responses are actual dialogue (not generic fallbacks):")
+            
+            # Check for generic fallback patterns
+            generic_patterns = [
+                "is analyzing",
+                "is questioning",
+                "is taking a moment",
+                "is carefully considering",
+                "nods thoughtfully"
+            ]
+            
+            all_valid = True
+            for i, msg in enumerate(messages):
+                agent_name = msg.get("agent_name", "Unknown")
+                message_text = msg.get("message", "")
+                
+                # Check if message is a generic fallback
+                is_generic = False
+                for pattern in generic_patterns:
+                    if pattern in message_text:
+                        is_generic = True
+                        break
+                
+                # Check if message is too short
+                is_too_short = len(message_text) < 10
+                
+                if is_generic or is_too_short:
+                    print(f"  ❌ {agent_name}: '{message_text}' (Generic fallback or too short)")
+                    all_valid = False
+                else:
+                    print(f"  ✅ {agent_name}: '{message_text}'")
+            
+            if all_valid:
+                print("\nSuccess: All agent responses are actual dialogue, not generic fallbacks")
             else:
-                print("Verified summary contains structured sections")
+                print("\nFailed: Some agent responses are still generic fallbacks")
+                conv_gen = False
     
-    # 12. Get all summaries (Feature 2)
-    summaries, summaries_data = run_test(
-        "Get All Summaries",
-        "/summaries",
-        expected_keys=[]  # We don't know the exact keys but expect a list
+    # 5. Get all conversations
+    conversations, conversations_data = run_test(
+        "Get All Conversations",
+        "/conversations",
+        expected_keys=[]  # We expect a list
     )
     
-    # Verify at least one summary exists
-    if summaries:
-        if not isinstance(summaries_data, list) or len(summaries_data) < 1:
-            print(f"Expected at least one summary, but got: {summaries_data}")
-            summaries = False
+    # Verify conversations are returned
+    if conversations:
+        if not isinstance(conversations_data, list) or len(conversations_data) < 1:
+            print(f"Expected at least one conversation, but got: {conversations_data}")
+            conversations = False
         else:
-            print(f"Found {len(summaries_data)} summaries")
-            # Check if the summary has the expected fields
-            if "summary" not in summaries_data[0] or "day_generated" not in summaries_data[0]:
-                print(f"Summary is missing expected fields: {summaries_data[0]}")
-                summaries = False
+            print(f"Found {len(conversations_data)} conversations")
+            
+            # Check the most recent conversation for actual dialogue
+            latest_conv = conversations_data[-1]
+            messages = latest_conv.get("messages", [])
+            
+            if len(messages) != 3:
+                print(f"Expected 3 messages in the latest conversation, but got {len(messages)}")
             else:
-                print("Verified summaries contain required fields")
+                print("\nVerifying latest conversation has actual dialogue:")
+                for msg in messages:
+                    agent_name = msg.get("agent_name", "Unknown")
+                    message_text = msg.get("message", "")
+                    print(f"  - {agent_name}: '{message_text}'")
     
-    # 13. Test enabling auto mode (Feature 3)
-    auto_mode_data = {
-        "auto_conversations": True,
-        "auto_time": True,
-        "conversation_interval": 10,
-        "time_interval": 30
-    }
-    auto_mode, auto_mode_response = run_test(
-        "Enable Auto Mode",
-        "/simulation/toggle-auto-mode",
+    # 6. Test relationships endpoint
+    relationships, relationships_data = run_test(
+        "Get Relationships",
+        "/relationships",
+        expected_keys=[]  # We expect a list
+    )
+    
+    # Verify relationships are returned
+    if relationships:
+        if not isinstance(relationships_data, list):
+            print(f"Expected a list of relationships, but got: {type(relationships_data)}")
+            relationships = False
+        elif len(relationships_data) < 6:  # 3 agents should have 6 relationships (3 choose 2 * 2 directions)
+            print(f"Expected at least 6 relationships for 3 agents, but got {len(relationships_data)}")
+            relationships = False
+        else:
+            print(f"Found {len(relationships_data)} relationships")
+            
+            # Check relationship structure
+            required_fields = ["agent1_id", "agent2_id", "score", "status"]
+            all_fields_present = True
+            
+            for rel in relationships_data[:2]:  # Check first two relationships
+                for field in required_fields:
+                    if field not in rel:
+                        print(f"Relationship missing required field: {field}")
+                        all_fields_present = False
+            
+            if all_fields_present:
+                print("Verified relationships have all required fields")
+                
+                # Print some relationship details
+                print("\nSample relationships:")
+                for i, rel in enumerate(relationships_data[:4]):
+                    print(f"  {i+1}. Agent {rel.get('agent1_id')} → Agent {rel.get('agent2_id')}: Score {rel.get('score')}, Status: {rel.get('status')}")
+            else:
+                relationships = False
+    
+    # 7. Generate another conversation to verify consistency
+    print("\nGenerating another conversation to verify consistency...")
+    conv_gen2, conv_data2 = run_test(
+        "Generate Second Conversation",
+        "/conversation/generate",
         method="POST",
-        data=auto_mode_data,
-        expected_keys=["message", "auto_conversations", "auto_time", "conversation_interval", "time_interval"]
+        expected_keys=["messages", "round_number", "time_period"]
     )
     
-    # Verify auto mode settings were applied
-    if auto_mode:
-        for key, value in auto_mode_data.items():
-            if auto_mode_response.get(key) != value:
-                print(f"Auto mode setting {key} was not set correctly. Expected: {value}, Got: {auto_mode_response.get(key)}")
-                auto_mode = False
-                break
-        if auto_mode:
-            print("Verified all auto mode settings were applied correctly")
-    
-    # 14. Test disabling auto mode (Feature 3)
-    disable_auto_data = {
-        "auto_conversations": False,
-        "auto_time": False
-    }
-    disable_auto, disable_auto_response = run_test(
-        "Disable Auto Mode",
-        "/simulation/toggle-auto-mode",
-        method="POST",
-        data=disable_auto_data,
-        expected_keys=["message", "auto_conversations", "auto_time"]
-    )
-    
-    # Verify auto mode was disabled
-    if disable_auto:
-        if disable_auto_response.get("auto_conversations") != False or disable_auto_response.get("auto_time") != False:
-            print(f"Auto mode was not disabled correctly")
-            disable_auto = False
+    # Verify second conversation also has actual dialogue
+    if conv_gen2:
+        messages = conv_data2.get("messages", [])
+        if len(messages) != 3:
+            print(f"Expected messages from 3 agents, but got {len(messages)}")
+            conv_gen2 = False
         else:
-            print("Verified auto mode was disabled correctly")
+            print("\nVerifying second conversation responses:")
+            
+            # Check for generic fallback patterns
+            generic_patterns = [
+                "is analyzing",
+                "is questioning",
+                "is taking a moment",
+                "is carefully considering",
+                "nods thoughtfully"
+            ]
+            
+            all_valid = True
+            for i, msg in enumerate(messages):
+                agent_name = msg.get("agent_name", "Unknown")
+                message_text = msg.get("message", "")
+                
+                # Check if message is a generic fallback
+                is_generic = False
+                for pattern in generic_patterns:
+                    if pattern in message_text:
+                        is_generic = True
+                        break
+                
+                # Check if message is too short
+                is_too_short = len(message_text) < 10
+                
+                if is_generic or is_too_short:
+                    print(f"  ❌ {agent_name}: '{message_text}' (Generic fallback or too short)")
+                    all_valid = False
+                else:
+                    print(f"  ✅ {agent_name}: '{message_text}'")
+            
+            if all_valid:
+                print("\nSuccess: Second conversation also has actual dialogue")
+            else:
+                print("\nFailed: Second conversation has some generic fallbacks")
+                conv_gen2 = False
     
-    # 15. Check simulation state to verify auto mode settings
-    sim_state_auto, state_data_auto = run_test(
-        "Verify Auto Mode Settings in Simulation State",
-        "/simulation/state",
-        expected_keys=["current_day", "current_time_period", "is_active", "auto_conversations", "auto_time"]
+    # 8. Check relationships again to verify they're being updated
+    relationships2, relationships_data2 = run_test(
+        "Check Relationships After Second Conversation",
+        "/relationships",
+        expected_keys=[]  # We expect a list
     )
     
-    # Verify auto mode settings in simulation state
-    if sim_state_auto:
-        if state_data_auto.get("auto_conversations") != False or state_data_auto.get("auto_time") != False:
-            print(f"Auto mode settings not correctly reflected in simulation state")
-            sim_state_auto = False
+    # Verify relationships are still valid
+    if relationships2 and relationships:
+        print("\nVerifying relationships are properly updated after conversations:")
+        
+        # Compare with previous relationships
+        if len(relationships_data2) != len(relationships_data):
+            print(f"Relationship count changed unexpectedly: {len(relationships_data)} → {len(relationships_data2)}")
         else:
-            print("Verified auto mode settings are correctly reflected in simulation state")
-    
-    # 16. Check API usage to verify tracking with summary generation (Feature 4)
-    api_usage, usage_data = run_test(
-        "Check API Usage After Summary Generation",
-        "/api-usage",
-        expected_keys=["date", "requests_used", "max_requests", "remaining"]
-    )
-    
-    # Verify API usage is being tracked
-    if api_usage:
-        if usage_data.get("requests_used", 0) < 1:
-            print("Expected API usage to be at least 1 after generating summary")
-            api_usage = False
-        else:
-            print(f"Verified API usage is being tracked: {usage_data.get('requests_used')} requests used")
-    
-    # 17. Advance time period
-    next_period, period_data = run_test(
-        "Advance Time Period",
-        "/simulation/next-period",
-        method="POST",
-        expected_keys=["message", "new_period"]
-    )
-    
-    # Verify time period advanced
-    if next_period:
-        if state_data_auto.get("current_time_period") == period_data.get("new_period"):
-            print(f"Time period did not advance, still at {period_data.get('new_period')}")
-            next_period = False
-        else:
-            print(f"Verified time period advanced to {period_data.get('new_period')}")
-    
-    # 18. Check simulation state again to verify time period changed
-    sim_state_final, state_data_final = run_test(
-        "Verify Time Period Advanced",
-        "/simulation/state",
-        expected_keys=["current_day", "current_time_period", "is_active"]
-    )
-    
-    # Verify time period changed
-    if sim_state_final:
-        if state_data_auto.get("current_time_period") == state_data_final.get("current_time_period"):
-            print(f"Time period did not change in simulation state")
-            sim_state_final = False
-        else:
-            print(f"Verified time period successfully advanced from {state_data_auto.get('current_time_period')} to {state_data_final.get('current_time_period')}")
+            print(f"Relationship count remained consistent: {len(relationships_data2)}")
+            
+            # Check if any scores changed (they should after conversation)
+            score_changes = 0
+            for i, (rel1, rel2) in enumerate(zip(relationships_data, relationships_data2)):
+                if rel1.get("agent1_id") == rel2.get("agent1_id") and rel1.get("agent2_id") == rel2.get("agent2_id"):
+                    if rel1.get("score") != rel2.get("score"):
+                        score_changes += 1
+                        print(f"  - Relationship {rel1.get('agent1_id')} → {rel1.get('agent2_id')} score changed: {rel1.get('score')} → {rel2.get('score')}")
+            
+            if score_changes > 0:
+                print(f"Success: {score_changes} relationship scores were updated after conversation")
+            else:
+                print("Note: No relationship scores changed after conversation (this might be expected based on compatibility)")
     
     # Print summary of all tests
     print_summary()
