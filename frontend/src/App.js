@@ -180,7 +180,9 @@ const ObserverInput = ({ onSendMessage }) => {
   const [sending, setSending] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     if (message.trim() && !sending) {
       setSending(true);
       await onSendMessage(message.trim());
