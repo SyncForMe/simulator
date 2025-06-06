@@ -403,7 +403,8 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus: 
+    - "Fix API limit issue in LLMManager.can_make_request method"
   stuck_tasks: 
     - "POST /api/simulation/generate-summary - Generate AI-powered weekly summary"
   test_all: true
