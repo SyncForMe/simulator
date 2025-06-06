@@ -203,6 +203,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Fixed the simulation state endpoint by converting MongoDB ObjectId to string to make it JSON serializable."
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the simulation state endpoint as part of the complete simulation flow. It correctly returns the current simulation state including auto mode settings. The MongoDB ObjectId is properly converted to a string to make it JSON serializable."
 
   - task: "POST /api/conversation/generate - Generate conversation between agents"
     implemented: true
