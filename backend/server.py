@@ -1088,7 +1088,7 @@ async def advance_time_period():
 
 @api_router.post("/conversation/generate")
 async def generate_conversation():
-    """Generate a conversation round between agents with sequential responses"""
+    """Generate a conversation round between agents with sequential responses and progression tracking"""
     # Get current agents
     agents = await db.agents.find().to_list(100)
     if len(agents) < 2:
@@ -1106,38 +1106,87 @@ async def generate_conversation():
     day = state["current_day"]
     scenario = state["scenario"]
     
-    # Get recent conversation history for better context
-    conversation_history = await db.conversations.find().sort("created_at", -1).limit(5).to_list(5)
+    # Get recent conversation history for better context and progression tracking
+    recent_conversations = await db.conversations.find().sort("created_at", -1).limit(10).to_list(10)
     
-    context = f"Day {day}, {time_period}. "
-    if conversation_history:
-        context += "Continue the ongoing discussion with new insights or developments. "
+    # Analyze recent topics to avoid repetition
+    recent_topics = []
+    if recent_conversations:
+        for conv in recent_conversations[-5:]:  # Last 5 conversations
+            for msg in conv.get('messages', []):
+                if len(msg.get('message', '')) > 50:  # Substantial messages only
+                    recent_topics.append(msg['message'][:100])
+    
+    # Determine conversation progression state
+    conversation_count = await db.conversations.count_documents({})
+    progression_prompts = {
+        "early": "You're in early discussions. Focus on understanding the problem and initial ideas.",
+        "middle": "You've been discussing this for a while. Start narrowing down options and making decisions.", 
+        "advanced": "Time to make concrete decisions and action plans. Avoid rehashing old points."
+    }
+    
+    if conversation_count < 5:
+        progression_stage = "early"
+    elif conversation_count < 15:
+        progression_stage = "middle"
     else:
-        context += "Begin your interaction in this scenario. "
+        progression_stage = "advanced"
     
-    # Generate responses SEQUENTIALLY so agents can respond to each other
+    progression_guidance = progression_prompts[progression_stage]
+    
+    # Build conversation context with progression awareness
+    context = f"Day {day}, {time_period}. {progression_guidance}"
+    
+    if recent_conversations:
+        # Add context about recent discussions to avoid loops
+        context += f"\n\nRecent discussion themes (avoid repeating these exactly):\n"
+        for i, topic in enumerate(recent_topics[-3:], 1):
+            context += f"- Theme {i}: {topic}...\n"
+        context += "\nBuild on these ideas or introduce new angles rather than restating the same points."
+    else:
+        context += "\nStart a focused discussion about the scenario."
+    
+    # Generate responses SEQUENTIALLY with varied conversation styles
     messages = []
     conversation_so_far = ""
     
+    # Define response types to encourage variety
+    response_types = [
+        "direct_answer",      # Answer questions directly
+        "challenge_idea",     # Challenge or disagree with something
+        "build_on_idea",     # Build on what others said
+        "provide_alternative", # Suggest different approach
+        "make_decision",     # Be decisive about next steps
+        "share_expertise"    # Use professional background
+    ]
+    
     for i, agent in enumerate(agent_objects):
+        # Choose response type based on conversation flow
+        if i == 0:
+            # First speaker introduces topic or makes statement
+            agent_guidance = "Introduce a specific point or make a clear statement. Don't ask questions - be assertive about your perspective."
+        elif i == 1:
+            # Second speaker responds to first
+            agent_guidance = "Respond directly to what was just said. Agree, disagree, or build on it. Be definitive."
+        else:
+            # Later speakers synthesize or make decisions
+            agent_guidance = "Help move the discussion forward. Make a decision, propose next steps, or provide a conclusive perspective."
+        
         # Build context including what other agents have said in THIS conversation round
-        current_context = context
+        current_context = context + f"\n\n{agent_guidance}\n"
         
         if messages:  # If others have already spoken in this round
-            current_context += f"\n\nIn this conversation:\n"
+            current_context += f"\nIn this conversation:\n"
             for prev_msg in messages:
                 current_context += f"- {prev_msg.agent_name}: {prev_msg.message}\n"
-            current_context += f"\nNow respond to what others have said, answer any questions directed at you, and contribute meaningfully to the discussion."
-        else:
-            # First agent sets the tone
-            current_context += "\nYou're speaking first - introduce a topic, ask a question, or share an insight that others can respond to."
+            current_context += f"\nRespond naturally as {agent.name}. Don't always ask questions - sometimes just state your opinion or make a decision."
         
-        # Add a small delay between requests to avoid rate limiting
+        # Add small delay between requests to avoid rate limiting
         if i > 0:
-            await asyncio.sleep(2)  # 2 second delay between agents
+            await asyncio.sleep(3)  # 3 second delay between agents
         
         response = await llm_manager.generate_agent_response(
-            agent, scenario, agent_objects, current_context, conversation_history
+            agent, scenario, agent_objects, current_context, recent_conversations
         )
         
         message = ConversationMessage(
@@ -1151,9 +1200,6 @@ async def generate_conversation():
         # Update conversation_so_far for next agent
         conversation_so_far += f"{agent.name}: {response}\n"
     
-    # Get current round number
-    conversation_count = await db.conversations.count_documents({})
-    
     # Create conversation round
     conversation_round = ConversationRound(
         round_number=conversation_count + 1,
@@ -1166,11 +1212,6 @@ async def generate_conversation():
     
     # Update agent relationships based on interactions
     await update_relationships(agent_objects, messages)
-    
-    # Update agent memories if this is a significant conversation (every 5th conversation)
-    if conversation_count % 5 == 0:
-        for agent in agent_objects:
-            await llm_manager.update_agent_memory(agent, conversation_history + [conversation_round.dict()])
     
     return conversation_round
 
