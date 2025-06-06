@@ -492,7 +492,7 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
       {latestSummary ? (
         <div className="summary-content">
           <div className="mb-3 text-xs text-gray-600 bg-gray-50 p-2 rounded">
-            <strong>Report Generated:</strong> Day {latestSummary.day} • {latestSummary.conversations_count} conversations analyzed
+            <strong>Report Generated:</strong> Day {latestSummary.day_generated || latestSummary.day || 'Unknown'} • {latestSummary.conversations_count || 0} conversations analyzed
           </div>
           
           {latestSummary.structured_sections ? (
@@ -511,7 +511,7 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
                   <span>Copy</span>
                 </button>
               </div>
-              <div className="whitespace-pre-wrap">{latestSummary.summary}</div>
+              <div className="whitespace-pre-wrap">{latestSummary.summary || "No content available"}</div>
             </div>
           )}
         </div>
