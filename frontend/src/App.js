@@ -59,6 +59,62 @@ const ScenarioInput = ({ onSetScenario }) => {
   );
 };
 
+const SimulationStatusBar = ({ simulationState }) => {
+  const isRunning = simulationState?.auto_conversations || simulationState?.auto_time;
+  const autoConversations = simulationState?.auto_conversations || false;
+  const autoTime = simulationState?.auto_time || false;
+  
+  return (
+    <div className="simulation-status bg-white rounded-lg shadow-md p-4 mb-4 border-l-4 border-blue-500">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <div className={`w-3 h-3 rounded-full ${isRunning ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+          <div>
+            <h3 className="text-sm font-bold text-gray-800">
+              Simulation Status: {isRunning ? 'RUNNING' : 'PAUSED'}
+            </h3>
+            <div className="flex items-center space-x-4 text-xs text-gray-600 mt-1">
+              <span className={`flex items-center ${autoConversations ? 'text-green-600' : 'text-gray-500'}`}>
+                <div className={`w-2 h-2 rounded-full mr-1 ${autoConversations ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                Conversations: {autoConversations ? 'AUTO' : 'MANUAL'}
+              </span>
+              <span className={`flex items-center ${autoTime ? 'text-blue-600' : 'text-gray-500'}`}>
+                <div className={`w-2 h-2 rounded-full mr-1 ${autoTime ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
+                Time: {autoTime ? 'AUTO' : 'MANUAL'}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        {isRunning && (
+          <div className="text-xs text-gray-600">
+            <div className="flex items-center space-x-2">
+              <div className="flex space-x-1">
+                <div className="w-1 h-4 bg-blue-500 animate-pulse" style={{animationDelay: '0s'}}></div>
+                <div className="w-1 h-4 bg-blue-500 animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                <div className="w-1 h-4 bg-blue-500 animate-pulse" style={{animationDelay: '0.4s'}}></div>
+              </div>
+              <span>Processing...</span>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      {isRunning && (
+        <div className="mt-2 text-xs text-gray-500">
+          {autoConversations && (
+            <span>🤖 Auto conversations every {simulationState?.conversation_interval || 10}s</span>
+          )}
+          {autoConversations && autoTime && <span className="mx-2">•</span>}
+          {autoTime && (
+            <span>⏰ Auto time progression every {simulationState?.time_interval || 60}s</span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AutoControls = ({ simulationState, onToggleAuto }) => {
   const [autoConversations, setAutoConversations] = useState(false);
   const [autoTime, setAutoTime] = useState(false);
