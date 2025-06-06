@@ -1254,9 +1254,10 @@ function App() {
   const fetchArchetypes = async () => {
     try {
       const response = await axios.get(`${API}/archetypes`);
-      setArchetypes(response.data);
+      setArchetypes(response.data || {});
     } catch (error) {
       console.error('Error fetching archetypes:', error);
+      setArchetypes({}); // Set empty object on error
     }
   };
 
