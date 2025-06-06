@@ -1149,17 +1149,45 @@ const ControlPanel = ({
       </div>
 
       <div className="api-usage mb-4 p-3 bg-gray-50 rounded">
-        <h4 className="font-semibold text-sm mb-2">API Usage Today</h4>
-        <div className="w-full bg-gray-200 rounded-full h-3">
-          <div 
-            className="bg-blue-500 h-3 rounded-full"
-            style={{width: `${(apiUsage?.requests_used || 0) / (apiUsage?.max_requests || 1400) * 100}%`}}
-          ></div>
+        <h4 className="font-semibold text-sm mb-2">📊 Daily Usage & Cost</h4>
+        
+        {/* Request Usage Bar */}
+        <div className="mb-3">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs text-gray-600">API Requests</span>
+            <span className="text-xs text-gray-600">Paid Tier</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-3">
+            <div 
+              className="bg-blue-500 h-3 rounded-full"
+              style={{width: `${Math.min((apiUsage?.requests_used || 0) / 50000 * 100, 100)}%`}}
+            ></div>
+          </div>
+          <p className="text-xs mt-1">
+            {apiUsage?.requests_used || 0} / 50,000 requests
+            ({Math.max(50000 - (apiUsage?.requests_used || 0), 0).toLocaleString()} remaining)
+          </p>
         </div>
-        <p className="text-xs mt-1">
-          {apiUsage?.requests_used || 0} / {apiUsage?.max_requests || 1400} requests
-          ({apiUsage?.remaining || 1400} remaining)
-        </p>
+
+        {/* Cost Tracking */}
+        <div className="cost-tracking">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs text-gray-600">Estimated Daily Cost</span>
+            <span className="text-xs text-green-600">Budget: $10.00</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-green-500 h-2 rounded-full"
+              style={{width: `${Math.min(((apiUsage?.requests_used || 0) * 0.0002) / 10 * 100, 100)}%`}}
+            ></div>
+          </div>
+          <p className="text-xs mt-1 text-gray-600">
+            ${((apiUsage?.requests_used || 0) * 0.0002).toFixed(4)} / $10.00
+            <span className="ml-2 text-green-600">
+              (~${(((apiUsage?.requests_used || 0) * 0.0002) * 30).toFixed(2)}/month)
+            </span>
+          </p>
+        </div>
       </div>
 
       <div className="controls space-y-3">
