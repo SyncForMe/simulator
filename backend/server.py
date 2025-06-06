@@ -266,7 +266,7 @@ class AgentUpdate(BaseModel):
 class LLMManager:
     def __init__(self):
         self.api_key = os.environ.get('GEMINI_API_KEY')
-        self.max_daily_requests = 1400
+        self.max_daily_requests = 50000  # Paid tier - much higher limit
         
     async def get_usage_today(self):
         """Get current API usage for today"""
