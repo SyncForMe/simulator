@@ -338,6 +338,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Retested the auto mode toggle endpoint. It correctly enables and disables auto conversations and time progression with the specified intervals. The settings are properly reflected in the simulation state."
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the toggle-auto-mode endpoint as part of the complete simulation flow. The endpoint correctly accepts auto_conversations, auto_time, conversation_interval, and time_interval parameters and updates the simulation state accordingly. The settings are properly reflected in the simulation state when checked with GET /api/simulation/state."
 
   - task: "GET /api/relationships - Get agent relationships"
     implemented: true
