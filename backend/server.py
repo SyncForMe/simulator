@@ -720,19 +720,31 @@ Provide a weekly summary in this format:
 **Week Summary - Day {current_day}**
 
 **1. 🔥 KEY EVENTS & DISCOVERIES**
-[Key changes and important developments that occurred]
+1. [First major event or discovery]
+2. [Second major event or discovery]  
+3. [Third major event or discovery]
 
 **2. 📈 RELATIONSHIP DEVELOPMENTS**
-[How agent relationships evolved - friendships, tensions, alliances]
+1. [First relationship change or development]
+2. [Second relationship change or development]
+3. [Third relationship change or development]
 
 **3. 🎭 EMERGING PERSONALITIES** 
-[How each agent's personality traits manifested in their behavior]
+1. [First agent's personality development]
+2. [Second agent's personality development]
+3. [Third agent's personality development]
 
 **4. 🤝 SOCIAL DYNAMICS**
-[Overall team cohesion, leadership patterns, group behavior]
+1. [First social pattern or team dynamic]
+2. [Second social pattern or team dynamic]
+3. [Third social pattern or team dynamic]
 
 **5. 🔮 LOOKING AHEAD**
-[Predictions for future developments and relationship trends]"""
+1. [First prediction for future developments]
+2. [Second prediction for future developments]
+3. [Third prediction for future developments]
+
+Make each numbered point a complete, detailed paragraph with specific examples from the conversations."""
     
     try:
         user_message = UserMessage(text=prompt)
