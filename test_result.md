@@ -378,6 +378,24 @@ backend:
         -agent: "testing"
         -comment: "Retested the relationships endpoint after the conversation generation fix. The endpoint correctly returns all agent relationships with proper JSON serialization. Relationship scores are properly updated after conversations."
 
+  - task: "Fix API limit issue in LLMManager.can_make_request method"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial investigation of 'daily API limit reached' messages despite max_daily_requests being updated to 50000."
+        -working: false
+        -agent: "testing"
+        -comment: "Found issue in can_make_request method: there was a hardcoded check returning False if usage >= 1000 (free tier limit), preventing the use of the new 50000 limit."
+        -working: true
+        -agent: "testing"
+        -comment: "Fixed the issue by removing the hardcoded check in can_make_request method. Now the system properly uses the full 50000 request limit. Verified that conversation generation works without 'daily API limit reached' messages and that the API usage endpoint correctly shows the new limit."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
