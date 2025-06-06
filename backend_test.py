@@ -130,7 +130,36 @@ def main():
         print_summary()
         return
     
-    # 2. Initialize research station (create the 3 agents)
+    # 2. Test API usage tracking
+    api_usage, api_usage_data = run_test(
+        "API Usage Tracking",
+        "/api-usage",
+        expected_keys=["date", "requests_used", "max_requests", "remaining"]
+    )
+    
+    if api_usage:
+        print(f"API Usage: {api_usage_data.get('requests_used')}/{api_usage_data.get('max_requests')} requests used")
+        print(f"API Status: {'Available' if api_usage_data.get('api_available') else 'Unavailable'}")
+    
+    # 3. Test the complete flow of starting a new simulation
+    print("\n" + "="*80)
+    print("TESTING COMPLETE SIMULATION STARTUP FLOW")
+    print("="*80)
+    
+    # 3.1 Start simulation (should clear everything and reset state)
+    sim_start, sim_start_data = run_test(
+        "Start New Simulation",
+        "/simulation/start",
+        method="POST",
+        expected_keys=["message", "state"]
+    )
+    
+    if not sim_start:
+        print("Failed to start simulation. Aborting remaining tests.")
+        print_summary()
+        return
+    
+    # 3.2 Initialize research station (should create default agents)
     init_station, init_data = run_test(
         "Initialize Research Station",
         "/simulation/init-research-station",
@@ -153,21 +182,93 @@ def main():
         for agent in agents:
             print(f"  - {agent.get('name')} ({agent.get('archetype')})")
     
-    # 3. Start simulation
-    sim_start, _ = run_test(
-        "Start Simulation",
-        "/simulation/start",
+    # 3.3 Set scenario
+    scenario_data = {
+        "scenario": "Testing the AI agent simulation with a custom scenario"
+    }
+    set_scenario, scenario_result = run_test(
+        "Set Custom Scenario",
+        "/simulation/set-scenario",
         method="POST",
-        expected_keys=["message", "state"]
+        data=scenario_data,
+        expected_keys=["message", "scenario"]
     )
     
-    if not sim_start:
-        print("Failed to start simulation. Aborting remaining tests.")
-        print_summary()
-        return
+    if not set_scenario:
+        print("Failed to set scenario. Continuing with default scenario.")
+    else:
+        print(f"Successfully set scenario: {scenario_result.get('scenario')}")
+    
+    # 3.4 Toggle auto mode (should enable automation)
+    auto_mode_data = {
+        "auto_conversations": True,
+        "auto_time": True,
+        "conversation_interval": 15,
+        "time_interval": 45
+    }
+    toggle_auto, auto_result = run_test(
+        "Toggle Auto Mode",
+        "/simulation/toggle-auto-mode",
+        method="POST",
+        data=auto_mode_data,
+        expected_keys=["message", "auto_conversations", "auto_time", "conversation_interval", "time_interval"]
+    )
+    
+    if not toggle_auto:
+        print("Failed to toggle auto mode. Continuing with manual mode.")
+    else:
+        print("Successfully enabled auto mode with the following settings:")
+        print(f"  - Auto Conversations: {auto_result.get('auto_conversations')}")
+        print(f"  - Auto Time: {auto_result.get('auto_time')}")
+        print(f"  - Conversation Interval: {auto_result.get('conversation_interval')} seconds")
+        print(f"  - Time Interval: {auto_result.get('time_interval')} seconds")
+    
+    # 3.5 Get simulation state (should show the updated state with automation enabled)
+    sim_state, state_data = run_test(
+        "Get Simulation State",
+        "/simulation/state",
+        expected_keys=["current_day", "current_time_period", "is_active"]
+    )
+    
+    if sim_state:
+        print("Current simulation state:")
+        print(f"  - Day: {state_data.get('current_day')}")
+        print(f"  - Time Period: {state_data.get('current_time_period')}")
+        print(f"  - Active: {state_data.get('is_active')}")
+        print(f"  - Scenario: {state_data.get('scenario')}")
+        
+        # Verify auto mode settings were saved
+        auto_conversations = state_data.get('auto_conversations')
+        auto_time = state_data.get('auto_time')
+        conversation_interval = state_data.get('conversation_interval')
+        time_interval = state_data.get('time_interval')
+        
+        if auto_conversations is None or auto_time is None:
+            print("❌ Auto mode settings not found in simulation state")
+            sim_state = False
+        else:
+            print("Auto mode settings in simulation state:")
+            print(f"  - Auto Conversations: {auto_conversations}")
+            print(f"  - Auto Time: {auto_time}")
+            print(f"  - Conversation Interval: {conversation_interval}")
+            print(f"  - Time Interval: {time_interval}")
+            
+            # Verify settings match what we sent
+            settings_match = (
+                auto_conversations == auto_mode_data["auto_conversations"] and
+                auto_time == auto_mode_data["auto_time"] and
+                conversation_interval == auto_mode_data["conversation_interval"] and
+                time_interval == auto_mode_data["time_interval"]
+            )
+            
+            if settings_match:
+                print("✅ Auto mode settings correctly saved in simulation state")
+            else:
+                print("❌ Auto mode settings in simulation state don't match requested values")
+                sim_state = False
     
     # 4. Generate conversation and verify actual dialogue
-    print("\nTesting conversation generation fix...")
+    print("\nTesting conversation generation after enabling auto mode...")
     conv_gen, conv_data = run_test(
         "Generate Conversation",
         "/conversation/generate",
@@ -286,89 +387,56 @@ def main():
             else:
                 relationships = False
     
-    # 7. Generate another conversation to verify consistency
-    print("\nGenerating another conversation to verify consistency...")
-    conv_gen2, conv_data2 = run_test(
-        "Generate Second Conversation",
-        "/conversation/generate",
+    # 7. Test toggling auto mode off
+    auto_mode_off_data = {
+        "auto_conversations": False,
+        "auto_time": False,
+        "conversation_interval": 10,
+        "time_interval": 30
+    }
+    toggle_auto_off, auto_off_result = run_test(
+        "Toggle Auto Mode Off",
+        "/simulation/toggle-auto-mode",
         method="POST",
-        expected_keys=["messages", "round_number", "time_period"]
+        data=auto_mode_off_data,
+        expected_keys=["message", "auto_conversations", "auto_time"]
     )
     
-    # Verify second conversation also has actual dialogue
-    if conv_gen2:
-        messages = conv_data2.get("messages", [])
-        if len(messages) != 3:
-            print(f"Expected messages from 3 agents, but got {len(messages)}")
-            conv_gen2 = False
-        else:
-            print("\nVerifying second conversation responses:")
-            
-            # Check for generic fallback patterns
-            generic_patterns = [
-                "is analyzing",
-                "is questioning",
-                "is taking a moment",
-                "is carefully considering",
-                "nods thoughtfully"
-            ]
-            
-            all_valid = True
-            for i, msg in enumerate(messages):
-                agent_name = msg.get("agent_name", "Unknown")
-                message_text = msg.get("message", "")
-                
-                # Check if message is a generic fallback
-                is_generic = False
-                for pattern in generic_patterns:
-                    if pattern in message_text:
-                        is_generic = True
-                        break
-                
-                # Check if message is too short
-                is_too_short = len(message_text) < 10
-                
-                if is_generic or is_too_short:
-                    print(f"  ❌ {agent_name}: '{message_text}' (Generic fallback or too short)")
-                    all_valid = False
-                else:
-                    print(f"  ✅ {agent_name}: '{message_text}'")
-            
-            if all_valid:
-                print("\nSuccess: Second conversation also has actual dialogue")
-            else:
-                print("\nFailed: Second conversation has some generic fallbacks")
-                conv_gen2 = False
-    
-    # 8. Check relationships again to verify they're being updated
-    relationships2, relationships_data2 = run_test(
-        "Check Relationships After Second Conversation",
-        "/relationships",
-        expected_keys=[]  # We expect a list
-    )
-    
-    # Verify relationships are still valid
-    if relationships2 and relationships:
-        print("\nVerifying relationships are properly updated after conversations:")
+    if toggle_auto_off:
+        print("Successfully disabled auto mode")
         
-        # Compare with previous relationships
-        if len(relationships_data2) != len(relationships_data):
-            print(f"Relationship count changed unexpectedly: {len(relationships_data)} → {len(relationships_data2)}")
-        else:
-            print(f"Relationship count remained consistent: {len(relationships_data2)}")
+        # Verify auto mode is off in the simulation state
+        sim_state_after, state_after_data = run_test(
+            "Get Simulation State After Disabling Auto Mode",
+            "/simulation/state",
+            expected_keys=["current_day", "current_time_period", "is_active"]
+        )
+        
+        if sim_state_after:
+            auto_conversations_after = state_after_data.get('auto_conversations')
+            auto_time_after = state_after_data.get('auto_time')
             
-            # Check if any scores changed (they should after conversation)
-            score_changes = 0
-            for i, (rel1, rel2) in enumerate(zip(relationships_data, relationships_data2)):
-                if rel1.get("agent1_id") == rel2.get("agent1_id") and rel1.get("agent2_id") == rel2.get("agent2_id"):
-                    if rel1.get("score") != rel2.get("score"):
-                        score_changes += 1
-                        print(f"  - Relationship {rel1.get('agent1_id')} → {rel1.get('agent2_id')} score changed: {rel1.get('score')} → {rel2.get('score')}")
-            
-            if score_changes > 0:
-                print(f"Success: {score_changes} relationship scores were updated after conversation")
+            if auto_conversations_after or auto_time_after:
+                print("❌ Auto mode not properly disabled in simulation state")
+                toggle_auto_off = False
             else:
-                print("Note: No relationship scores changed after conversation (this might be expected based on compatibility)")
+                print("✅ Auto mode successfully disabled in simulation state")
+    
+    # 8. Check API usage again to verify it's being tracked
+    api_usage_after, api_usage_after_data = run_test(
+        "API Usage Tracking After Tests",
+        "/api-usage",
+        expected_keys=["date", "requests_used", "max_requests", "remaining"]
+    )
+    
+    if api_usage and api_usage_after:
+        requests_before = api_usage_data.get('requests_used', 0)
+        requests_after = api_usage_after_data.get('requests_used', 0)
+        
+        if requests_after > requests_before:
+            print(f"✅ API usage increased from {requests_before} to {requests_after} requests")
+        else:
+            print(f"Note: API usage didn't increase ({requests_before} → {requests_after})")
     
     # Print summary of all tests
     print_summary()
