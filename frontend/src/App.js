@@ -1666,6 +1666,8 @@ function App() {
           <div className="lg:col-span-1">
             <ScenarioInput onSetScenario={handleSetScenario} />
             
+            <SimulationStatusBar simulationState={simulationState} />
+            
             <AutoControls 
               simulationState={simulationState}
               onToggleAuto={handleToggleAuto}
