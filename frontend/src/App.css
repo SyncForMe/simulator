@@ -225,3 +225,26 @@ input:checked + .slider:before {
   border: 1px solid #e5e7eb;
   background: #f9fafb;
 }
+
+/* Simulation Status Bar */
+.simulation-status {
+  transition: all 0.3s ease-in-out;
+}
+
+.simulation-status:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
