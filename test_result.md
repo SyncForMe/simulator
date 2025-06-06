@@ -179,6 +179,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Simulation start endpoint successfully initializes the simulation state."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the simulation start endpoint as part of the complete simulation flow. It correctly clears previous conversations, relationships, and summaries, and resets the simulation state."
 
   - task: "GET /api/simulation/state - Get current simulation state"
     implemented: true
