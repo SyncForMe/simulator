@@ -400,7 +400,7 @@ class LLMManager:
         other_agent_names = [a.name for a in other_agents if a.id != agent.id]
         others_text = f"Others present: {', '.join(other_agent_names)}" if other_agent_names else "You are alone"
         
-        # Simple system message focused on conversation
+        # Enhanced system message for conversational responses
         system_message = f"""You are {agent.name}, a {AGENT_ARCHETYPES[agent.archetype]['description']}.
 
 Your goal: {agent.goal}
@@ -412,17 +412,25 @@ Personality traits:
 - Cooperativeness: {agent.personality.cooperativeness}/10
 - Energy: {agent.personality.energy}/10
 
-IMPORTANT: 
-1. Respond as this character in 1-2 sentences
-2. Be conversational and natural
-3. Reference your goal and personality
-4. Engage meaningfully with the scenario
+CONVERSATION RULES:
+1. If someone asks you a direct question, answer it first before adding your own ideas
+2. Reference what others have said by name ("As Alex mentioned..." or "@Marcus, I think...")
+3. Build on others' ideas rather than ignoring them
+4. Ask follow-up questions to keep the conversation flowing
+5. Be conversational and natural - this is a discussion, not a presentation
+6. Keep responses to 1-2 sentences but make them meaningful
+7. If you disagree with someone, explain why respectfully
 
 Scenario: {scenario}
 {others_text}"""
         
-        # Simple prompt
-        prompt = f"{context}. Respond naturally as {agent.name}."
+        # Enhanced prompt for better conversation flow
+        if "In this conversation:" in context:
+            # This agent is responding to others
+            prompt = f"{context}\n\nRespond naturally as {agent.name}. Address what others have said and contribute to the ongoing discussion."
+        else:
+            # This agent is speaking first
+            prompt = f"{context}\n\nSpeak first as {agent.name}. Start the conversation by sharing a thought, asking a question, or raising a point that others can respond to."
         
         try:
             # Create chat instance with basic configuration
@@ -430,7 +438,7 @@ Scenario: {scenario}
                 api_key=self.api_key,
                 session_id=f"agent_{agent.id}_{int(datetime.now().timestamp())}",
                 system_message=system_message
-            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(100)
+            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(150)
             
             user_message = UserMessage(text=prompt)
             response = await chat.send_message(user_message)
@@ -452,50 +460,68 @@ Scenario: {scenario}
             # Create varied fallback responses based on agent's background and current context
             import random
             
-            # Get conversation context for more varied responses
-            context_lower = context.lower()
+            # Check if others have spoken (for more contextual fallbacks)
+            is_responding_to_others = "In this conversation:" in context
             
             # Agent-specific responses based on their background and personality
             if agent.name == "Marcus \"Mark\" Castellano":
-                responses = [
-                    "From my experience across three crypto cycles, I think we need to focus on data-driven decisions here.",
-                    "This reminds me of the 2018 winter - we need sustainable approaches, not just hype.",
-                    "My marketing instincts say we should craft a narrative that resonates with both retail and institutional players.",
-                    "Based on what I've seen in previous cycles, timing is crucial for this kind of decision."
-                ]
+                if is_responding_to_others:
+                    responses = [
+                        "I agree with the direction you're taking, but from my marketing perspective, we need to consider the narrative implications.",
+                        "That's an interesting point - in my experience across three crypto cycles, timing is everything here.",
+                        "Building on what you said, I think we should also factor in how this affects our positioning with institutional investors."
+                    ]
+                else:
+                    responses = [
+                        "From my experience across three crypto cycles, I think we need to focus on data-driven decisions here.",
+                        "This reminds me of the 2018 winter - we need sustainable approaches, not just hype.",
+                        "My marketing instincts say we should craft a narrative that resonates with both retail and institutional players."
+                    ]
             elif agent.name == "Alexandra \"Alex\" Chen":
-                responses = [
-                    "As someone who's built protocols managing $2B+ TVL, I believe we can architect a solution that scales.",
-                    "This is exactly the kind of challenge that excites me - let's think about the user experience first.",
-                    "My experience with DeFi protocols tells me we need to balance innovation with stability here.",
-                    "I've rallied teams around bigger visions than this - we just need the right strategy."
-                ]
+                if is_responding_to_others:
+                    responses = [
+                        "I hear what you're saying, and from a product perspective, we need to make sure the user experience supports that strategy.",
+                        "Good point - but as someone who's built protocols managing $2B+ TVL, I think we're missing the scalability angle.",
+                        "I like that approach, though we should also consider how this impacts our go-to-market timeline."
+                    ]
+                else:
+                    responses = [
+                        "As someone who's built protocols managing $2B+ TVL, I believe we can architect a solution that scales.",
+                        "This is exactly the kind of challenge that excites me - let's think about the user experience first.",
+                        "My experience with DeFi protocols tells me we need to balance innovation with stability here."
+                    ]
             elif agent.name == "Diego \"Dex\" Rodriguez":
-                responses = [
-                    "My crypto polymath experience suggests there might be an emerging trend here we're missing.",
-                    "This feels like one of those 30% opportunities I actually get right - let me think differently about this.",
-                    "Having worn every hat in crypto, I see potential connections others might miss.",
-                    "My on-chain analysis background tells me there's more data we should be looking at."
-                ]
+                if is_responding_to_others:
+                    responses = [
+                        "Interesting take - my crypto polymath experience suggests there might be an angle we're missing though.",
+                        "I see your point, but having worn every hat in crypto, I think there's a more creative solution here.",
+                        "That makes sense, though my on-chain analysis background tells me we should look at the data differently."
+                    ]
+                else:
+                    responses = [
+                        "My crypto polymath experience suggests there might be an emerging trend here we're missing.",
+                        "This feels like one of those 30% opportunities I actually get right - let me think differently about this.",
+                        "Having worn every hat in crypto, I see potential connections others might miss."
+                    ]
             else:
                 # Generic fallbacks for other agents
                 if agent.personality.optimism > 7:
                     responses = [
-                        f"{agent.name}: I believe we can turn this into an opportunity.",
-                        f"{agent.name}: There's definitely a positive path forward here.",
-                        f"{agent.name}: I'm confident we can find a solution that works for everyone."
+                        f"I believe we can turn this into an opportunity.",
+                        f"There's definitely a positive path forward here.",
+                        f"I'm confident we can find a solution that works for everyone."
                     ]
                 elif agent.personality.curiosity > 7:
                     responses = [
-                        f"{agent.name}: This raises some fascinating questions we should explore.",
-                        f"{agent.name}: I'm intrigued by the implications here.",
-                        f"{agent.name}: There are interesting angles we haven't considered yet."
+                        f"This raises some fascinating questions we should explore.",
+                        f"I'm intrigued by the implications here.",
+                        f"There are interesting angles we haven't considered yet."
                     ]
                 else:
                     responses = [
-                        f"{agent.name}: Let me think through this systematically.",
-                        f"{agent.name}: We need to carefully weigh our options here.",
-                        f"{agent.name}: This requires a thoughtful approach."
+                        f"Let me think through this systematically.",
+                        f"We need to carefully weigh our options here.",
+                        f"This requires a thoughtful approach."
                     ]
             
             return random.choice(responses)
