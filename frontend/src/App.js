@@ -1594,6 +1594,52 @@ function App() {
     refreshAllData();
   }, []);
 
+  // Auto-start timers when simulation state loads with auto-mode enabled
+  useEffect(() => {
+    if (simulationState) {
+      // Clear existing timers first
+      if (autoTimers.conversation) {
+        clearInterval(autoTimers.conversation);
+      }
+      if (autoTimers.time) {
+        clearInterval(autoTimers.time);
+      }
+      
+      // Set up new timers if enabled in simulation state
+      const newTimers = { conversation: null, time: null };
+      
+      if (simulationState.auto_conversations) {
+        console.log('Auto-starting conversations from simulation state with interval:', simulationState.conversation_interval);
+        newTimers.conversation = setInterval(async () => {
+          try {
+            console.log('Auto generating conversation...');
+            await axios.post(`${API}/conversation/generate`);
+            await refreshAllData();
+          } catch (error) {
+            console.error('Auto conversation error:', error);
+            // Don't clear interval on error, just log it
+          }
+        }, (simulationState.conversation_interval || 10) * 1000);
+      }
+      
+      if (simulationState.auto_time) {
+        console.log('Auto-starting time advancement from simulation state with interval:', simulationState.time_interval);
+        newTimers.time = setInterval(async () => {
+          try {
+            console.log('Auto advancing time...');
+            await axios.post(`${API}/simulation/next-period`);
+            await fetchSimulationState();
+          } catch (error) {
+            console.error('Auto time error:', error);
+            // Don't clear interval on error, just log it
+          }
+        }, (simulationState.time_interval || 60) * 1000);
+      }
+      
+      setAutoTimers(newTimers);
+    }
+  }, [simulationState?.auto_conversations, simulationState?.auto_time, simulationState?.conversation_interval, simulationState?.time_interval]);
+
   // Cleanup timers on unmount
   useEffect(() => {
     return () => {
