@@ -1361,7 +1361,60 @@ async def get_summaries():
     
     return processed_summaries
 
-@api_router.post("/simulation/toggle-auto-mode")
+@api_router.get("/simulation/auto-status")
+async def get_auto_status():
+    """Get detailed auto-mode status and detect if it should be running"""
+    state = await db.simulation_state.find_one()
+    if not state:
+        return {"auto_active": False, "should_be_active": False, "message": "No simulation state"}
+    
+    auto_conversations = state.get("auto_conversations", False)
+    auto_time = state.get("auto_time", False)
+    is_active = state.get("is_active", False)
+    
+    last_conversation_str = state.get("last_auto_conversation")
+    last_time_str = state.get("last_auto_time")
+    
+    conversation_interval = state.get("conversation_interval", 10)
+    time_interval = state.get("time_interval", 60)
+    
+    status = {
+        "auto_conversations": auto_conversations,
+        "auto_time": auto_time,
+        "simulation_active": is_active,
+        "conversation_interval": conversation_interval,
+        "time_interval": time_interval,
+        "last_auto_conversation": last_conversation_str,
+        "last_auto_time": last_time_str
+    }
+    
+    # Check if auto mode should be running but isn't
+    if auto_conversations or auto_time:
+        current_time = datetime.utcnow()
+        
+        # Check conversation timing
+        if auto_conversations and last_conversation_str:
+            try:
+                last_conv_time = datetime.fromisoformat(last_conversation_str.replace('Z', '+00:00'))
+                conv_gap = (current_time - last_conv_time.replace(tzinfo=None)).total_seconds()
+                status["conversation_gap_seconds"] = conv_gap
+                status["should_generate_conversation"] = conv_gap > (conversation_interval + 30)  # 30s buffer
+            except:
+                status["conversation_gap_seconds"] = None
+                status["should_generate_conversation"] = True
+        
+        # Check time advancement timing  
+        if auto_time and last_time_str:
+            try:
+                last_time_time = datetime.fromisoformat(last_time_str.replace('Z', '+00:00'))
+                time_gap = (current_time - last_time_time.replace(tzinfo=None)).total_seconds()
+                status["time_gap_seconds"] = time_gap
+                status["should_advance_time"] = time_gap > (time_interval + 60)  # 60s buffer
+            except:
+                status["time_gap_seconds"] = None
+                status["should_advance_time"] = True
+    
+    return status
 async def toggle_auto_mode(request: AutoModeRequest):
     """Toggle automatic conversation and time progression"""
     await db.simulation_state.update_one(
