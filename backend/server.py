@@ -1353,6 +1353,33 @@ def calculate_compatibility(agent1: Agent, agent2: Agent) -> float:
     compatibility = (coop_match / 10) - (extro_diff / 20)
     return max(0, min(1, compatibility))
 
+@api_router.post("/simulation/toggle-auto-mode")
+async def toggle_auto_mode(request: dict):
+    """Toggle automation settings for conversations and time"""
+    auto_conversations = request.get("auto_conversations", False)
+    auto_time = request.get("auto_time", False)
+    conversation_interval = request.get("conversation_interval", 10)
+    time_interval = request.get("time_interval", 60)
+    
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {
+            "auto_conversations": auto_conversations,
+            "auto_time": auto_time,
+            "conversation_interval": conversation_interval,
+            "time_interval": time_interval
+        }},
+        upsert=True
+    )
+    
+    return {
+        "message": f"Auto mode updated - Conversations: {'ON' if auto_conversations else 'OFF'}, Time: {'ON' if auto_time else 'OFF'}",
+        "auto_conversations": auto_conversations,
+        "auto_time": auto_time,
+        "conversation_interval": conversation_interval,
+        "time_interval": time_interval
+    }
+
 @api_router.post("/simulation/auto-weekly-report")
 async def setup_auto_weekly_report(request: dict):
     """Setup automatic weekly report generation"""
