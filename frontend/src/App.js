@@ -235,6 +235,26 @@ const AutoControls = ({ simulationState, onToggleAuto }) => {
   );
 };
 
+const ConversationTimeStatus = ({ simulationState }) => {
+  const autoConversations = simulationState?.auto_conversations || false;
+  const autoTime = simulationState?.auto_time || false;
+  
+  return (
+    <div className="conversation-time-status bg-gray-50 rounded-lg p-3 mt-3 border border-gray-200">
+      <div className="flex items-center space-x-6 text-xs">
+        <span className={`flex items-center ${autoConversations ? 'text-green-600' : 'text-gray-500'}`}>
+          <div className={`w-2 h-2 rounded-full mr-2 flex-shrink-0 ${autoConversations ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+          Conversations: {autoConversations ? 'AUTO' : 'MANUAL'}
+        </span>
+        <span className={`flex items-center ${autoTime ? 'text-blue-600' : 'text-gray-500'}`}>
+          <div className={`w-2 h-2 rounded-full mr-2 flex-shrink-0 ${autoTime ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
+          Time: {autoTime ? 'AUTO' : 'MANUAL'}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 const ObserverInput = ({ onSendMessage }) => {
   const [message, setMessage] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
