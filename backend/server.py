@@ -1052,7 +1052,7 @@ async def advance_time_period():
 
 @api_router.post("/conversation/generate")
 async def generate_conversation():
-    """Generate a conversation round between agents with rate limiting"""
+    """Generate a conversation round between agents with sequential responses"""
     # Get current agents
     agents = await db.agents.find().to_list(100)
     if len(agents) < 2:
@@ -1079,15 +1079,29 @@ async def generate_conversation():
     else:
         context += "Begin your interaction in this scenario. "
     
-    # Generate responses from each agent with staggered timing for rate limiting
+    # Generate responses SEQUENTIALLY so agents can respond to each other
     messages = []
+    conversation_so_far = ""
+    
     for i, agent in enumerate(agent_objects):
+        # Build context including what other agents have said in THIS conversation round
+        current_context = context
+        
+        if messages:  # If others have already spoken in this round
+            current_context += f"\n\nIn this conversation:\n"
+            for prev_msg in messages:
+                current_context += f"- {prev_msg.agent_name}: {prev_msg.message}\n"
+            current_context += f"\nNow respond to what others have said, answer any questions directed at you, and contribute meaningfully to the discussion."
+        else:
+            # First agent sets the tone
+            current_context += "\nYou're speaking first - introduce a topic, ask a question, or share an insight that others can respond to."
+        
         # Add a small delay between requests to avoid rate limiting
         if i > 0:
-            await asyncio.sleep(5)  # 5 second delay between agents
+            await asyncio.sleep(2)  # 2 second delay between agents
         
         response = await llm_manager.generate_agent_response(
-            agent, scenario, agent_objects, context, conversation_history
+            agent, scenario, agent_objects, current_context, conversation_history
         )
         
         message = ConversationMessage(
@@ -1097,6 +1111,9 @@ async def generate_conversation():
             mood=agent.current_mood
         )
         messages.append(message)
+        
+        # Update conversation_so_far for next agent
+        conversation_so_far += f"{agent.name}: {response}\n"
     
     # Get current round number
     conversation_count = await db.conversations.count_documents({})
