@@ -685,8 +685,8 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                 className="w-full p-2 border rounded"
                 disabled={loading}
               >
-                {Object.entries(archetypes).map(([key, value]) => (
-                  <option key={key} value={key}>{value.name}</option>
+                {archetypes && Object.entries(archetypes).map(([key, value]) => (
+                  <option key={key} value={key}>{value?.name || key}</option>
                 ))}
               </select>
             </div>
