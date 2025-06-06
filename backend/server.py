@@ -1151,11 +1151,36 @@ async def get_relationships():
 async def get_api_usage():
     """Get current API usage"""
     usage = await llm_manager.get_usage_today()
+    
+    # Test if API is actually working
+    api_available = True
+    try:
+        # Quick test call to check quota status
+        chat = LlmChat(
+            api_key=llm_manager.api_key,
+            session_id=f"quota_test_{datetime.now().timestamp()}",
+            system_message="You are a test."
+        ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(10)
+        
+        user_message = UserMessage(text="Hi")
+        test_response = await chat.send_message(user_message)
+        
+        if not test_response:
+            api_available = False
+            
+    except Exception as e:
+        api_available = False
+        error_msg = str(e)
+        if "quota" in error_msg.lower() or "429" in error_msg:
+            api_available = "quota_exceeded"
+    
     return {
         "date": str(date.today()),
         "requests_used": usage,
         "max_requests": llm_manager.max_daily_requests,
-        "remaining": llm_manager.max_daily_requests - usage
+        "remaining": llm_manager.max_daily_requests - usage,
+        "api_available": api_available,
+        "note": "API quota exceeded - using intelligent fallbacks" if api_available == "quota_exceeded" else ""
     }
 
 async def update_relationships(agents: List[Agent], messages: List[ConversationMessage]):
