@@ -287,6 +287,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Retested the custom scenario setting endpoint. It correctly updates the simulation state with the new scenario and properly validates empty scenarios."
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the set-scenario endpoint as part of the complete simulation flow. It correctly updates the simulation state with the new scenario, which is reflected in the GET /api/simulation/state response."
 
   - task: "POST /api/simulation/generate-summary - Generate AI-powered weekly summary"
     implemented: true
