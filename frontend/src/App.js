@@ -61,8 +61,6 @@ const ScenarioInput = ({ onSetScenario }) => {
 
 const SimulationStatusBar = ({ simulationState }) => {
   const isRunning = simulationState?.auto_conversations || simulationState?.auto_time;
-  const autoConversations = simulationState?.auto_conversations || false;
-  const autoTime = simulationState?.auto_time || false;
   
   return (
     <div className="simulation-status bg-white rounded-lg shadow-md p-4 mb-4 border-l-4 border-blue-500">
@@ -71,18 +69,8 @@ const SimulationStatusBar = ({ simulationState }) => {
           <div className={`w-3 h-3 rounded-full flex-shrink-0 ${isRunning ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-bold text-gray-800">
-              Simulation Status: {isRunning ? 'RUNNING' : 'PAUSED'}
+              Simulation: {isRunning ? 'RUNNING' : 'PAUSED'}
             </h3>
-            <div className="flex items-center space-x-4 text-xs text-gray-600 mt-1 flex-wrap">
-              <span className={`flex items-center ${autoConversations ? 'text-green-600' : 'text-gray-500'}`}>
-                <div className={`w-2 h-2 rounded-full mr-1 flex-shrink-0 ${autoConversations ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-                Conversations: {autoConversations ? 'AUTO' : 'MANUAL'}
-              </span>
-              <span className={`flex items-center ${autoTime ? 'text-blue-600' : 'text-gray-500'}`}>
-                <div className={`w-2 h-2 rounded-full mr-1 flex-shrink-0 ${autoTime ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
-                Time: {autoTime ? 'AUTO' : 'MANUAL'}
-              </span>
-            </div>
           </div>
         </div>
         
@@ -103,12 +91,12 @@ const SimulationStatusBar = ({ simulationState }) => {
       {isRunning && (
         <div className="mt-3 pt-2 border-t border-gray-200 text-xs text-gray-500">
           <div className="flex flex-wrap gap-4">
-            {autoConversations && (
+            {simulationState?.auto_conversations && (
               <span className="flex items-center">
                 🤖 Auto conversations every {simulationState?.conversation_interval || 10}s
               </span>
             )}
-            {autoTime && (
+            {simulationState?.auto_time && (
               <span className="flex items-center">
                 ⏰ Auto time progression every {simulationState?.time_interval || 60}s
               </span>
