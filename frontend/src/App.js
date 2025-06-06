@@ -1396,6 +1396,9 @@ function App() {
   const handleStartSimulation = async () => {
     setLoading(true);
     try {
+      // Clear summaries immediately in frontend before API call
+      setSummaries([]);
+      
       await axios.post(`${API}/simulation/start`);
       await refreshAllData();
     } catch (error) {
