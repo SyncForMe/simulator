@@ -823,7 +823,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
     return "bg-green-500";
   };
 
-  const agentRelationships = relationships.filter(r => r.agent1_id === agent.id);
+  const agentRelationships = relationships ? relationships.filter(r => r.agent1_id === agent.id) : [];
 
   return (
     <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 relative">
