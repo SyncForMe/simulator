@@ -1079,7 +1079,21 @@ async def get_conversations():
 async def get_relationships():
     """Get all agent relationships"""
     relationships = await db.relationships.find().to_list(1000)
-    return relationships
+    
+    # Convert MongoDB documents to JSON-serializable format
+    processed_relationships = []
+    for rel in relationships:
+        rel_dict = {
+            "id": rel.get("id", str(rel.get("_id", ""))),
+            "agent1_id": rel.get("agent1_id", ""),
+            "agent2_id": rel.get("agent2_id", ""),
+            "score": rel.get("score", 0),
+            "status": rel.get("status", "neutral"),
+            "updated_at": rel.get("updated_at").isoformat() if rel.get("updated_at") else ""
+        }
+        processed_relationships.append(rel_dict)
+    
+    return processed_relationships
 
 @api_router.get("/api-usage")
 async def get_api_usage():
