@@ -322,7 +322,7 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
   };
 
   const copyFullReport = () => {
-    if (!latestSummary) return;
+    if (!latestSummary?.summary) return;
     const fullText = latestSummary.summary || "No report content available";
     copyToClipboard(fullText, "Full Report");
   };
