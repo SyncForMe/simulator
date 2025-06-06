@@ -1570,10 +1570,20 @@ function App() {
         newTimers.conversation = setInterval(async () => {
           try {
             console.log('Auto generating conversation...');
-            await axios.post(`${API}/conversation/generate`);
+            const response = await axios.post(`${API}/conversation/generate`);
+            console.log('Conversation generated successfully:', response.data?.round_number);
             await refreshAllData();
           } catch (error) {
             console.error('Auto conversation error:', error);
+            
+            // Check if it's an API quota issue
+            if (error.response?.status === 400 && error.response?.data?.detail?.includes('API requests')) {
+              console.warn('API quota exceeded - auto conversations will continue trying');
+            } else if (error.response?.status === 500) {
+              console.warn('Server error during conversation generation - will retry');
+            } else {
+              console.error('Unexpected error during auto conversation:', error.response?.data || error.message);
+            }
             // Don't clear interval on error, just log it
           }
         }, (simulationState.conversation_interval || 10) * 1000);
