@@ -532,7 +532,9 @@ const FastForwardModal = ({ isOpen, onClose, onFastForward }) => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     setLoading(true);
     await onFastForward(targetDays, conversationsPerPeriod);
     setLoading(false);
