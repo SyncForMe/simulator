@@ -260,6 +260,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "API usage tracking endpoint correctly reports the number of API requests made."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the API usage tracking endpoint before and after running tests. It correctly tracks the number of API requests made, showing an increase in usage after generating conversations."
 
   - task: "POST /api/simulation/next-period - Advance time period"
     implemented: true
