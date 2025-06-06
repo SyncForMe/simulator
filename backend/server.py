@@ -384,11 +384,8 @@ class LLMManager:
         """Check if we can make another API request today"""
         usage = await self.get_usage_today()
         
-        # Also check if we're hitting actual API quota limits
-        # The free tier has a 1000 request daily limit
-        if usage >= 1000:  # Conservative limit
-            return False
-            
+        # Check if we're within our daily request limit
+        # No hardcoded limit since we're on paid tier now
         return usage < self.max_daily_requests
 
     async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None):
