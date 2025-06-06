@@ -215,6 +215,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Fixed the conversation generation endpoint by properly handling both dict and Pydantic model cases in update_relationships function."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the conversation generation endpoint after the fix. Agents are now returning actual dialogue responses instead of generic fallback messages. The LLM integration is working properly, and the responses are conversational and natural."
 
   - task: "GET /api/conversations - Get conversation history"
     implemented: true
