@@ -358,3 +358,5 @@ agent_communication:
     -message: "Completed testing of all new backend API endpoints. Fixed one issue: MongoDB ObjectId not being JSON serializable in the summaries endpoint. All new endpoints are now working correctly. The enhanced AI agent simulation backend with the new features is fully functional."
     -agent: "testing"
     -message: "Retested all new features. The custom scenario setting, summaries retrieval, and auto mode toggle features are working correctly. However, the weekly summary generation endpoint is currently failing due to a Gemini API rate limit error. This is a temporary API quota issue rather than a code implementation problem. All other features are functioning as expected."
+    -agent: "testing"
+    -message: "Tested the conversation generation fix. The agents are now returning actual dialogue responses instead of generic fallback messages. All tested endpoints are working correctly: init-research-station, start simulation, conversation/generate, conversations, and relationships. The relationships are properly updated after conversations. The LLM integration is working as expected, and there are no MongoDB serialization errors."
