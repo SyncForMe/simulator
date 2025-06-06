@@ -1387,7 +1387,27 @@ function App() {
       fetchSummaries(),
       fetchArchetypes()
     ]);
+    
+    // Check for auto-report generation
+    await checkAutoReportGeneration();
+    
     setLoading(false);
+  };
+
+  const checkAutoReportGeneration = async () => {
+    try {
+      const response = await axios.get(`${API}/reports/check-auto-generation`);
+      const data = response.data;
+      
+      if (data.should_generate) {
+        console.log('Auto-generating weekly report:', data.reason);
+        // Auto-generate the report
+        await handleGenerateSummary();
+      }
+    } catch (error) {
+      console.error('Error checking auto-report generation:', error);
+      // Don't throw error - this is just a background check
+    }
   };
 
   // Control functions
