@@ -388,150 +388,65 @@ class LLMManager:
     async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None):
         """Generate a single agent response with better context and progression"""
         if not await self.can_make_request():
-            return "Agent is taking a moment to think... (daily API limit reached)"
+            return f"{agent.name} is taking a moment to think... (daily API limit reached)"
         
-        # Get recent conversation history for this agent
-        if conversation_history is None:
-            conversation_history = []
+        # Build a simple, direct prompt for better LLM performance
+        other_agent_names = [a.name for a in other_agents if a.id != agent.id]
+        others_text = f"Others present: {', '.join(other_agent_names)}" if other_agent_names else "You are alone"
         
-        # Build conversation context from recent history
-        recent_context = ""
-        if conversation_history:
-            recent_context = "\nRecent conversation history:\n"
-            for conv in conversation_history[-3:]:  # Last 3 conversations
-                recent_context += f"- {conv.get('time_period', '')}: "
-                for msg in conv.get('messages', []):
-                    recent_context += f"{msg.get('agent_name', '')}: {msg.get('message', '')} "
-                recent_context += "\n"
-        
-        # Process memory but with error handling for URL fetching
-        processed_memory = agent.memory_summary or ""
-        try:
-            if agent.memory_summary and 'http' in agent.memory_summary:
-                processed_memory = await self.process_memory_with_urls(agent.memory_summary)
-        except Exception as e:
-            logging.warning(f"URL processing failed for {agent.name}: {e}")
-            processed_memory = agent.memory_summary or ""
-        
-        # Create comprehensive background-driven system message
-        background_prompt = ""
-        if agent.background:
-            background_prompt = f"""
-CRITICAL: Your background fundamentally shapes how you think and respond:
-Background: {agent.background}
-
-This background means you:
-- Process information through the lens of your professional experience
-- Use terminology and concepts from your field
-- Apply problem-solving methods from your domain
-- Have specific knowledge areas where you excel
-- Approach situations with your professional mindset
-- Communicate in a style typical of your field"""
-
-        expertise_prompt = ""
-        if agent.expertise:
-            expertise_prompt = f"""
-Your expertise in {agent.expertise} means you:
-- Notice details others might miss in this area
-- Can provide insights from this specialized knowledge
-- Ask questions that experts in this field would ask
-- Reference concepts and methods from this domain"""
-
-        # Enhanced memory-behavior balance prompt
-        memory_behavior_prompt = ""
-        if processed_memory:
-            memory_behavior_prompt = f"""
-Your personal memories and experiences: {processed_memory}
-
-MEMORY-BEHAVIOR BALANCE:
-- Your memories strongly influence your initial perspective and reactions
-- You reference your past experiences when relevant to the discussion
-- However, you remain genuinely open to new ideas and evidence from others
-- You can change your mind when presented with compelling arguments
-- You might initially disagree based on your memories, but can be persuaded
-- You show curiosity about others' perspectives, especially when they differ from your experience
-- You acknowledge when others make good points that challenge your assumptions"""
-
-        # Create simplified but effective system message
+        # Simple system message focused on conversation
         system_message = f"""You are {agent.name}, a {AGENT_ARCHETYPES[agent.archetype]['description']}.
-
-{background_prompt}
-{expertise_prompt}
-
-Your personality: Extroversion {agent.personality.extroversion}/10, Optimism {agent.personality.optimism}/10, Curiosity {agent.personality.curiosity}/10, Cooperativeness {agent.personality.cooperativeness}/10, Energy {agent.personality.energy}/10
 
 Your goal: {agent.goal}
 
-{memory_behavior_prompt}
+Personality traits:
+- Extroversion: {agent.personality.extroversion}/10
+- Optimism: {agent.personality.optimism}/10  
+- Curiosity: {agent.personality.curiosity}/10
+- Cooperativeness: {agent.personality.cooperativeness}/10
+- Energy: {agent.personality.energy}/10
 
-IMPORTANT INSTRUCTIONS:
-1. Respond authentically based on your background and expertise
-2. Reference your memories when relevant but stay open to new ideas
-3. Build meaningfully on the conversation - don't just repeat what others said
-4. Show genuine interest in others' perspectives
-5. Keep responses to 1-2 sentences maximum
-6. Use your professional knowledge to contribute unique insights
+IMPORTANT: 
+1. Respond as this character in 1-2 sentences
+2. Be conversational and natural
+3. Reference your goal and personality
+4. Engage meaningfully with the scenario
 
-Current scenario: {scenario}
-{recent_context}"""
-
-        # Generate prompt based on other agents present and context
-        other_agents_info = []
-        for other_agent in other_agents:
-            if other_agent.id != agent.id:
-                agent_info = f"{other_agent.name}"
-                if other_agent.background:
-                    agent_info += f" ({other_agent.archetype})"
-                other_agents_info.append(agent_info)
+Scenario: {scenario}
+{others_text}"""
         
-        prompt = f"""{context} 
-
-Others present: {', '.join(other_agents_info) if other_agents_info else 'no one else'}.
-
-Contribute meaningfully to this discussion using your unique background and expertise."""
+        # Simple prompt
+        prompt = f"{context}. Respond naturally as {agent.name}."
         
-        # Enhanced error handling with multiple retry attempts
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                # Create chat instance with simpler configuration
-                chat = LlmChat(
-                    api_key=self.api_key,
-                    session_id=f"agent_{agent.id}_{datetime.now().timestamp()}",
-                    system_message=system_message
-                ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(150)  # Limit tokens for more focused responses
+        try:
+            # Create chat instance with basic configuration
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"agent_{agent.id}_{int(datetime.now().timestamp())}",
+                system_message=system_message
+            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(100)
+            
+            user_message = UserMessage(text=prompt)
+            response = await chat.send_message(user_message)
+            await self.increment_usage()
+            
+            # Validate response
+            if response and len(response.strip()) > 5:
+                return response.strip()
+            else:
+                return f"{agent.name}: I'm carefully considering this situation."
                 
-                user_message = UserMessage(text=prompt)
-                response = await chat.send_message(user_message)
-                await self.increment_usage()
-                
-                # Ensure response is not empty
-                if response and len(response.strip()) > 10:
-                    return response.strip()
-                else:
-                    logging.warning(f"Empty or too short response for {agent.name}, attempt {attempt + 1}")
-                    if attempt == max_retries - 1:
-                        return f"{agent.name} is carefully considering the situation..."
-                        
-            except Exception as e:
-                logging.error(f"Error generating response for {agent.name}, attempt {attempt + 1}: {e}")
-                if attempt == max_retries - 1:
-                    # Return a meaningful fallback based on agent's background
-                    if "scientist" in agent.archetype:
-                        return f"{agent.name} is analyzing the data systematically..."
-                    elif "leader" in agent.archetype:
-                        return f"{agent.name} is assessing the tactical situation..."
-                    elif "optimist" in agent.archetype:
-                        return f"{agent.name} is considering how to support the team..."
-                    elif "skeptic" in agent.archetype:
-                        return f"{agent.name} is questioning the assumptions..."
-                    else:
-                        return f"{agent.name} is reflecting on the situation..."
-                
-                # Wait a bit before retry
-                await asyncio.sleep(1)
-        
-        return f"{agent.name} is processing the information..."
+        except Exception as e:
+            logging.error(f"LLM error for {agent.name}: {e}")
+            # Return a more natural fallback based on personality
+            if agent.personality.optimism > 7:
+                return f"{agent.name}: I think we can find a positive solution to this."
+            elif agent.personality.curiosity > 7:
+                return f"{agent.name}: This is fascinating - I'd like to explore this further."
+            elif agent.personality.cooperativeness > 7:
+                return f"{agent.name}: Let's work together on this challenge."
+            else:
+                return f"{agent.name}: I need to think about this carefully."
 
     async def update_agent_memory(self, agent: Agent, conversations: List):
         """Update agent's memory summary based on recent conversations"""
