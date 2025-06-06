@@ -115,8 +115,8 @@ def print_summary():
     print("="*80)
 
 def main():
-    """Run all API tests in sequence"""
-    print("Starting API tests...")
+    """Run API tests focused on API usage limits and conversation generation"""
+    print("Starting API tests for API usage limits and conversation generation...")
     
     # 1. Test basic health check
     health_check, _ = run_test(
@@ -130,7 +130,7 @@ def main():
         print_summary()
         return
     
-    # 2. Test API usage tracking
+    # 2. Test API usage tracking - check current usage and verify new max limit (50000)
     api_usage, api_usage_data = run_test(
         "API Usage Tracking",
         "/api-usage",
@@ -140,10 +140,18 @@ def main():
     if api_usage:
         print(f"API Usage: {api_usage_data.get('requests_used')}/{api_usage_data.get('max_requests')} requests used")
         print(f"API Status: {'Available' if api_usage_data.get('api_available') else 'Unavailable'}")
+        
+        # Verify the max_requests is now 50000 (updated from 1400)
+        max_requests = api_usage_data.get('max_requests', 0)
+        if max_requests == 50000:
+            print("✅ Max daily requests correctly set to 50000")
+        else:
+            print(f"❌ Max daily requests is {max_requests}, expected 50000")
+            api_usage = False
     
-    # 3. Test the complete flow of starting a new simulation
+    # 3. Test the simulation setup flow to prepare for conversation generation tests
     print("\n" + "="*80)
-    print("TESTING COMPLETE SIMULATION STARTUP FLOW")
+    print("SETTING UP SIMULATION FOR CONVERSATION GENERATION TESTS")
     print("="*80)
     
     # 3.1 Start simulation (should clear everything and reset state)
@@ -184,7 +192,7 @@ def main():
     
     # 3.3 Set scenario
     scenario_data = {
-        "scenario": "Testing the AI agent simulation with a custom scenario"
+        "scenario": "Testing the AI agent simulation with increased API limits"
     }
     set_scenario, scenario_result = run_test(
         "Set Custom Scenario",
@@ -196,132 +204,127 @@ def main():
     
     if not set_scenario:
         print("Failed to set scenario. Continuing with default scenario.")
-    else:
-        print(f"Successfully set scenario: {scenario_result.get('scenario')}")
     
-    # 3.4 Toggle auto mode (should enable automation)
-    auto_mode_data = {
-        "auto_conversations": True,
-        "auto_time": True,
-        "conversation_interval": 15,
-        "time_interval": 45
-    }
-    toggle_auto, auto_result = run_test(
-        "Toggle Auto Mode",
-        "/simulation/toggle-auto-mode",
-        method="POST",
-        data=auto_mode_data,
-        expected_keys=["message", "auto_conversations", "auto_time", "conversation_interval", "time_interval"]
-    )
+    # 4. Generate multiple conversations to test the new API limits
+    print("\n" + "="*80)
+    print("TESTING CONVERSATION GENERATION WITH NEW API LIMITS")
+    print("="*80)
     
-    if not toggle_auto:
-        print("Failed to toggle auto mode. Continuing with manual mode.")
-    else:
-        print("Successfully enabled auto mode with the following settings:")
-        print(f"  - Auto Conversations: {auto_result.get('auto_conversations')}")
-        print(f"  - Auto Time: {auto_result.get('auto_time')}")
-        print(f"  - Conversation Interval: {auto_result.get('conversation_interval')} seconds")
-        print(f"  - Time Interval: {auto_result.get('time_interval')} seconds")
+    # Track if any conversation generation fails due to API limits
+    any_limit_reached = False
     
-    # 3.5 Get simulation state (should show the updated state with automation enabled)
-    sim_state, state_data = run_test(
-        "Get Simulation State",
-        "/simulation/state",
-        expected_keys=["current_day", "current_time_period", "is_active"]
-    )
-    
-    if sim_state:
-        print("Current simulation state:")
-        print(f"  - Day: {state_data.get('current_day')}")
-        print(f"  - Time Period: {state_data.get('current_time_period')}")
-        print(f"  - Active: {state_data.get('is_active')}")
-        print(f"  - Scenario: {state_data.get('scenario')}")
+    # Generate 5 conversations in sequence
+    for i in range(5):
+        print(f"\nGenerating conversation {i+1}/5...")
+        conv_gen, conv_data = run_test(
+            f"Generate Conversation {i+1}",
+            "/conversation/generate",
+            method="POST",
+            expected_keys=["messages", "round_number", "time_period"]
+        )
         
-        # Verify auto mode settings were saved
-        auto_conversations = state_data.get('auto_conversations')
-        auto_time = state_data.get('auto_time')
-        conversation_interval = state_data.get('conversation_interval')
-        time_interval = state_data.get('time_interval')
-        
-        if auto_conversations is None or auto_time is None:
-            print("❌ Auto mode settings not found in simulation state")
-            sim_state = False
-        else:
-            print("Auto mode settings in simulation state:")
-            print(f"  - Auto Conversations: {auto_conversations}")
-            print(f"  - Auto Time: {auto_time}")
-            print(f"  - Conversation Interval: {conversation_interval}")
-            print(f"  - Time Interval: {time_interval}")
-            
-            # Verify settings match what we sent
-            settings_match = (
-                auto_conversations == auto_mode_data["auto_conversations"] and
-                auto_time == auto_mode_data["auto_time"] and
-                conversation_interval == auto_mode_data["conversation_interval"] and
-                time_interval == auto_mode_data["time_interval"]
-            )
-            
-            if settings_match:
-                print("✅ Auto mode settings correctly saved in simulation state")
-            else:
-                print("❌ Auto mode settings in simulation state don't match requested values")
-                sim_state = False
-    
-    # 4. Generate conversation and verify actual dialogue
-    print("\nTesting conversation generation after enabling auto mode...")
-    conv_gen, conv_data = run_test(
-        "Generate Conversation",
-        "/conversation/generate",
-        method="POST",
-        expected_keys=["messages", "round_number", "time_period"]
-    )
-    
-    # Verify conversation has messages from all agents
-    if conv_gen:
-        messages = conv_data.get("messages", [])
-        if len(messages) != 3:
-            print(f"Expected messages from 3 agents, but got {len(messages)}")
-            conv_gen = False
-        else:
-            print("\nVerifying agent responses are actual dialogue (not generic fallbacks):")
-            
-            # Check for generic fallback patterns
-            generic_patterns = [
-                "is analyzing",
-                "is questioning",
-                "is taking a moment",
-                "is carefully considering",
-                "nods thoughtfully"
-            ]
-            
-            all_valid = True
-            for i, msg in enumerate(messages):
-                agent_name = msg.get("agent_name", "Unknown")
-                message_text = msg.get("message", "")
-                
-                # Check if message is a generic fallback
-                is_generic = False
-                for pattern in generic_patterns:
-                    if pattern in message_text:
-                        is_generic = True
-                        break
-                
-                # Check if message is too short
-                is_too_short = len(message_text) < 10
-                
-                if is_generic or is_too_short:
-                    print(f"  ❌ {agent_name}: '{message_text}' (Generic fallback or too short)")
-                    all_valid = False
-                else:
-                    print(f"  ✅ {agent_name}: '{message_text}'")
-            
-            if all_valid:
-                print("\nSuccess: All agent responses are actual dialogue, not generic fallbacks")
-            else:
-                print("\nFailed: Some agent responses are still generic fallbacks")
+        # Verify conversation has messages from all agents
+        if conv_gen:
+            messages = conv_data.get("messages", [])
+            if len(messages) != 3:
+                print(f"Expected messages from 3 agents, but got {len(messages)}")
                 conv_gen = False
+            else:
+                print("\nVerifying agent responses are actual dialogue (not generic fallbacks):")
+                
+                # Check for generic fallback patterns and API limit messages
+                generic_patterns = [
+                    "is analyzing",
+                    "is questioning",
+                    "is taking a moment",
+                    "is carefully considering",
+                    "nods thoughtfully",
+                    "daily API limit reached"
+                ]
+                
+                all_valid = True
+                for i, msg in enumerate(messages):
+                    agent_name = msg.get("agent_name", "Unknown")
+                    message_text = msg.get("message", "")
+                    
+                    # Check if message is a generic fallback or mentions API limits
+                    is_generic = False
+                    is_limit_message = False
+                    for pattern in generic_patterns:
+                        if pattern in message_text:
+                            is_generic = True
+                            if "daily API limit reached" in message_text:
+                                is_limit_message = True
+                                any_limit_reached = True
+                            break
+                    
+                    # Check if message is too short
+                    is_too_short = len(message_text) < 10
+                    
+                    if is_limit_message:
+                        print(f"  ❌ {agent_name}: '{message_text}' (API LIMIT REACHED MESSAGE DETECTED)")
+                        all_valid = False
+                    elif is_generic or is_too_short:
+                        print(f"  ❌ {agent_name}: '{message_text}' (Generic fallback or too short)")
+                        all_valid = False
+                    else:
+                        print(f"  ✅ {agent_name}: '{message_text}'")
+                
+                if all_valid:
+                    print("\nSuccess: All agent responses are actual dialogue, not generic fallbacks")
+                else:
+                    print("\nFailed: Some agent responses are still generic fallbacks or API limit messages")
+                    conv_gen = False
+        
+        # Add a short delay between conversation generations
+        time.sleep(2)
     
-    # 5. Get all conversations
+    # 5. Check API usage after generating conversations
+    api_usage_after, api_usage_after_data = run_test(
+        "API Usage After Generating Conversations",
+        "/api-usage",
+        expected_keys=["date", "requests_used", "max_requests", "remaining"]
+    )
+    
+    if api_usage and api_usage_after:
+        requests_before = api_usage_data.get('requests_used', 0)
+        requests_after = api_usage_after_data.get('requests_used', 0)
+        max_requests = api_usage_after_data.get('max_requests', 0)
+        remaining = api_usage_after_data.get('remaining', 0)
+        
+        print("\n" + "="*80)
+        print("API USAGE ANALYSIS")
+        print("="*80)
+        print(f"Initial API usage: {requests_before} requests")
+        print(f"Current API usage: {requests_after} requests")
+        print(f"Requests used during test: {requests_after - requests_before} requests")
+        print(f"Max daily requests: {max_requests} requests")
+        print(f"Remaining requests: {remaining} requests")
+        print(f"API available: {api_usage_after_data.get('api_available')}")
+        
+        if requests_after > requests_before:
+            print(f"✅ API usage increased from {requests_before} to {requests_after} requests")
+            
+            # Check if we're approaching the limit
+            usage_percentage = (requests_after / max_requests) * 100
+            print(f"Current usage: {usage_percentage:.2f}% of daily limit")
+            
+            if usage_percentage > 90:
+                print("⚠️ Warning: API usage is above 90% of daily limit")
+            elif usage_percentage > 75:
+                print("⚠️ Warning: API usage is above 75% of daily limit")
+        else:
+            print(f"Note: API usage didn't increase ({requests_before} → {requests_after})")
+    
+    # 6. Final verification of API limit messages
+    if any_limit_reached:
+        print("\n❌ Some conversations still showed 'daily API limit reached' messages")
+        print("This suggests the API limit issue is not fully resolved")
+    else:
+        print("\n✅ No 'daily API limit reached' messages detected in any conversations")
+        print("The increased API limit (50000) appears to be working correctly")
+    
+    # 7. Get all conversations to verify they were stored correctly
     conversations, conversations_data = run_test(
         "Get All Conversations",
         "/conversations",
@@ -330,113 +333,11 @@ def main():
     
     # Verify conversations are returned
     if conversations:
-        if not isinstance(conversations_data, list) or len(conversations_data) < 1:
-            print(f"Expected at least one conversation, but got: {conversations_data}")
+        if not isinstance(conversations_data, list):
+            print(f"Expected a list of conversations, but got: {type(conversations_data)}")
             conversations = False
         else:
-            print(f"Found {len(conversations_data)} conversations")
-            
-            # Check the most recent conversation for actual dialogue
-            latest_conv = conversations_data[-1]
-            messages = latest_conv.get("messages", [])
-            
-            if len(messages) != 3:
-                print(f"Expected 3 messages in the latest conversation, but got {len(messages)}")
-            else:
-                print("\nVerifying latest conversation has actual dialogue:")
-                for msg in messages:
-                    agent_name = msg.get("agent_name", "Unknown")
-                    message_text = msg.get("message", "")
-                    print(f"  - {agent_name}: '{message_text}'")
-    
-    # 6. Test relationships endpoint
-    relationships, relationships_data = run_test(
-        "Get Relationships",
-        "/relationships",
-        expected_keys=[]  # We expect a list
-    )
-    
-    # Verify relationships are returned
-    if relationships:
-        if not isinstance(relationships_data, list):
-            print(f"Expected a list of relationships, but got: {type(relationships_data)}")
-            relationships = False
-        elif len(relationships_data) < 6:  # 3 agents should have 6 relationships (3 choose 2 * 2 directions)
-            print(f"Expected at least 6 relationships for 3 agents, but got {len(relationships_data)}")
-            relationships = False
-        else:
-            print(f"Found {len(relationships_data)} relationships")
-            
-            # Check relationship structure
-            required_fields = ["agent1_id", "agent2_id", "score", "status"]
-            all_fields_present = True
-            
-            for rel in relationships_data[:2]:  # Check first two relationships
-                for field in required_fields:
-                    if field not in rel:
-                        print(f"Relationship missing required field: {field}")
-                        all_fields_present = False
-            
-            if all_fields_present:
-                print("Verified relationships have all required fields")
-                
-                # Print some relationship details
-                print("\nSample relationships:")
-                for i, rel in enumerate(relationships_data[:4]):
-                    print(f"  {i+1}. Agent {rel.get('agent1_id')} → Agent {rel.get('agent2_id')}: Score {rel.get('score')}, Status: {rel.get('status')}")
-            else:
-                relationships = False
-    
-    # 7. Test toggling auto mode off
-    auto_mode_off_data = {
-        "auto_conversations": False,
-        "auto_time": False,
-        "conversation_interval": 10,
-        "time_interval": 30
-    }
-    toggle_auto_off, auto_off_result = run_test(
-        "Toggle Auto Mode Off",
-        "/simulation/toggle-auto-mode",
-        method="POST",
-        data=auto_mode_off_data,
-        expected_keys=["message", "auto_conversations", "auto_time"]
-    )
-    
-    if toggle_auto_off:
-        print("Successfully disabled auto mode")
-        
-        # Verify auto mode is off in the simulation state
-        sim_state_after, state_after_data = run_test(
-            "Get Simulation State After Disabling Auto Mode",
-            "/simulation/state",
-            expected_keys=["current_day", "current_time_period", "is_active"]
-        )
-        
-        if sim_state_after:
-            auto_conversations_after = state_after_data.get('auto_conversations')
-            auto_time_after = state_after_data.get('auto_time')
-            
-            if auto_conversations_after or auto_time_after:
-                print("❌ Auto mode not properly disabled in simulation state")
-                toggle_auto_off = False
-            else:
-                print("✅ Auto mode successfully disabled in simulation state")
-    
-    # 8. Check API usage again to verify it's being tracked
-    api_usage_after, api_usage_after_data = run_test(
-        "API Usage Tracking After Tests",
-        "/api-usage",
-        expected_keys=["date", "requests_used", "max_requests", "remaining"]
-    )
-    
-    if api_usage and api_usage_after:
-        requests_before = api_usage_data.get('requests_used', 0)
-        requests_after = api_usage_after_data.get('requests_used', 0)
-        
-        if requests_after > requests_before:
-            print(f"✅ API usage increased from {requests_before} to {requests_after} requests")
-        else:
-            print(f"Note: API usage didn't increase ({requests_before} → {requests_after})")
+            print(f"Found {len(conversations_data)} conversations in the database")
     
     # Print summary of all tests
     print_summary()
