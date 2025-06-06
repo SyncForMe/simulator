@@ -1396,50 +1396,7 @@ function App() {
   const handleToggleAuto = async (autoSettings) => {
     try {
       await axios.post(`${API}/simulation/toggle-auto-mode`, autoSettings);
-      await fetchSimulationState();
-      
-      // Clear existing timers
-      if (autoTimers.conversation) {
-        clearInterval(autoTimers.conversation);
-        autoTimers.conversation = null;
-      }
-      if (autoTimers.time) {
-        clearInterval(autoTimers.time);
-        autoTimers.time = null;
-      }
-      
-      // Set up new timers if enabled
-      const newTimers = { conversation: null, time: null };
-      
-      if (autoSettings.auto_conversations) {
-        console.log('Starting auto conversations with interval:', autoSettings.conversation_interval);
-        newTimers.conversation = setInterval(async () => {
-          try {
-            console.log('Auto generating conversation...');
-            await axios.post(`${API}/conversation/generate`);
-            await refreshAllData();
-          } catch (error) {
-            console.error('Auto conversation error:', error);
-            // Don't clear interval on error, just log it
-          }
-        }, autoSettings.conversation_interval * 1000);
-      }
-      
-      if (autoSettings.auto_time) {
-        console.log('Starting auto time advancement with interval:', autoSettings.time_interval);
-        newTimers.time = setInterval(async () => {
-          try {
-            console.log('Auto advancing time...');
-            await axios.post(`${API}/simulation/next-period`);
-            await fetchSimulationState();
-          } catch (error) {
-            console.error('Auto time error:', error);
-            // Don't clear interval on error, just log it
-          }
-        }, autoSettings.time_interval * 1000);
-      }
-      
-      setAutoTimers(newTimers);
+      await fetchSimulationState(); // This will trigger the useEffect to restart timers
     } catch (error) {
       console.error('Error toggling auto mode:', error);
     }
