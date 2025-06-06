@@ -1678,6 +1678,9 @@ function App() {
             {/* Observer Input - Subtle placement below conversations */}
             <ObserverInput onSendMessage={handleSendObserverMessage} />
             
+            {/* Conversation and Time Status - Underneath Observer Input */}
+            <ConversationTimeStatus simulationState={simulationState} />
+            
             {/* Weekly Summary underneath conversations */}
             <div className="mt-6">
               <WeeklySummary 
