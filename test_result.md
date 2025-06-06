@@ -227,6 +227,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Retested the conversation generation endpoint after the fix. Agents are now returning actual dialogue responses instead of generic fallback messages. The LLM integration is working properly, and the responses are conversational and natural."
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the conversation generation endpoint after enabling auto mode. It correctly generates conversations between agents with natural dialogue. The responses are properly stored in the database and can be retrieved with GET /api/conversations."
 
   - task: "GET /api/conversations - Get conversation history"
     implemented: true
