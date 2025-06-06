@@ -10,7 +10,9 @@ const ScenarioInput = ({ onSetScenario }) => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
     if (!scenario.trim()) return;
     
     setLoading(true);
