@@ -331,7 +331,31 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
   };
 
   const renderStructuredSummary = (summary) => {
-    const sections = summary.structured_sections || {};
+    // Try to extract sections from the summary text
+    const summaryText = summary.summary || "";
+    const sections = {};
+    
+    // Updated parsing patterns that match the actual backend format
+    const sectionPatterns = [
+      { key: 'key_events', pattern: /\*\*1\.\s*🔥\s*KEY EVENTS & DISCOVERIES\*\*(.*?)(?=\*\*2\.|$)/s },
+      { key: 'relationships', pattern: /\*\*2\.\s*📈\s*RELATIONSHIP DEVELOPMENTS\*\*(.*?)(?=\*\*3\.|$)/s },
+      { key: 'personalities', pattern: /\*\*3\.\s*🎭\s*EMERGING PERSONALITIES\*\*(.*?)(?=\*\*4\.|$)/s },
+      { key: 'social_dynamics', pattern: /\*\*4\.\s*🤝\s*SOCIAL DYNAMICS\*\*(.*?)(?=\*\*5\.|$)/s },
+      { key: 'looking_ahead', pattern: /\*\*5\.\s*🔮\s*LOOKING AHEAD\*\*(.*?)$/s }
+    ];
+    
+    // Extract sections using the patterns
+    for (const { key, pattern } of sectionPatterns) {
+      const match = summaryText.match(pattern);
+      if (match && match[1]) {
+        sections[key] = match[1].trim();
+      }
+    }
+    
+    // If no sections were parsed, show the full summary in key_events
+    if (Object.keys(sections).length === 0 && summaryText) {
+      sections.key_events = summaryText;
+    }
     
     return (
       <div className="structured-summary">
@@ -383,10 +407,9 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
         {/* Collapsible Sections */}
         <div className="collapsible-sections space-y-3">
           {[
-            { key: 'relationships', title: '👥 Relationship Developments', color: 'green' },
+            { key: 'relationships', title: '📈 Relationship Developments', color: 'green' },
             { key: 'personalities', title: '🎭 Emerging Personalities', color: 'purple' },
-            { key: 'social_dynamics', title: '⚖️ Social Dynamics', color: 'yellow' },
-            { key: 'strategic_decisions', title: '🎯 Strategic Decisions', color: 'red' },
+            { key: 'social_dynamics', title: '🤝 Social Dynamics', color: 'yellow' },
             { key: 'looking_ahead', title: '🔮 Looking Ahead', color: 'indigo' }
           ].map(section => (
             sections[section.key] && (
