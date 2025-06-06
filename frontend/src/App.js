@@ -1409,7 +1409,12 @@ function App() {
       // Clear summaries immediately in frontend before API call
       setSummaries([]);
       
+      // Start new simulation (this clears everything)
       await axios.post(`${API}/simulation/start`);
+      
+      // Automatically create the crypto team so users can start conversations immediately
+      await axios.post(`${API}/simulation/init-research-station`);
+      
       await refreshAllData();
     } catch (error) {
       console.error('Error starting simulation:', error);
