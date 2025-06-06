@@ -720,31 +720,52 @@ Provide a weekly summary in this format:
 **Week Summary - Day {current_day}**
 
 **1. 🔥 KEY EVENTS & DISCOVERIES**
-1. [First major event or discovery]
-2. [Second major event or discovery]  
-3. [Third major event or discovery]
+
+1. [First major event or discovery - detailed paragraph with specific examples]
+
+2. [Second major event or discovery - detailed paragraph with specific examples]
+
+3. [Third major event or discovery - detailed paragraph with specific examples]
 
 **2. 📈 RELATIONSHIP DEVELOPMENTS**
-1. [First relationship change or development]
-2. [Second relationship change or development]
-3. [Third relationship change or development]
 
-**3. 🎭 EMERGING PERSONALITIES** 
-1. [First agent's personality development]
-2. [Second agent's personality development]
-3. [Third agent's personality development]
+1. [First relationship change or development - detailed paragraph]
+
+2. [Second relationship change or development - detailed paragraph]
+
+3. [Third relationship change or development - detailed paragraph]
+
+**3. 🎭 EMERGING PERSONALITIES**
+
+1. [First agent's personality development - detailed paragraph]
+
+2. [Second agent's personality development - detailed paragraph]
+
+3. [Third agent's personality development - detailed paragraph]
 
 **4. 🤝 SOCIAL DYNAMICS**
-1. [First social pattern or team dynamic]
-2. [Second social pattern or team dynamic]
-3. [Third social pattern or team dynamic]
+
+1. [First social pattern or team dynamic - detailed paragraph]
+
+2. [Second social pattern or team dynamic - detailed paragraph]
+
+3. [Third social pattern or team dynamic - detailed paragraph]
 
 **5. 🔮 LOOKING AHEAD**
-1. [First prediction for future developments]
-2. [Second prediction for future developments]
-3. [Third prediction for future developments]
 
-Make each numbered point a complete, detailed paragraph with specific examples from the conversations."""
+1. [First prediction for future developments - detailed paragraph]
+
+2. [Second prediction for future developments - detailed paragraph]
+
+3. [Third prediction for future developments - detailed paragraph]
+
+IMPORTANT FORMATTING RULES:
+- Leave an empty line between each numbered paragraph for readability
+- Use **bold formatting** sparingly for only the most significant key terms (2-3 words max per paragraph)
+- Bold only words with critical meaning to the context (agent names, breakthrough discoveries, major decisions, turning points)
+- Do NOT bold common words like "team", "discussion", "conversation", "development"
+- Make each numbered point a complete, detailed paragraph with specific examples from the conversations
+- Focus on concrete events and behaviors rather than generic observations"""
     
     try:
         user_message = UserMessage(text=prompt)
