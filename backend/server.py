@@ -762,6 +762,13 @@ Make each numbered point a complete, detailed paragraph with specific examples f
         }
         await db.summaries.insert_one(summary_doc)
         
+        # Update last auto report timestamp
+        await db.simulation_state.update_one(
+            {},
+            {"$set": {"last_auto_report": datetime.utcnow().isoformat()}},
+            upsert=True
+        )
+        
         return {
             "summary": response, 
             "day": current_day, 
