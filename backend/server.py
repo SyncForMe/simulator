@@ -14,6 +14,8 @@ import re
 import urllib.parse
 import asyncio
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+from google.cloud import texttospeech
+import base64
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
