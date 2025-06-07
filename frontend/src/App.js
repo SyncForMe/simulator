@@ -1640,8 +1640,13 @@ const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange 
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-bold">Agent Conversations</h3>
         
-        {/* Voice Narration Controls */}
+        {/* Voice Narration and Language Controls */}
         <div className="flex items-center space-x-2">
+          <CompactLanguageSelector 
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={onLanguageChange}
+          />
+          
           <button
             onClick={() => setIsNarrationEnabled(!isNarrationEnabled)}
             className={`flex items-center space-x-1 px-3 py-1 rounded text-xs ${
@@ -1651,7 +1656,7 @@ const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange 
             }`}
           >
             <span>🔊</span>
-            <span>{isNarrationEnabled ? 'AI Voice ON' : 'Voice OFF'}</span>
+            <span>{isNarrationEnabled ? 'Voice ON' : 'Voice OFF'}</span>
           </button>
           
           {isNarrationEnabled && (
