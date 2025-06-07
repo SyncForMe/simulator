@@ -1949,8 +1949,8 @@ async def translate_conversations(request: dict):
         conversations = await db.conversations.find().to_list(1000)
         translated_count = 0
         
-        # Process conversations in batches for speed
-        batch_size = 3  # Process 3 conversations concurrently
+        # Process conversations in larger batches for maximum speed
+        batch_size = 5  # Increased from 3 to 5 concurrent conversations
         
         for i in range(0, len(conversations), batch_size):
             batch = conversations[i:i + batch_size]
@@ -1974,20 +1974,26 @@ async def translate_conversations(request: dict):
                         continue
                     
                     if result:
-                        conversation = batch[j]
-                        await db.conversations.update_one(
-                            {"_id": conversation["_id"]},
-                            {
-                                "$set": {
-                                    "messages": result,
-                                    "language": target_language,
-                                    "original_language": conversation.get("language", "en"),
-                                    "translated_at": datetime.utcnow()
+                        conversation_to_update = None
+                        for conv in batch:
+                            if conv.get("language") != target_language:
+                                conversation_to_update = conv
+                                break
+                        
+                        if conversation_to_update:
+                            await db.conversations.update_one(
+                                {"_id": conversation_to_update["_id"]},
+                                {
+                                    "$set": {
+                                        "messages": result,
+                                        "language": target_language,
+                                        "original_language": conversation_to_update.get("language", "en"),
+                                        "translated_at": datetime.utcnow()
+                                    }
                                 }
-                            }
-                        )
-                        translated_count += 1
-                        await llm_manager.increment_usage()
+                            )
+                            translated_count += 1
+                            await llm_manager.increment_usage()
         
         return {
             "message": f"Successfully translated {translated_count} conversations to {target_language_name}",
