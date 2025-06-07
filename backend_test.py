@@ -5,6 +5,8 @@ import time
 import os
 import sys
 from dotenv import load_dotenv
+import base64
+import re
 
 # Load environment variables from frontend/.env
 load_dotenv('/app/frontend/.env')
