@@ -194,6 +194,19 @@ def test_translation_path(source_lang, target_lang, description):
     print(f"TESTING TRANSLATION PATH: {source_lang} → {target_lang} ({description})")
     print(f"{'='*80}")
     
+    # Step 0: Set the language for the simulation
+    success0, response0 = run_test(
+        f"Set language to {source_lang}",
+        "/simulation/set-language",
+        method="POST",
+        data={"language": source_lang},
+        expected_keys=["message", "language"]
+    )
+    
+    if not success0:
+        print(f"❌ Failed to set language to {source_lang}")
+        return False
+    
     # Step 1: Translate to target language
     success1, response1 = run_test(
         f"Translate from {source_lang} to {target_lang}",
