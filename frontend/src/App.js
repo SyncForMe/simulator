@@ -1794,6 +1794,212 @@ const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange 
 
 
 
+const AvatarCreator = ({ onCreateAgent, archetypes }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    archetype: 'scientist',
+    goal: '',
+    expertise: '',
+    background: '',
+    avatar_prompt: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [generatingAvatar, setGeneratingAvatar] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.goal.trim()) return;
+    
+    setLoading(true);
+    try {
+      await onCreateAgent(formData);
+      // Reset form
+      setFormData({
+        name: '',
+        archetype: 'scientist',
+        goal: '',
+        expertise: '',
+        background: '',
+        avatar_prompt: ''
+      });
+      setPreviewUrl('');
+      setIsOpen(false);
+    } catch (error) {
+      console.error('Error creating agent:', error);
+    }
+    setLoading(false);
+  };
+
+  const handlePreviewAvatar = async () => {
+    if (!formData.avatar_prompt.trim()) return;
+    
+    setGeneratingAvatar(true);
+    try {
+      const response = await axios.post(`${API}/avatars/generate`, {
+        prompt: formData.avatar_prompt
+      });
+      
+      if (response.data.success) {
+        setPreviewUrl(response.data.image_url);
+      } else {
+        alert('Failed to generate avatar: ' + response.data.error);
+      }
+    } catch (error) {
+      console.error('Error generating avatar preview:', error);
+      alert('Error generating avatar preview');
+    }
+    setGeneratingAvatar(false);
+  };
+
+  return (
+    <div className="avatar-creator">
+      <button
+        onClick={() => setIsOpen(true)}
+        className="w-full bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 text-sm mb-2"
+      >
+        👤 Create Custom Agent
+      </button>
+      
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-bold mb-4">👤 Create Custom Agent with Avatar</h3>
+            
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name *</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    placeholder="e.g., Nikola Tesla"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Archetype</label>
+                  <select
+                    value={formData.archetype}
+                    onChange={(e) => setFormData(prev => ({...prev, archetype: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                  >
+                    {archetypes && Object.entries(archetypes).map(([key, value]) => (
+                      <option key={key} value={key}>{value?.name || key}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-1">Goal *</label>
+                  <textarea
+                    value={formData.goal}
+                    onChange={(e) => setFormData(prev => ({...prev, goal: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    rows="2"
+                    placeholder="What does this agent want to achieve?"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Expertise</label>
+                  <input
+                    type="text"
+                    value={formData.expertise}
+                    onChange={(e) => setFormData(prev => ({...prev, expertise: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    placeholder="e.g., Physics, Electrical Engineering"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Background</label>
+                  <textarea
+                    value={formData.background}
+                    onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    rows="2"
+                    placeholder="Professional background and experience"
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-1">
+                    🎨 Avatar Description
+                    <span className="text-xs text-gray-500 ml-2">(Describe how the agent should look)</span>
+                  </label>
+                  <div className="flex space-x-2">
+                    <textarea
+                      value={formData.avatar_prompt}
+                      onChange={(e) => setFormData(prev => ({...prev, avatar_prompt: e.target.value}))}
+                      className="flex-1 p-2 border rounded"
+                      rows="2"
+                      placeholder="Examples:
+• Nikola Tesla
+• an old grandma with white hair and blue eyes
+• a young scientist with glasses and a lab coat
+• a confident business leader in a suit"
+                    />
+                    <button
+                      type="button"
+                      onClick={handlePreviewAvatar}
+                      disabled={!formData.avatar_prompt.trim() || generatingAvatar}
+                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 self-start"
+                    >
+                      {generatingAvatar ? '⏳' : '👁️'} Preview
+                    </button>
+                  </div>
+                  
+                  {previewUrl && (
+                    <div className="mt-3 text-center">
+                      <p className="text-sm text-green-600 mb-2">✅ Avatar Preview:</p>
+                      <img 
+                        src={previewUrl} 
+                        alt="Avatar preview" 
+                        className="w-24 h-24 rounded-full object-cover mx-auto border-2 border-gray-200"
+                      />
+                    </div>
+                  )}
+                  
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 <strong>Cost:</strong> ~$0.0008 per avatar generation (very affordable!)
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    setPreviewUrl('');
+                  }}
+                  className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
+                  disabled={loading || !formData.name.trim() || !formData.goal.trim()}
+                >
+                  {loading ? 'Creating...' : 'Create Agent'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ControlPanel = ({ 
   simulationState, 
   apiUsage, 
