@@ -1894,6 +1894,20 @@ async def delete_agent(agent_id: str):
         raise HTTPException(status_code=404, detail="Agent not found")
     return {"message": "Agent deleted"}
 
+@api_router.post("/simulation/set-language")
+async def set_language(request: dict):
+    """Set the language for conversation generation"""
+    language = request.get("language", "en")
+    
+    # Store language setting in simulation state
+    await db.simulation_state.update_one(
+        {},
+        {"$set": {"language": language}},
+        upsert=True
+    )
+    
+    return {"message": f"Language set to {language}", "language": language}
+
 # TTS Request Model
 class TTSRequest(BaseModel):
     text: str
