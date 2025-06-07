@@ -2405,6 +2405,7 @@ function App() {
             <ConversationViewer 
               conversations={conversations} 
               selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
             />
             
             {/* Observer Input - Subtle placement below conversations */}
