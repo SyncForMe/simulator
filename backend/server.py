@@ -219,6 +219,10 @@ class ConversationRound(BaseModel):
     scenario: str
     messages: List[ConversationMessage]
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    language: str = "en"
+    original_language: Optional[str] = None
+    translated_at: Optional[datetime] = None
+    force_translated: bool = False
 
 class Relationship(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
