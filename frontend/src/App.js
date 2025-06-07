@@ -1333,7 +1333,7 @@ const ConversationViewer = ({ conversations }) => {
               <div 
                 key={message.id} 
                 className={`message mb-2 p-2 rounded ${
-                  isNarrating && currentMessageIndex === messageIndex 
+                  isNarrating && currentRoundIndex === roundIndex && currentMessageIndex === messageIndex 
                     ? 'bg-yellow-100 border-l-4 border-yellow-400' 
                     : ''
                 }`}
