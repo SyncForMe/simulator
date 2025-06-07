@@ -319,14 +319,12 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
   const handleLanguageSelect = async (langCode) => {
     if (langCode === selectedLanguage) return;
     
-    // Update UI state immediately
-    setSelectedLanguage(langCode);
     setIsTranslating(true);
     setIsOpen(false);
     setSearchTerm('');
     
     try {
-      // Set the language in backend
+      // First set the language
       await onLanguageChange(langCode);
       
       // Then translate existing conversations
@@ -338,8 +336,6 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
       window.location.reload(); // Simple way to refresh all data
     } catch (error) {
       console.error('Error changing language:', error);
-      // Revert state on error
-      setSelectedLanguage(selectedLanguage);
     } finally {
       setIsTranslating(false);
     }
