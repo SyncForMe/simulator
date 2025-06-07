@@ -366,7 +366,7 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
                   className="text-green-600 text-sm cursor-help" 
                   title="This language is supported by voice narration"
                 >
-                  🎤
+                  🔊
                 </span>
               </div>
             )}
