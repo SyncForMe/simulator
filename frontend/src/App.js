@@ -5,6 +5,42 @@ import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Agent Archetypes - matching backend
+const AGENT_ARCHETYPES = {
+  "scientist": {
+    "name": "The Scientist",
+    "description": "Logical, curious, methodical"
+  },
+  "artist": {
+    "name": "The Artist", 
+    "description": "Creative, emotional, expressive"
+  },
+  "leader": {
+    "name": "The Leader",
+    "description": "Confident, decisive, social"
+  },
+  "skeptic": {
+    "name": "The Skeptic",
+    "description": "Questioning, cautious, analytical"
+  },
+  "optimist": {
+    "name": "The Optimist", 
+    "description": "Positive, encouraging, hopeful"
+  },
+  "introvert": {
+    "name": "The Introvert",
+    "description": "Quiet, thoughtful, observant"
+  },
+  "adventurer": {
+    "name": "The Adventurer",
+    "description": "Bold, spontaneous, energetic"
+  },
+  "mediator": {
+    "name": "The Mediator",
+    "description": "Peaceful, diplomatic, empathetic"
+  }
+};
+
 const ScenarioInput = ({ onSetScenario }) => {
   const [scenario, setScenario] = useState("");
   const [loading, setLoading] = useState(false);
