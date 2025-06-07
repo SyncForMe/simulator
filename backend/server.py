@@ -1167,7 +1167,7 @@ async def generate_conversation():
     
     agent_objects = [Agent(**agent) for agent in agents]
     
-    # Get simulation state
+    # Get simulation state including language setting
     state = await db.simulation_state.find_one()
     if not state:
         raise HTTPException(status_code=404, detail="Simulation not started")
@@ -1176,6 +1176,25 @@ async def generate_conversation():
     time_period = state["current_time_period"]
     day = state["current_day"]
     scenario = state["scenario"]
+    language = state.get("language", "en")  # Default to English if not set
+    
+    # Language settings for conversation generation
+    language_instructions = {
+        "en": "Respond in English.",
+        "es": "Responde en español de manera natural y fluida.",
+        "fr": "Répondez en français de manière naturelle et fluide.",
+        "de": "Antworten Sie auf Deutsch in natürlicher und fließender Weise.",
+        "it": "Rispondi in italiano in modo naturale e fluido.",
+        "pt": "Responda em português de forma natural e fluente.",
+        "ru": "Отвечайте на русском языке естественно и бегло.",
+        "ja": "自然で流暢な日本語で答えてください。",
+        "ko": "자연스럽고 유창한 한국어로 대답해주세요.",
+        "zh": "请用自然流利的中文回答。",
+        "hi": "प्राकृतिक और प्रवाहपूर्ण हिंदी में उत्तर दें।",
+        "ar": "أجب باللغة العربية بطريقة طبيعية وطلقة."
+    }
+    
+    language_instruction = language_instructions.get(language, language_instructions["en"])
     
     # Get recent conversation history for better context and progression tracking
     recent_conversations = await db.conversations.find().sort("created_at", -1).limit(10).to_list(10)
