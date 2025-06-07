@@ -241,9 +241,12 @@ def test_translation_path(source_lang, target_lang, description):
     # Check if conversations have the correct language
     all_in_target_lang = True
     for conv in conversations:
-        if conv.get("language") != target_lang:
+        if "language" not in conv:
+            print(f"❌ Conversation {conv.get('id')} does not have a language field")
             all_in_target_lang = False
-            print(f"❌ Conversation {conv.get('id')} is not in {target_lang}")
+        elif conv.get("language") != target_lang:
+            all_in_target_lang = False
+            print(f"❌ Conversation {conv.get('id')} is not in {target_lang} (language: {conv.get('language')})")
     
     if all_in_target_lang:
         print(f"✅ All conversations are now in {target_lang}")
