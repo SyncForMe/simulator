@@ -425,7 +425,6 @@ test_plan:
     - "POST /api/tts/synthesize - Google Cloud Text-to-Speech integration"
   stuck_tasks: 
     - "POST /api/simulation/generate-summary - Generate AI-powered weekly summary"
-    - "POST /api/tts/synthesize - Google Cloud Text-to-Speech integration"
   test_all: true
   test_priority: "high_first"
 
