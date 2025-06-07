@@ -1071,6 +1071,98 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
 };
 
 const ConversationViewer = ({ conversations }) => {
+  const [isNarrationEnabled, setIsNarrationEnabled] = useState(false);
+  const [isNarrating, setIsNarrating] = useState(false);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(-1);
+
+  // Voice settings for different agents
+  const agentVoices = {
+    'Marcus "Mark" Castellano': { rate: 0.9, pitch: 0.8, voiceIndex: 0 },
+    'Alexandra "Alex" Chen': { rate: 1.0, pitch: 1.2, voiceIndex: 1 },
+    'Diego "Dex" Rodriguez': { rate: 0.8, pitch: 0.9, voiceIndex: 2 },
+    'Dr. Elena Vasquez': { rate: 0.9, pitch: 1.1, voiceIndex: 1 },
+    'Captain Jake Morrison': { rate: 0.8, pitch: 0.7, voiceIndex: 0 },
+    'Dr. Amara Okafor': { rate: 1.0, pitch: 1.2, voiceIndex: 1 },
+    'Zara Al-Rashid': { rate: 0.9, pitch: 1.0, voiceIndex: 2 }
+  };
+
+  const speakMessage = (message, agentName) => {
+    if (!isNarrationEnabled || !('speechSynthesis' in window)) return;
+
+    const utterance = new SpeechSynthesisUtterance(message);
+    const voiceSettings = agentVoices[agentName] || { rate: 1.0, pitch: 1.0, voiceIndex: 0 };
+    
+    // Get available voices
+    const voices = speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      // Try to assign different voices based on agent
+      const voiceIndex = voiceSettings.voiceIndex % voices.length;
+      utterance.voice = voices[voiceIndex];
+    }
+    
+    utterance.rate = voiceSettings.rate;
+    utterance.pitch = voiceSettings.pitch;
+    utterance.volume = 0.8;
+    
+    speechSynthesis.speak(utterance);
+  };
+
+  const narrateConversation = async (round) => {
+    if (!isNarrationEnabled || isNarrating) return;
+    
+    setIsNarrating(true);
+    speechSynthesis.cancel(); // Stop any ongoing speech
+    
+    for (let i = 0; i < round.messages.length; i++) {
+      const message = round.messages[i];
+      setCurrentMessageIndex(i);
+      
+      // Speak agent name first
+      const nameUtterance = new SpeechSynthesisUtterance(`${message.agent_name} says:`);
+      nameUtterance.rate = 1.2;
+      nameUtterance.volume = 0.6;
+      speechSynthesis.speak(nameUtterance);
+      
+      // Wait for name to finish
+      await new Promise(resolve => {
+        nameUtterance.onend = resolve;
+      });
+      
+      // Speak the message
+      const messageUtterance = new SpeechSynthesisUtterance(message.message);
+      const voiceSettings = agentVoices[message.agent_name] || { rate: 1.0, pitch: 1.0, voiceIndex: 0 };
+      
+      const voices = speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const voiceIndex = voiceSettings.voiceIndex % voices.length;
+        messageUtterance.voice = voices[voiceIndex];
+      }
+      
+      messageUtterance.rate = voiceSettings.rate;
+      messageUtterance.pitch = voiceSettings.pitch;
+      messageUtterance.volume = 0.8;
+      
+      speechSynthesis.speak(messageUtterance);
+      
+      // Wait for message to finish
+      await new Promise(resolve => {
+        messageUtterance.onend = resolve;
+      });
+      
+      // Pause between messages
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    
+    setIsNarrating(false);
+    setCurrentMessageIndex(-1);
+  };
+
+  const stopNarration = () => {
+    speechSynthesis.cancel();
+    setIsNarrating(false);
+    setCurrentMessageIndex(-1);
+  };
+
   if (!conversations.length) {
     return (
       <div className="conversation-viewer bg-gray-50 rounded-lg p-4">
@@ -1081,12 +1173,56 @@ const ConversationViewer = ({ conversations }) => {
 
   return (
     <div className="conversation-viewer bg-white rounded-lg shadow-md p-4 max-h-96 overflow-y-auto">
-      <h3 className="text-lg font-bold mb-4">Agent Conversations</h3>
-      {conversations.map((round) => (
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-bold">Agent Conversations</h3>
+        
+        {/* Voice Narration Controls */}
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setIsNarrationEnabled(!isNarrationEnabled)}
+            className={`flex items-center space-x-1 px-3 py-1 rounded text-xs ${
+              isNarrationEnabled 
+                ? 'bg-green-100 text-green-700 border border-green-300' 
+                : 'bg-gray-100 text-gray-600 border border-gray-300'
+            }`}
+          >
+            <span>🔊</span>
+            <span>{isNarrationEnabled ? 'Voice ON' : 'Voice OFF'}</span>
+          </button>
+          
+          {isNarrating && (
+            <button
+              onClick={stopNarration}
+              className="bg-red-100 text-red-700 px-3 py-1 rounded text-xs border border-red-300 hover:bg-red-200"
+            >
+              ⏹️ Stop
+            </button>
+          )}
+        </div>
+      </div>
+      
+      {conversations.map((round, roundIndex) => (
         <div key={round.id} className="conversation-round mb-4 p-3 bg-gray-50 rounded">
-          <h4 className="font-semibold text-sm text-gray-700 mb-2">
-            Round {round.round_number} - {round.time_period}
-          </h4>
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="font-semibold text-sm text-gray-700">
+              Round {round.round_number} - {round.time_period}
+            </h4>
+            
+            {isNarrationEnabled && (
+              <button
+                onClick={() => narrateConversation(round)}
+                disabled={isNarrating}
+                className={`px-2 py-1 rounded text-xs ${
+                  isNarrating 
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300'
+                }`}
+              >
+                {isNarrating ? '🎤 Narrating...' : '🎤 Narrate'}
+              </button>
+            )}
+          </div>
+          
           <div className="messages">
             {round.messages.map((message) => (
               <div key={message.id} className="message mb-2">
