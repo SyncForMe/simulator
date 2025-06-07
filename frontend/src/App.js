@@ -349,6 +349,27 @@ const ObserverInput = ({ onSendMessage }) => {
   );
 };
 
+const MarkdownRenderer = ({ text }) => {
+  const renderMarkdown = (text) => {
+    if (!text) return '';
+    
+    // Convert **bold** to <strong>
+    let rendered = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Convert line breaks
+    rendered = rendered.replace(/\n/g, '<br/>');
+    
+    return rendered;
+  };
+
+  return (
+    <div 
+      className="whitespace-pre-wrap text-gray-800"
+      dangerouslySetInnerHTML={{ __html: renderMarkdown(text) }}
+    />
+  );
+};
+
 const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
   const [loading, setLoading] = useState(false);
   const [latestSummary, setLatestSummary] = useState(null);
