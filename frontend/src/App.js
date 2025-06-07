@@ -2101,6 +2101,12 @@ const ControlPanel = ({
         {/* Setup Controls */}
         <div className="setup-section">
           <h4 className="text-sm font-semibold mb-2 text-gray-700">Setup</h4>
+          
+          <AvatarCreator 
+            onCreateAgent={onCreateAgent}
+            archetypes={AGENT_ARCHETYPES}
+          />
+          
           <button 
             onClick={onInitResearchStation}
             className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm mb-2"
