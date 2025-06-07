@@ -1273,7 +1273,186 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
   );
 };
 
-const ConversationViewer = ({ conversations, selectedLanguage }) => {
+const CompactLanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const languages = [
+    // Major World Languages
+    { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸', voiceSupported: true },
+    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', voiceSupported: true },
+    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', voiceSupported: true },
+    { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', voiceSupported: true },
+    { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', voiceSupported: true },
+    { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: '🇵🇹', voiceSupported: true },
+    { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺', voiceSupported: true },
+    { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵', voiceSupported: true },
+    { code: 'ko', name: 'Korean', nativeName: '한국어', flag: '🇰🇷', voiceSupported: true },
+    { code: 'zh', name: 'Chinese', nativeName: '中文', flag: '🇨🇳', voiceSupported: true },
+    { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳', voiceSupported: true },
+    { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦', voiceSupported: true },
+    
+    // European Languages
+    { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', flag: '🇳🇱', voiceSupported: false },
+    { code: 'sv', name: 'Swedish', nativeName: 'Svenska', flag: '🇸🇪', voiceSupported: false },
+    { code: 'no', name: 'Norwegian', nativeName: 'Norsk', flag: '🇳🇴', voiceSupported: false },
+    { code: 'da', name: 'Danish', nativeName: 'Dansk', flag: '🇩🇰', voiceSupported: false },
+    { code: 'fi', name: 'Finnish', nativeName: 'Suomi', flag: '🇫🇮', voiceSupported: false },
+    { code: 'pl', name: 'Polish', nativeName: 'Polski', flag: '🇵🇱', voiceSupported: false },
+    { code: 'cs', name: 'Czech', nativeName: 'Čeština', flag: '🇨🇿', voiceSupported: false },
+    { code: 'sk', name: 'Slovak', nativeName: 'Slovenčina', flag: '🇸🇰', voiceSupported: false },
+    { code: 'hu', name: 'Hungarian', nativeName: 'Magyar', flag: '🇭🇺', voiceSupported: false },
+    { code: 'ro', name: 'Romanian', nativeName: 'Română', flag: '🇷🇴', voiceSupported: false },
+    { code: 'bg', name: 'Bulgarian', nativeName: 'Български', flag: '🇧🇬', voiceSupported: false },
+    { code: 'hr', name: 'Croatian', nativeName: 'Hrvatski', flag: '🇭🇷', voiceSupported: false },
+    { code: 'sr', name: 'Serbian', nativeName: 'Српски', flag: '🇷🇸', voiceSupported: false },
+    { code: 'sl', name: 'Slovenian', nativeName: 'Slovenščina', flag: '🇸🇮', voiceSupported: false },
+    { code: 'et', name: 'Estonian', nativeName: 'Eesti', flag: '🇪🇪', voiceSupported: false },
+    { code: 'lv', name: 'Latvian', nativeName: 'Latviešu', flag: '🇱🇻', voiceSupported: false },
+    { code: 'lt', name: 'Lithuanian', nativeName: 'Lietuvių', flag: '🇱🇹', voiceSupported: false },
+    { code: 'el', name: 'Greek', nativeName: 'Ελληνικά', flag: '🇬🇷', voiceSupported: false },
+    { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', flag: '🇹🇷', voiceSupported: false },
+    
+    // Asian Languages
+    { code: 'th', name: 'Thai', nativeName: 'ไทย', flag: '🇹🇭', voiceSupported: false },
+    { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt', flag: '🇻🇳', voiceSupported: false },
+    { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', flag: '🇮🇩', voiceSupported: false },
+    { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu', flag: '🇲🇾', voiceSupported: false },
+    { code: 'tl', name: 'Filipino', nativeName: 'Filipino', flag: '🇵🇭', voiceSupported: false },
+    { code: 'bn', name: 'Bengali', nativeName: 'বাংলা', flag: '🇧🇩', voiceSupported: false },
+    { code: 'ur', name: 'Urdu', nativeName: 'اردو', flag: '🇵🇰', voiceSupported: false },
+    { code: 'fa', name: 'Persian', nativeName: 'فارسی', flag: '🇮🇷', voiceSupported: false },
+    { code: 'he', name: 'Hebrew', nativeName: 'עברית', flag: '🇮🇱', voiceSupported: false },
+    
+    // African Languages
+    { code: 'sw', name: 'Swahili', nativeName: 'Kiswahili', flag: '🇹🇿', voiceSupported: false },
+    { code: 'am', name: 'Amharic', nativeName: 'አማርኛ', flag: '🇪🇹', voiceSupported: false },
+    { code: 'zu', name: 'Zulu', nativeName: 'isiZulu', flag: '🇿🇦', voiceSupported: false },
+    { code: 'af', name: 'Afrikaans', nativeName: 'Afrikaans', flag: '🇿🇦', voiceSupported: false },
+    
+    // Americas Languages
+    { code: 'pt-br', name: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)', flag: '🇧🇷', voiceSupported: true },
+    { code: 'es-mx', name: 'Spanish (Mexico)', nativeName: 'Español (México)', flag: '🇲🇽', voiceSupported: true },
+    { code: 'fr-ca', name: 'French (Canada)', nativeName: 'Français (Canada)', flag: '🇨🇦', voiceSupported: false },
+    
+    // Additional Major Languages
+    { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: '🇮🇳', voiceSupported: false },
+    { code: 'te', name: 'Telugu', nativeName: 'తెలుగు', flag: '🇮🇳', voiceSupported: false },
+    { code: 'mr', name: 'Marathi', nativeName: 'मराठी', flag: '🇮🇳', voiceSupported: false },
+    { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી', flag: '🇮🇳', voiceSupported: false },
+    { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ', flag: '🇮🇳', voiceSupported: false },
+    { code: 'ml', name: 'Malayalam', nativeName: 'മലയാളം', flag: '🇮🇳', voiceSupported: false },
+    { code: 'pa', name: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ', flag: '🇮🇳', voiceSupported: false }
+  ];
+
+  const filteredLanguages = languages.filter(lang =>
+    lang.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lang.nativeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lang.code.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const selectedLang = languages.find(l => l.code === selectedLanguage) || languages[0];
+
+  const handleLanguageSelect = async (langCode) => {
+    if (langCode === selectedLanguage) return;
+    
+    setIsOpen(false);
+    setSearchTerm('');
+    
+    try {
+      // Set the language and trigger translation
+      await onLanguageChange(langCode);
+      
+      // Translate existing conversations
+      await axios.post(`${API}/conversations/translate`, { 
+        target_language: langCode 
+      });
+      
+      // Refresh to show translated content
+      window.location.reload();
+    } catch (error) {
+      console.error('Error changing language:', error);
+    }
+  };
+
+  return (
+    <div className="relative">
+      {/* Compact Language Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center space-x-1 px-3 py-1 rounded text-xs bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
+      >
+        <span>🌍</span>
+        <span>{selectedLang.name}</span>
+        <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 w-64 max-h-80 overflow-hidden">
+          {/* Search Bar */}
+          <div className="p-3 border-b border-gray-100">
+            <input
+              type="text"
+              placeholder="Search languages..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-2 border border-gray-200 rounded text-sm focus:border-blue-500 focus:outline-none"
+              autoFocus
+            />
+          </div>
+          
+          {/* Language List */}
+          <div className="max-h-60 overflow-y-auto">
+            {filteredLanguages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => handleLanguageSelect(lang.code)}
+                className={`w-full flex items-center justify-between p-3 hover:bg-gray-50 text-left ${
+                  selectedLanguage === lang.code ? 'bg-blue-50 text-blue-700' : ''
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <span className="text-lg">{lang.flag}</span>
+                  <div>
+                    <div className="font-medium">{lang.nativeName}</div>
+                    <div className="text-xs text-gray-500">{lang.name}</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-1">
+                  {lang.voiceSupported && (
+                    <span 
+                      className="text-green-600 text-sm cursor-help" 
+                      title="This language is supported by voice narration"
+                    >
+                      🔊
+                    </span>
+                  )}
+                  {selectedLanguage === lang.code && (
+                    <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </div>
+              </button>
+            ))}
+            
+            {filteredLanguages.length === 0 && (
+              <div className="p-3 text-center text-gray-500 text-sm">
+                No languages found matching "{searchTerm}"
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange }) => {
   const [isNarrationEnabled, setIsNarrationEnabled] = useState(false);
   const [isNarrating, setIsNarrating] = useState(false);
   const [currentRoundIndex, setCurrentRoundIndex] = useState(-1);
