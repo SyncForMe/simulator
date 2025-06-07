@@ -1,0 +1,2249 @@
+Using API URL: https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api
+Starting API tests for the translation functionality...
+
+================================================================================
+Testing: Basic API Health Check (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/)
+Status Code: 200
+Response: {
+  "message": "AI Agent Simulation API"
+}
+Test Result: PASSED
+
+================================================================================
+TESTING TRANSLATION FUNCTIONALITY
+================================================================================
+
+================================================================================
+CREATING TEST CONVERSATIONS
+================================================================================
+
+================================================================================
+Testing: Get Simulation State (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/state)
+Status Code: 200
+Response: {
+  "_id": "6844a3ce877b6954066f792e",
+  "id": "5c6395c3-6900-4457-b988-ff878b70675b",
+  "current_day": 1,
+  "current_time_period": "morning",
+  "daily_api_requests": 0,
+  "last_reset_date": "2025-06-07",
+  "scenario": "Testing the AI agent simulation with increased API limits",
+  "is_active": true,
+  "language": "hr"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Get Existing Conversations (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u062a\u0645\u0627\u0645. \u0625\u0630\u0627 \u0643\u0627\u0646 \u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0628\u0647\u0630\u0647 \u0627\u0644\u0623\u0647\u0645\u064a\u0629\u060c \u0641\u0623\u0639\u062a\u0642\u062f \u0623\u0646\u0646\u0627 \u064a\u062c\u0628 \u0623\u0646 \u0646\u0631\u0643\u0632 \u0623\u0648\u0644\u0627\u064b \u0639\u0644\u0649 \u062a\u062d\u062f\u064a\u062f \u0645\u0635\u0627\u062f\u0631 \u0628\u064a\u0627\u0646\u0627\u062a \u0645\u0648\u062b\u0648\u0642\u0629 \u064a\u0645\u0643\u0646\u0646\u0627 \u0627\u0633\u062a\u062e\u062f\u0627\u0645\u0647\u0627 \u0645\u0646 \u0623\u062c\u0644\u0647. \u0644\u064a\u0633 \u0643\u0644 \u0645\u062d\u062a\u0648\u0649 \u0645\u062a\u0639\u0644\u0642 \u0628\u0627\u0644\u0639\u0645\u0644\u0627\u062a \u0627\u0644\u0645\u0634\u0641\u0631\u0629 \u0639\u0644\u0649 \u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u062a\u0648\u0627\u0635\u0644 \u0627\u0644\u0627\u062c\u062a\u0645\u0627\u0639\u064a \u0645\u062a\u0633\u0627\u0648\u064a\u0627\u064b\u060c \u0623\u0644\u064a\u0633 \u0643\u0630\u0644\u0643\u061f \u0628\u0639\u0636 \u0627\u0644\u0645\u0646\u0635\u0627\u062a \u0647\u064a \u0645\u062c\u0631\u062f \u063a\u0631\u0641 \u0635\u062f\u0649 \u0623\u0648 \u0645\u0644\u064a\u0626\u0629 \u0628\u0627\u0644\u0628\u0631\u0627\u0645\u062c \u0627\u0644\u0622\u0644\u064a\u0629 (\u0627\u0644\u0628\u0648\u062a\u0627\u062a). \u0625\u0630\u0627 \u062a\u0645\u0643\u0646\u0627 \u0645\u0646 \u062a\u0631\u062c\u064a\u062d \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0628\u0646\u0627\u0621\u064b \u0639\u0644\u0649 \u0645\u0648\u062b\u0648\u0642\u064a\u0629 \u0627\u0644\u0645\u0635\u062f\u0631\u060c \u0641\u064a\u062c\u0628 \u0623\u0646 \u0646\u0643\u0648\u0646 \u0642\u0627\u062f\u0631\u064a\u0646 \u0639\u0644\u0649 \u0627\u0644\u062d\u0635\u0648\u0644 \u0639\u0644\u0649 \u0635\u0648\u0631\u0629 \u0623\u0648\u0636\u062d \u0639\u0646 \u0645\u0639\u0646\u0648\u064a\u0627\u062a \u0627\u0644\u0633\u0648\u0642 \u0627\u0644\u0641\u0639\u0644\u064a\u0629.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u0645\u0627\u0631\u0643\u0648\u060c \u0644\u0642\u062f \u062d\u062f\u062f\u062a \u062c\u0627\u0646\u0628\u064b\u0627 \u0645\u0647\u0645\u064b\u0627 \u0644\u0644\u063a\u0627\u064a\u0629 \u0641\u064a \u0645\u0648\u062b\u0648\u0642\u064a\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a. \u0623\u0648\u062f \u0623\u0646 \u0623\u0630\u0647\u0628 \u0628\u0647\u0630\u0627 \u0627\u0644\u0623\u0645\u0631 \u062e\u0637\u0648\u0629 \u0623\u0628\u0639\u062f \u0648\u0623\u0642\u062a\u0631\u062d \u0623\u0644\u0627 \u0646\u0643\u062a\u0641\u064a \u0628\u0645\u0631\u0627\u062c\u0639\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0641\u062d\u0633\u0628\u060c \u0628\u0644 \u0623\u0646 \u0646\u0639\u0645\u0644 \u0628\u0646\u0634\u0627\u0637 \u0639\u0644\u0649 \u0625\u0632\u0627\u0644\u0629 \u0627\u0644\u0645\u0635\u0627\u062f\u0631 \u0627\u0644\u062a\u064a \u062a\u0638\u0647\u0631 \u0639\u0644\u064a\u0647\u0627 \u0639\u0644\u0627\u0645\u0627\u062a \u0627\u0644\u062a\u0644\u0627\u0639\u0628 \u0623\u0648 \u0646\u0634\u0627\u0637 \u0627\u0644\u0631\u0648\u0628\u0648\u062a\u0627\u062a. \u0645\u0627 \u0631\u0623\u064a\u0643 \u0641\u064a \u062a\u0637\u0628\u064a\u0642 \u0646\u0638\u0627\u0645 \u062a\u0633\u062c\u064a\u0644 \u0633\u0645\u0639\u0629 \u0644\u0643\u0644 \u0645\u0635\u062f\u0631 \u0628\u064a\u0627\u0646\u0627\u062a\u061f \u064a\u0645\u0643\u0646\u0646\u0627 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0645\u0642\u0627\u064a\u064a\u0633 \u0623\u0633\u0627\u0633\u064a\u0629 \u0645\u062b\u0644 \u0648\u062a\u064a\u0631\u0629 \u0627\u0644\u0646\u0634\u0631\u060c \u0648\u0646\u0633\u0628\u0629 \u0627\u0644\u0645\u062a\u0627\u0628\u0639\u064a\u0646 \u0625\u0644\u0649 \u0627\u0644\u0645\u062a\u0627\u0628\u064e\u0639\u064a\u0646\u060c \u0648\u0623\u0635\u0627\u0644\u0629 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0644\u0644\u0625\u0634\u0627\u0631\u0629 \u0625\u0644\u0649 \u0627\u0644\u0645\u0635\u0627\u062f\u0631 \u063a\u064a\u0631 \u0627\u0644\u0645\u0648\u062b\u0648\u0642\u0629.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u0639\u0638\u064a\u0645\u060c \u0623\u0639\u062a\u0642\u062f \u0623\u0646 \u0647\u0630\u0627 \u062a\u0648\u062c\u0647 \u062c\u064a\u062f! \u064a\u0627 \u0623\u0644\u064a\u0643\u0633\u060c \u0646\u0638\u0627\u0645 \u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u0633\u0645\u0639\u0629 \u0641\u0643\u0631\u0629 \u0631\u0627\u0626\u0639\u0629. \u0633\u064a\u0636\u064a\u0641 \u0637\u0628\u0642\u0629 \u062d\u0645\u0627\u064a\u0629 \u0623\u062e\u0631\u0649 \u0636\u062f \u0627\u0644\u0631\u0633\u0627\u0626\u0644 \u063a\u064a\u0631 \u0627\u0644\u0645\u0631\u063a\u0648\u0628 \u0641\u064a\u0647\u0627.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u0641\u0647\u0645\u062a. \u0623\u062a\u0641\u0642 \u062a\u0645\u0627\u0645\u064b\u0627 \u0639\u0644\u0649 \u0623\u0646 \u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0645\u0647\u0645 \u0644\u0644\u063a\u0627\u064a\u0629. \u0628\u0627\u0644\u0625\u0636\u0627\u0641\u0629 \u0625\u0644\u0649 \u0630\u0644\u0643\u060c \u0623\u0639\u062a\u0642\u062f \u0623\u0646\u0647 \u064a\u062c\u0628 \u0639\u0644\u064a\u0646\u0627 \u0623\u064a\u0636\u064b\u0627 \u0623\u0646 \u0646\u0623\u062e\u0630 \u0641\u064a \u0627\u0644\u0627\u0639\u062a\u0628\u0627\u0631 \u0643\u064a\u0641 \u062a\u0624\u062b\u0631 \u0627\u0644\u0623\u062e\u0628\u0627\u0631 \u0648\u0627\u062a\u062c\u0627\u0647\u0627\u062a \u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u062a\u0648\u0627\u0635\u0644 \u0627\u0644\u0627\u062c\u062a\u0645\u0627\u0639\u064a \u0641\u064a \u0645\u062c\u0627\u0644 \u0627\u0644\u0639\u0645\u0644\u0627\u062a \u0627\u0644\u0645\u0634\u0641\u0631\u0629 \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0634\u0639\u0648\u0631. \u0627\u0644\u0623\u0645\u0631 \u0644\u0627 \u064a\u062a\u0639\u0644\u0642 \u0641\u0642\u0637 *\u0628\u0645\u0627\u0630\u0627* \u064a\u0642\u0648\u0644\u0647 \u0627\u0644\u0646\u0627\u0633\u060c \u0628\u0644 *\u0645\u062a\u0649* \u0648 *\u0623\u064a\u0646* \u064a\u0642\u0648\u0644\u0648\u0646\u0647\u060c \u0644\u0623\u0646 \u0647\u0630\u0627 \u0647\u0648 \u0645\u0627 \u064a\u062d\u0631\u0643 \u0627\u0644\u0623\u0645\u0648\u0631 \u062d\u0642\u064b\u0627.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u0623\u0646\u062a \u0645\u064f\u062d\u0642 \u062a\u0645\u0627\u0645\u064b\u0627 \u064a\u0627 \u0633\u064a\u062f \u0645\u0627\u0631\u0643\u0648\u0633\u060c \u0625\u0646 \"\u0627\u0644\u062a\u0648\u0642\u064a\u062a\" \u0648\"\u0627\u0644\u0645\u0643\u0627\u0646\" \u0627\u0644\u0645\u0646\u0627\u0633\u0628\u064a\u0646 \u0644\u0644\u062a\u0639\u0628\u064a\u0631 \u0639\u0646 \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0647\u0645\u0627 \u0623\u0645\u0631\u0627\u0646 \u0628\u0627\u0644\u063a\u0627 \u0627\u0644\u0623\u0647\u0645\u064a\u0629. \u0647\u0630\u0627 \u0647\u0648 \u062c\u0648\u0647\u0631 \u0627\u0644\u0645\u0648\u0636\u0648\u0639 \u062d\u0642\u064b\u0627.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u0623\u062a\u0641\u0642 \u0645\u0639\u0643\u0645 \u0643\u0644\u0627\u0643\u0645\u0627. \u0627\u0644\u062d\u062f\u0633 \u0645\u0647\u0645\u060c \u0648\u0639\u0646\u0635\u0631\u064a \"\u0645\u062a\u0649\" \u0648\"\u0623\u064a\u0646\" \u0647\u0645\u0627 \u0628\u0627\u0644\u062a\u0623\u0643\u064a\u062f \u0639\u0646\u0635\u0631\u0627\u0646 \u062d\u0627\u0633\u0645\u0627\u0646. \u064a\u0627 \u0623\u0644\u064a\u0643\u0633\u060c \u0623\u0639\u062a\u0642\u062f \u0623\u0646 \u0627\u0633\u062a\u0647\u062f\u0627\u0641 \u0627\u0644\u0645\u0624\u062b\u0631\u064a\u0646 \u0641\u0643\u0631\u0629 \u062c\u064a\u062f\u0629. \u0648\"\u062e\u0628\u064a\u0631 \u0627\u0644\u0645\u064a\u0645\u0632\" \u062c\u064a\u062f \u0623\u064a\u0636\u064b\u0627\u060c \u0648\u0644\u0643\u0646 \u064a\u0645\u0643\u0646\u0646\u0627 \u062a\u062d\u0633\u064a\u0646 \u0630\u0644\u0643 \u0644\u0627\u062d\u0642\u064b\u0627.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u0628\u0627\u0644\u0637\u0628\u0639\u060c \u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0645\u0647\u0645 \u0644\u0644\u063a\u0627\u064a\u0629\u060c \u0648\u0644\u0643\u0646 \u0644\u0627 \u064a\u0646\u0628\u063a\u064a \u0623\u0646 \u064a\u0643\u0648\u0646 \u0647\u0648 \u0627\u0644\u062a\u0631\u0643\u064a\u0632 \u0627\u0644\u0648\u062d\u064a\u062f. \u0623\u062a\u0633\u0627\u0621\u0644 \u0639\u0645\u0627 \u0625\u0630\u0627 \u0643\u0646\u0627 \u0646\u062a\u062c\u0627\u0647\u0644 \u0625\u0645\u0643\u0627\u0646\u0627\u062a \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0648\u062c\u0648\u062f\u0629 \u0639\u0644\u0649 \u0627\u0644\u0633\u0644\u0633\u0644\u0629 \u0641\u064a \u0642\u064a\u0627\u0633 \u0645\u0639\u0646\u0648\u064a\u0627\u062a \u0627\u0644\u0633\u0648\u0642.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u0623\u0641\u0647\u0645 \u0648\u062c\u0647\u0629 \u0646\u0638\u0631\u0643 \u064a\u0627 \u0645\u0627\u0631\u0643\u0648. \u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0648\u062c\u0648\u062f\u0629 \u0639\u0644\u0649 \u0627\u0644\u0628\u0644\u0648\u0643 \u062a\u0634\u064a\u0646 \u0643\u0645\u0624\u0634\u0631 \u0645\u0628\u0643\u0631 \u0647\u0648 \u0623\u0645\u0631 \u0630\u0643\u064a. \u0627\u0644\u0623\u062e\u0628\u0627\u0631 \u0648\u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u062a\u0648\u0627\u0635\u0644 \u0627\u0644\u0627\u062c\u062a\u0645\u0627\u0639\u064a \u062f\u0627\u0626\u0645\u064b\u0627 \u0645\u0627 \u062a\u0643\u0648\u0646 \u0645\u062a\u0623\u062e\u0631\u0629 \u0639\u0646 \u0627\u0644\u0631\u0643\u0628. \u0628\u062d\u0644\u0648\u0644 \u0627\u0644\u0648\u0642\u062a \u0627\u0644\u0630\u064a \u064a\u0635\u0644 \u0641\u064a\u0647 \u0627\u0644\u0634\u0639\u0648\u0631 \u0627\u0644\u0639\u0627\u0645 \u0625\u0644\u0649 \u062a\u0648\u064a\u062a\u0631\u060c \u062a\u0643\u0648\u0646 \u0627\u0644\u0623\u0645\u0648\u0627\u0644 \u0627\u0644\u0643\u0628\u064a\u0631\u0629 \u0642\u062f \u062a\u062d\u0631\u0643\u062a \u0628\u0627\u0644\u0641\u0639\u0644.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\"\u062d\u0633\u0646\u064b\u0627 \u064a\u0627 \u0645\u0627\u0631\u0643 \u0648\u0623\u0644\u064a\u0643\u0633\u060c \u0644\u0642\u062f \u0623\u062b\u0631\u062a\u0645\u0627 \u0646\u0642\u0627\u0637\u064b\u0627 \u0645\u0645\u062a\u0627\u0632\u0629. \u0645\u0627\u0631\u0643\u060c \u0623\u062a\u0641\u0642 \u062a\u0645\u0627\u0645\u064b\u0627 \u0645\u0639 \u0641\u0643\u0631\u062a\u0643 \u0628\u0634\u0623\u0646 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0648\u062c\u0648\u062f\u0629 \u0639\u0644\u0649 \u0627\u0644\u0633\u0644\u0633\u0644\u0629. \u0625\u0646\u0647 \u0623\u0634\u0628\u0647 \u0628\u0642\u064a\u0627\u0633 \u0646\u0628\u0636 \u0627\u0644\u0633\u0648\u0642 \u0645\u0628\u0627\u0634\u0631\u0629\u064b. \u0648\u0623\u0644\u064a\u0643\u0633\u060c \u0623\u0646\u062a \u0645\u062d\u0642 \u062a\u0645\u0627\u0645\u064b\u0627 \u0628\u0634\u0623\u0646 \u0627\u0644\u0636\u0648\u0636\u0627\u0621. \u064a\u0645\u0643\u0646 \u0623\u0646 \u062a\u0643\u0648\u0646 \u0627\u0644\u0628\u0644\u0648\u0643 \u062a\u0634\u064a\u0646 \u0628\u0645\u062b\u0627\u0628\u0629 \u063a\u0627\u0628\u0629 \u062d\u0642\u064a\u0642\u064a\u0629.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\"\u0623\u062a\u0641\u0642 \u0645\u0639\u0643\u060c \u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0647\u0648 \u0627\u0633\u062a\u0631\u0627\u062a\u064a\u062c\u064a\u0629 \u0630\u0643\u064a\u0629 \u0644\u062a\u062c\u0646\u0628 \u0627\u0644\u063a\u0631\u0642 \u0641\u064a \u0643\u0645\u064a\u0627\u062a \u0647\u0627\u0626\u0644\u0629 \u0645\u0646 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a. \u0648\u0645\u0639 \u0630\u0644\u0643\u060c \u0623\u0639\u062a\u0642\u062f \u0623\u0646\u0647 \u064a\u062c\u0628 \u0639\u0644\u064a\u0646\u0627 \u0623\u0646 \u0646\u0646\u0638\u0631 \u0641\u064a *\u0645\u0635\u062f\u0631* \u0647\u0630\u0647 \u0627\u0644\u0645\u0634\u0627\u0639\u0631. \u0641\u064a \u062d\u064a\u0646 \u0623\u0646 \u062a\u063a\u0631\u064a\u062f\u0627\u062a \u062a\u0648\u064a\u062a\u0631 \u0627\u0644\u0645\u062a\u0627\u062d\u0629 \u0644\u0644\u0639\u0627\u0645\u0629 \u0631\u0627\u0626\u0639\u0629 \u0644\u0644\u062d\u0635\u0648\u0644 \u0639\u0644\u0649 \u0646\u0638\u0631\u0629 \u0639\u0627\u0645\u0629\u060c \u0645\u0627\u0630\u0627 \u0644\u0648 \u0631\u0643\u0632\u0646\u0627 \u0639\u0644\u0649 \u0645\u0635\u0627\u062f\u0631 \u0623\u0643\u062b\u0631 \u062a\u062e\u0635\u0635\u064b\u0627 \u0645\u062b\u0644 \u0645\u062c\u0645\u0651\u0639\u0627\u062a \u0623\u062e\u0628\u0627\u0631 \u0627\u0644\u0639\u0645\u0644\u0627\u062a \u0627\u0644\u0645\u0634\u0641\u0631\u0629 \u0648\u0645\u0646\u062a\u062f\u064a\u0627\u062a \u0627\u0644\u0645\u0637\u0648\u0631\u064a\u0646\u061f \u0642\u062f \u062a\u0643\u0648\u0646 \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0645\u0646 \u0647\u0630\u0647 \u0627\u0644\u0623\u0645\u0627\u0643\u0646 \u0645\u0624\u0634\u0631\u064b\u0627 \u0627\u0633\u062a\u0628\u0627\u0642\u064a\u064b\u0627 \u0623\u0643\u062b\u0631 \u0635\u0644\u0629 \u0628\u0639\u0645\u0644\u0627\u062a \u0645\u0634\u0641\u0631\u0629 \u0623\u0648 \u0627\u062a\u062c\u0627\u0647\u0627\u062a \u0645\u0639\u064a\u0646\u0629. \u064a\u0645\u0643\u0646\u0646\u0627 \u062d\u062a\u0649 \u0623\u0646 \u0646\u0648\u0627\u0632\u0646 \u0647\u0630\u0647 \u0627\u0644\u0645\u0635\u0627\u062f\u0631 \u0628\u0634\u0643\u0644 \u0645\u062e\u062a\u0644\u0641 \u0641\u064a \u062a\u062d\u0644\u064a\u0644\u0646\u0627.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u0641\u0647\u0645\u062a\u060c \u0645\u0627\u0631\u0643\u0648. \u0623\u0639\u062a\u0642\u062f \u0623\u0646 \u0647\u0630\u0627 \u0627\u0644\u062a\u0648\u062c\u0647 \u062c\u064a\u062f \u062c\u062f\u064b\u0627. \u0627\u0644\u062a\u0631\u0643\u064a\u0632 \u0639\u0644\u0649 \u0627\u0644\u0645\u0635\u0627\u062f\u0631 \u0627\u0644\u0645\u062a\u062e\u0635\u0635\u0629 \u0647\u0648 \u0627\u0644\u0642\u0631\u0627\u0631 *\u0627\u0644\u0635\u0627\u0626\u0628 \u062a\u0645\u0627\u0645\u064b\u0627*. \u062a\u0648\u064a\u062a\u0631 \u0627\u0644\u0639\u0627\u0645 \u0645\u062c\u0631\u062f \u0636\u062c\u064a\u062c. \u0645\u062c\u0645\u0651\u0639\u0627\u062a \u0623\u062e\u0628\u0627\u0631 \u0627\u0644\u0639\u0645\u0644\u0627\u062a \u0627\u0644\u0645\u0634\u0641\u0631\u0629 \u0648\u0645\u0646\u062a\u062f\u064a\u0627\u062a \u0627\u0644\u0645\u0637\u0648\u0631\u064a\u0646 \u0647\u064a \u062d\u064a\u062b \u0627\u0644\u0643\u0646\u0632 \u0627\u0644\u062d\u0642\u064a\u0642\u064a!",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u064a\u0627 \u0641\u0631\u064a\u0642 \u0627\u0644\u0639\u0645\u0644\u060c \u0639\u0645\u0644 \u0631\u0627\u0626\u0639! \u0623\u0639\u062a\u0642\u062f \u0623\u0646\u0646\u0627 \u062c\u0645\u064a\u0639\u064b\u0627 \u0646\u0633\u064a\u0631 \u0641\u064a \u0627\u0644\u0627\u062a\u062c\u0627\u0647 \u0627\u0644\u0635\u062d\u064a\u062d. \u064a\u0627 \u0623\u0644\u064a\u0643\u0633\u060c \u0646\u0638\u0627\u0645 \u062a\u0631\u062c\u064a\u062d \u0627\u0644\u0645\u0635\u0627\u062f\u0631 \u0627\u0644\u062e\u0627\u0635 \u0628\u0643 \u0645\u0645\u062a\u0627\u0632 \u0648\u064a\u0648\u0641\u0631 \u0646\u0642\u0637\u0629 \u0627\u0646\u0637\u0644\u0627\u0642 \u0631\u0627\u0626\u0639\u0629 \u0644\u062a\u0642\u0644\u064a\u0644 \u0627\u0644\u0636\u0648\u0636\u0627\u0621.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u0641\u0647\u0645\u062a. \u0625\u0630\u0627 \u0643\u0627\u0646 \u062a\u062d\u0644\u064a\u0644 \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0628\u0647\u0630\u0647 \u0627\u0644\u0623\u0647\u0645\u064a\u0629\u060c \u0641\u0623\u0639\u062a\u0642\u062f \u0623\u0646 \u0623\u0648\u0644\u0648\u064a\u062a\u0646\u0627 \u064a\u062c\u0628 \u0623\u0646 \u062a\u0643\u0648\u0646 \u062a\u062d\u062f\u064a\u062f \u0645\u0635\u0627\u062f\u0631 \u0628\u064a\u0627\u0646\u0627\u062a \u0645\u0648\u062b\u0648\u0642\u0629. \u0644\u064a\u0633 \u0643\u0644 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0627\u0644\u0645\u062a\u0639\u0644\u0642 \u0628\u0627\u0644\u0639\u0645\u0644\u0627\u062a \u0627\u0644\u0645\u0634\u0641\u0631\u0629 \u0639\u0644\u0649 \u0648\u0633\u0627\u0626\u0644 \u0627\u0644\u062a\u0648\u0627\u0635\u0644 \u0627\u0644\u0627\u062c\u062a\u0645\u0627\u0639\u064a \u0645\u062a\u0633\u0627\u0648\u064a\u0627\u064b\u060c \u0623\u0644\u064a\u0633 \u0643\u0630\u0644\u0643\u061f \u064a\u0645\u0643\u0646 \u0623\u0646 \u062a\u0643\u0648\u0646 \u0628\u0639\u0636 \u0627\u0644\u0645\u0646\u0635\u0627\u062a \u0628\u0645\u062b\u0627\u0628\u0629 \u063a\u0631\u0641 \u0635\u062f\u0649 \u0623\u0648 \u062a\u0639\u062c \u0628\u0627\u0644\u0631\u0648\u0628\u0648\u062a\u0627\u062a. \u0625\u0630\u0627 \u062a\u0645\u0643\u0646\u0627 \u0645\u0646 \u062a\u0631\u062c\u064a\u062d \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0634\u0627\u0639\u0631 \u0628\u0646\u0627\u0621\u064b \u0639\u0644\u0649 \u0645\u0648\u062b\u0648\u0642\u064a\u0629 \u0627\u0644\u0645\u0635\u062f\u0631\u060c \u0641\u0633\u0646\u062d\u0635\u0644 \u0639\u0644\u0649 \u0635\u0648\u0631\u0629 \u0623\u0648\u0636\u062d \u0639\u0646 \u0645\u0639\u0646\u0648\u064a\u0627\u062a \u0627\u0644\u0633\u0648\u0642 \u0627\u0644\u0641\u0639\u0644\u064a\u0629.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\"\"\u0645\u0627\u0631\u0643\u0648\u060c \u0644\u0642\u062f \u0623\u0635\u0628\u062a \u0646\u0642\u0637\u0629 \u062d\u0627\u0633\u0645\u0629. \u0625\u0646 \u0645\u0648\u062b\u0648\u0642\u064a\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0647\u064a \u0628\u0627\u0644\u0636\u0628\u0637 \u0645\u0627 \u0646\u062d\u062a\u0627\u062c \u0625\u0644\u0649 \u0627\u0644\u062a\u0631\u0643\u064a\u0632 \u0639\u0644\u064a\u0647. \u0648\u0628\u0627\u0644\u0627\u0646\u062a\u0642\u0627\u0644 \u0625\u0644\u0649 \u062e\u0637\u0648\u0629 \u0623\u0628\u0639\u062f\u060c \u0623\u0639\u062a\u0642\u062f \u0623\u0646\u0647 \u0644\u0627 \u064a\u0646\u0628\u063a\u064a \u0644\u0646\u0627 \u0641\u0642\u0637 \u062a\u0631\u062c\u064a\u062d \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a\u060c \u0628\u0644 \u064a\u062c\u0628 \u0639\u0644\u064a\u0646\u0627 \u0623\u064a\u0636\u064b\u0627 \u062a\u0635\u0641\u064a\u0629 \u0627\u0644\u0645\u0635\u0627\u062f\u0631 \u0627\u0644\u062a\u064a \u062a\u0638\u0647\u0631 \u0639\u0644\u064a\u0647\u0627 \u0639\u0644\u0627\u0645\u0627\u062a \u0627\u0644\u0623\u0641\u0639\u0627\u0644 \u0627\u0644\u0645\u062a\u0643\u0631\u0631\u0629 \u0623\u0648 \u0646\u0634\u0627\u0637 \u0627\u0644\u0631\u0648\u0628\u0648\u062a\u0627\u062a \u0628\u0634\u0643\u0644 \u0641\u0639\u0627\u0644. \u0645\u0627 \u0631\u0623\u064a\u0643 \u0641\u064a \u0623\u0646 \u0646\u0642\u062f\u0645 \u0646\u0638\u0627\u0645 \u062a\u0633\u062c\u064a\u0644 \u0633\u0645\u0639\u0629 \u0644\u0643\u0644 \u0645\u0635\u062f\u0631 \u0628\u064a\u0627\u0646\u0627\u062a\u061f \u064a\u0645\u0643\u0646\u0646\u0627 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0645\u0642\u0627\u064a\u064a\u0633 \u0623\u0633\u0627\u0633\u064a\u0629 \u0645\u062b\u0644 \u0648\u062a\u064a\u0631\u0629 \u0627\u0644\u0646\u0634\u0631\u060c \u0648\u0646\u0633\u0628\u0629 \u0627\u0644\u0645\u062a\u0627\u0628\u0639\u064a\u0646 \u0625\u0644\u0649 \u0627\u0644\u0645\u062a\u0627\u0628\u0639\u0648\u0646\u060c \u0648\u0623\u0635\u0627\u0644\u0629 \u0627\u0644\u0645\u062d\u062a\u0648\u0649 \u0644\u062a\u062d\u062f\u064a\u062f \u0627\u0644\u0645\u0635\u0627\u062f\u0631 \u063a\u064a\u0631 \u0627\u0644\u0645\u0648\u062b\u0648\u0642\u0629.\"\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u0639\u0638\u064a\u0645\u060c \u0623\u0639\u062a\u0642\u062f \u0623\u0646 \u0647\u0630\u0627 \u0627\u0644\u0627\u062a\u062c\u0627\u0647 \u062c\u064a\u062f! \u064a\u0627 \u0623\u0644\u064a\u0643\u0633\u060c \u0646\u0638\u0627\u0645 \u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u0633\u0645\u0639\u0629 \u0641\u0643\u0631\u0629 \u0631\u0627\u0626\u0639\u0629. \u0625\u0646\u0647 \u064a\u0648\u0641\u0631 \u0637\u0628\u0642\u0629 \u062d\u0645\u0627\u064a\u0629 \u0625\u0636\u0627\u0641\u064a\u0629 \u0636\u062f \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a \u063a\u064a\u0631 \u0627\u0644\u0645\u0631\u063a\u0648\u0628 \u0641\u064a\u0647\u0627.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+Using 5 existing conversations for translation tests
+
+================================================================================
+TESTING TRANSLATION PATH: en → es (English → Spanish)
+================================================================================
+
+================================================================================
+Testing: Set language to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to en",
+  "language": "en"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from en to es (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to Spanish",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "es",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to es
+
+================================================================================
+Testing: Verify conversations in es (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "De acuerdo. Si el an\u00e1lisis de sentimiento es tan importante, creo que primero deber\u00edamos enfocarnos en identificar fuentes de datos confiables que podamos usar para ello. No todo el contenido relacionado con criptomonedas en las redes sociales es igual, \u00bfverdad? Algunas plataformas son solo c\u00e1maras de eco o est\u00e1n llenas de bots. Si podemos ponderar los datos de sentimiento en funci\u00f3n de la confiabilidad de la fuente, deber\u00edamos ser capaces de obtener una imagen m\u00e1s clara del sentimiento real del mercado.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, has identificado un aspecto sumamente importante sobre la fiabilidad de los datos. Me gustar\u00eda llevar esto un paso m\u00e1s all\u00e1 y proponer que no solo revisemos los datos, sino que trabajemos activamente para eliminar las fuentes que muestren signos de manipulaci\u00f3n o actividad de bots. \u00bfQu\u00e9 te parece implementar un sistema de puntuaci\u00f3n de reputaci\u00f3n para cada fuente de datos? Podr\u00edamos usar m\u00e9tricas b\u00e1sicas como la frecuencia de publicaci\u00f3n, la relaci\u00f3n entre seguidores y seguidos, y la originalidad del contenido para se\u00f1alar las fuentes no confiables.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u00a1Genial, creo que esta es una buena direcci\u00f3n! Alex, el sistema de registro de reputaci\u00f3n es una idea fant\u00e1stica. A\u00f1adir\u00e1 otra capa de protecci\u00f3n contra el spam.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Entendido. Estoy totalmente de acuerdo en que el an\u00e1lisis de sentimientos es sumamente importante. Adem\u00e1s, creo que tambi\u00e9n debemos tener en cuenta c\u00f3mo las noticias y las tendencias de las redes sociales en el \u00e1mbito de las criptomonedas influyen en ese sentimiento. No se trata solo de *qu\u00e9* dice la gente, sino de *cu\u00e1ndo* y *d\u00f3nde* lo dicen, porque eso es lo que realmente mueve las cosas.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Tiene usted toda la raz\u00f3n, se\u00f1or Marcos. El \"cu\u00e1ndo\" y el \"d\u00f3nde\" para expresar los sentimientos son de suma importancia. Esa es la clave del asunto, en realidad.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Estoy de acuerdo con ambos. La intuici\u00f3n es importante, y los elementos de \"cu\u00e1ndo\" y \"d\u00f3nde\" son sin duda cruciales. Alex, creo que apuntar a los influencers es una buena idea. Lo de \"experto en memes\" tambi\u00e9n est\u00e1 bien, pero podemos mejorarlo m\u00e1s adelante.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Por supuesto, el an\u00e1lisis de sentimiento es muy importante, pero no deber\u00eda ser el \u00fanico enfoque. Me pregunto si estamos ignorando el potencial de los datos on-chain para medir el sentir del mercado.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Entiendo tu punto, Marco. Usar los datos on-chain como un indicador temprano es inteligente. Las noticias y las redes sociales siempre van con retraso. Para cuando el sentimiento general llega a Twitter, el dinero grande ya se ha movido.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\"Bien dicho, Mark y Alex, han tocado puntos excelentes. Mark, estoy totalmente de acuerdo con tu idea sobre el uso de datos on-chain. Es casi como tomar el pulso del mercado directamente. Y Alex, tienes toda la raz\u00f3n con lo del ruido. La blockchain puede ser una verdadera jungla.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Estoy de acuerdo contigo, el an\u00e1lisis de sentimientos es una estrategia inteligente para evitar ahogarse en cantidades masivas de datos. Sin embargo, creo que deber\u00edamos considerar la *fuente* de estos sentimientos. Si bien los tuits de Twitter disponibles p\u00fablicamente son geniales para obtener una visi\u00f3n general, \u00bfqu\u00e9 pasar\u00eda si nos enfoc\u00e1ramos en fuentes m\u00e1s especializadas como agregadores de noticias de criptomonedas y foros de desarrolladores? El sentimiento de estos lugares podr\u00eda ser un indicador predictivo m\u00e1s relevante para criptomonedas o tendencias espec\u00edficas. Incluso podr\u00edamos ponderar estas fuentes de manera diferente en nuestro an\u00e1lisis.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Entendido, Marco. Creo que este enfoque es muy bueno. Centrarse en fuentes especializadas es la decisi\u00f3n *absolutamente correcta*. Twitter en general es solo ruido. Los agregadores de noticias de criptomonedas y los foros de desarrolladores son donde est\u00e1 el verdadero tesoro.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\"\u00a1Equipo, excelente trabajo! Creo que todos vamos en la direcci\u00f3n correcta. Alex, tu sistema de ponderaci\u00f3n de fuentes es excelente y proporciona un gran punto de partida para reducir el ruido.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Entendido. Si el an\u00e1lisis de sentimientos es tan importante, creo que nuestra prioridad deber\u00eda ser identificar fuentes de datos confiables. No todo el contenido sobre criptomonedas en redes sociales es igual, \u00bfverdad? Algunas plataformas pueden ser c\u00e1maras de eco o estar plagadas de bots. Si podemos ponderar los datos de sentimiento en funci\u00f3n de la fiabilidad de la fuente, obtendremos una imagen m\u00e1s clara del sentimiento real del mercado.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, has dado en el clavo. La fiabilidad de los datos es exactamente en lo que debemos centrarnos. Yendo un paso m\u00e1s all\u00e1, creo que no solo deber\u00edamos ponderar los datos, sino tambi\u00e9n filtrar de forma efectiva las fuentes que muestren patrones de comportamiento repetitivos o actividad de bots. \u00bfQu\u00e9 te parece si implementamos un sistema de puntuaci\u00f3n de reputaci\u00f3n para cada fuente de datos? Podr\u00edamos utilizar m\u00e9tricas b\u00e1sicas como la frecuencia de publicaci\u00f3n, la relaci\u00f3n entre seguidores y seguidos, y la autenticidad del contenido para identificar las fuentes poco fiables.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u00a1Genial, creo que esta es una buena direcci\u00f3n! Alex, el sistema de calificaci\u00f3n de reputaci\u00f3n es una idea fant\u00e1stica. Proporciona una capa adicional de protecci\u00f3n contra la informaci\u00f3n no deseada.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in es
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in es
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in es
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in es
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in es
+❌ Not all conversations were translated to es
+
+================================================================================
+TESTING TRANSLATION PATH: es → en (Spanish → English)
+================================================================================
+
+================================================================================
+Testing: Set language to es (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to es",
+  "language": "es"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from es to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to en",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "en",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to en
+
+================================================================================
+Testing: Verify conversations in en (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\"Agreed. If sentiment analysis is that important, I think we should first focus on identifying reliable data sources we can use for it. Not all cryptocurrency-related content on social media is created equal, right? Some platforms are just echo chambers or riddled with bots. If we can weight sentiment data based on the reliability of the source, we should be able to get a clearer picture of actual market sentiment.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, you've identified an extremely important aspect regarding data reliability. I'd like to take this a step further and propose that we not only review the data, but actively work to eliminate sources that show signs of manipulation or bot activity. What do you think about implementing a reputation scoring system for each data source? We could use basic metrics like publication frequency, follower/following ratio, and content originality to flag unreliable sources.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Great, I think this is a good direction! Alex, the reputation registration system is a fantastic idea. It will add another layer of protection against spam.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Understood. I completely agree that sentiment analysis is extremely important. Furthermore, I believe we should also consider how cryptocurrency news and social media trends influence that sentiment. It's not just about *what* people are saying, but *when* and *where* they're saying it, because that's what really drives things.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "You are absolutely right, Mr. Marcos. The \"when\" and \"where\" for expressing feelings are of utmost importance. That's really the key to the whole matter.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "I agree with both of you. Intuition is important, and the \"when\" and \"where\" elements are definitely crucial. Alex, I think targeting influencers is a good idea. The \"meme expert\" thing is okay too, but we can refine it later.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Of course, sentiment analysis is very important, but it shouldn't be the only approach. I wonder if we're ignoring the potential of on-chain data to gauge market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "I get your point, Marco. Using on-chain data as an early indicator is smart. News and social media are always lagging. By the time the general sentiment hits Twitter, the big money has already moved.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\"Well said, Mark and Alex, you both hit on excellent points. Mark, I completely agree with your idea about using on-chain data. It's almost like taking the market's pulse directly. And Alex, you're absolutely right about the noise. The blockchain can be a real jungle.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "I agree with you; sentiment analysis is a smart strategy to avoid drowning in massive amounts of data. However, I think we should consider the *source* of these sentiments. While publicly available tweets from Twitter are great for getting a general overview, what if we focused on more specialized sources like cryptocurrency news aggregators and developer forums? The sentiment from these places could be a more relevant predictive indicator for specific cryptocurrencies or trends. We could even weigh these sources differently in our analysis.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Understood, Marco. I think this approach is very good. Focusing on specialized sources is *absolutely* the right decision. Twitter in general is just noise. Crypto news aggregators and developer forums are where the real treasure is.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\"Team, excellent work! I think we're all headed in the right direction. Alex, your source weighting system is excellent and provides a great starting point for reducing the noise.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Understood. If sentiment analysis is this important, I believe our priority should be identifying reliable data sources. Not all cryptocurrency content on social media is created equal, right? Some platforms may be echo chambers or plagued with bots. If we can weigh sentiment data based on the reliability of the source, we'll get a clearer picture of true market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, you've hit the nail on the head. Data reliability is exactly what we need to focus on. Taking it a step further, I think we should not only weight the data, but also effectively filter out sources that show repetitive behavioral patterns or bot activity. How about we implement a reputation scoring system for each data source? We could use basic metrics like publication frequency, follower-to-following ratio, and content authenticity to identify unreliable sources.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Great, I think this is a good direction! Alex, the reputation rating system is a fantastic idea. It provides an extra layer of protection against unwanted information.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in en
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in en
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in en
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in en
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in en
+❌ Not all conversations were translated to en
+
+================================================================================
+TESTING TRANSLATION PATH: en → de (English → German)
+================================================================================
+
+================================================================================
+Testing: Set language to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to en",
+  "language": "en"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from en to de (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to German",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "de",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to de
+
+================================================================================
+Testing: Verify conversations in de (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Einverstanden. Wenn Stimmungsanalyse so wichtig ist, sollten wir uns meiner Meinung nach zuerst darauf konzentrieren, zuverl\u00e4ssige Datenquellen zu identifizieren, die wir daf\u00fcr nutzen k\u00f6nnen. Nicht alle Krypto-bezogenen Inhalte in den sozialen Medien sind gleichwertig, richtig? Einige Plattformen sind reine Echokammern oder von Bots \u00fcbers\u00e4t. Wenn wir Sentiment-Daten basierend auf der Zuverl\u00e4ssigkeit der Quelle gewichten k\u00f6nnen, sollten wir ein klareres Bild der tats\u00e4chlichen Marktstimmung erhalten.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, du hast einen \u00e4u\u00dferst wichtigen Aspekt bez\u00fcglich der Datenzuverl\u00e4ssigkeit identifiziert. Ich w\u00fcrde gerne noch einen Schritt weitergehen und vorschlagen, dass wir nicht nur die Daten \u00fcberpr\u00fcfen, sondern aktiv daran arbeiten, Quellen zu eliminieren, die Anzeichen von Manipulation oder Bot-Aktivit\u00e4ten aufweisen. Was h\u00e4ltst du davon, ein Reputationsbewertungssystem f\u00fcr jede Datenquelle einzuf\u00fchren? Wir k\u00f6nnten grundlegende Metriken wie Ver\u00f6ffentlichungsfrequenz, Follower/Following-Verh\u00e4ltnis und Originalit\u00e4t des Inhalts verwenden, um unzuverl\u00e4ssige Quellen zu kennzeichnen.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Super, ich denke, das ist eine gute Richtung! Alex, das Reputationsregistrierungssystem ist eine fantastische Idee. Es wird eine weitere Schutzschicht gegen Spam hinzuf\u00fcgen.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Verstanden. Ich stimme vollkommen zu, dass Sentimentanalyse extrem wichtig ist. Dar\u00fcber hinaus sollten wir meiner Meinung nach auch ber\u00fccksichtigen, wie Nachrichten \u00fcber Kryptow\u00e4hrungen und Social-Media-Trends dieses Sentiment beeinflussen. Es geht nicht nur darum, *was* die Leute sagen, sondern *wann* und *wo* sie es sagen, denn das ist es, was die Dinge wirklich antreibt.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Sie haben vollkommen Recht, Herr Marcos. Das \"Wann\" und \"Wo\" beim Ausdr\u00fccken von Gef\u00fchlen sind von allergr\u00f6\u00dfter Bedeutung. Das ist wirklich der Schl\u00fcssel zur ganzen Sache.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Ich stimme euch beiden zu. Intuition ist wichtig, und die \"wann\" und \"wo\" Elemente sind definitiv entscheidend. Alex, ich finde die Idee, Influencer anzusprechen, gut. Die Sache mit dem \"Meme-Experten\" ist auch okay, aber wir k\u00f6nnen das sp\u00e4ter noch verfeinern.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Sentimentanalyse ist nat\u00fcrlich sehr wichtig, aber sie sollte nicht der einzige Ansatz sein. Ich frage mich, ob wir das Potenzial von On-Chain-Daten zur Messung der Marktstimmung ignorieren.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Ich verstehe deinen Punkt, Marco. On-Chain-Daten als Fr\u00fchindikator zu nutzen, ist clever. Nachrichten und soziale Medien hinken immer hinterher. Bis die allgemeine Stimmung auf Twitter ankommt, hat das gro\u00dfe Geld sich schon l\u00e4ngst bewegt.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\"Sehr gut gesagt, Mark und Alex, ihr habt beide ausgezeichnete Punkte angesprochen. Mark, ich stimme deiner Idee, On-Chain-Daten zu nutzen, voll und ganz zu. Es ist fast so, als w\u00fcrde man direkt den Puls des Marktes f\u00fchlen. Und Alex, du hast absolut Recht mit dem L\u00e4rm. Die Blockchain kann ein echter Dschungel sein.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Ich stimme Ihnen zu; Sentimentanalyse ist eine kluge Strategie, um nicht in riesigen Datenmengen zu ertrinken. Ich denke jedoch, wir sollten die *Quelle* dieser Stimmungen ber\u00fccksichtigen. W\u00e4hrend \u00f6ffentlich zug\u00e4ngliche Tweets von Twitter gro\u00dfartig sind, um einen allgemeinen \u00dcberblick zu bekommen, was w\u00e4re, wenn wir uns auf spezialisiertere Quellen wie Krypto-Nachrichten-Aggregatoren und Entwicklerforen konzentrieren w\u00fcrden? Die Stimmung von diesen Orten k\u00f6nnte ein relevanterer pr\u00e4diktiver Indikator f\u00fcr bestimmte Kryptow\u00e4hrungen oder Trends sein. Wir k\u00f6nnten diese Quellen in unserer Analyse sogar unterschiedlich gewichten.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Verstanden, Marco. Ich halte diesen Ansatz f\u00fcr sehr gut. Sich auf spezialisierte Quellen zu konzentrieren, ist *absolut* die richtige Entscheidung. Twitter ist im Allgemeinen einfach nur L\u00e4rm. Krypto-Nachrichten-Aggregatoren und Entwicklerforen sind, wo der wahre Schatz liegt.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\"Team, ausgezeichnete Arbeit! Ich denke, wir sind alle auf dem richtigen Weg. Alex, dein Source-Weighting-System ist hervorragend und bietet einen gro\u00dfartigen Ausgangspunkt, um das Rauschen zu reduzieren.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Verstanden. Wenn die Stimmungsanalyse so wichtig ist, sollten wir uns meiner Meinung nach vorrangig auf die Identifizierung zuverl\u00e4ssiger Datenquellen konzentrieren. Nicht alle Krypto-Inhalte in den sozialen Medien sind gleich, oder? Einige Plattformen sind m\u00f6glicherweise Echokammern oder von Bots geplagt. Wenn wir die Sentimentdaten basierend auf der Zuverl\u00e4ssigkeit der Quelle gewichten k\u00f6nnen, erhalten wir ein klareres Bild der tats\u00e4chlichen Marktstimmung.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, du hast den Nagel auf den Kopf getroffen. Datenzuverl\u00e4ssigkeit ist genau das, worauf wir uns konzentrieren m\u00fcssen. Um noch einen Schritt weiterzugehen, denke ich, wir sollten die Daten nicht nur gewichten, sondern auch Quellen effektiv herausfiltern, die wiederholende Verhaltensmuster oder Bot-Aktivit\u00e4ten zeigen. Wie w\u00e4re es, wenn wir ein Reputationsbewertungssystem f\u00fcr jede Datenquelle implementieren? Wir k\u00f6nnten grundlegende Metriken wie Ver\u00f6ffentlichungsfrequenz, Follower-zu-Following-Verh\u00e4ltnis und Inhaltsauthentizit\u00e4t verwenden, um unzuverl\u00e4ssige Quellen zu identifizieren.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Super, ich denke, das ist eine gute Richtung! Alex, das Reputationsbewertungssystem ist eine fantastische Idee. Es bietet eine zus\u00e4tzliche Schutzschicht gegen unerw\u00fcnschte Informationen.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in de
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in de
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in de
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in de
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in de
+❌ Not all conversations were translated to de
+
+================================================================================
+TESTING TRANSLATION PATH: de → en (German → English)
+================================================================================
+
+================================================================================
+Testing: Set language to de (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to de",
+  "language": "de"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from de to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to en",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "en",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to en
+
+================================================================================
+Testing: Verify conversations in en (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Agreed. If sentiment analysis is so important, I think we should first focus on identifying reliable data sources we can use for it. Not all crypto-related content on social media is created equal, right? Some platforms are just echo chambers or riddled with bots. If we can weight sentiment data based on the reliability of the source, we should get a clearer picture of actual market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, you've identified an extremely important aspect regarding data reliability. I'd like to take it a step further and suggest that we not only verify the data, but also actively work to eliminate sources that show signs of manipulation or bot activity. What do you think about introducing a reputation scoring system for each data source? We could use basic metrics like publishing frequency, follower/following ratio, and originality of content to flag unreliable sources.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Great, I think this is a good direction! Alex, the reputation registry system is a fantastic idea. It will add another layer of protection against spam.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Understood. I completely agree that sentiment analysis is extremely important. Furthermore, I think we should also consider how cryptocurrency news and social media trends influence this sentiment. It's not just about *what* people are saying, but *when* and *where* they're saying it, because that's what really drives things.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "You're absolutely right, Mr. Marcos. The \"when\" and \"where\" of expressing feelings are of paramount importance. That really is key to the whole thing.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "I agree with both of you. Intuition is important, and the \"when\" and \"where\" elements are definitely crucial. Alex, I think the idea of approaching influencers is good. The thing with the \"meme expert\" is also okay, but we can refine that later.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Sentiment analysis is certainly very important, but it shouldn't be the only approach. I wonder if we're ignoring the potential of on-chain data for gauging market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "I get your point, Marco. Using on-chain data as an early indicator is smart. News and social media always lag behind. By the time the general sentiment catches on on Twitter, the big money has already made its move.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\"Well said, Mark and Alex, you both brought up excellent points. Mark, I completely agree with your idea of using on-chain data. It's almost like feeling the market's pulse directly. And Alex, you're absolutely right about the noise. The blockchain can be a real jungle.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "I agree with you; sentiment analysis is a smart strategy to avoid drowning in massive amounts of data. However, I think we should consider the *source* of these sentiments. While publicly available tweets from Twitter are great for getting a general overview, what if we focused on more specialized sources like crypto news aggregators and developer forums? The sentiment from these places could be a more relevant predictive indicator for specific cryptocurrencies or trends. We could even weight these sources differently in our analysis.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Understood, Marco. I think this approach is very good. Focusing on specialized sources is *absolutely* the right decision. Twitter is generally just noise. Crypto news aggregators and developer forums are where the real treasure is.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Team, excellent work! I think we're all on the right track. Alex, your source-weighting system is outstanding and provides a great starting point for reducing the noise.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Understood. If sentiment analysis is that important, I think we should focus primarily on identifying reliable data sources. Not all crypto content on social media is created equal, right? Some platforms may be echo chambers or plagued by bots. If we can weight the sentiment data based on the source's reliability, we'll get a clearer picture of actual market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\"Marco, you've hit the nail on the head. Data reliability is precisely what we need to focus on. To take it a step further, I think we should not only weight the data, but also effectively filter out sources that exhibit repetitive patterns or bot activity. How about we implement a reputation scoring system for each data source? We could use basic metrics like publishing frequency, follower-to-following ratio, and content authenticity to identify unreliable sources.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Great, I think this is a good direction! Alex, the reputation rating system is a fantastic idea. It provides an extra layer of protection against unwanted information.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in en
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in en
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in en
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in en
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in en
+❌ Not all conversations were translated to en
+
+================================================================================
+TESTING TRANSLATION PATH: en → fr (English → French)
+================================================================================
+
+================================================================================
+Testing: Set language to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to en",
+  "language": "en"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from en to fr (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to French",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "fr",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to fr
+
+================================================================================
+Testing: Verify conversations in fr (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "D'accord. Si l'analyse des sentiments est si importante, je pense que nous devrions d'abord nous concentrer sur l'identification de sources de donn\u00e9es fiables que nous pourrions utiliser. Tous les contenus li\u00e9s \u00e0 la crypto sur les r\u00e9seaux sociaux ne se valent pas, n'est-ce pas ? Certaines plateformes ne sont que des chambres d'\u00e9cho ou sont infest\u00e9es de bots. Si nous pouvions pond\u00e9rer les donn\u00e9es de sentiment en fonction de la fiabilit\u00e9 de la source, nous devrions obtenir une image plus claire du sentiment r\u00e9el du march\u00e9.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, tu as identifi\u00e9 un aspect extr\u00eamement important concernant la fiabilit\u00e9 des donn\u00e9es. J'aimerais aller encore plus loin et sugg\u00e9rer que nous ne nous contentions pas de v\u00e9rifier les donn\u00e9es, mais que nous travaillions aussi activement \u00e0 \u00e9liminer les sources qui montrent des signes de manipulation ou d'activit\u00e9 de bots. Que penses-tu de l'introduction d'un syst\u00e8me de notation de la r\u00e9putation pour chaque source de donn\u00e9es ? Nous pourrions utiliser des m\u00e9triques de base comme la fr\u00e9quence de publication, le ratio followers/following et l'originalit\u00e9 du contenu pour signaler les sources non fiables.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Super, je pense que c'est une bonne direction ! Alex, le syst\u00e8me de registre de r\u00e9putation est une id\u00e9e fantastique. Il ajoutera une couche de protection suppl\u00e9mentaire contre le spam.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Bien compris. Je suis tout \u00e0 fait d'accord sur l'importance cruciale de l'analyse des sentiments. De plus, je pense que nous devrions \u00e9galement prendre en compte l'influence des actualit\u00e9s sur les cryptomonnaies et des tendances des m\u00e9dias sociaux sur ce sentiment. Il ne s'agit pas seulement de *ce que* les gens disent, mais de *quand* et *o\u00f9* ils le disent, car c'est cela qui est le v\u00e9ritable moteur.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Vous avez tout \u00e0 fait raison, Monsieur Marcos. Le \"quand\" et le \"o\u00f9\" de l'expression des sentiments sont d'une importance capitale. C'est vraiment la cl\u00e9 de toute l'affaire.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Je suis d'accord avec vous deux. L'intuition est importante, et les \u00e9l\u00e9ments \"quand\" et \"o\u00f9\" sont d\u00e9finitivement cruciaux. Alex, je pense que l'id\u00e9e d'approcher des influenceurs est bonne. L'histoire de \"l'expert en m\u00e8mes\" est \u00e9galement acceptable, mais nous pourrons affiner cela plus tard.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "L'analyse des sentiments est certainement tr\u00e8s importante, mais elle ne devrait pas \u00eatre la seule approche. Je me demande si nous ne n\u00e9gligeons pas le potentiel des donn\u00e9es on-chain pour \u00e9valuer le sentiment du march\u00e9.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Je comprends ton point, Marco. Utiliser les donn\u00e9es on-chain comme indicateur pr\u00e9coce est intelligent. Les nouvelles et les r\u00e9seaux sociaux sont toujours \u00e0 la tra\u00eene. Au moment o\u00f9 le sentiment g\u00e9n\u00e9ral se r\u00e9pand sur Twitter, les gros investisseurs ont d\u00e9j\u00e0 fait leur coup.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Bien dit, Mark et Alex, vous avez tous les deux soulev\u00e9 d'excellents points. Mark, je suis tout \u00e0 fait d'accord avec ton id\u00e9e d'utiliser les donn\u00e9es on-chain. C'est presque comme prendre le pouls du march\u00e9 directement. Et Alex, tu as tout \u00e0 fait raison \u00e0 propos du bruit. La blockchain peut \u00eatre une vraie jungle.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Je suis d'accord avec vous ; l'analyse des sentiments est une strat\u00e9gie intelligente pour \u00e9viter de se noyer sous des masses de donn\u00e9es. Cependant, je pense que nous devrions tenir compte de la *source* de ces sentiments. Bien que les tweets accessibles au public sur Twitter soient parfaits pour obtenir un aper\u00e7u g\u00e9n\u00e9ral, que se passerait-il si nous nous concentrions sur des sources plus sp\u00e9cialis\u00e9es comme les agr\u00e9gateurs d'actualit\u00e9s crypto et les forums de d\u00e9veloppeurs ? Le sentiment provenant de ces endroits pourrait \u00eatre un indicateur pr\u00e9dictif plus pertinent pour des cryptomonnaies ou des tendances sp\u00e9cifiques. Nous pourrions m\u00eame pond\u00e9rer ces sources diff\u00e9remment dans notre analyse.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Bien compris, Marco. Je pense que cette approche est tr\u00e8s bonne. Se concentrer sur des sources sp\u00e9cialis\u00e9es est *absolument* la bonne d\u00e9cision. Twitter n'est g\u00e9n\u00e9ralement que du bruit. Les agr\u00e9gateurs de nouvelles crypto et les forums de d\u00e9veloppeurs sont l\u00e0 o\u00f9 se trouve le vrai tr\u00e9sor.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u00c9quipe, excellent travail ! Je pense que nous sommes tous sur la bonne voie. Alex, ton syst\u00e8me de pond\u00e9ration des sources est exceptionnel et constitue un excellent point de d\u00e9part pour r\u00e9duire le bruit.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Compris. Si l'analyse des sentiments est \u00e0 ce point importante, je pense que nous devrions nous concentrer en priorit\u00e9 sur l'identification de sources de donn\u00e9es fiables. Tout le contenu crypto sur les r\u00e9seaux sociaux ne se vaut pas, n'est-ce pas ? Certaines plateformes peuvent \u00eatre des chambres d'\u00e9cho ou infest\u00e9es de bots. Si nous pouvons pond\u00e9rer les donn\u00e9es de sentiment en fonction de la fiabilit\u00e9 de la source, nous obtiendrons une image plus claire du sentiment r\u00e9el du march\u00e9.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, tu as mis le doigt sur le probl\u00e8me. La fiabilit\u00e9 des donn\u00e9es est pr\u00e9cis\u00e9ment ce sur quoi nous devons nous concentrer. Pour aller plus loin, je pense que nous devrions non seulement pond\u00e9rer les donn\u00e9es, mais aussi filtrer efficacement les sources qui pr\u00e9sentent des sch\u00e9mas r\u00e9p\u00e9titifs ou de l'activit\u00e9 de bots. Que dirais-tu de mettre en place un syst\u00e8me de notation de la r\u00e9putation pour chaque source de donn\u00e9es ? Nous pourrions utiliser des mesures de base telles que la fr\u00e9quence de publication, le rapport entre le nombre d'abonn\u00e9s et le nombre d'abonnements, et l'authenticit\u00e9 du contenu pour identifier les sources peu fiables.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Super, je pense que c'est une bonne direction ! Alex, le syst\u00e8me de notation de la r\u00e9putation est une id\u00e9e fantastique. Il offre une couche de protection suppl\u00e9mentaire contre les informations ind\u00e9sirables.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in fr
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in fr
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in fr
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in fr
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in fr
+❌ Not all conversations were translated to fr
+
+================================================================================
+TESTING TRANSLATION PATH: fr → en (French → English)
+================================================================================
+
+================================================================================
+Testing: Set language to fr (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to fr",
+  "language": "fr"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from fr to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to en",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "en",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to en
+
+================================================================================
+Testing: Verify conversations in en (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Okay. If sentiment analysis is so important, I think we should first focus on identifying reliable data sources that we could use. Not all crypto-related content on social media is created equal, right? Some platforms are just echo chambers or are infested with bots. If we could weight the sentiment data based on the reliability of the source, we should get a clearer picture of true market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, you've identified an extremely important aspect regarding data reliability. I'd like to take it a step further and suggest that we not only verify the data, but also actively work to eliminate sources that show signs of manipulation or bot activity. What do you think about introducing a reputation scoring system for each data source? We could use basic metrics like publication frequency, follower/following ratio, and content originality to flag unreliable sources.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Great, I think this is a good direction! Alex, the reputation registry system is a fantastic idea. It will add an extra layer of protection against spam.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Understood. I completely agree on the crucial importance of sentiment analysis. Furthermore, I think we should also consider the influence of news events on cryptocurrencies and social media trends on that sentiment. It's not just about *what* people are saying, but *when* and *where* they're saying it, because that's what's really driving it.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "You are absolutely right, Mr. Marcos. The \"when\" and \"where\" of expressing feelings are of paramount importance. That's really the key to the whole thing.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "I agree with both of you. Intuition is important, and the \"when\" and \"where\" elements are definitely crucial. Alex, I think the idea of approaching influencers is a good one. The \"meme expert\" story is also acceptable, but we can refine that later.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Sentiment analysis is certainly very important, but it shouldn't be the only approach. I wonder if we're overlooking the potential of on-chain data for gauging market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "I understand your point, Marco. Using on-chain data as an early indicator is smart. News and social media are always lagging behind. By the time the general sentiment spreads on Twitter, big investors have already made their move.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Well said, Mark and Alex, you both raised excellent points. Mark, I completely agree with your idea of using on-chain data. It's almost like taking the market's pulse directly. And Alex, you're absolutely right about the noise. The blockchain can be a real jungle.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "I agree with you; sentiment analysis is a smart strategy for avoiding drowning in masses of data. However, I think we should consider the *source* of these sentiments. While publicly available tweets on Twitter are great for getting a general overview, what if we focused on more specialized sources like crypto news aggregators and developer forums? Sentiment from these places could be a more relevant predictive indicator for specific cryptocurrencies or trends. We could even weight these sources differently in our analysis.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Understood, Marco. I think this approach is very good. Focusing on specialized sources is *absolutely* the right decision. Twitter is usually just noise. Crypto news aggregators and developer forums are where the real treasure is.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Team, excellent work! I think we're all on the right track. Alex, your source weighting system is outstanding and a great starting point for reducing the noise.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Understood. If sentiment analysis is that important, I think we should prioritize identifying reliable data sources. Not all crypto content on social media is created equal, right? Some platforms can be echo chambers or infested with bots. If we can weight sentiment data based on the reliability of the source, we'll get a clearer picture of true market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, you've hit the nail on the head. Data reliability is precisely what we need to focus on. To take it a step further, I think we should not only weight the data, but also effectively filter out sources that exhibit repetitive patterns or bot activity. What do you say to setting up a reputation scoring system for each data source? We could use basic metrics like posting frequency, follower-to-following ratio, and content authenticity to identify unreliable sources.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Great, I think this is a good direction! Alex, the reputation rating system is a fantastic idea. It offers an extra layer of protection against unwanted information.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in en
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in en
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in en
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in en
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in en
+❌ Not all conversations were translated to en
+
+================================================================================
+TESTING TRANSLATION PATH: en → hr (English → Croatian)
+================================================================================
+
+================================================================================
+Testing: Set language to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to en",
+  "language": "en"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from en to hr (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to Croatian",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "hr",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to hr
+
+================================================================================
+Testing: Verify conversations in hr (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "U redu. Ako je analiza sentimenata toliko va\u017ena, mislim da bismo se prvo trebali usredoto\u010diti na identificiranje pouzdanih izvora podataka koje bismo mogli koristiti. Nije sav sadr\u017eaj povezan s kriptovalutama na dru\u0161tvenim mre\u017eama jednak, zar ne? Neke su platforme samo eho komore ili su zara\u017eene botovima. Ako bismo mogli ponderirati podatke o sentimentima na temelju pouzdanosti izvora, trebali bismo dobiti jasniju sliku o stvarnom tr\u017ei\u0161nom sentimentu.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\"Marko, identificirao si iznimno va\u017ean aspekt u vezi s pouzdano\u0161\u0107u podataka. Htio bih to podi\u0107i na vi\u0161u razinu i predlo\u017eiti da ne samo provjeravamo podatke, ve\u0107 i aktivno radimo na uklanjanju izvora koji pokazuju znakove manipulacije ili aktivnosti botova. \u0160to misli\u0161 o uvo\u0111enju sustava bodovanja reputacije za svaki izvor podataka? Mogli bismo koristiti osnovne metrike kao \u0161to su u\u010destalost objavljivanja, omjer pratitelja/pra\u0107enih i originalnost sadr\u017eaja kako bismo ozna\u010dili nepouzdane izvore.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Odli\u010dno, mislim da je ovo dobar smjer! Alex, sustav registra reputacije je fantasti\u010dna ideja. Dodat \u0107e dodatni sloj za\u0161tite od spama.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Razumijem. Potpuno se sla\u017eem s klju\u010dnom va\u017eno\u0161\u0107u analize sentimenata. Nadalje, mislim da bismo trebali razmotriti i utjecaj vijesti na kriptovalute te trendove na dru\u0161tvenim mre\u017eama na taj sentiment. Nije samo va\u017eno *\u0161to* ljudi govore, nego *kada* i *gdje* to govore, jer to je ono \u0161to stvarno pokre\u0107e cijelu pri\u010du.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Apsolutno ste u pravu, gospodine Marcos. \"Kada\" i \"gdje\" izra\u017eavamo osje\u0107aje od iznimne su va\u017enosti. To je uistinu klju\u010d svega.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Sla\u017eem se s oboje. Intuicija je va\u017ena, a elementi \"kada\" i \"gdje\" su definitivno klju\u010dni. Alex, mislim da je ideja o kontaktiranju influencera dobra. Pri\u010da o \"stru\u010dnjaku za memeove\" je tako\u0111er prihvatljiva, ali to mo\u017eemo doraditi kasnije.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Analiza sentimenata je svakako vrlo va\u017ena, ali ne bi trebala biti jedini pristup. Pitam se zanemarujemo li potencijal on-chain podataka za procjenu tr\u017ei\u0161nog raspolo\u017eenja.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Razumijem \u0161to \u017eeli\u0161 re\u0107i, Marco. Kori\u0161tenje on-chain podataka kao ranog pokazatelja je pametno. Vijesti i dru\u0161tveni mediji uvijek kasne. Dok se op\u0107e raspolo\u017eenje pro\u0161iri na Twitteru, veliki investitori su ve\u0107 povukli svoje poteze.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Bravo, Marko i Aleks, obojica ste iznijeli odli\u010dne argumente. Marko, u potpunosti se sla\u017eem s tvojom idejom kori\u0161tenja on-chain podataka. To je gotovo kao da izravno oslu\u0161kujemo puls tr\u017ei\u0161ta. A Aleks, apsolutno si u pravu \u0161to se ti\u010de buke. Blockchain mo\u017ee biti prava d\u017eungla.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Sla\u017eem se s tobom; analiza osje\u0107aja je pametna strategija za izbjegavanje utapanja u masama podataka. Me\u0111utim, mislim da bismo trebali razmotriti *izvor* tih osje\u0107aja. Iako su javno dostupni tweetovi na Twitteru odli\u010dni za dobivanje op\u0107eg pregleda, \u0161to ako bismo se usredoto\u010dili na specijaliziranije izvore kao \u0161to su agregatori vijesti o kriptovalutama i forumi za programere? Osje\u0107aji s tih mjesta mogli bi biti relevantniji prediktivni indikator za odre\u0111ene kriptovalute ili trendove. \u010cak bismo mogli razli\u010dito ponderirati te izvore u na\u0161oj analizi.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Razumijem, Marco. Mislim da je ovaj pristup vrlo dobar. Fokusiranje na specijalizirane izvore je *apsolutno* ispravna odluka. Twitter je obi\u010dno samo buka. Agregatori vijesti o kriptovalutama i forumi za developere su tamo gdje se nalazi pravo blago.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Ekipa, odli\u010dan posao! Mislim da smo svi na pravom putu. Alex, tvoj sustav ponderiranja izvora je izvanredan i odli\u010dna je polazna to\u010dka za smanjenje \u0161uma.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Razumijem. Ako je analiza sentimenata toliko va\u017ena, mislim da bismo trebali dati prioritet identificiranju pouzdanih izvora podataka. Nije sav kripto sadr\u017eaj na dru\u0161tvenim mre\u017eama jednako kvalitetan, zar ne? Neke platforme mogu biti eho komore ili prepune botova. Ako mo\u017eemo ponderirati podatke o sentimentima na temelju pouzdanosti izvora, dobit \u0107emo jasniju sliku stvarnog tr\u017ei\u0161nog sentimenta.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, pogodio si u sridu. Pouzdanost podataka je upravo ono na \u0161to se moramo fokusirati. Da odemo korak dalje, mislim da ne bismo trebali samo ponderirati podatke, ve\u0107 i u\u010dinkovito filtrirati izvore koji pokazuju ponavljaju\u0107e obrasce ili aktivnost botova. \u0160to ka\u017ee\u0161 na uspostavu sustava ocjenjivanja reputacije za svaki izvor podataka? Mogli bismo koristiti osnovne metrike kao \u0161to su u\u010destalost objavljivanja, omjer pratitelja i onih koje se prati te autenti\u010dnost sadr\u017eaja kako bismo identificirali nepouzdane izvore.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Odli\u010dno, mislim da je ovo dobar smjer! Alex, sustav ocjenjivanja reputacije je fantasti\u010dna ideja. Nudi dodatni sloj za\u0161tite od ne\u017eeljenih informacija.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in hr
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in hr
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in hr
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in hr
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in hr
+❌ Not all conversations were translated to hr
+
+================================================================================
+TESTING TRANSLATION PATH: hr → en (Croatian → English)
+================================================================================
+
+================================================================================
+Testing: Set language to hr (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to hr",
+  "language": "hr"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from hr to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to en",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "en",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to en
+
+================================================================================
+Testing: Verify conversations in en (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Okay. If sentiment analysis is that important, I think we should first focus on identifying reliable data sources we could use. Not all crypto-related content on social media is created equal, right? Some platforms are just echo chambers or are infested with bots. If we could weight the sentiment data based on the reliability of the source, we should get a clearer picture of actual market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\"Marko, you've identified an extremely important aspect regarding data reliability. I'd like to take it a step further and suggest that we not only verify the data, but also actively work to eliminate sources that show signs of manipulation or bot activity. What do you think about introducing a reputation scoring system for each data source? We could use basic metrics like posting frequency, follower/following ratio, and content originality to flag unreliable sources.\"",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Excellent, I think this is a good direction! Alex, the reputation registry system is a fantastic idea. It will add an extra layer of protection against spam.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "I understand. I completely agree on the critical importance of sentiment analysis. Furthermore, I think we should also consider the impact of news on cryptocurrencies and social media trends on that sentiment. It's not just important *what* people are saying, but *when* and *where* they are saying it, because that's what really drives the whole story.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "You are absolutely right, Mr. Marcos. \"When\" and \"where\" we express feelings are of utmost importance. It truly is the key to everything.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "I agree with both of you. Intuition is important, and the \"when\" and \"where\" elements are definitely key. Alex, I think the idea of contacting influencers is a good one. The \"meme expert\" story is also acceptable, but we can refine that later.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "Sentiment analysis is certainly very important, but it shouldn't be the only approach. I wonder if we're overlooking the potential of on-chain data for gauging market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "I understand what you're saying, Marco. Using on-chain data as an early indicator is smart. News and social media are always late to the party. By the time general sentiment spreads on Twitter, the big investors have already made their moves.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Bravo, Marko and Aleks, you both made excellent arguments. Marko, I completely agree with your idea of using on-chain data. It's almost like listening to the direct pulse of the market. And Aleks, you're absolutely right about the noise. Blockchain can be a real jungle.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "I agree with you; sentiment analysis is a smart strategy for avoiding getting lost in the masses of data. However, I think we should consider the *source* of those sentiments. While publicly available tweets on Twitter are great for getting a general overview, what if we focused on more specialized sources like cryptocurrency news aggregators and developer forums? Sentiment from those places could be a more relevant predictive indicator for specific cryptocurrencies or trends. We could even weight those sources differently in our analysis.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "I understand, Marco. I think this approach is very good. Focusing on specialized sources is *absolutely* the right decision. Twitter is usually just noise. Crypto news aggregators and developer forums are where the real treasure is.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Team, great job! I think we're all on the right track. Alex, your source weighting system is outstanding and a great starting point for noise reduction.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "I understand. If sentiment analysis is this important, I think we should prioritize identifying reliable data sources. Not all crypto content on social media is created equal, right? Some platforms can be echo chambers or riddled with bots. If we can weight sentiment data based on the reliability of the source, we'll get a clearer picture of the real market sentiment.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "Marco, you've hit the nail on the head. Data reliability is precisely what we need to focus on. To take it a step further, I think we should not only weight the data, but also effectively filter out sources that show repetitive patterns or bot activity. What do you say to establishing a reputation scoring system for each data source? We could use basic metrics like posting frequency, follower-to-following ratio, and content authenticity to identify unreliable sources.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "Excellent, I think this is a good direction! Alex, the reputation scoring system is a fantastic idea. It offers an extra layer of protection against unwanted information.",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in en
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in en
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in en
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in en
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in en
+❌ Not all conversations were translated to en
+
+================================================================================
+TESTING TRANSLATION PATH: en → ja (English → Japanese)
+================================================================================
+
+================================================================================
+Testing: Set language to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to en",
+  "language": "en"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from en to ja (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to Japanese",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "ja",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to ja
+
+================================================================================
+Testing: Verify conversations in ja (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: [
+  {
+    "id": "a6bdc621-a319-4c0a-b416-51818bbed837",
+    "round_number": 1,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u308f\u304b\u308a\u307e\u3057\u305f\u3002\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u5206\u6790\u304c\u305d\u3093\u306a\u306b\u91cd\u8981\u306a\u3089\u3001\u307e\u305a\u306f\u5229\u7528\u3067\u304d\u308b\u4fe1\u983c\u3067\u304d\u308b\u30c7\u30fc\u30bf\u30bd\u30fc\u30b9\u306e\u7279\u5b9a\u306b\u6ce8\u529b\u3059\u3079\u304d\u3060\u3068\u601d\u3044\u307e\u3059\u3002\u30bd\u30fc\u30b7\u30e3\u30eb\u30e1\u30c7\u30a3\u30a2\u4e0a\u306e\u6697\u53f7\u8cc7\u7523\u95a2\u9023\u30b3\u30f3\u30c6\u30f3\u30c4\u306f\u3001\u3059\u3079\u3066\u304c\u540c\u3058\u3088\u3046\u306b\u4f5c\u3089\u308c\u3066\u3044\u308b\u308f\u3051\u3067\u306f\u306a\u3044\u3067\u3059\u3088\u306d\u3002\u5358\u306a\u308b\u30a8\u30b3\u30fc\u30c1\u30a7\u30f3\u30d0\u30fc\u3060\u3063\u305f\u308a\u3001\u30dc\u30c3\u30c8\u3060\u3089\u3051\u306e\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u3082\u3042\u308a\u307e\u3059\u3057\u3002\u30bd\u30fc\u30b9\u306e\u4fe1\u983c\u6027\u306b\u57fa\u3065\u3044\u3066\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u30c7\u30fc\u30bf\u306e\u91cd\u307f\u4ed8\u3051\u304c\u3067\u304d\u308c\u3070\u3001\u5b9f\u969b\u306e\u5e02\u5834\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u304c\u3088\u308a\u660e\u78ba\u306b\u628a\u63e1\u3067\u304d\u308b\u306f\u305a\u3067\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u30de\u30eb\u30b3\u3001\u30c7\u30fc\u30bf\u306e\u4fe1\u983c\u6027\u306b\u95a2\u3057\u3066\u975e\u5e38\u306b\u91cd\u8981\u306a\u70b9\u3092\u898b\u3064\u3051\u3066\u304f\u308c\u307e\u3057\u305f\u306d\u3002\u305d\u308c\u3092\u3055\u3089\u306b\u4e00\u6b69\u9032\u3081\u3066\u3001\u30c7\u30fc\u30bf\u306e\u691c\u8a3c\u3060\u3051\u3067\u306a\u304f\u3001\u64cd\u4f5c\u3084\u30dc\u30c3\u30c8\u306e\u6d3b\u52d5\u306e\u5146\u5019\u304c\u898b\u3089\u308c\u308b\u30bd\u30fc\u30b9\u3092\u7a4d\u6975\u7684\u306b\u6392\u9664\u3057\u3066\u3044\u304f\u3053\u3068\u3092\u63d0\u6848\u3057\u305f\u3044\u3068\u601d\u3044\u307e\u3059\u3002\u5404\u30c7\u30fc\u30bf\u30bd\u30fc\u30b9\u306b\u8a55\u5224\u30b9\u30b3\u30a2\u30ea\u30f3\u30b0\u30b7\u30b9\u30c6\u30e0\u3092\u5c0e\u5165\u3059\u308b\u3053\u3068\u306b\u3064\u3044\u3066\u3069\u3046\u601d\u3044\u307e\u3059\u304b\uff1f\u6295\u7a3f\u983b\u5ea6\u3001\u30d5\u30a9\u30ed\u30ef\u30fc/\u30d5\u30a9\u30ed\u30fc\u6bd4\u7387\u3001\u30b3\u30f3\u30c6\u30f3\u30c4\u306e\u72ec\u81ea\u6027\u3068\u3044\u3063\u305f\u57fa\u672c\u7684\u306a\u6307\u6a19\u3092\u4f7f\u3063\u3066\u3001\u4fe1\u983c\u6027\u306e\u4f4e\u3044\u30bd\u30fc\u30b9\u306b\u30d5\u30e9\u30b0\u3092\u7acb\u3066\u308b\u3053\u3068\u304c\u3067\u304d\u308b\u304b\u3082\u3057\u308c\u307e\u305b\u3093\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u7d20\u6674\u3089\u3057\u3044\u3001\u826f\u3044\u65b9\u5411\u3060\u3068\u601d\u3044\u307e\u3059\uff01\u30a2\u30ec\u30c3\u30af\u30b9\u3001\u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3\u30ec\u30b8\u30b9\u30c8\u30ea\u30b7\u30b9\u30c6\u30e0\u306f\u7d20\u6674\u3089\u3057\u3044\u30a2\u30a4\u30c7\u30a2\u3067\u3059\u306d\u3002\u30b9\u30d1\u30e0\u306b\u5bfe\u3059\u308b\u4fdd\u8b77\u30ec\u30a4\u30e4\u30fc\u304c\u3055\u3089\u306b\u8ffd\u52a0\u3055\u308c\u307e\u3059\u306d\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:40:56.148000"
+  },
+  {
+    "id": "9189da26-33bb-4104-bf64-5c4871f6a0ef",
+    "round_number": 2,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "910193ff-45bf-4f1d-811f-819a53e7b08b",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u627f\u77e5\u3044\u305f\u3057\u307e\u3057\u305f\u3002\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u5206\u6790\u304c\u975e\u5e38\u306b\u91cd\u8981\u3067\u3042\u308b\u3068\u3044\u3046\u70b9\u306b\u3001\u5168\u9762\u7684\u306b\u540c\u610f\u3044\u305f\u3057\u307e\u3059\u3002\u3055\u3089\u306b\u3001\u4eee\u60f3\u901a\u8ca8\u306b\u95a2\u3059\u308b\u30cb\u30e5\u30fc\u30b9\u3084\u3001\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u306b\u5bfe\u3059\u308b\u30bd\u30fc\u30b7\u30e3\u30eb\u30e1\u30c7\u30a3\u30a2\u306e\u30c8\u30ec\u30f3\u30c9\u306e\u5f71\u97ff\u3082\u8003\u616e\u3059\u3079\u304d\u3060\u3068\u601d\u3044\u307e\u3059\u3002\u4eba\u3005\u304c*\u4f55\u3092*\u8a00\u3063\u3066\u3044\u308b\u304b\u3060\u3051\u3067\u306a\u304f\u3001*\u3044\u3064*\u3001*\u3069\u3053\u3067*\u8a00\u3063\u3066\u3044\u308b\u304b\u304c\u91cd\u8981\u3067\u3059\u3002\u306a\u305c\u306a\u3089\u3001\u305d\u308c\u304c\u5168\u4f53\u306e\u6d41\u308c\u3092\u672c\u5f53\u306b\u5de6\u53f3\u3059\u308b\u3082\u306e\u3060\u304b\u3089\u3067\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:40:59.368000"
+      },
+      {
+        "id": "e8a97cf2-e048-4ce2-8418-8a095707f35b",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u30de\u30eb\u30b3\u30b9\u69d8\u304c\u304a\u3063\u3057\u3083\u308b\u901a\u308a\u3067\u3054\u3056\u3044\u307e\u3059\u3002\u300c\u3044\u3064\u300d\u3001\u305d\u3057\u3066\u300c\u3069\u3053\u3067\u300d\u611f\u60c5\u3092\u8868\u73fe\u3059\u308b\u304b\u306f\u3001\u975e\u5e38\u306b\u91cd\u8981\u3067\u3059\u3002\u305d\u308c\u306f\u307e\u3055\u306b\u3001\u3059\u3079\u3066\u306e\u9375\u3068\u8a00\u3048\u308b\u3067\u3057\u3087\u3046\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:03.571000"
+      },
+      {
+        "id": "b0acb916-5aca-4569-b865-39cdf3e28f65",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u304a\u4e8c\u4eba\u3068\u3082\u540c\u610f\u898b\u3067\u3059\u3002\u76f4\u611f\u306f\u91cd\u8981\u3067\u3059\u3057\u3001\u300c\u3044\u3064\u300d\u300c\u3069\u3053\u3067\u300d\u3068\u3044\u3046\u8981\u7d20\u306f\u78ba\u304b\u306b\u9375\u306b\u306a\u308a\u307e\u3059\u306d\u3002\u30a2\u30ec\u30c3\u30af\u30b9\u3001\u30a4\u30f3\u30d5\u30eb\u30a8\u30f3\u30b5\u30fc\u306b\u9023\u7d61\u3059\u308b\u3068\u3044\u3046\u30a2\u30a4\u30c7\u30a2\u306f\u826f\u3044\u3068\u601d\u3044\u307e\u3059\u3002\u300c\u30df\u30fc\u30e0\u306e\u30a8\u30ad\u30b9\u30d1\u30fc\u30c8\u300d\u306e\u8a71\u3082\u307e\u3042\u307e\u3042\u3067\u3059\u304c\u3001\u305d\u308c\u306f\u5f8c\u3067\u7df4\u308a\u4e0a\u3052\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:08.003000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:08.003000"
+  },
+  {
+    "id": "144872fd-a1d4-430f-b4fd-eb1242a95a99",
+    "round_number": 3,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "e008ab97-ee70-47e1-bf36-b62dfab2dc89",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u5206\u6790\u304c\u975e\u5e38\u306b\u91cd\u8981\u3067\u3042\u308b\u3053\u3068\u306f\u78ba\u304b\u3067\u3059\u304c\u3001\u305d\u308c\u3060\u3051\u306b\u983c\u308b\u3079\u304d\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002\u30aa\u30f3\u30c1\u30a7\u30fc\u30f3\u30c7\u30fc\u30bf\u304c\u5e02\u5834\u5fc3\u7406\u3092\u6e2c\u308b\u4e0a\u3067\u6301\u3064\u53ef\u80fd\u6027\u3092\u898b\u904e\u3054\u3057\u3066\u306f\u3044\u306a\u3044\u3060\u308d\u3046\u304b\u3068\u8003\u3048\u3066\u3044\u307e\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:11.614000"
+      },
+      {
+        "id": "09730551-576c-4408-91b6-a2220e7d8520",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u30de\u30eb\u30b3\u3055\u3093\u306e\u8a00\u3063\u3066\u3044\u308b\u3053\u3068\u306f\u7406\u89e3\u3067\u304d\u307e\u3059\u3002\u30aa\u30f3\u30c1\u30a7\u30fc\u30f3\u30c7\u30fc\u30bf\u3092\u65e9\u671f\u6307\u6a19\u3068\u3057\u3066\u4f7f\u3046\u306e\u306f\u8ce2\u660e\u3067\u3059\u306d\u3002\u30cb\u30e5\u30fc\u30b9\u3084\u30bd\u30fc\u30b7\u30e3\u30eb\u30e1\u30c7\u30a3\u30a2\u306f\u5e38\u306b\u5f8c\u624b\u306b\u56de\u308a\u307e\u3059\u304b\u3089\u3002Twitter\u3067\u4e00\u822c sentiment \u304c\u5e83\u307e\u308b\u9803\u306b\u306f\u3001\u5927\u53e3\u6295\u8cc7\u5bb6\u306f\u3082\u3046\u52d5\u304d\u7d42\u3048\u3066\u3044\u308b\u3067\u3057\u3087\u3046\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:16.059000"
+      },
+      {
+        "id": "0acc557f-abb6-404d-9e7e-97f501238740",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u30d6\u30e9\u30dc\u30fc\u3001\u30de\u30eb\u30b3\u3068\u30a2\u30ec\u30af\u30b9\u3001\u304a\u4e8c\u4eba\u3068\u3082\u7d20\u6674\u3089\u3057\u3044\u8b70\u8ad6\u3067\u3057\u305f\u3002\u30de\u30eb\u30b3\u3001\u3042\u306a\u305f\u306e\u30aa\u30f3\u30c1\u30a7\u30fc\u30f3\u30c7\u30fc\u30bf\u3092\u4f7f\u3046\u3068\u3044\u3046\u30a2\u30a4\u30c7\u30a2\u306b\u5b8c\u5168\u306b\u540c\u610f\u3057\u307e\u3059\u3002\u307e\u308b\u3067\u5e02\u5834\u306e\u76f4\u63a5\u7684\u306a\u9f13\u52d5\u3092\u805e\u3044\u3066\u3044\u308b\u304b\u306e\u3088\u3046\u3067\u3059\u3002\u305d\u3057\u3066\u30a2\u30ec\u30af\u30b9\u3001\u3042\u306a\u305f\u306e\u8a00\u3046\u30ce\u30a4\u30ba\u306b\u3064\u3044\u3066\u3082\u5168\u304f\u305d\u306e\u901a\u308a\u3067\u3059\u3002\u30d6\u30ed\u30c3\u30af\u30c1\u30a7\u30fc\u30f3\u306f\u307e\u3055\u306b\u30b8\u30e3\u30f3\u30b0\u30eb\u306e\u3088\u3046\u306b\u306a\u308a\u5f97\u307e\u3059\u306d\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:20.812000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:20.812000"
+  },
+  {
+    "id": "c5fff170-bb1f-46a2-bacc-2f3e213ecb65",
+    "round_number": 4,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "9d2764df-445d-47ef-bcf4-eb8128511907",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u304a\u3063\u3057\u3083\u308b\u901a\u308a\u3001\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u5206\u6790\u306f\u5927\u91cf\u306e\u30c7\u30fc\u30bf\u306b\u57cb\u3082\u308c\u306a\u3044\u305f\u3081\u306e\u8ce2\u660e\u306a\u6226\u7565\u3060\u3068\u601d\u3044\u307e\u3059\u3002\u3057\u304b\u3057\u3001\u305d\u306e\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u306e*\u30bd\u30fc\u30b9*\u306b\u3064\u3044\u3066\u691c\u8a0e\u3059\u3079\u304d\u3060\u3068\u8003\u3048\u3066\u3044\u307e\u3059\u3002Twitter\u3067\u516c\u958b\u3055\u308c\u3066\u3044\u308b\u30c4\u30a4\u30fc\u30c8\u306f\u3001\u4e00\u822c\u7684\u306a\u6982\u8981\u3092\u628a\u63e1\u3059\u308b\u306e\u306b\u6700\u9069\u3067\u3059\u304c\u3001\u6697\u53f7\u901a\u8ca8\u306e\u30cb\u30e5\u30fc\u30b9\u30a2\u30b0\u30ea\u30b2\u30fc\u30bf\u30fc\u3084\u958b\u767a\u8005\u30d5\u30a9\u30fc\u30e9\u30e0\u306e\u3088\u3046\u306a\u3001\u3088\u308a\u5c02\u9580\u7684\u306a\u30bd\u30fc\u30b9\u306b\u7126\u70b9\u3092\u5f53\u3066\u3066\u307f\u305f\u3089\u3069\u3046\u3067\u3057\u3087\u3046\u304b\uff1f\u305d\u308c\u3089\u306e\u5834\u6240\u304b\u3089\u306e\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u306f\u3001\u7279\u5b9a\u306e\u6697\u53f7\u901a\u8ca8\u3084\u30c8\u30ec\u30f3\u30c9\u306b\u3068\u3063\u3066\u3001\u3088\u308a\u95a2\u9023\u6027\u306e\u9ad8\u3044\u4e88\u6e2c\u6307\u6a19\u306b\u306a\u308b\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002\u5206\u6790\u306b\u304a\u3044\u3066\u3001\u3053\u308c\u3089\u306e\u30bd\u30fc\u30b9\u306b\u7570\u306a\u308b\u91cd\u307f\u4ed8\u3051\u3092\u3059\u308b\u3053\u3068\u3082\u53ef\u80fd\u3067\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:23.959000"
+      },
+      {
+        "id": "e9601676-be9c-491d-96b7-ad084475522f",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u4e86\u89e3\u3057\u307e\u3057\u305f\u3001\u30de\u30eb\u30b3\u3002\u3053\u306e\u30a2\u30d7\u30ed\u30fc\u30c1\u306f\u3068\u3066\u3082\u826f\u3044\u3068\u601d\u3044\u307e\u3059\u3002\u5c02\u9580\u7684\u306a\u60c5\u5831\u6e90\u306b\u96c6\u4e2d\u3059\u308b\u306e\u306f* \u092c\u093f\u0932\u094d\u0915\u0941\u0932* \u6b63\u3057\u3044\u5224\u65ad\u3067\u3059\u3002\u30c4\u30a4\u30c3\u30bf\u30fc\u306f\u305f\u3060\u306e\u9a12\u97f3\u3067\u3042\u308b\u3053\u3068\u304c\u591a\u3044\u3067\u3059\u304b\u3089\u306d\u3002\u4eee\u60f3\u901a\u8ca8\u95a2\u9023\u306e\u30cb\u30e5\u30fc\u30b9\u30a2\u30b0\u30ea\u30b2\u30fc\u30bf\u30fc\u3084\u958b\u767a\u8005\u30d5\u30a9\u30fc\u30e9\u30e0\u3053\u305d\u3001\u672c\u5f53\u306e\u304a\u5b9d\u304c\u7720\u3063\u3066\u3044\u308b\u5834\u6240\u3067\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:28.486000"
+      },
+      {
+        "id": "f1374a18-9d27-44a5-b15a-e830e5747d75",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u7686\u3055\u3093\u3001\u7d20\u6674\u3089\u3057\u3044\u51fa\u6765\u6804\u3048\u3067\u3059\uff01\u7686\u3067\u6b63\u3057\u3044\u65b9\u5411\u306b\u9032\u3093\u3067\u3044\u308b\u3068\u601d\u3044\u307e\u3059\u3002\u30a2\u30ec\u30c3\u30af\u30b9\u3001\u3042\u306a\u305f\u306e\u30bd\u30fc\u30b9\u91cd\u307f\u4ed8\u3051\u30b7\u30b9\u30c6\u30e0\u306f\u5091\u51fa\u3057\u3066\u304a\u308a\u3001\u30ce\u30a4\u30ba\u30ea\u30c0\u30af\u30b7\u30e7\u30f3\u306e\u826f\u3044\u51fa\u767a\u70b9\u3068\u306a\u308a\u307e\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:32.993000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:32.993000"
+  },
+  {
+    "id": "fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24",
+    "round_number": 5,
+    "time_period": "Day 1 - morning",
+    "scenario": "Testing the AI agent simulation with increased API limits",
+    "messages": [
+      {
+        "id": "5322a727-cb59-419e-99da-72cf170161c4",
+        "agent_id": "a1644710-495f-46e5-9493-659c353a39f2",
+        "agent_name": "Marcus \"Mark\" Castellano",
+        "message": "\u627f\u77e5\u3044\u305f\u3057\u307e\u3057\u305f\u3002\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u5206\u6790\u304c\u3053\u308c\u307b\u3069\u91cd\u8981\u3067\u3042\u308b\u306a\u3089\u3070\u3001\u4fe1\u983c\u3067\u304d\u308b\u30c7\u30fc\u30bf\u30bd\u30fc\u30b9\u306e\u7279\u5b9a\u3092\u512a\u5148\u3059\u3079\u304d\u3060\u3068\u601d\u3044\u307e\u3059\u3002\u30bd\u30fc\u30b7\u30e3\u30eb\u30e1\u30c7\u30a3\u30a2\u4e0a\u306e\u6697\u53f7\u8cc7\u7523\u95a2\u9023\u30b3\u30f3\u30c6\u30f3\u30c4\u306f\u3001\u3059\u3079\u3066\u304c\u540c\u3058\u3088\u3046\u306b\u4f5c\u3089\u308c\u3066\u3044\u308b\u308f\u3051\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3088\u306d\u3002\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0\u306b\u3088\u3063\u3066\u306f\u3001\u30a8\u30b3\u30fc\u30c1\u30a7\u30f3\u30d0\u30fc\u306b\u306a\u3063\u3066\u3044\u305f\u308a\u3001\u30dc\u30c3\u30c8\u3060\u3089\u3051\u3060\u3063\u305f\u308a\u3059\u308b\u3053\u3068\u3082\u3042\u308a\u307e\u3059\u3002\u3082\u3057\u3001\u30bd\u30fc\u30b9\u306e\u4fe1\u983c\u6027\u306b\u57fa\u3065\u3044\u3066\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u30c7\u30fc\u30bf\u306b\u91cd\u307f\u4ed8\u3051\u3092\u3059\u308b\u3053\u3068\u304c\u3067\u304d\u308c\u3070\u3001\u5b9f\u969b\u306e\u5e02\u5834\u30bb\u30f3\u30c1\u30e1\u30f3\u30c8\u3092\u3088\u308a\u660e\u78ba\u306b\u628a\u63e1\u3067\u304d\u308b\u306f\u305a\u3067\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:36.104000"
+      },
+      {
+        "id": "2d158bd9-e0c6-4602-8524-f06d259cc176",
+        "agent_id": "37b6b76c-79ce-4dbc-9055-5ba17f8af7aa",
+        "agent_name": "Alexandra \"Alex\" Chen",
+        "message": "\u30de\u30eb\u30b3\u3001\u307e\u3055\u3057\u304f\u305d\u306e\u901a\u308a\u3067\u3059\u3002\u30c7\u30fc\u30bf\u306e\u4fe1\u983c\u6027\u3053\u305d\u3001\u79c1\u305f\u3061\u304c\u6ce8\u529b\u3059\u3079\u304d\u70b9\u3067\u3059\u3002\u3055\u3089\u306b\u4e00\u6b69\u9032\u3093\u3067\u3001\u30c7\u30fc\u30bf\u306e\u91cd\u307f\u4ed8\u3051\u3060\u3051\u3067\u306a\u304f\u3001\u53cd\u5fa9\u7684\u306a\u30d1\u30bf\u30fc\u30f3\u3084\u30dc\u30c3\u30c8\u306e\u6d3b\u52d5\u3092\u793a\u3059\u30bd\u30fc\u30b9\u3092\u52b9\u679c\u7684\u306b\u9664\u5916\u3059\u3079\u304d\u3060\u3068\u601d\u3044\u307e\u3059\u3002\u5404\u30c7\u30fc\u30bf\u30bd\u30fc\u30b9\u306b\u5bfe\u3057\u3066\u3001\u8a55\u5224\u30b9\u30b3\u30a2\u30ea\u30f3\u30b0\u30b7\u30b9\u30c6\u30e0\u3092\u78ba\u7acb\u3059\u308b\u306e\u306f\u3069\u3046\u3067\u3057\u3087\u3046\u304b\uff1f\u6295\u7a3f\u983b\u5ea6\u3001\u30d5\u30a9\u30ed\u30ef\u30fc\u3068\u30d5\u30a9\u30ed\u30fc\u306e\u6bd4\u7387\u3001\u30b3\u30f3\u30c6\u30f3\u30c4\u306e\u771f\u6b63\u6027\u306a\u3069\u306e\u57fa\u672c\u7684\u306a\u6307\u6a19\u3092\u4f7f\u7528\u3057\u3066\u3001\u4fe1\u983c\u3067\u304d\u306a\u3044\u30bd\u30fc\u30b9\u3092\u7279\u5b9a\u3067\u304d\u308b\u3067\u3057\u3087\u3046\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:40.247000"
+      },
+      {
+        "id": "6e29f82c-7b54-45b3-b5d2-61ec112e021f",
+        "agent_id": "9643b2f6-3f61-4eec-9ff1-d5efa3560992",
+        "agent_name": "Diego \"Dex\" Rodriguez",
+        "message": "\u7d20\u6674\u3089\u3057\u3044\u3067\u3059\u3002\u3053\u308c\u306f\u826f\u3044\u65b9\u5411\u6027\u3060\u3068\u601d\u3044\u307e\u3059\uff01\u30a2\u30ec\u30c3\u30af\u30b9\u3001\u30ec\u30d4\u30e5\u30c6\u30fc\u30b7\u30e7\u30f3\u30b9\u30b3\u30a2\u30ea\u30f3\u30b0\u30b7\u30b9\u30c6\u30e0\u306f\u7d20\u6674\u3089\u3057\u3044\u30a2\u30a4\u30c7\u30a2\u3067\u3059\u306d\u3002\u4e0d\u8981\u306a\u60c5\u5831\u306b\u5bfe\u3059\u308b\u8ffd\u52a0\u306e\u4fdd\u8b77\u5c64\u3092\u63d0\u4f9b\u3057\u3066\u304f\u308c\u307e\u3059\u3002",
+        "mood": "neutral",
+        "timestamp": "2025-06-07T20:41:44.810000"
+      }
+    ],
+    "created_at": "2025-06-07T20:41:44.810000"
+  }
+]
+Test Result: PASSED
+❌ Conversation a6bdc621-a319-4c0a-b416-51818bbed837 is not in ja
+❌ Conversation 9189da26-33bb-4104-bf64-5c4871f6a0ef is not in ja
+❌ Conversation 144872fd-a1d4-430f-b4fd-eb1242a95a99 is not in ja
+❌ Conversation c5fff170-bb1f-46a2-bacc-2f3e213ecb65 is not in ja
+❌ Conversation fe5dd2c2-e3d7-42a6-aa9f-e11c33289d24 is not in ja
+❌ Not all conversations were translated to ja
+
+================================================================================
+TESTING TRANSLATION PATH: ja → en (Japanese → English)
+================================================================================
+
+================================================================================
+Testing: Set language to ja (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 200
+Response: {
+  "message": "Language set to ja",
+  "language": "ja"
+}
+Test Result: PASSED
+
+================================================================================
+Testing: Translate from ja to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations/translate)
+Status Code: 200
+Response: {
+  "message": "Successfully translated 5 conversations to en",
+  "translated_count": 5,
+  "failed_count": 0,
+  "target_language": "en",
+  "success": true
+}
+Test Result: PASSED
+✅ Successfully translated 5 conversations to en
+
+================================================================================
+Testing: Verify conversations in en (GET https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/conversations)
+Status Code: 502
+Response is not JSON: 
+Test Result: FAILED
+❌ Failed to retrieve conversations after translation to en
+
+================================================================================
+TESTING TRANSLATION PATH: en → ar (English → Arabic)
+================================================================================
+
+================================================================================
+Testing: Set language to en (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 502
+Response is not JSON: 
+Test Result: FAILED
+❌ Failed to set language to en
+
+================================================================================
+TESTING TRANSLATION PATH: ar → en (Arabic → English)
+================================================================================
+
+================================================================================
+Testing: Set language to ar (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 502
+Response is not JSON: 
+Test Result: FAILED
+❌ Failed to set language to ar
+
+================================================================================
+TESTING TRANSLATION PATH: es → de (Spanish → German)
+================================================================================
+
+================================================================================
+Testing: Set language to es (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 502
+Response is not JSON: 
+Test Result: FAILED
+❌ Failed to set language to es
+
+================================================================================
+TESTING TRANSLATION PATH: de → fr (German → French)
+================================================================================
+
+================================================================================
+Testing: Set language to de (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 502
+Response is not JSON: 
+Test Result: FAILED
+❌ Failed to set language to de
+
+================================================================================
+TESTING TRANSLATION PATH: fr → hr (French → Croatian)
+================================================================================
+
+================================================================================
+Testing: Set language to fr (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 502
+Response is not JSON: 
+Test Result: FAILED
+❌ Failed to set language to fr
+
+================================================================================
+TESTING TRANSLATION PATH: ja → ar (Japanese → Arabic)
+================================================================================
+
+================================================================================
+Testing: Set language to ja (POST https://da98f128-b638-4bbd-884e-b907793018ff.preview.emergentagent.com/api/simulation/set-language)
+Status Code: 502
+Response is not JSON: 
+Test Result: FAILED
+❌ Failed to set language to ja
+
+================================================================================
+LANGUAGE PAIR TEST RESULTS
+================================================================================
+❌ en → es
+❌ es → en
+❌ en → de
+❌ de → en
+❌ en → fr
+❌ fr → en
+❌ en → hr
+❌ hr → en
+❌ en → ja
+❌ ja → en
+❌ en → ar
+❌ ar → en
+❌ es → de
+❌ de → fr
+❌ fr → hr
+❌ ja → ar
+
+================================================================================
+TRANSLATION TO ENGLISH ASSESSMENT
+================================================================================
+❌ Some translations TO English failed!
+❌ The reported bug with translating back to English still exists.
+  ❌ Failed: es → en
+  ❌ Failed: de → en
+  ❌ Failed: fr → en
+  ❌ Failed: hr → en
+  ❌ Failed: ja → en
+  ❌ Failed: ar → en
+
+================================================================================
+OVERALL TRANSLATION ASSESSMENT
+================================================================================
+❌ Some translation tests failed!
+❌ The translation system has issues with certain language pairs.
+  ❌ Failed: en → es
+  ❌ Failed: es → en
+  ❌ Failed: en → de
+  ❌ Failed: de → en
+  ❌ Failed: en → fr
+  ❌ Failed: fr → en
+  ❌ Failed: en → hr
+  ❌ Failed: hr → en
+  ❌ Failed: en → ja
+  ❌ Failed: ja → en
+  ❌ Failed: en → ar
+  ❌ Failed: ar → en
+  ❌ Failed: es → de
+  ❌ Failed: de → fr
+  ❌ Failed: fr → hr
+  ❌ Failed: ja → ar
+
+================================================================================
+TEST SUMMARY: 32 passed, 7 failed
+================================================================================
+1. ✅ Basic API Health Check (GET /)
+2. ✅ Get Simulation State (GET /simulation/state)
+3. ✅ Get Existing Conversations (GET /conversations)
+4. ✅ Set language to en (POST /simulation/set-language)
+5. ✅ Translate from en to es (POST /conversations/translate)
+6. ✅ Verify conversations in es (GET /conversations)
+7. ✅ Set language to es (POST /simulation/set-language)
+8. ✅ Translate from es to en (POST /conversations/translate)
+9. ✅ Verify conversations in en (GET /conversations)
+10. ✅ Set language to en (POST /simulation/set-language)
+11. ✅ Translate from en to de (POST /conversations/translate)
+12. ✅ Verify conversations in de (GET /conversations)
+13. ✅ Set language to de (POST /simulation/set-language)
+14. ✅ Translate from de to en (POST /conversations/translate)
+15. ✅ Verify conversations in en (GET /conversations)
+16. ✅ Set language to en (POST /simulation/set-language)
+17. ✅ Translate from en to fr (POST /conversations/translate)
+18. ✅ Verify conversations in fr (GET /conversations)
+19. ✅ Set language to fr (POST /simulation/set-language)
+20. ✅ Translate from fr to en (POST /conversations/translate)
+21. ✅ Verify conversations in en (GET /conversations)
+22. ✅ Set language to en (POST /simulation/set-language)
+23. ✅ Translate from en to hr (POST /conversations/translate)
+24. ✅ Verify conversations in hr (GET /conversations)
+25. ✅ Set language to hr (POST /simulation/set-language)
+26. ✅ Translate from hr to en (POST /conversations/translate)
+27. ✅ Verify conversations in en (GET /conversations)
+28. ✅ Set language to en (POST /simulation/set-language)
+29. ✅ Translate from en to ja (POST /conversations/translate)
+30. ✅ Verify conversations in ja (GET /conversations)
+31. ✅ Set language to ja (POST /simulation/set-language)
+32. ✅ Translate from ja to en (POST /conversations/translate)
+33. ❌ Verify conversations in en (GET /conversations)
+34. ❌ Set language to en (POST /simulation/set-language)
+35. ❌ Set language to ar (POST /simulation/set-language)
+36. ❌ Set language to es (POST /simulation/set-language)
+37. ❌ Set language to de (POST /simulation/set-language)
+38. ❌ Set language to fr (POST /simulation/set-language)
+39. ❌ Set language to ja (POST /simulation/set-language)
+================================================================================
+OVERALL RESULT: FAILED
+================================================================================
+
+================================================================================
+TRANSLATION FUNCTIONALITY ASSESSMENT
+================================================================================
+❌ The translation system has issues with certain language pairs.
+❌ Check the detailed test results above for specific failures.
+================================================================================
