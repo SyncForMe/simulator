@@ -398,9 +398,9 @@ backend:
         
   - task: "POST /api/tts/synthesize - Google Cloud Text-to-Speech integration"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
@@ -410,6 +410,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "The TTS endpoint is returning an error: 'Text-to-speech failed: File was not found.' This suggests an issue with Google Cloud credentials or authentication. The endpoint is implemented correctly with proper error handling (returns fallback: true when there's an error), but the actual TTS functionality is not working due to credential issues."
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the fixed Google Cloud Text-to-Speech integration with client_options approach. The TTS endpoint is now working correctly with API key authentication. Successfully tested with different agent voices (Marcus 'Mark' Castellano and Alexandra 'Alex' Chen) and verified that the response includes valid base64 encoded MP3 audio data, correct voice names, and no fallback error messages. The 'File was not found' error has been resolved by using client_options with the API key."
 
 metadata:
   created_by: "testing_agent"
