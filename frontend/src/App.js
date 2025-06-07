@@ -441,13 +441,6 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
         )}
       </div>
       
-      {!selectedLang.voiceSupported && (
-        <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-700">
-          ⚠️ Voice narration is not available for {selectedLang.nativeName}. 
-          Conversations will be translated but audio will use fallback voices.
-        </div>
-      )}
-      
       {isTranslating && (
         <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
           🔄 Translating existing conversations to {selectedLang.nativeName}...
