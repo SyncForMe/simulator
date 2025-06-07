@@ -236,45 +236,227 @@ const AutoControls = ({ simulationState, onToggleAuto }) => {
 };
 
 const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isTranslating, setIsTranslating] = useState(false);
+
   const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-    { code: 'pt', name: 'Português', flag: '🇵🇹' },
-    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-    { code: 'ja', name: '日本語', flag: '🇯🇵' },
-    { code: 'ko', name: '한국어', flag: '🇰🇷' },
-    { code: 'zh', name: '中文', flag: '🇨🇳' },
-    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
-    { code: 'ar', name: 'العربية', flag: '🇸🇦' }
+    // Major World Languages
+    { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸', voiceSupported: true },
+    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', voiceSupported: true },
+    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', voiceSupported: true },
+    { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', voiceSupported: true },
+    { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', voiceSupported: true },
+    { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: '🇵🇹', voiceSupported: true },
+    { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺', voiceSupported: true },
+    { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵', voiceSupported: true },
+    { code: 'ko', name: 'Korean', nativeName: '한국어', flag: '🇰🇷', voiceSupported: true },
+    { code: 'zh', name: 'Chinese', nativeName: '中文', flag: '🇨🇳', voiceSupported: true },
+    { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳', voiceSupported: true },
+    { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦', voiceSupported: true },
+    
+    // European Languages
+    { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', flag: '🇳🇱', voiceSupported: false },
+    { code: 'sv', name: 'Swedish', nativeName: 'Svenska', flag: '🇸🇪', voiceSupported: false },
+    { code: 'no', name: 'Norwegian', nativeName: 'Norsk', flag: '🇳🇴', voiceSupported: false },
+    { code: 'da', name: 'Danish', nativeName: 'Dansk', flag: '🇩🇰', voiceSupported: false },
+    { code: 'fi', name: 'Finnish', nativeName: 'Suomi', flag: '🇫🇮', voiceSupported: false },
+    { code: 'pl', name: 'Polish', nativeName: 'Polski', flag: '🇵🇱', voiceSupported: false },
+    { code: 'cs', name: 'Czech', nativeName: 'Čeština', flag: '🇨🇿', voiceSupported: false },
+    { code: 'sk', name: 'Slovak', nativeName: 'Slovenčina', flag: '🇸🇰', voiceSupported: false },
+    { code: 'hu', name: 'Hungarian', nativeName: 'Magyar', flag: '🇭🇺', voiceSupported: false },
+    { code: 'ro', name: 'Romanian', nativeName: 'Română', flag: '🇷🇴', voiceSupported: false },
+    { code: 'bg', name: 'Bulgarian', nativeName: 'Български', flag: '🇧🇬', voiceSupported: false },
+    { code: 'hr', name: 'Croatian', nativeName: 'Hrvatski', flag: '🇭🇷', voiceSupported: false },
+    { code: 'sr', name: 'Serbian', nativeName: 'Српски', flag: '🇷🇸', voiceSupported: false },
+    { code: 'sl', name: 'Slovenian', nativeName: 'Slovenščina', flag: '🇸🇮', voiceSupported: false },
+    { code: 'et', name: 'Estonian', nativeName: 'Eesti', flag: '🇪🇪', voiceSupported: false },
+    { code: 'lv', name: 'Latvian', nativeName: 'Latviešu', flag: '🇱🇻', voiceSupported: false },
+    { code: 'lt', name: 'Lithuanian', nativeName: 'Lietuvių', flag: '🇱🇹', voiceSupported: false },
+    { code: 'el', name: 'Greek', nativeName: 'Ελληνικά', flag: '🇬🇷', voiceSupported: false },
+    { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', flag: '🇹🇷', voiceSupported: false },
+    
+    // Asian Languages
+    { code: 'th', name: 'Thai', nativeName: 'ไทย', flag: '🇹🇭', voiceSupported: false },
+    { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt', flag: '🇻🇳', voiceSupported: false },
+    { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', flag: '🇮🇩', voiceSupported: false },
+    { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu', flag: '🇲🇾', voiceSupported: false },
+    { code: 'tl', name: 'Filipino', nativeName: 'Filipino', flag: '🇵🇭', voiceSupported: false },
+    { code: 'bn', name: 'Bengali', nativeName: 'বাংলা', flag: '🇧🇩', voiceSupported: false },
+    { code: 'ur', name: 'Urdu', nativeName: 'اردو', flag: '🇵🇰', voiceSupported: false },
+    { code: 'fa', name: 'Persian', nativeName: 'فارسی', flag: '🇮🇷', voiceSupported: false },
+    { code: 'he', name: 'Hebrew', nativeName: 'עברית', flag: '🇮🇱', voiceSupported: false },
+    
+    // African Languages
+    { code: 'sw', name: 'Swahili', nativeName: 'Kiswahili', flag: '🇹🇿', voiceSupported: false },
+    { code: 'am', name: 'Amharic', nativeName: 'አማርኛ', flag: '🇪🇹', voiceSupported: false },
+    { code: 'zu', name: 'Zulu', nativeName: 'isiZulu', flag: '🇿🇦', voiceSupported: false },
+    { code: 'af', name: 'Afrikaans', nativeName: 'Afrikaans', flag: '🇿🇦', voiceSupported: false },
+    
+    // Americas Languages
+    { code: 'pt-br', name: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)', flag: '🇧🇷', voiceSupported: true },
+    { code: 'es-mx', name: 'Spanish (Mexico)', nativeName: 'Español (México)', flag: '🇲🇽', voiceSupported: true },
+    { code: 'fr-ca', name: 'French (Canada)', nativeName: 'Français (Canada)', flag: '🇨🇦', voiceSupported: false },
+    
+    // Additional Major Languages
+    { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: '🇮🇳', voiceSupported: false },
+    { code: 'te', name: 'Telugu', nativeName: 'తెలుగు', flag: '🇮🇳', voiceSupported: false },
+    { code: 'mr', name: 'Marathi', nativeName: 'मराठी', flag: '🇮🇳', voiceSupported: false },
+    { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી', flag: '🇮🇳', voiceSupported: false },
+    { code: 'kn', name: 'Kannada', nativeName: 'ಕನ್ನಡ', flag: '🇮🇳', voiceSupported: false },
+    { code: 'ml', name: 'Malayalam', nativeName: 'മലയാളം', flag: '🇮🇳', voiceSupported: false },
+    { code: 'pa', name: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ', flag: '🇮🇳', voiceSupported: false }
   ];
+
+  const filteredLanguages = languages.filter(lang =>
+    lang.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lang.nativeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    lang.code.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const selectedLang = languages.find(l => l.code === selectedLanguage) || languages[0];
+
+  const handleLanguageSelect = async (langCode) => {
+    if (langCode === selectedLanguage) return;
+    
+    setIsTranslating(true);
+    setIsOpen(false);
+    setSearchTerm('');
+    
+    try {
+      // First set the language
+      await onLanguageChange(langCode);
+      
+      // Then translate existing conversations
+      await axios.post(`${API}/conversations/translate`, { 
+        target_language: langCode 
+      });
+      
+      // Refresh conversations to show translated versions
+      window.location.reload(); // Simple way to refresh all data
+    } catch (error) {
+      console.error('Error changing language:', error);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   return (
     <div className="language-selector bg-white rounded-lg shadow-md p-4 mb-4">
       <h3 className="text-lg font-bold mb-3">🌍 Language / Idioma</h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-        {languages.map((lang) => (
-          <button
-            key={lang.code}
-            onClick={() => onLanguageChange(lang.code)}
-            className={`flex items-center space-x-2 p-2 rounded text-sm transition-colors ${
-              selectedLanguage === lang.code
-                ? 'bg-blue-100 text-blue-700 border-2 border-blue-400'
-                : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
-            }`}
-          >
-            <span className="text-lg">{lang.flag}</span>
-            <span className="font-medium">{lang.name}</span>
-          </button>
-        ))}
+      
+      <div className="relative">
+        {/* Selected Language Display */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          disabled={isTranslating}
+          className={`w-full flex items-center justify-between p-3 border rounded-lg bg-white hover:bg-gray-50 ${
+            isTranslating ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        >
+          <div className="flex items-center space-x-3">
+            <span className="text-xl">{selectedLang.flag}</span>
+            <div className="text-left">
+              <div className="font-medium">{selectedLang.nativeName}</div>
+              <div className="text-xs text-gray-500">{selectedLang.name}</div>
+            </div>
+            <div className="flex items-center space-x-1">
+              {selectedLang.voiceSupported ? (
+                <span className="text-green-600 text-sm" title="Voice narration supported">🎤</span>
+              ) : (
+                <div className="flex items-center space-x-1">
+                  <span className="text-gray-400 text-sm" title="Voice narration not supported">🎤❌</span>
+                  <button 
+                    className="text-blue-500 text-xs hover:text-blue-700"
+                    title="Voice narration not available for this language"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      alert('Voice narration is not available for this language. Text conversations will still be translated.');
+                    }}
+                  >
+                    ℹ️
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            {isTranslating && <div className="text-xs text-blue-600">Translating...</div>}
+            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </button>
+
+        {/* Dropdown Menu */}
+        {isOpen && (
+          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-80 overflow-hidden">
+            {/* Search Bar */}
+            <div className="p-3 border-b border-gray-100">
+              <input
+                type="text"
+                placeholder="Search languages..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-2 border border-gray-200 rounded text-sm focus:border-blue-500 focus:outline-none"
+                autoFocus
+              />
+            </div>
+            
+            {/* Language List */}
+            <div className="max-h-60 overflow-y-auto">
+              {filteredLanguages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => handleLanguageSelect(lang.code)}
+                  className={`w-full flex items-center justify-between p-3 hover:bg-gray-50 text-left ${
+                    selectedLanguage === lang.code ? 'bg-blue-50 text-blue-700' : ''
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg">{lang.flag}</span>
+                    <div>
+                      <div className="font-medium">{lang.nativeName}</div>
+                      <div className="text-xs text-gray-500">{lang.name}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-1">
+                    {lang.voiceSupported ? (
+                      <span className="text-green-600 text-sm" title="Voice narration supported">🎤</span>
+                    ) : (
+                      <span className="text-gray-400 text-sm" title="Voice narration not supported">🎤❌</span>
+                    )}
+                    {selectedLanguage === lang.code && (
+                      <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+              ))}
+              
+              {filteredLanguages.length === 0 && (
+                <div className="p-3 text-center text-gray-500 text-sm">
+                  No languages found matching "{searchTerm}"
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       
-      {selectedLanguage !== 'en' && (
+      {!selectedLang.voiceSupported && (
+        <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-700">
+          ⚠️ Voice narration is not available for {selectedLang.nativeName}. 
+          Conversations will be translated but audio will use fallback voices.
+        </div>
+      )}
+      
+      {isTranslating && (
         <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
-          ℹ️ Conversations will be generated in {languages.find(l => l.code === selectedLanguage)?.name}. 
-          Voice narration will use the selected language if available.
+          🔄 Translating existing conversations to {selectedLang.nativeName}...
         </div>
       )}
     </div>
