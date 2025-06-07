@@ -2016,8 +2016,9 @@ function App() {
   };
 
   const handleLanguageChange = async (languageCode) => {
-    // Update frontend state immediately
+    // Update frontend state immediately and persist to localStorage
     setSelectedLanguage(languageCode);
+    localStorage.setItem('selectedLanguage', languageCode);
     
     // Update language setting in the backend
     try {
