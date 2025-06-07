@@ -195,6 +195,8 @@ class Agent(BaseModel):
     current_mood: str = "neutral"
     current_activity: str = "idle"
     memory_summary: str = ""  # Summary of important memories/developments
+    avatar_url: str = ""  # URL to the agent's avatar image
+    avatar_prompt: str = ""  # The prompt used to generate the avatar
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class AgentCreate(BaseModel):
