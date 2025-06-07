@@ -1387,9 +1387,9 @@ async def get_relationships():
 async def generate_avatar(request: AvatarGenerateRequest):
     """Generate an avatar image using fal.ai"""
     if not request.prompt or len(request.prompt.strip()) < 2:
-        return AvatarResponse(
-            success=False,
-            error="Prompt must be at least 2 characters long"
+        raise HTTPException(
+            status_code=400,
+            detail="Prompt must be at least 2 characters long"
         )
     
     try:
