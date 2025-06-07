@@ -1142,7 +1142,8 @@ const ConversationViewer = ({ conversations, selectedLanguage }) => {
     try {
       const response = await axios.post(`${API}/tts/synthesize`, {
         text: text,
-        agent_name: agentName
+        agent_name: agentName,
+        language: selectedLanguage
       });
       
       if (response.data.audio_data) {
