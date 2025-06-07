@@ -1903,10 +1903,6 @@ class TTSRequest(BaseModel):
 async def synthesize_speech(request: TTSRequest):
     """Convert text to speech using Google Cloud TTS"""
     try:
-        # Initialize the TTS client with API key authentication
-        import os
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = ''  # Will use API key instead
-        
         from google.cloud import texttospeech
         import base64
         
@@ -1959,8 +1955,10 @@ async def synthesize_speech(request: TTSRequest):
         # Get voice config for this agent
         voice_config = agent_voices.get(request.agent_name, agent_voices['Marcus "Mark" Castellano'])
         
-        # Create TTS client using API key
-        client = texttospeech.TextToSpeechClient()
+        # Create TTS client using API key authentication
+        client = texttospeech.TextToSpeechClient(
+            client_options={'api_key': llm_manager.api_key}
+        )
         
         # Set the text input
         synthesis_input = texttospeech.SynthesisInput(text=request.text)
