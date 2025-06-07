@@ -115,8 +115,8 @@ def print_summary():
     print("="*80)
 
 def main():
-    """Run API tests focused on API usage limits and conversation generation"""
-    print("Starting API tests for API usage limits and conversation generation...")
+    """Run API tests focused on API usage limits, conversation generation, and TTS functionality"""
+    print("Starting API tests for API usage limits, conversation generation, and TTS functionality...")
     
     # 1. Test basic health check
     health_check, _ = run_test(
