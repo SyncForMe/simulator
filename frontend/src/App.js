@@ -1276,6 +1276,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
 const CompactLanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isTranslating, setIsTranslating] = useState(false);
 
   const languages = [
     // Major World Languages
@@ -1356,6 +1357,7 @@ const CompactLanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
   const handleLanguageSelect = async (langCode) => {
     if (langCode === selectedLanguage) return;
     
+    setIsTranslating(true);
     setIsOpen(false);
     setSearchTerm('');
     
@@ -1364,29 +1366,41 @@ const CompactLanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
       await onLanguageChange(langCode);
       
       // Translate existing conversations
-      await axios.post(`${API}/conversations/translate`, { 
+      const response = await axios.post(`${API}/conversations/translate`, { 
         target_language: langCode 
       });
       
-      // Refresh to show translated content
-      window.location.reload();
+      if (response.data.success) {
+        // Refresh to show translated content
+        window.location.reload();
+      } else {
+        console.error('Translation failed:', response.data);
+      }
     } catch (error) {
       console.error('Error changing language:', error);
+    } finally {
+      setIsTranslating(false);
     }
   };
 
   return (
     <div className="relative">
-      {/* Compact Language Button */}
+      {/* Compact Language Button - Removed globe icon, added translation status */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-1 px-3 py-1 rounded text-xs bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
+        disabled={isTranslating}
+        className={`flex items-center space-x-1 px-3 py-1 rounded text-xs border hover:bg-gray-200 ${
+          isTranslating 
+            ? 'bg-blue-100 text-blue-700 border-blue-300 cursor-not-allowed' 
+            : 'bg-gray-100 text-gray-700 border-gray-300'
+        }`}
       >
-        <span>🌍</span>
-        <span>{selectedLang.name}</span>
-        <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        <span>{isTranslating ? 'Translating...' : selectedLang.name}</span>
+        {!isTranslating && (
+          <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        )}
       </button>
 
       {/* Dropdown Menu */}
