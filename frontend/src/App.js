@@ -507,9 +507,7 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
             </button>
           </div>
           <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-            <div className="whitespace-pre-wrap text-gray-800">
-              {sections.key_events || "No key events identified in this period."}
-            </div>
+            <MarkdownRenderer text={sections.key_events || "No key events identified in this period."} />
           </div>
         </div>
 
