@@ -2021,16 +2021,13 @@ async def translate_single_conversation(conversation, target_language, target_la
     if not message_texts:
         return None
     
-    # Create batch translation prompt
+    # Create simplified translation prompt for speed
     batch_text = "\n".join(message_texts)
-    translation_prompt = f"""Translate this entire conversation to {target_language_name}. 
-    
-Keep the same tone, personality, and meaning for each speaker. Maintain the numbered format.
+    translation_prompt = f"""Translate to {target_language_name}:
 
-Conversation to translate:
 {batch_text}
 
-Translate all messages to {target_language_name}, keeping the same format (number. Speaker: message):"""
+Keep same format (number. Speaker: message):"""
     
     try:
         # Use LLM to translate entire conversation at once
