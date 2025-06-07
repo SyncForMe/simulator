@@ -47,6 +47,40 @@
   background-color: #6d28d9;
 }
 
+/* Avatar Animation Styles */
+.avatar-animation {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar-animation:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+    transform: scale(1.02);
+  }
+}
+
+.avatar-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
 /* Copy functionality styles */
 .copy-button {
   transition: all 0.2s ease-in-out;
