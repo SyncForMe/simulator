@@ -346,7 +346,7 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
       <h3 className="text-lg font-bold mb-3">🌍 Language / Idioma</h3>
       
       <div className="relative">
-        {/* Selected Language Display */}
+        {/* Selected Language Display - Simplified */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           disabled={isTranslating}
@@ -355,21 +355,9 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
           }`}
         >
           <div className="flex items-center space-x-3">
-            <span className="text-xl">{selectedLang.flag}</span>
             <div className="text-left">
-              <div className="font-medium">{selectedLang.nativeName}</div>
-              <div className="text-xs text-gray-500">{selectedLang.name}</div>
+              <div className="font-medium">{selectedLang.name}</div>
             </div>
-            {selectedLang.voiceSupported && (
-              <div className="flex items-center">
-                <span 
-                  className="text-green-600 text-sm cursor-help" 
-                  title="This language is supported by voice narration"
-                >
-                  🔊
-                </span>
-              </div>
-            )}
           </div>
           
           <div className="flex items-center space-x-2">
