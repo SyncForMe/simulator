@@ -360,25 +360,16 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
               <div className="font-medium">{selectedLang.nativeName}</div>
               <div className="text-xs text-gray-500">{selectedLang.name}</div>
             </div>
-            <div className="flex items-center space-x-1">
-              {selectedLang.voiceSupported ? (
-                <span className="text-green-600 text-sm" title="Voice narration supported">🎤</span>
-              ) : (
-                <div className="flex items-center space-x-1">
-                  <span className="text-gray-400 text-sm" title="Voice narration not supported">🎤❌</span>
-                  <button 
-                    className="text-blue-500 text-xs hover:text-blue-700"
-                    title="Voice narration not available for this language"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      alert('Voice narration is not available for this language. Text conversations will still be translated.');
-                    }}
-                  >
-                    ℹ️
-                  </button>
-                </div>
-              )}
-            </div>
+            {selectedLang.voiceSupported && (
+              <div className="flex items-center">
+                <span 
+                  className="text-green-600 text-sm cursor-help" 
+                  title="This language is supported by voice narration"
+                >
+                  🎤
+                </span>
+              </div>
+            )}
           </div>
           
           <div className="flex items-center space-x-2">
