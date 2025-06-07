@@ -1567,7 +1567,7 @@ const ConversationViewer = ({ conversations, selectedLanguage }) => {
                         className="ml-2 text-gray-400 hover:text-blue-600 text-xs"
                         title="Play this message"
                       >
-                        🎤
+                        🔊
                       </button>
                     )}
                   </div>
