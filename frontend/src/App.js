@@ -1790,7 +1790,10 @@ function App() {
   const [showFastForward, setShowFastForward] = useState(false);
   const [editingAgent, setEditingAgent] = useState(null);
   const [archetypes, setArchetypes] = useState({});
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    // Load saved language from localStorage or default to 'en'
+    return localStorage.getItem('selectedLanguage') || 'en';
+  });
 
   const handleTestBackgrounds = async () => {
     setLoading(true);
