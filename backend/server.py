@@ -1934,62 +1934,60 @@ async def set_language(request: dict):
 class TTSRequest(BaseModel):
     text: str
     agent_name: str
+    language: str = "en"
 
 @api_router.post("/tts/synthesize")
 async def synthesize_speech(request: TTSRequest):
-    """Convert text to speech using Google Cloud TTS"""
+    """Convert text to speech using Google Cloud TTS with language support"""
     try:
         from google.cloud import texttospeech
         import base64
         
-        # Voice configurations for different agents
+        # Language to TTS language code mapping
+        language_codes = {
+            "en": "en-US",
+            "es": "es-ES", 
+            "fr": "fr-FR",
+            "de": "de-DE",
+            "it": "it-IT",
+            "pt": "pt-BR",
+            "ru": "ru-RU",
+            "ja": "ja-JP",
+            "ko": "ko-KR",
+            "zh": "zh-CN",
+            "hi": "hi-IN",
+            "ar": "ar-XA"
+        }
+        
+        # Voice configurations for different agents and languages
         agent_voices = {
             'Marcus "Mark" Castellano': {
-                'name': 'en-US-Neural2-D',
-                'gender': texttospeech.SsmlVoiceGender.MALE,
-                'speaking_rate': 0.9,
-                'pitch': -2.0
+                'en-US': {'name': 'en-US-Neural2-D', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'es-ES': {'name': 'es-ES-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'fr-FR': {'name': 'fr-FR-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'de-DE': {'name': 'de-DE-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'default': {'name': 'en-US-Neural2-D', 'gender': texttospeech.SsmlVoiceGender.MALE}
             },
             'Alexandra "Alex" Chen': {
-                'name': 'en-US-Neural2-F',
-                'gender': texttospeech.SsmlVoiceGender.FEMALE, 
-                'speaking_rate': 1.0,
-                'pitch': 2.0
+                'en-US': {'name': 'en-US-Neural2-F', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'es-ES': {'name': 'es-ES-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'fr-FR': {'name': 'fr-FR-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'zh-CN': {'name': 'zh-CN-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'default': {'name': 'en-US-Neural2-F', 'gender': texttospeech.SsmlVoiceGender.FEMALE}
             },
             'Diego "Dex" Rodriguez': {
-                'name': 'en-US-Neural2-A',
-                'gender': texttospeech.SsmlVoiceGender.MALE,
-                'speaking_rate': 0.85,
-                'pitch': -1.0
-            },
-            'Dr. Elena Vasquez': {
-                'name': 'en-US-Neural2-E',
-                'gender': texttospeech.SsmlVoiceGender.FEMALE,
-                'speaking_rate': 0.9,
-                'pitch': 1.5
-            },
-            'Captain Jake Morrison': {
-                'name': 'en-US-Neural2-D',
-                'gender': texttospeech.SsmlVoiceGender.MALE,
-                'speaking_rate': 0.8,
-                'pitch': -3.0
-            },
-            'Dr. Amara Okafor': {
-                'name': 'en-US-Neural2-H',
-                'gender': texttospeech.SsmlVoiceGender.FEMALE,
-                'speaking_rate': 1.0,
-                'pitch': 2.5
-            },
-            'Zara Al-Rashid': {
-                'name': 'en-US-Neural2-G',
-                'gender': texttospeech.SsmlVoiceGender.FEMALE,
-                'speaking_rate': 0.95,
-                'pitch': 0.5
+                'en-US': {'name': 'en-US-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'es-ES': {'name': 'es-ES-Neural2-C', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'default': {'name': 'en-US-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.MALE}
             }
         }
         
-        # Get voice config for this agent
-        voice_config = agent_voices.get(request.agent_name, agent_voices['Marcus "Mark" Castellano'])
+        # Get language code
+        tts_language = language_codes.get(request.language, "en-US")
+        
+        # Get voice config for this agent and language
+        agent_voice_config = agent_voices.get(request.agent_name, agent_voices['Marcus "Mark" Castellano'])
+        voice_config = agent_voice_config.get(tts_language, agent_voice_config.get('default'))
         
         # Create TTS client using API key authentication
         client = texttospeech.TextToSpeechClient(
@@ -2001,7 +1999,7 @@ async def synthesize_speech(request: TTSRequest):
         
         # Build the voice request
         voice = texttospeech.VoiceSelectionParams(
-            language_code='en-US',
+            language_code=tts_language,
             name=voice_config['name'],
             ssml_gender=voice_config['gender']
         )
@@ -2009,8 +2007,8 @@ async def synthesize_speech(request: TTSRequest):
         # Select the audio format
         audio_config = texttospeech.AudioConfig(
             audio_encoding=texttospeech.AudioEncoding.MP3,
-            speaking_rate=voice_config['speaking_rate'],
-            pitch=voice_config['pitch']
+            speaking_rate=0.9,
+            pitch=0.0
         )
         
         # Perform the text-to-speech request
@@ -2026,6 +2024,7 @@ async def synthesize_speech(request: TTSRequest):
         return {
             "audio_data": audio_base64,
             "voice_used": voice_config['name'],
+            "language": tts_language,
             "agent_name": request.agent_name
         }
         
