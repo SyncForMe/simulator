@@ -118,6 +118,131 @@ def print_summary():
     print(f"OVERALL RESULT: {overall_result}")
     print("="*80)
 
+def is_valid_url(url):
+    """Check if a string is a valid URL"""
+    url_pattern = re.compile(
+        r'^(?:http|https)://'  # http:// or https://
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain
+        r'localhost|'  # localhost
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # or IP
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    return bool(url_pattern.match(url))
+
+def test_avatar_generation():
+    """Test the avatar generation functionality"""
+    print("\n" + "="*80)
+    print("TESTING AVATAR GENERATION FUNCTIONALITY")
+    print("="*80)
+    
+    # 1. Test if the /api/avatars/generate endpoint exists and works
+    avatar_data = {
+        "prompt": "Nikola Tesla"
+    }
+    
+    avatar_test, avatar_response = run_test(
+        "Avatar Generation Endpoint",
+        "/avatars/generate",
+        method="POST",
+        data=avatar_data,
+        expected_keys=["success", "image_url"]
+    )
+    
+    if avatar_test:
+        # Verify the response contains a valid image URL
+        image_url = avatar_response.get("image_url", "")
+        if not image_url:
+            print("❌ Response contains empty image_url")
+            avatar_test = False
+        elif not is_valid_url(image_url):
+            print(f"❌ Response contains invalid URL: {image_url}")
+            avatar_test = False
+        else:
+            print(f"✅ Response contains valid image URL: {image_url}")
+            
+            # Try to access the URL to verify it's accessible
+            try:
+                response = requests.head(image_url, timeout=5)
+                if response.status_code == 200:
+                    print(f"✅ Image URL is accessible (status code: {response.status_code})")
+                else:
+                    print(f"⚠️ Image URL returned non-200 status code: {response.status_code}")
+            except Exception as e:
+                print(f"⚠️ Could not verify image URL accessibility: {e}")
+    
+    # 2. Test agent creation with avatar generation
+    agent_data = {
+        "name": "Nikola Tesla",
+        "archetype": "scientist",
+        "goal": "Advance understanding of electricity and wireless technology",
+        "expertise": "Electrical engineering and physics",
+        "background": "Inventor and electrical engineer known for AC electricity",
+        "avatar_prompt": "Nikola Tesla, historical figure, inventor"
+    }
+    
+    agent_test, agent_response = run_test(
+        "Agent Creation with Avatar Generation",
+        "/agents",
+        method="POST",
+        data=agent_data,
+        expected_keys=["id", "name", "avatar_url", "avatar_prompt"]
+    )
+    
+    if agent_test:
+        # Verify the response contains a valid avatar URL
+        avatar_url = agent_response.get("avatar_url", "")
+        if not avatar_url:
+            print("⚠️ Agent created but avatar_url is empty - this might be expected if generation failed")
+        elif not is_valid_url(avatar_url):
+            print(f"❌ Agent created but avatar_url is invalid: {avatar_url}")
+            agent_test = False
+        else:
+            print(f"✅ Agent created with valid avatar URL: {avatar_url}")
+            
+            # Verify avatar_prompt was stored correctly
+            stored_prompt = agent_response.get("avatar_prompt", "")
+            if stored_prompt == agent_data["avatar_prompt"]:
+                print(f"✅ Avatar prompt stored correctly: {stored_prompt}")
+            else:
+                print(f"❌ Avatar prompt mismatch: expected {agent_data['avatar_prompt']}, got {stored_prompt}")
+                agent_test = False
+    
+    # 3. Test error handling for avatar generation
+    # Use an empty prompt which should cause an error
+    error_data = {
+        "prompt": ""
+    }
+    
+    error_test, error_response = run_test(
+        "Avatar Generation Error Handling",
+        "/avatars/generate",
+        method="POST",
+        data=error_data,
+        expected_status=400  # Expecting a 400 Bad Request
+    )
+    
+    # Print summary of avatar generation tests
+    print("\nAVATAR GENERATION SUMMARY:")
+    if avatar_test and agent_test and error_test:
+        print("✅ Avatar generation functionality is working correctly!")
+        print("✅ Dedicated avatar generation endpoint is working.")
+        print("✅ Agent creation with avatar generation is working.")
+        print("✅ Error handling for avatar generation is working.")
+        return True, "Avatar generation functionality is working correctly"
+    else:
+        issues = []
+        if not avatar_test:
+            issues.append("Dedicated avatar generation endpoint has issues")
+        if not agent_test:
+            issues.append("Agent creation with avatar generation has issues")
+        if not error_test:
+            issues.append("Error handling for avatar generation has issues")
+        
+        print("❌ Avatar generation functionality has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, "Avatar generation functionality has issues"
+
 def main():
     """Run API tests focused on the fixed Google Cloud Text-to-Speech integration"""
     print("Starting API tests for the fixed Google Cloud Text-to-Speech integration...")
