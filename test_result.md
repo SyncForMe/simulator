@@ -395,6 +395,21 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Fixed the issue by removing the hardcoded check in can_make_request method. Now the system properly uses the full 50000 request limit. Verified that conversation generation works without 'daily API limit reached' messages and that the API usage endpoint correctly shows the new limit."
+        
+  - task: "POST /api/tts/synthesize - Google Cloud Text-to-Speech integration"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for Google Cloud Text-to-Speech integration."
+        -working: false
+        -agent: "testing"
+        -comment: "The TTS endpoint is returning an error: 'Text-to-speech failed: File was not found.' This suggests an issue with Google Cloud credentials or authentication. The endpoint is implemented correctly with proper error handling (returns fallback: true when there's an error), but the actual TTS functionality is not working due to credential issues."
 
 metadata:
   created_by: "testing_agent"
