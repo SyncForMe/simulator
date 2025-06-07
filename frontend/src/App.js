@@ -2046,6 +2046,7 @@ const ControlPanel = ({
   onGenerateConversation,
   onInitResearchStation,
   onTestBackgrounds,
+  onCreateAgent,
   onToggleAuto,
   setShowFastForward
 }) => {
