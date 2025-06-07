@@ -5,3 +5,4 @@ python-dotenv==1.0.0
 pydantic==2.5.0
 aiohttp==3.12.9
 emergentintegrations
+google-cloud-texttospeech==2.17.2
