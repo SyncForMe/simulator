@@ -613,7 +613,7 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
                   <span>Copy</span>
                 </button>
               </div>
-              <div className="whitespace-pre-wrap">{latestSummary.summary || "No content available"}</div>
+              <MarkdownRenderer text={latestSummary.summary || "No content available"} />
             </div>
           )}
         </div>
