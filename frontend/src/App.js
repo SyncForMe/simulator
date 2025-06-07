@@ -2428,11 +2428,6 @@ function App() {
           <div className="lg:col-span-1">
             <ScenarioInput onSetScenario={handleSetScenario} />
             
-            <LanguageSelector 
-              selectedLanguage={selectedLanguage}
-              onLanguageChange={handleLanguageChange}
-            />
-            
             <SimulationStatusBar simulationState={simulationState} />
             
             <AutoControls 
