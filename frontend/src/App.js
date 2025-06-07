@@ -2276,6 +2276,18 @@ function App() {
     }
   };
 
+  const handleCreateAgent = async (agentData) => {
+    try {
+      const response = await axios.post(`${API}/agents`, agentData);
+      await refreshAllData();
+      alert(`✅ Agent "${agentData.name}" created successfully!${agentData.avatar_prompt ? ' Avatar generated.' : ''}`);
+    } catch (error) {
+      console.error('Error creating agent:', error);
+      alert('Failed to create agent. Please try again.');
+      throw error;
+    }
+  };
+
   // Fetch data functions
   const fetchAgents = async () => {
     try {
