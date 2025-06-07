@@ -1483,7 +1483,7 @@ const ConversationViewer = ({ conversations, selectedLanguage }) => {
                 : 'bg-gray-100 text-gray-600 border border-gray-300'
             }`}
           >
-            <span>🎤</span>
+            <span>🔊</span>
             <span>{isNarrationEnabled ? 'AI Voice ON' : 'Voice OFF'}</span>
           </button>
           
