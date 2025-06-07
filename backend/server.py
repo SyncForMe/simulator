@@ -2054,6 +2054,7 @@ Translate to {target_language_name}:"""
     except Exception as e:
         logging.error(f"Single conversation translation error: {e}")
         return None
+@api_router.post("/simulation/set-language")
 async def set_language(request: dict):
     """Set the language for conversation generation"""
     language = request.get("language", "en")
