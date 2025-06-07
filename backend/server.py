@@ -1921,8 +1921,20 @@ async def translate_conversations(request: dict):
     """Translate all existing conversations to target language with improved error handling"""
     target_language = request.get("target_language", "en")
     
-    if target_language == "en":
-        return {"message": "No translation needed for English", "translated_count": 0}
+    # Get current conversations to check if translation is actually needed
+    conversations = await db.conversations.find().to_list(1000)
+    if not conversations:
+        return {"message": "No conversations to translate", "translated_count": 0}
+    
+    # Check if all conversations are already in target language
+    all_in_target_language = True
+    for conv in conversations:
+        if conv.get("language") != target_language:
+            all_in_target_language = False
+            break
+    
+    if all_in_target_language:
+        return {"message": f"All conversations are already in {target_language}", "translated_count": 0}
     
     # Language name mapping for better prompts
     language_names = {
