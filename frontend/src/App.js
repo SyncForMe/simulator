@@ -1224,14 +1224,32 @@ const ConversationViewer = ({ conversations }) => {
           </div>
           
           <div className="messages">
-            {round.messages.map((message) => (
-              <div key={message.id} className="message mb-2">
+            {round.messages.map((message, messageIndex) => (
+              <div 
+                key={message.id} 
+                className={`message mb-2 p-2 rounded ${
+                  isNarrating && currentMessageIndex === messageIndex 
+                    ? 'bg-yellow-100 border-l-4 border-yellow-400' 
+                    : ''
+                }`}
+              >
                 <div className="flex items-start">
-                  <span className={`font-medium mr-2 ${
-                    round.time_period.includes('Observer Input') ? 'text-purple-600' : 'text-blue-600'
-                  }`}>
-                    {message.agent_name}:
-                  </span>
+                  <div className="flex items-center mr-2">
+                    <span className={`font-medium ${
+                      round.time_period.includes('Observer Input') ? 'text-purple-600' : 'text-blue-600'
+                    }`}>
+                      {message.agent_name}:
+                    </span>
+                    {isNarrationEnabled && (
+                      <button
+                        onClick={() => speakMessage(message.message, message.agent_name)}
+                        className="ml-2 text-gray-400 hover:text-blue-600 text-xs"
+                        title="Play this message"
+                      >
+                        🔊
+                      </button>
+                    )}
+                  </div>
                   <span className="text-gray-800">{message.message}</span>
                 </div>
                 <span className="text-xs text-gray-500 ml-2">({message.mood})</span>
