@@ -1894,6 +1894,114 @@ async def delete_agent(agent_id: str):
         raise HTTPException(status_code=404, detail="Agent not found")
     return {"message": "Agent deleted"}
 
+# TTS Request Model
+class TTSRequest(BaseModel):
+    text: str
+    agent_name: str
+
+@api_router.post("/tts/synthesize")
+async def synthesize_speech(request: TTSRequest):
+    """Convert text to speech using Google Cloud TTS"""
+    try:
+        # Initialize the TTS client with API key authentication
+        import os
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = ''  # Will use API key instead
+        
+        from google.cloud import texttospeech
+        import base64
+        
+        # Voice configurations for different agents
+        agent_voices = {
+            'Marcus "Mark" Castellano': {
+                'name': 'en-US-Neural2-D',
+                'gender': texttospeech.SsmlVoiceGender.MALE,
+                'speaking_rate': 0.9,
+                'pitch': -2.0
+            },
+            'Alexandra "Alex" Chen': {
+                'name': 'en-US-Neural2-F',
+                'gender': texttospeech.SsmlVoiceGender.FEMALE, 
+                'speaking_rate': 1.0,
+                'pitch': 2.0
+            },
+            'Diego "Dex" Rodriguez': {
+                'name': 'en-US-Neural2-A',
+                'gender': texttospeech.SsmlVoiceGender.MALE,
+                'speaking_rate': 0.85,
+                'pitch': -1.0
+            },
+            'Dr. Elena Vasquez': {
+                'name': 'en-US-Neural2-E',
+                'gender': texttospeech.SsmlVoiceGender.FEMALE,
+                'speaking_rate': 0.9,
+                'pitch': 1.5
+            },
+            'Captain Jake Morrison': {
+                'name': 'en-US-Neural2-D',
+                'gender': texttospeech.SsmlVoiceGender.MALE,
+                'speaking_rate': 0.8,
+                'pitch': -3.0
+            },
+            'Dr. Amara Okafor': {
+                'name': 'en-US-Neural2-H',
+                'gender': texttospeech.SsmlVoiceGender.FEMALE,
+                'speaking_rate': 1.0,
+                'pitch': 2.5
+            },
+            'Zara Al-Rashid': {
+                'name': 'en-US-Neural2-G',
+                'gender': texttospeech.SsmlVoiceGender.FEMALE,
+                'speaking_rate': 0.95,
+                'pitch': 0.5
+            }
+        }
+        
+        # Get voice config for this agent
+        voice_config = agent_voices.get(request.agent_name, agent_voices['Marcus "Mark" Castellano'])
+        
+        # Create TTS client using API key
+        client = texttospeech.TextToSpeechClient()
+        
+        # Set the text input
+        synthesis_input = texttospeech.SynthesisInput(text=request.text)
+        
+        # Build the voice request
+        voice = texttospeech.VoiceSelectionParams(
+            language_code='en-US',
+            name=voice_config['name'],
+            ssml_gender=voice_config['gender']
+        )
+        
+        # Select the audio format
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3,
+            speaking_rate=voice_config['speaking_rate'],
+            pitch=voice_config['pitch']
+        )
+        
+        # Perform the text-to-speech request
+        response = client.synthesize_speech(
+            input=synthesis_input,
+            voice=voice,
+            audio_config=audio_config
+        )
+        
+        # Convert audio content to base64
+        audio_base64 = base64.b64encode(response.audio_content).decode('utf-8')
+        
+        return {
+            "audio_data": audio_base64,
+            "voice_used": voice_config['name'],
+            "agent_name": request.agent_name
+        }
+        
+    except Exception as e:
+        logging.error(f"TTS Error: {e}")
+        return {
+            "error": f"Text-to-speech failed: {str(e)}",
+            "fallback": True
+        }
+
 # Include the router in the main app
 app.include_router(api_router)
 
