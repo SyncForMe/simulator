@@ -206,6 +206,7 @@ class AgentCreate(BaseModel):
     goal: str
     expertise: str = ""
     background: str = ""
+    avatar_prompt: str = ""  # Prompt for avatar generation
 
 class AvatarGenerateRequest(BaseModel):
     prompt: str
