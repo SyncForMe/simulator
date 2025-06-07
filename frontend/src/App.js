@@ -1332,8 +1332,8 @@ const ConversationViewer = ({ conversations, selectedLanguage }) => {
         const audioData = response.data.audio_data;
         setAudioCache(prev => new Map(prev.set(cacheKey, audioData)));
         return audioData;
-      } else if (response.data.fallback) {
-        // Fallback to browser TTS
+      } else if (response.data.fallback || !response.data.voice_supported) {
+        // Fallback to browser TTS for unsupported languages
         return null;
       }
     } catch (error) {
