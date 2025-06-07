@@ -1918,7 +1918,7 @@ async def delete_agent(agent_id: str):
 
 @api_router.post("/conversations/translate")
 async def translate_conversations(request: dict):
-    """Translate all existing conversations to target language with batch optimization"""
+    """Translate all existing conversations to target language with improved error handling"""
     target_language = request.get("target_language", "en")
     
     if target_language == "en":
@@ -1945,127 +1945,98 @@ async def translate_conversations(request: dict):
     target_language_name = language_names.get(target_language, target_language)
     
     try:
-        # Get all conversations
+        # Get ALL conversations (force fresh translation regardless of current language)
         conversations = await db.conversations.find().to_list(1000)
         translated_count = 0
+        failed_count = 0
         
-        # Process conversations in larger batches for maximum speed
-        batch_size = 5  # Increased from 3 to 5 concurrent conversations
-        
-        for i in range(0, len(conversations), batch_size):
-            batch = conversations[i:i + batch_size]
-            
-            # Process batch concurrently
-            translation_tasks = []
-            for conversation in batch:
-                # Skip if already translated to this language
-                if conversation.get("language") == target_language:
-                    continue
-                translation_tasks.append(translate_single_conversation(conversation, target_language, target_language_name))
-            
-            # Wait for all translations in this batch to complete
-            if translation_tasks:
-                batch_results = await asyncio.gather(*translation_tasks, return_exceptions=True)
+        # Process each conversation individually for better error handling
+        for conversation in conversations:
+            try:
+                translated_messages = await translate_single_conversation_improved(
+                    conversation, target_language, target_language_name
+                )
                 
-                # Update database with results
-                for j, result in enumerate(batch_results):
-                    if isinstance(result, Exception):
-                        logging.error(f"Translation error: {result}")
-                        continue
-                    
-                    if result:
-                        conversation_to_update = None
-                        for conv in batch:
-                            if conv.get("language") != target_language:
-                                conversation_to_update = conv
-                                break
-                        
-                        if conversation_to_update:
-                            await db.conversations.update_one(
-                                {"_id": conversation_to_update["_id"]},
-                                {
-                                    "$set": {
-                                        "messages": result,
-                                        "language": target_language,
-                                        "original_language": conversation_to_update.get("language", "en"),
-                                        "translated_at": datetime.utcnow()
-                                    }
-                                }
-                            )
-                            translated_count += 1
-                            await llm_manager.increment_usage()
+                if translated_messages:
+                    # Always update - force translation regardless of current language
+                    await db.conversations.update_one(
+                        {"_id": conversation["_id"]},
+                        {
+                            "$set": {
+                                "messages": translated_messages,
+                                "language": target_language,
+                                "original_language": conversation.get("language", "en"),
+                                "translated_at": datetime.utcnow(),
+                                "force_translated": True  # Mark as force translated
+                            }
+                        }
+                    )
+                    translated_count += 1
+                    await llm_manager.increment_usage()
+                else:
+                    failed_count += 1
+                    logging.error(f"Failed to translate conversation {conversation.get('_id')}")
+                
+                # Small delay to avoid overwhelming the API
+                await asyncio.sleep(0.5)
+                
+            except Exception as e:
+                failed_count += 1
+                logging.error(f"Error translating conversation {conversation.get('_id')}: {e}")
+                continue
         
         return {
             "message": f"Successfully translated {translated_count} conversations to {target_language_name}",
             "translated_count": translated_count,
-            "target_language": target_language
+            "failed_count": failed_count,
+            "target_language": target_language,
+            "success": True
         }
         
     except Exception as e:
         logging.error(f"Translation error: {e}")
         raise HTTPException(status_code=500, detail=f"Translation failed: {str(e)}")
 
-async def translate_single_conversation(conversation, target_language, target_language_name):
-    """Translate a single conversation with batch message processing"""
+async def translate_single_conversation_improved(conversation, target_language, target_language_name):
+    """Improved single conversation translation with better error handling"""
     messages = conversation.get("messages", [])
     if not messages:
         return None
     
-    # Batch multiple messages into single API call for speed
-    message_texts = []
-    for i, message in enumerate(messages):
-        original_text = message.get("message", "")
-        if original_text:
-            message_texts.append(f"{i+1}. {message.get('agent_name', 'Agent')}: {original_text}")
-    
-    if not message_texts:
-        return None
-    
-    # Create simplified translation prompt for speed
-    batch_text = "\n".join(message_texts)
-    translation_prompt = f"""Translate to {target_language_name}:
-
-{batch_text}
-
-Keep same format (number. Speaker: message):"""
-    
     try:
-        # Use LLM to translate entire conversation at once
-        chat = LlmChat(
-            api_key=llm_manager.api_key,
-            session_id=f"batch_translate_{target_language}_{datetime.now().timestamp()}",
-            system_message=f"You are a professional translator. Translate conversations to {target_language_name} while preserving tone and speaker personality. Keep the exact format: 'number. Speaker: message'"
-        ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(2000)
-        
-        user_message = UserMessage(text=translation_prompt)
-        translated_batch = await chat.send_message(user_message)
-        
-        if not translated_batch:
-            return None
-        
-        # Parse the translated batch back into individual messages
         translated_messages = []
-        translated_lines = translated_batch.strip().split('\n')
         
-        for i, message in enumerate(messages):
-            # Find corresponding translated line
-            translated_text = None
-            for line in translated_lines:
-                if line.strip().startswith(f"{i+1}."):
-                    # Extract text after "number. Speaker: "
-                    parts = line.split(':', 1)
-                    if len(parts) > 1:
-                        translated_text = parts[1].strip()
-                        break
+        # Translate each message individually for better accuracy
+        for message in messages:
+            original_text = message.get("message", "")
+            if not original_text:
+                translated_messages.append(message)
+                continue
             
-            # Fallback to original if parsing failed
-            if not translated_text:
-                translated_text = message.get("message", "")
+            # Create simple, direct translation prompt
+            translation_prompt = f"""Translate this message to {target_language_name}:
+
+"{original_text}"
+
+Translate to {target_language_name}:"""
             
-            # Update message
+            # Use LLM to translate
+            chat = LlmChat(
+                api_key=llm_manager.api_key,
+                session_id=f"translate_{target_language}_{datetime.now().timestamp()}",
+                system_message=f"You are a professional translator. Translate text to {target_language_name} while preserving tone and meaning. Only return the translated text, nothing else."
+            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(300)
+            
+            user_message = UserMessage(text=translation_prompt)
+            translated_text = await chat.send_message(user_message)
+            
+            # Update message with translation
             translated_message = message.copy()
-            translated_message["message"] = translated_text
+            translated_message["message"] = translated_text.strip() if translated_text else original_text
             translated_messages.append(translated_message)
+            
+            # Small delay between message translations
+            await asyncio.sleep(0.3)
         
         return translated_messages
         
