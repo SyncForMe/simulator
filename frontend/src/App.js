@@ -235,6 +235,52 @@ const AutoControls = ({ simulationState, onToggleAuto }) => {
   );
 };
 
+const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'pt', name: 'Português', flag: '🇵🇹' },
+    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'ko', name: '한국어', flag: '🇰🇷' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' }
+  ];
+
+  return (
+    <div className="language-selector bg-white rounded-lg shadow-md p-4 mb-4">
+      <h3 className="text-lg font-bold mb-3">🌍 Language / Idioma</h3>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        {languages.map((lang) => (
+          <button
+            key={lang.code}
+            onClick={() => onLanguageChange(lang.code)}
+            className={`flex items-center space-x-2 p-2 rounded text-sm transition-colors ${
+              selectedLanguage === lang.code
+                ? 'bg-blue-100 text-blue-700 border-2 border-blue-400'
+                : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
+            }`}
+          >
+            <span className="text-lg">{lang.flag}</span>
+            <span className="font-medium">{lang.name}</span>
+          </button>
+        ))}
+      </div>
+      
+      {selectedLanguage !== 'en' && (
+        <div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+          ℹ️ Conversations will be generated in {languages.find(l => l.code === selectedLanguage)?.name}. 
+          Voice narration will use the selected language if available.
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ConversationTimeStatus = ({ simulationState }) => {
   const autoConversations = simulationState?.auto_conversations || false;
   const autoTime = simulationState?.auto_time || false;
