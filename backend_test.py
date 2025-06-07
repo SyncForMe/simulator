@@ -343,19 +343,19 @@ def main():
     print_summary()
 
 def test_tts_functionality():
-    """Test the Google Cloud Text-to-Speech integration"""
+    """Test the Google Cloud Text-to-Speech integration with fixed client_options approach"""
     print("\n" + "="*80)
-    print("TESTING GOOGLE CLOUD TEXT-TO-SPEECH INTEGRATION")
+    print("TESTING FIXED GOOGLE CLOUD TEXT-TO-SPEECH INTEGRATION")
     print("="*80)
     
-    # 1. Test TTS endpoint with a sample request
+    # 1. Test TTS endpoint with a sample request using the fixed client_options approach
     tts_data = {
-        "text": "Hello, this is a test of the AI voice system",
+        "text": "Hello, this is a test of the improved AI voice system",
         "agent_name": "Marcus \"Mark\" Castellano"
     }
     
     tts_test, tts_response = run_test(
-        "Text-to-Speech Synthesis",
+        "Text-to-Speech Synthesis with API Key Authentication",
         "/tts/synthesize",
         method="POST",
         data=tts_data,
@@ -364,24 +364,20 @@ def test_tts_functionality():
     
     # Check if we got a fallback response (error handling)
     if "fallback" in tts_response and tts_response.get("fallback") == True:
-        print("\n⚠️ TTS endpoint returned a fallback response:")
+        print("\n⚠️ TTS endpoint returned a fallback response despite the fix:")
         print(f"Error: {tts_response.get('error', 'Unknown error')}")
-        print("\nThis indicates the TTS service is properly handling errors, but there's an issue with the Google Cloud credentials.")
-        print("The endpoint is implemented correctly with proper error handling, but the actual TTS functionality is not working.")
+        print("\nThis indicates there might still be an issue with the Google Cloud API key authentication.")
         
         # Check if the error is related to credentials
         error_msg = tts_response.get('error', '').lower()
         if "file" in error_msg and "not found" in error_msg:
-            print("\nThe error suggests a missing credentials file. This is likely because:")
-            print("1. The GOOGLE_APPLICATION_CREDENTIALS environment variable is set to an empty string")
-            print("2. The code is trying to use the Google Cloud client library without proper authentication")
-            print("\nPossible solutions:")
-            print("1. Set up proper Google Cloud credentials")
-            print("2. Use API key authentication instead of service account credentials")
-            print("3. Modify the code to use the REST API directly with an API key")
+            print("\nThe error still suggests a missing credentials file. This indicates:")
+            print("1. The client_options with API key approach might not be implemented correctly")
+            print("2. The API key might be invalid or have insufficient permissions")
+            print("3. There might be an issue with the Google Cloud TTS client library version")
         
-        # Return a partial success since error handling is working
-        return True, "Error handling is working, but TTS functionality requires proper Google Cloud credentials"
+        # Return a failure since the fix didn't work
+        return False, "TTS functionality is still not working despite the client_options fix"
     
     if tts_test:
         # Verify the response contains base64 encoded audio data
@@ -440,7 +436,8 @@ def test_tts_functionality():
     
     # Check if we got a fallback response (error handling)
     if "fallback" in tts_response2 and tts_response2.get("fallback") == True:
-        print("\n⚠️ Second TTS test also returned a fallback response, confirming consistent error handling")
+        print("\n⚠️ Second TTS test also returned a fallback response, indicating the fix didn't work")
+        tts_test2 = False
     elif tts_test2:
         # Verify voice_used matches the expected voice for the agent
         voice_used = tts_response2.get("voice_used", "")
@@ -468,7 +465,8 @@ def test_tts_functionality():
     
     # Check if we got a fallback response (error handling)
     if "fallback" in tts_response3 and tts_response3.get("fallback") == True:
-        print("\n⚠️ Third TTS test also returned a fallback response, confirming consistent error handling")
+        print("\n⚠️ Third TTS test returned a fallback response, indicating the fix didn't work for all cases")
+        tts_test3 = False
     elif tts_test3:
         # Should use fallback voice (Marcus "Mark" Castellano's voice)
         voice_used = tts_response3.get("voice_used", "")
@@ -479,20 +477,24 @@ def test_tts_functionality():
             print(f"❌ Didn't use expected fallback voice: got {voice_used}, expected {fallback_voice}")
             tts_test3 = False
     
-    # 4. Test API error handling by intentionally causing an error
-    # This is tricky to test without breaking the API key, so we'll just check the error handling structure
-    print("\nNote: Full API error handling test skipped to avoid breaking the API key")
-    print("The code has been reviewed and includes proper error handling with fallback response")
-    
     # Print summary of TTS tests
     print("\nTTS ENDPOINT SUMMARY:")
-    print("The TTS endpoint is implemented correctly with proper error handling.")
-    print("However, the actual TTS functionality is not working due to Google Cloud credential issues.")
-    print("The endpoint returns a fallback response with error details when there's an issue, which is the expected behavior.")
-    print("\nTo fix this issue, proper Google Cloud credentials need to be configured.")
-    
-    # Return True if error handling is working correctly, which it is
-    return True
+    if tts_test and tts_test2 and tts_test3:
+        print("✅ The TTS endpoint is now working correctly with the fixed client_options approach!")
+        print("✅ The API key authentication is properly configured and working.")
+        print("✅ Different voice configurations are working correctly.")
+        print("✅ Fallback to default voice for unknown agents is working correctly.")
+        return True, "TTS functionality is now working correctly with the client_options fix"
+    else:
+        if "fallback" in tts_response and tts_response.get("fallback") == True:
+            print("❌ The TTS endpoint is still returning fallback responses despite the fix.")
+            print("❌ The client_options with API key approach might not be implemented correctly.")
+            print("❌ The API key might be invalid or have insufficient permissions.")
+            return False, "TTS functionality is still not working despite the client_options fix"
+        else:
+            print("⚠️ The TTS endpoint is partially working but has some issues.")
+            print("⚠️ Some tests passed but others failed. Check the detailed test results above.")
+            return True, "TTS functionality is partially working with the client_options fix"
 
 if __name__ == "__main__":
     main()
