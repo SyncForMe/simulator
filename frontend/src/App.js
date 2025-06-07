@@ -547,9 +547,7 @@ const WeeklySummary = ({ onGenerateSummary, summaries, onSetupAutoReport }) => {
                 
                 {expandedSections[section.key] && (
                   <div className={`mt-2 p-4 bg-${section.color}-50 border-l-4 border-${section.color}-400 rounded-r-lg`}>
-                    <div className="whitespace-pre-wrap text-gray-700">
-                      {sections[section.key]}
-                    </div>
+                    <MarkdownRenderer text={sections[section.key]} />
                   </div>
                 )}
               </div>
