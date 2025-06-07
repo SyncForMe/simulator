@@ -39,12 +39,7 @@ const AGENT_ARCHETYPES = {
     "name": "The Mediator",
     "description": "Peaceful, diplomatic, empathetic"
   }
-};
 
-// Agent Archetypes - matching backend
-const AGENT_ARCHETYPES = {
-  "scientist": {
-    "name": "The Scientist",
     "description": "Logical, curious, methodical"
   },
   "artist": {
