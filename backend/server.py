@@ -2041,14 +2041,17 @@ async def synthesize_speech(request: TTSRequest):
         from google.cloud import texttospeech
         import base64
         
-        # Language to TTS language code mapping
+        # Language to TTS language code mapping (only supported languages)
         language_codes = {
             "en": "en-US",
             "es": "es-ES", 
+            "es-mx": "es-MX",
             "fr": "fr-FR",
+            "fr-ca": "fr-CA",
             "de": "de-DE",
             "it": "it-IT",
             "pt": "pt-BR",
+            "pt-br": "pt-BR",
             "ru": "ru-RU",
             "ja": "ja-JP",
             "ko": "ko-KR",
@@ -2057,31 +2060,60 @@ async def synthesize_speech(request: TTSRequest):
             "ar": "ar-XA"
         }
         
-        # Voice configurations for different agents and languages
+        # Voice configurations for different agents and supported languages
         agent_voices = {
             'Marcus "Mark" Castellano': {
                 'en-US': {'name': 'en-US-Neural2-D', 'gender': texttospeech.SsmlVoiceGender.MALE},
                 'es-ES': {'name': 'es-ES-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'es-MX': {'name': 'es-MX-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
                 'fr-FR': {'name': 'fr-FR-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
                 'de-DE': {'name': 'de-DE-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'it-IT': {'name': 'it-IT-Neural2-C', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'pt-BR': {'name': 'pt-BR-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'ru-RU': {'name': 'ru-RU-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'ja-JP': {'name': 'ja-JP-Neural2-C', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'ko-KR': {'name': 'ko-KR-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'zh-CN': {'name': 'zh-CN-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'hi-IN': {'name': 'hi-IN-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'ar-XA': {'name': 'ar-XA-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.MALE},
                 'default': {'name': 'en-US-Neural2-D', 'gender': texttospeech.SsmlVoiceGender.MALE}
             },
             'Alexandra "Alex" Chen': {
                 'en-US': {'name': 'en-US-Neural2-F', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
                 'es-ES': {'name': 'es-ES-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'es-MX': {'name': 'es-MX-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
                 'fr-FR': {'name': 'fr-FR-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'de-DE': {'name': 'de-DE-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'it-IT': {'name': 'it-IT-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'pt-BR': {'name': 'pt-BR-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'ru-RU': {'name': 'ru-RU-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'ja-JP': {'name': 'ja-JP-Neural2-B', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'ko-KR': {'name': 'ko-KR-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
                 'zh-CN': {'name': 'zh-CN-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'hi-IN': {'name': 'hi-IN-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
+                'ar-XA': {'name': 'ar-XA-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.FEMALE},
                 'default': {'name': 'en-US-Neural2-F', 'gender': texttospeech.SsmlVoiceGender.FEMALE}
             },
             'Diego "Dex" Rodriguez': {
                 'en-US': {'name': 'en-US-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.MALE},
                 'es-ES': {'name': 'es-ES-Neural2-C', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'es-MX': {'name': 'es-MX-Neural2-C', 'gender': texttospeech.SsmlVoiceGender.MALE},
+                'pt-BR': {'name': 'pt-BR-Neural2-C', 'gender': texttospeech.SsmlVoiceGender.MALE},
                 'default': {'name': 'en-US-Neural2-A', 'gender': texttospeech.SsmlVoiceGender.MALE}
             }
         }
         
-        # Get language code
+        # Get language code - if not supported, use English as fallback
         tts_language = language_codes.get(request.language, "en-US")
+        is_voice_supported = request.language in language_codes
+        
+        if not is_voice_supported:
+            return {
+                "error": f"Voice not supported for language: {request.language}",
+                "fallback": True,
+                "voice_supported": False,
+                "message": "This language is not supported for voice narration"
+            }
         
         # Get voice config for this agent and language
         agent_voice_config = agent_voices.get(request.agent_name, agent_voices['Marcus "Mark" Castellano'])
