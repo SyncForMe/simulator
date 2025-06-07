@@ -1842,6 +1842,17 @@ function App() {
     setLoading(false);
   };
 
+  const handleLanguageChange = async (languageCode) => {
+    setSelectedLanguage(languageCode);
+    
+    // Update language setting in the backend
+    try {
+      await axios.post(`${API}/simulation/set-language`, { language: languageCode });
+    } catch (error) {
+      console.error('Error setting language:', error);
+    }
+  };
+
   const handleGenerateConversation = async () => {
     setLoading(true);
     try {
