@@ -38,6 +38,8 @@ def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, 
             response = requests.get(url)
         elif method == "POST":
             response = requests.post(url, json=data)
+        elif method == "PUT":
+            response = requests.put(url, json=data)
         elif method == "DELETE":
             response = requests.delete(url)
         else:
