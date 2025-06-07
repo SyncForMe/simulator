@@ -1160,22 +1160,45 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
         </button>
       </div>
       
-      <div className="agent-header">
-        <h3 className="text-lg font-bold text-gray-800 pr-16">{agent.name}</h3>
-        <p className="text-sm text-gray-600">{agent.archetype}</p>
-        <p className="text-xs text-gray-500 italic">"{agent.goal}"</p>
+      {/* Avatar and Agent Header */}
+      <div className="agent-header flex items-start space-x-3">
+        {/* Avatar */}
+        <div className="flex-shrink-0">
+          {agent.avatar_url ? (
+            <div className="relative">
+              <img 
+                src={agent.avatar_url} 
+                alt={`${agent.name} avatar`}
+                className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 avatar-animation"
+              />
+              {/* Subtle animation overlay */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
+            </div>
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl font-bold border-2 border-gray-300">
+              {agent.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
         
-        {agent.expertise && (
-          <p className="text-xs text-blue-600 mt-1">
-            <strong>Expertise:</strong> {agent.expertise}
-          </p>
-        )}
-        
-        {agent.background && (
-          <p className="text-xs text-gray-500 mt-1">
-            {agent.background.substring(0, 80)}{agent.background.length > 80 ? '...' : ''}
-          </p>
-        )}
+        {/* Agent Info */}
+        <div className="flex-1 pr-16">
+          <h3 className="text-lg font-bold text-gray-800">{agent.name}</h3>
+          <p className="text-sm text-gray-600">{agent.archetype}</p>
+          <p className="text-xs text-gray-500 italic">"{agent.goal}"</p>
+          
+          {agent.expertise && (
+            <p className="text-xs text-blue-600 mt-1">
+              <strong>Expertise:</strong> {agent.expertise}
+            </p>
+          )}
+          
+          {agent.background && (
+            <p className="text-xs text-gray-500 mt-1">
+              {agent.background.substring(0, 80)}{agent.background.length > 80 ? '...' : ''}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Add Memory Input */}
