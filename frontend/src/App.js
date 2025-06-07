@@ -2013,6 +2013,7 @@ function App() {
   };
 
   const handleLanguageChange = async (languageCode) => {
+    // Update frontend state immediately
     setSelectedLanguage(languageCode);
     
     // Update language setting in the backend
