@@ -1073,6 +1073,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
 const ConversationViewer = ({ conversations }) => {
   const [isNarrationEnabled, setIsNarrationEnabled] = useState(false);
   const [isNarrating, setIsNarrating] = useState(false);
+  const [currentRoundIndex, setCurrentRoundIndex] = useState(-1);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(-1);
   const [audioCache, setAudioCache] = useState(new Map());
 
@@ -1140,13 +1141,79 @@ const ConversationViewer = ({ conversations }) => {
     }
   };
 
-  const narrateConversation = async (round) => {
-    if (!isNarrationEnabled || isNarrating) return;
+  const narrateAllConversations = async () => {
+    if (!isNarrationEnabled || isNarrating || conversations.length === 0) return;
     
     setIsNarrating(true);
     speechSynthesis.cancel(); // Stop any browser TTS
     
+    // Play through all conversation rounds
+    for (let roundIndex = 0; roundIndex < conversations.length; roundIndex++) {
+      const round = conversations[roundIndex];
+      setCurrentRoundIndex(roundIndex);
+      
+      // Announce the round
+      if ('speechSynthesis' in window) {
+        const roundAnnouncement = new SpeechSynthesisUtterance(`Round ${round.round_number}, ${round.time_period}`);
+        roundAnnouncement.rate = 1.1;
+        roundAnnouncement.volume = 0.7;
+        speechSynthesis.speak(roundAnnouncement);
+        
+        await new Promise(resolve => {
+          roundAnnouncement.onend = resolve;
+          roundAnnouncement.onerror = resolve;
+        });
+      }
+      
+      // Brief pause after round announcement
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Play all messages in this round
+      for (let messageIndex = 0; messageIndex < round.messages.length; messageIndex++) {
+        // Check if user stopped narration
+        if (!isNarrating) {
+          setCurrentRoundIndex(-1);
+          setCurrentMessageIndex(-1);
+          return;
+        }
+        
+        const message = round.messages[messageIndex];
+        setCurrentMessageIndex(messageIndex);
+        
+        // Brief pause before each agent speaks
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Speak the message using Google Cloud TTS
+        await speakMessage(message.message, message.agent_name);
+        
+        // Pause between messages
+        await new Promise(resolve => setTimeout(resolve, 800));
+      }
+      
+      // Longer pause between rounds
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+    
+    setIsNarrating(false);
+    setCurrentRoundIndex(-1);
+    setCurrentMessageIndex(-1);
+  };
+
+  const narrateConversation = async (round, roundIndex) => {
+    if (!isNarrationEnabled || isNarrating) return;
+    
+    setIsNarrating(true);
+    setCurrentRoundIndex(roundIndex);
+    speechSynthesis.cancel(); // Stop any browser TTS
+    
     for (let i = 0; i < round.messages.length; i++) {
+      // Check if user stopped narration
+      if (!isNarrating) {
+        setCurrentRoundIndex(-1);
+        setCurrentMessageIndex(-1);
+        return;
+      }
+      
       const message = round.messages[i];
       setCurrentMessageIndex(i);
       
@@ -1161,12 +1228,14 @@ const ConversationViewer = ({ conversations }) => {
     }
     
     setIsNarrating(false);
+    setCurrentRoundIndex(-1);
     setCurrentMessageIndex(-1);
   };
 
   const stopNarration = () => {
     speechSynthesis.cancel();
     setIsNarrating(false);
+    setCurrentRoundIndex(-1);
     setCurrentMessageIndex(-1);
     // Stop any playing audio
     document.querySelectorAll('audio').forEach(audio => {
@@ -1202,27 +1271,51 @@ const ConversationViewer = ({ conversations }) => {
             <span>{isNarrationEnabled ? 'AI Voice ON' : 'Voice OFF'}</span>
           </button>
           
-          {isNarrating && (
-            <button
-              onClick={stopNarration}
-              className="bg-red-100 text-red-700 px-3 py-1 rounded text-xs border border-red-300 hover:bg-red-200"
-            >
-              ⏹️ Stop
-            </button>
+          {isNarrationEnabled && (
+            <>
+              <button
+                onClick={narrateAllConversations}
+                disabled={isNarrating}
+                className={`px-3 py-1 rounded text-xs ${
+                  isNarrating 
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                    : 'bg-purple-100 text-purple-700 hover:bg-purple-200 border border-purple-300'
+                }`}
+              >
+                {isNarrating ? '🎵 Playing All...' : '🎵 Play All'}
+              </button>
+              
+              {isNarrating && (
+                <button
+                  onClick={stopNarration}
+                  className="bg-red-100 text-red-700 px-3 py-1 rounded text-xs border border-red-300 hover:bg-red-200"
+                >
+                  ⏹️ Stop
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
       
       {conversations.map((round, roundIndex) => (
-        <div key={round.id} className="conversation-round mb-4 p-3 bg-gray-50 rounded">
+        <div 
+          key={round.id} 
+          className={`conversation-round mb-4 p-3 rounded ${
+            currentRoundIndex === roundIndex ? 'bg-yellow-100 border border-yellow-400' : 'bg-gray-50'
+          }`}
+        >
           <div className="flex justify-between items-center mb-2">
             <h4 className="font-semibold text-sm text-gray-700">
               Round {round.round_number} - {round.time_period}
+              {currentRoundIndex === roundIndex && isNarrating && (
+                <span className="ml-2 text-yellow-600 text-xs">🎵 Now Playing</span>
+              )}
             </h4>
             
             {isNarrationEnabled && (
               <button
-                onClick={() => narrateConversation(round)}
+                onClick={() => narrateConversation(round, roundIndex)}
                 disabled={isNarrating}
                 className={`px-2 py-1 rounded text-xs ${
                   isNarrating 
@@ -1230,7 +1323,7 @@ const ConversationViewer = ({ conversations }) => {
                     : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-300'
                 }`}
               >
-                {isNarrating ? '🎤 Narrating...' : '🎤 Narrate'}
+                {currentRoundIndex === roundIndex && isNarrating ? '🎤 Playing...' : '🎤 Play Round'}
               </button>
             )}
           </div>
