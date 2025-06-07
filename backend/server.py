@@ -390,7 +390,7 @@ class LLMManager:
         # No hardcoded limit since we're on paid tier now
         return usage < self.max_daily_requests
 
-    async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None):
+    async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None, language_instruction: str = "Respond in English."):
         """Generate a single agent response with better context and progression"""
         if not await self.can_make_request():
             return f"{agent.name} is taking a moment to think... (daily API limit reached)"
@@ -418,6 +418,9 @@ NATURAL CONVERSATION RULES:
 4. Push conversations toward decisions and conclusions rather than endless discussion
 5. Sometimes disagree constructively or build on others' ideas
 6. Show your expertise and background in your responses
+
+LANGUAGE INSTRUCTION:
+{language_instruction}
 7. Make progress - don't rehash the same points endlessly
 8. Be decisive when appropriate - "I think we should..." rather than "What if we considered..."
 
