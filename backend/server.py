@@ -205,6 +205,14 @@ class AgentCreate(BaseModel):
     expertise: str = ""
     background: str = ""
 
+class AvatarGenerateRequest(BaseModel):
+    prompt: str
+
+class AvatarResponse(BaseModel):
+    success: bool
+    image_url: str = ""
+    error: str = ""
+
 class ConversationMessage(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     agent_id: str
