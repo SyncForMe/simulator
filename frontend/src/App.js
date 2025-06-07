@@ -1620,6 +1620,7 @@ function App() {
   const [showFastForward, setShowFastForward] = useState(false);
   const [editingAgent, setEditingAgent] = useState(null);
   const [archetypes, setArchetypes] = useState({});
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
 
   const handleTestBackgrounds = async () => {
     setLoading(true);
