@@ -414,10 +414,13 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
                   </div>
                   
                   <div className="flex items-center space-x-1">
-                    {lang.voiceSupported ? (
-                      <span className="text-green-600 text-sm" title="Voice narration supported">🎤</span>
-                    ) : (
-                      <span className="text-gray-400 text-sm" title="Voice narration not supported">🎤❌</span>
+                    {lang.voiceSupported && (
+                      <span 
+                        className="text-green-600 text-sm cursor-help" 
+                        title="This language is supported by voice narration"
+                      >
+                        🎤
+                      </span>
                     )}
                     {selectedLanguage === lang.code && (
                       <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
