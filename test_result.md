@@ -414,14 +414,15 @@ backend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 3
+  test_sequence: 4
   run_ui: false
 
 test_plan:
   current_focus: 
-    - "Fix API limit issue in LLMManager.can_make_request method"
+    - "POST /api/tts/synthesize - Google Cloud Text-to-Speech integration"
   stuck_tasks: 
     - "POST /api/simulation/generate-summary - Generate AI-powered weekly summary"
+    - "POST /api/tts/synthesize - Google Cloud Text-to-Speech integration"
   test_all: true
   test_priority: "high_first"
 
@@ -442,4 +443,5 @@ agent_communication:
     -message: "Investigated the issue with 'daily API limit reached' messages. Found that while max_daily_requests was updated to 50000 in the LLMManager class, there was still a hardcoded check in the can_make_request method that was returning False if usage >= 1000 (the free tier limit). Fixed the issue by removing this hardcoded check, allowing the system to use the full 50000 request limit. After the fix, conversation generation is working properly with no 'daily API limit reached' messages. The API usage tracking endpoint correctly shows the new limit of 50000 requests."
     -agent: "testing"
     -message: "Investigated the reported issue with conversation generation stopping after day 2. Found that auto-mode is correctly enabled in the simulation state, and manual conversation generation is working properly. All agent responses are authentic dialogue, not generic fallbacks. The API usage is at 942/1400 requests, which is approaching but not exceeding the limit. Observer input functionality is also working correctly. The issue reported by the user may have been temporary or related to API usage approaching limits rather than a code implementation problem."
-    -message: "Tested the complete simulation startup flow: 1) POST to /api/simulation/start, 2) POST to /api/simulation/init-research-station, 3) POST to /api/simulation/set-scenario, 4) POST to /api/simulation/toggle-auto-mode, and 5) GET /api/simulation/state. All endpoints are working correctly and the simulation state is properly updated with automation settings. Also verified that conversation generation works after enabling auto mode and that API usage is properly tracked."
+    -agent: "testing"
+    -message: "Tested the Google Cloud Text-to-Speech integration. The endpoint is implemented correctly with proper error handling, but it's currently failing with the error: 'Text-to-speech failed: File was not found.' This suggests an issue with Google Cloud credentials or authentication. The endpoint returns a fallback response with error details when there's an issue, which is the expected behavior for error handling. However, the actual TTS functionality is not working due to credential issues."
