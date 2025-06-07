@@ -1957,8 +1957,7 @@ async def translate_conversations(request: dict):
     target_language_name = language_names.get(target_language, target_language)
     
     try:
-        # Get ALL conversations (force fresh translation regardless of current language)
-        conversations = await db.conversations.find().to_list(1000)
+        # Get all conversations for translation
         translated_count = 0
         failed_count = 0
         
