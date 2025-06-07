@@ -2754,6 +2754,7 @@ function App() {
               onGenerateConversation={handleGenerateConversation}
               onInitResearchStation={handleInitResearchStation}
               onTestBackgrounds={handleTestBackgrounds}
+              onCreateAgent={handleCreateAgent}
               onToggleAuto={handleToggleAuto}
               setShowFastForward={setShowFastForward}
             />
