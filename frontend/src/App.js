@@ -1116,7 +1116,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory })
   );
 };
 
-const ConversationViewer = ({ conversations }) => {
+const ConversationViewer = ({ conversations, selectedLanguage }) => {
   const [isNarrationEnabled, setIsNarrationEnabled] = useState(false);
   const [isNarrating, setIsNarrating] = useState(false);
   const [currentRoundIndex, setCurrentRoundIndex] = useState(-1);
