@@ -1074,83 +1074,90 @@ const ConversationViewer = ({ conversations }) => {
   const [isNarrationEnabled, setIsNarrationEnabled] = useState(false);
   const [isNarrating, setIsNarrating] = useState(false);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(-1);
+  const [audioCache, setAudioCache] = useState(new Map());
 
-  // Voice settings for different agents
-  const agentVoices = {
-    'Marcus "Mark" Castellano': { rate: 0.9, pitch: 0.8, voiceIndex: 0 },
-    'Alexandra "Alex" Chen': { rate: 1.0, pitch: 1.2, voiceIndex: 1 },
-    'Diego "Dex" Rodriguez': { rate: 0.8, pitch: 0.9, voiceIndex: 2 },
-    'Dr. Elena Vasquez': { rate: 0.9, pitch: 1.1, voiceIndex: 1 },
-    'Captain Jake Morrison': { rate: 0.8, pitch: 0.7, voiceIndex: 0 },
-    'Dr. Amara Okafor': { rate: 1.0, pitch: 1.2, voiceIndex: 1 },
-    'Zara Al-Rashid': { rate: 0.9, pitch: 1.0, voiceIndex: 2 }
+  const playAudioFromBase64 = (audioBase64) => {
+    return new Promise((resolve) => {
+      const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+      audio.onended = resolve;
+      audio.onerror = resolve;
+      audio.play().catch(() => resolve()); // Resolve even on error
+    });
   };
 
-  const speakMessage = (message, agentName) => {
-    if (!isNarrationEnabled || !('speechSynthesis' in window)) return;
-
-    const utterance = new SpeechSynthesisUtterance(message);
-    const voiceSettings = agentVoices[agentName] || { rate: 1.0, pitch: 1.0, voiceIndex: 0 };
+  const getOrCreateAudio = async (text, agentName) => {
+    const cacheKey = `${agentName}:${text}`;
     
-    // Get available voices
-    const voices = speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      // Try to assign different voices based on agent
-      const voiceIndex = voiceSettings.voiceIndex % voices.length;
-      utterance.voice = voices[voiceIndex];
+    if (audioCache.has(cacheKey)) {
+      return audioCache.get(cacheKey);
     }
     
-    utterance.rate = voiceSettings.rate;
-    utterance.pitch = voiceSettings.pitch;
-    utterance.volume = 0.8;
-    
-    speechSynthesis.speak(utterance);
+    try {
+      const response = await axios.post(`${API}/tts/synthesize`, {
+        text: text,
+        agent_name: agentName
+      });
+      
+      if (response.data.audio_data) {
+        const audioData = response.data.audio_data;
+        setAudioCache(prev => new Map(prev.set(cacheKey, audioData)));
+        return audioData;
+      } else if (response.data.fallback) {
+        // Fallback to browser TTS
+        return null;
+      }
+    } catch (error) {
+      console.error('TTS API error:', error);
+      return null;
+    }
+  };
+
+  const speakMessage = async (message, agentName) => {
+    if (!isNarrationEnabled) return;
+
+    try {
+      const audioData = await getOrCreateAudio(message, agentName);
+      
+      if (audioData) {
+        // Use Google Cloud TTS
+        await playAudioFromBase64(audioData);
+      } else {
+        // Fallback to browser TTS
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(message);
+          utterance.rate = 0.9;
+          utterance.pitch = 1.0;
+          speechSynthesis.speak(utterance);
+          
+          await new Promise(resolve => {
+            utterance.onend = resolve;
+            utterance.onerror = resolve;
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Speech synthesis error:', error);
+    }
   };
 
   const narrateConversation = async (round) => {
     if (!isNarrationEnabled || isNarrating) return;
     
     setIsNarrating(true);
-    speechSynthesis.cancel(); // Stop any ongoing speech
+    speechSynthesis.cancel(); // Stop any browser TTS
     
     for (let i = 0; i < round.messages.length; i++) {
       const message = round.messages[i];
       setCurrentMessageIndex(i);
       
-      // Speak agent name first
-      const nameUtterance = new SpeechSynthesisUtterance(`${message.agent_name} says:`);
-      nameUtterance.rate = 1.2;
-      nameUtterance.volume = 0.6;
-      speechSynthesis.speak(nameUtterance);
+      // Brief pause before each agent speaks
+      await new Promise(resolve => setTimeout(resolve, 300));
       
-      // Wait for name to finish
-      await new Promise(resolve => {
-        nameUtterance.onend = resolve;
-      });
-      
-      // Speak the message
-      const messageUtterance = new SpeechSynthesisUtterance(message.message);
-      const voiceSettings = agentVoices[message.agent_name] || { rate: 1.0, pitch: 1.0, voiceIndex: 0 };
-      
-      const voices = speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        const voiceIndex = voiceSettings.voiceIndex % voices.length;
-        messageUtterance.voice = voices[voiceIndex];
-      }
-      
-      messageUtterance.rate = voiceSettings.rate;
-      messageUtterance.pitch = voiceSettings.pitch;
-      messageUtterance.volume = 0.8;
-      
-      speechSynthesis.speak(messageUtterance);
-      
-      // Wait for message to finish
-      await new Promise(resolve => {
-        messageUtterance.onend = resolve;
-      });
+      // Speak the message using Google Cloud TTS
+      await speakMessage(message.message, message.agent_name);
       
       // Pause between messages
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 800));
     }
     
     setIsNarrating(false);
@@ -1161,6 +1168,11 @@ const ConversationViewer = ({ conversations }) => {
     speechSynthesis.cancel();
     setIsNarrating(false);
     setCurrentMessageIndex(-1);
+    // Stop any playing audio
+    document.querySelectorAll('audio').forEach(audio => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
   };
 
   if (!conversations.length) {
@@ -1186,8 +1198,8 @@ const ConversationViewer = ({ conversations }) => {
                 : 'bg-gray-100 text-gray-600 border border-gray-300'
             }`}
           >
-            <span>🔊</span>
-            <span>{isNarrationEnabled ? 'Voice ON' : 'Voice OFF'}</span>
+            <span>🎤</span>
+            <span>{isNarrationEnabled ? 'AI Voice ON' : 'Voice OFF'}</span>
           </button>
           
           {isNarrating && (
