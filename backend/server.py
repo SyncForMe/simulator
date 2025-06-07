@@ -873,7 +873,7 @@ async def get_archetypes():
 
 @api_router.post("/agents", response_model=Agent)
 async def create_agent(agent_data: AgentCreate):
-    """Create a new AI agent"""
+    """Create a new AI agent with avatar generation"""
     # Use default personality if not provided
     if not agent_data.personality:
         if agent_data.archetype in AGENT_ARCHETYPES:
@@ -882,13 +882,46 @@ async def create_agent(agent_data: AgentCreate):
         else:
             raise HTTPException(status_code=400, detail="Invalid archetype")
     
+    # Generate avatar if prompt provided
+    avatar_url = ""
+    if agent_data.avatar_prompt:
+        try:
+            # Enhanced prompt for better avatar results
+            enhanced_prompt = f"professional portrait, headshot, detailed face, {agent_data.avatar_prompt}, high quality, photorealistic, studio lighting, neutral background"
+            
+            # Submit to fal.ai using the Flux Schnell model (fastest and cheapest)
+            handler = await fal_client.submit_async(
+                "fal-ai/flux/schnell",
+                arguments={
+                    "prompt": enhanced_prompt,
+                    "image_size": "portrait_4_3",  # Good for avatars
+                    "num_images": 1,
+                    "enable_safety_checker": True
+                }
+            )
+            
+            # Get the result
+            result = await handler.get()
+            
+            if result and result.get("images") and len(result["images"]) > 0:
+                avatar_url = result["images"][0]["url"]
+                logging.info(f"Avatar generated successfully for {agent_data.name}")
+            else:
+                logging.warning(f"No avatar generated for {agent_data.name}")
+                
+        except Exception as e:
+            logging.error(f"Avatar generation error for {agent_data.name}: {e}")
+            # Continue without avatar if generation fails
+    
     agent = Agent(
         name=agent_data.name,
         archetype=agent_data.archetype,
         personality=agent_data.personality,
         goal=agent_data.goal,
         expertise=agent_data.expertise,
-        background=agent_data.background
+        background=agent_data.background,
+        avatar_url=avatar_url,
+        avatar_prompt=agent_data.avatar_prompt
     )
     
     await db.agents.insert_one(agent.dict())
