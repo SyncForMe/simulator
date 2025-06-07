@@ -2056,7 +2056,10 @@ function App() {
           {/* Middle Column - Conversations & Reports */}
           <div className="lg:col-span-2">
             <h2 className="text-xl font-bold mb-4">Conversations</h2>
-            <ConversationViewer conversations={conversations} />
+            <ConversationViewer 
+              conversations={conversations} 
+              selectedLanguage={selectedLanguage}
+            />
             
             {/* Observer Input - Subtle placement below conversations */}
             <ObserverInput onSendMessage={handleSendObserverMessage} />
