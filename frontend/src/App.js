@@ -81,7 +81,9 @@ const AuthProvider = ({ children }) => {
     login,
     logout,
     token,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
+    setUser,
+    setToken
   };
 
   // Show loading spinner while checking authentication
