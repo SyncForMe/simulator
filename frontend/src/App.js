@@ -2720,20 +2720,45 @@ function App() {
   };
 
   const handleStartSimulation = async () => {
+    // Show pre-conversation configuration modal
+    setShowPreConfigModal(true);
+  };
+
+  const handleStartWithConfig = async (config) => {
     setLoading(true);
     try {
+      // Save user preferences
+      localStorage.setItem('selectedLanguage', config.language);
+      localStorage.setItem('audioNarrativeEnabled', config.audioNarrative.toString());
+      
+      // Update state
+      setSelectedLanguage(config.language);
+      setAudioNarrativeEnabled(config.audioNarrative);
+      
       // Clear summaries immediately in frontend before API call
       setSummaries([]);
       
       // Start new simulation (this clears everything)
       await axios.post(`${API}/simulation/start`);
       
+      // Set the language for the simulation
+      await axios.post(`${API}/simulation/set-language`, { 
+        language: config.language 
+      });
+      
       // Automatically create the crypto team so users can start conversations immediately
       await axios.post(`${API}/simulation/init-research-station`);
       
       await refreshAllData();
+      
+      // Show success message with configuration details
+      const langName = config.language === 'en' ? 'English' : config.language;
+      const audioStatus = config.audioNarrative ? 'enabled' : 'disabled';
+      alert(`✅ Simulation started!\nLanguage: ${langName}\nAudio Narration: ${audioStatus}`);
+      
     } catch (error) {
       console.error('Error starting simulation:', error);
+      alert('Failed to start simulation. Please try again.');
     }
     setLoading(false);
   };
