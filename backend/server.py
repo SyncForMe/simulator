@@ -767,6 +767,107 @@ async def get_current_user_optional(credentials: HTTPAuthorizationCredentials = 
         return None
 
 # API Routes
+
+# Authentication Endpoints
+@api_router.post("/auth/google", response_model=TokenResponse)
+async def google_auth(auth_request: GoogleAuthRequest):
+    """Authenticate with Google OAuth"""
+    try:
+        # Verify Google token and get user info
+        google_user = await verify_google_token(auth_request.credential)
+        
+        # Check if user exists
+        existing_user = await db.users.find_one({"google_id": google_user['google_id']})
+        
+        if existing_user:
+            # Update last login
+            await db.users.update_one(
+                {"id": existing_user["id"]},
+                {"$set": {"last_login": datetime.utcnow()}}
+            )
+            user = User(**existing_user)
+        else:
+            # Create new user
+            user = User(
+                email=google_user['email'],
+                name=google_user['name'],
+                picture=google_user['picture'],
+                google_id=google_user['google_id']
+            )
+            await db.users.insert_one(user.dict())
+        
+        # Create JWT token
+        access_token = create_access_token(data={"sub": user.id})
+        
+        return TokenResponse(
+            access_token=access_token,
+            token_type="bearer",
+            user=UserResponse(**user.dict())
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@api_router.get("/auth/me", response_model=UserResponse)
+async def get_me(current_user: User = Depends(get_current_user)):
+    """Get current user info"""
+    return UserResponse(**current_user.dict())
+
+@api_router.post("/auth/logout")
+async def logout():
+    """Logout user (client should delete token)"""
+    return {"message": "Logged out successfully"}
+
+# Saved Agents Endpoints
+@api_router.get("/saved-agents", response_model=List[SavedAgent])
+async def get_saved_agents(current_user: User = Depends(get_current_user)):
+    """Get user's saved agents"""
+    agents = await db.saved_agents.find({"user_id": current_user.id}).sort("created_at", -1).to_list(100)
+    return [SavedAgent(**agent) for agent in agents]
+
+@api_router.post("/saved-agents", response_model=SavedAgent)
+async def create_saved_agent(agent_data: SavedAgentCreate, current_user: User = Depends(get_current_user)):
+    """Save an agent to user's library"""
+    # Use default personality if not provided
+    if not agent_data.personality:
+        if agent_data.archetype in AGENT_ARCHETYPES:
+            default_traits = AGENT_ARCHETYPES[agent_data.archetype]["default_traits"]
+            agent_data.personality = AgentPersonality(**default_traits)
+        else:
+            raise HTTPException(status_code=400, detail="Invalid archetype")
+    
+    saved_agent = SavedAgent(
+        user_id=current_user.id,
+        **agent_data.dict()
+    )
+    
+    await db.saved_agents.insert_one(saved_agent.dict())
+    return saved_agent
+
+@api_router.delete("/saved-agents/{agent_id}")
+async def delete_saved_agent(agent_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a saved agent"""
+    result = await db.saved_agents.delete_one({"id": agent_id, "user_id": current_user.id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Agent not found")
+    return {"message": "Agent deleted successfully"}
+
+# Conversation History Endpoints
+@api_router.get("/conversation-history", response_model=List[ConversationHistory])
+async def get_conversation_history(current_user: User = Depends(get_current_user)):
+    """Get user's conversation history"""
+    conversations = await db.conversation_history.find({"user_id": current_user.id}).sort("created_at", -1).to_list(100)
+    return [ConversationHistory(**conv) for conv in conversations]
+
+@api_router.post("/conversation-history")
+async def save_conversation(conversation_data: dict, current_user: User = Depends(get_current_user)):
+    """Save a conversation to history"""
+    conversation = ConversationHistory(
+        user_id=current_user.id,
+        **conversation_data
+    )
+    await db.conversation_history.insert_one(conversation.dict())
+    return {"message": "Conversation saved successfully"}
 @api_router.get("/")
 async def root():
     return {"message": "AI Agent Simulation API"}
