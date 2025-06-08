@@ -2167,7 +2167,12 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
     
     setLoading(true);
     try {
-      await onCreateAgent(formData);
+      // Pass the preview URL along with form data
+      const agentData = {
+        ...formData,
+        avatar_url: previewUrl // Use the preview image as the final avatar
+      };
+      await onCreateAgent(agentData);
       // Reset form
       setFormData({
         name: '',
