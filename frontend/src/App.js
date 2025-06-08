@@ -2319,8 +2319,11 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
                       <img 
                         src={previewUrl} 
                         alt="Avatar preview" 
-                        className="w-24 h-24 rounded-full object-cover mx-auto border-2 border-gray-200"
+                        className="w-24 h-24 rounded-full object-cover mx-auto border-2 border-green-300"
                       />
+                      <p className="text-xs text-green-700 mt-2 font-medium">
+                        🎯 This exact image will be used for your agent!
+                      </p>
                     </div>
                   )}
                   
