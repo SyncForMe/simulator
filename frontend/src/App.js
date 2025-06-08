@@ -2399,15 +2399,6 @@ const ControlPanel = ({
         <div className="simulation-section">
           <h4 className="text-sm font-semibold mb-2 text-gray-700">Simulation</h4>
           
-          <button 
-            onClick={onStartSimulation}
-            className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm mb-2"
-          >
-            Start New Simulation
-          </button>
-          <p className="text-xs text-gray-500 mb-3">
-            Resets all conversations and relationships, starts fresh
-          </p>
 
           {/* Pause/Resume Button */}
           {isActive ? (
