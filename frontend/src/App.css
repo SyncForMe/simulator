@@ -81,6 +81,33 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* Agent Management Styles */
+.agent-card {
+  transition: all 0.3s ease;
+}
+
+.agent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Delete Button Animation */
+.agent-card button[title="Delete Agent"] {
+  transition: all 0.2s ease;
+}
+
+.agent-card button[title="Delete Agent"]:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Pulse animation for buttons */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 /* Copy functionality styles */
 .copy-button {
   transition: all 0.2s ease-in-out;
