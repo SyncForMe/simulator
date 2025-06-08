@@ -2961,6 +2961,8 @@ const ConversationHistoryViewer = () => {
 };
 
 function App() {
+  const { user, logout, isAuthenticated } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [agents, setAgents] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [relationships, setRelationships] = useState([]);
