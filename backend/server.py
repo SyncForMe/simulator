@@ -264,13 +264,6 @@ async def get_observer_messages():
     messages = await db.observer_messages.find().sort("timestamp", -1).to_list(100)
     return messages
 
-# Pydantic Models
-class AgentPersonality(BaseModel):
-    extroversion: int = Field(ge=1, le=10)
-    optimism: int = Field(ge=1, le=10) 
-    curiosity: int = Field(ge=1, le=10)
-    cooperativeness: int = Field(ge=1, le=10)
-    energy: int = Field(ge=1, le=10)
 
 class Agent(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
