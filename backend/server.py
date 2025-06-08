@@ -275,6 +275,7 @@ async def get_api_usage():
         return usage
     except Exception as e:
         logging.error(f"Error getting API usage: {e}")
+        today = datetime.utcnow().strftime("%Y-%m-%d")
         return {"date": today, "requests": 0, "remaining": 1000}
 
 @api_router.get("/observer/messages")
