@@ -1,3 +1,4 @@
+backend:
   - task: "POST /api/conversations/translate - Translate conversations to different languages"
     implemented: true
     working: true
@@ -46,6 +47,9 @@
         -working: true
         -agent: "testing"
         -comment: "Implemented and tested the /api/avatars/generate endpoint. The endpoint successfully generates avatar images using the fal.ai Flux/Schnell model. The cost per image is approximately $0.003 per megapixel, which is well within the required budget of $0.0008 per avatar. The endpoint returns valid image URLs and handles errors correctly. Also tested agent creation with avatar generation, which works properly and stores the avatar URL and prompt in the agent model."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the avatar generation endpoint with a simple prompt 'Nikola Tesla'. The endpoint is working correctly and returns valid image URLs. The fal.ai integration is functioning properly, and the API key is correctly configured. The endpoint also handles empty prompts correctly by returning a 400 Bad Request error."
         
   - task: "Frontend Custom Agent Avatar Creation"
     implemented: true
@@ -157,6 +161,39 @@
         -working: true
         -agent: "testing"
         -comment: "Performed comprehensive UI testing of the Google OAuth authentication system. Verified that: 1) The page loads without JavaScript errors, 2) The Sign In button appears in the header when not authenticated, 3) The login modal opens and displays the Google Sign-In button container correctly, 4) Authentication-dependent components (My Agent Library, My Conversations) are not visible for unauthenticated users, 5) The login modal can be closed without errors, 6) The Create Custom Agent modal opens without errors and does not show the Save to Library option for unauthenticated users, and 7) No 'Cannot read properties of null' errors were detected in the console. The Google Sign-In iframe loaded successfully, although there was an expected error about the origin not being allowed for the given client ID, which is normal in a test environment. All UI components related to authentication are working properly."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the authentication endpoints. The /api/auth/me endpoint correctly returns 403 Forbidden for unauthenticated requests and 401 Unauthorized for invalid tokens. JWT validation is working correctly, rejecting expired tokens, invalid signatures, malformed tokens, and missing tokens. The authentication system is properly implemented and working as expected."
+
+  - task: "POST /api/agents - Create agents with avatars"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for agent creation functionality"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the agent creation endpoint with various scenarios: 1) Creating agents without avatars works correctly, 2) Creating agents with avatar prompts successfully generates and stores avatar URLs, 3) Creating agents with pre-generated avatar URLs correctly uses the provided URLs, and 4) Invalid archetypes are properly rejected with 400 Bad Request errors. The endpoint is working correctly and handles all test cases as expected."
+
+  - task: "GET /api/api-usage - API usage statistics"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for API usage endpoint"
+        -working: false
+        -agent: "testing"
+        -comment: "Tested the API usage endpoint and found that it returns a 404 Not Found error. The endpoint is defined in the code with @api_router.get('/api-usage') but is not properly registered with the API router. The issue is that the endpoint is defined but not accessible through the API."
 
 agent_communication:
     -agent: "testing"
@@ -179,6 +216,8 @@ agent_communication:
     -message: "Tested the Google OAuth authentication system. Created comprehensive tests that verify: 1) Authentication endpoints (/api/auth/google, /api/auth/me, /api/auth/logout) are properly implemented, 2) Saved agents endpoints require authentication, 3) Conversation history endpoints require authentication, 4) JWT token validation works correctly (expired tokens, invalid signatures, malformed tokens, and missing tokens are all properly rejected), and 5) User data isolation is properly implemented. All tests passed successfully, confirming that the authentication system is working as expected. Note that the system returns 403 status codes for unauthenticated requests and 401 status codes for invalid tokens, which is a valid implementation approach."
     -agent: "testing"
     -message: "Performed comprehensive UI testing of the Google OAuth authentication system. Verified that: 1) The page loads without JavaScript errors, 2) The Sign In button appears in the header when not authenticated, 3) The login modal opens and displays the Google Sign-In button container correctly, 4) Authentication-dependent components (My Agent Library, My Conversations) are not visible for unauthenticated users, 5) The login modal can be closed without errors, 6) The Create Custom Agent modal opens without errors and does not show the Save to Library option for unauthenticated users, and 7) No 'Cannot read properties of null' errors were detected in the console. The Google Sign-In iframe loaded successfully, although there was an expected error about the origin not being allowed for the given client ID, which is normal in a test environment. All UI components related to authentication are working properly."
+    -agent: "testing"
+    -message: "Tested the avatar generation and agent creation endpoints. The avatar generation endpoint (/api/avatars/generate) is working correctly and returns valid image URLs. The fal.ai integration is functioning properly, and the API key is correctly configured. The agent creation endpoint (/api/agents) works correctly for creating agents with and without avatars. However, the API usage endpoint (/api/api-usage) returns a 404 Not Found error. The endpoint is defined in the code but not properly registered with the API router."
 
 metadata:
   created_by: "main_agent"
@@ -188,7 +227,10 @@ metadata:
 test_plan:
   current_focus:
     - "Google OAuth Authentication System"
+    - "POST /api/avatars/generate - Generate avatar images"
+    - "POST /api/agents - Create agents with avatars"
+    - "GET /api/api-usage - API usage statistics"
   stuck_tasks:
-    - ""
+    - "GET /api/api-usage - API usage statistics"
   test_all: false
   test_priority: "high_first"
