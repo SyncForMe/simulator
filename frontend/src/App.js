@@ -2284,6 +2284,24 @@ function App() {
     }
   };
 
+  const handleDeleteAgent = async (agentId, agentName) => {
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${agentName}"?\n\nThis action cannot be undone and will remove the agent from all conversations.`
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+      await axios.delete(`${API}/agents/${agentId}`);
+      await refreshAllData();
+      alert(`✅ Agent "${agentName}" has been deleted successfully.`);
+    } catch (error) {
+      console.error('Error deleting agent:', error);
+      alert('Failed to delete agent. Please try again.');
+    }
+  };
+
   // Fetch data functions
   const fetchAgents = async () => {
     try {
