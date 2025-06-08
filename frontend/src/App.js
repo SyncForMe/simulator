@@ -3092,6 +3092,12 @@ function App() {
         onFastForward={handleFastForward}
       />
 
+      <PreConversationConfigModal
+        isOpen={showPreConfigModal}
+        onClose={() => setShowPreConfigModal(false)}
+        onStartWithConfig={handleStartWithConfig}
+      />
+
       <EditAgentModal
         agent={editingAgent}
         isOpen={!!editingAgent}
