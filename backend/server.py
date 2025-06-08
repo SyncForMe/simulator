@@ -272,7 +272,13 @@ async def get_usage():
             # Convert MongoDB ObjectId to string
             if '_id' in usage:
                 usage['_id'] = str(usage['_id'])
-            return usage
+            
+            # Map field names to expected names
+            return {
+                "date": usage.get("date", today),
+                "requests": usage.get("requests_used", 0),
+                "remaining": 1000 - usage.get("requests_used", 0)
+            }
         else:
             # Return default values if no usage record found
             return {
