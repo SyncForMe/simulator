@@ -108,86 +108,85 @@ const LoginModal = ({ isOpen, onClose }) => {
   const [loginLoading, setLoginLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (isOpen && typeof window !== 'undefined') {
-      // Load Google Identity Services script
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        console.log('Google script loaded');
-        initializeGoogleSignIn();
-      };
-      document.head.appendChild(script);
-
-      return () => {
-        // Cleanup
-        const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
-        if (existingScript) {
-          document.head.removeChild(existingScript);
-        }
-      };
-    }
-  }, [isOpen]);
-
-  const initializeGoogleSignIn = () => {
-    console.log('Initializing Google Sign-In with Client ID:', GOOGLE_CLIENT_ID);
+  const handleGoogleLogin = () => {
+    setLoginLoading(true);
+    setError('');
     
-    if (window.google && window.google.accounts) {
-      try {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleGoogleCallback,
-          auto_select: false,
-          cancel_on_tap_outside: false,
-          use_fedcm_for_prompt: false
-        });
+    // Direct OAuth URL approach
+    const googleAuthUrl = new URL('https://accounts.google.com/oauth/authorize');
+    googleAuthUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
+    googleAuthUrl.searchParams.set('redirect_uri', window.location.origin);
+    googleAuthUrl.searchParams.set('response_type', 'code');
+    googleAuthUrl.searchParams.set('scope', 'openid profile email');
+    googleAuthUrl.searchParams.set('access_type', 'offline');
+    googleAuthUrl.searchParams.set('state', 'login');
 
-        // Render the sign-in button
-        const buttonDiv = document.getElementById('google-signin-button');
-        if (buttonDiv) {
-          console.log('Rendering Google Sign-In button');
-          window.google.accounts.id.renderButton(buttonDiv, {
-            theme: 'outline',
-            size: 'large',
-            text: 'signin_with',
-            width: 300,
-            locale: 'en'
-          });
-        } else {
-          console.error('Button div not found');
-        }
-      } catch (error) {
-        console.error('Error initializing Google Sign-In:', error);
-        setError('Failed to initialize Google Sign-In. Please refresh and try again.');
+    // Open Google OAuth in a popup
+    const popup = window.open(
+      googleAuthUrl.toString(),
+      'google-oauth',
+      'width=500,height=600,scrollbars=yes,resizable=yes'
+    );
+
+    // Listen for the popup to close or for a message
+    const checkClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkClosed);
+        setLoginLoading(false);
+        setError('Login was cancelled');
       }
-    } else {
-      console.error('Google Identity Services not loaded');
-      setError('Google services not available. Please refresh and try again.');
+    }, 1000);
+
+    // Listen for messages from popup
+    const messageListener = (event) => {
+      if (event.origin !== window.location.origin) return;
+      
+      if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+        clearInterval(checkClosed);
+        popup.close();
+        handleAuthSuccess(event.data.code);
+        window.removeEventListener('message', messageListener);
+      } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
+        clearInterval(checkClosed);
+        popup.close();
+        setError(event.data.error);
+        setLoginLoading(false);
+        window.removeEventListener('message', messageListener);
+      }
+    };
+
+    window.addEventListener('message', messageListener);
+  };
+
+  const handleAuthSuccess = async (code) => {
+    try {
+      // For now, let's use a test token approach
+      // Since we can't easily handle the OAuth callback in this setup
+      setError('OAuth implementation needs backend callback handling. Let me implement a simpler test approach...');
+      setLoginLoading(false);
+    } catch (err) {
+      setError('Login failed. Please try again.');
+      setLoginLoading(false);
     }
   };
 
-  const handleGoogleCallback = async (response) => {
-    console.log('Google callback received:', response);
+  // Simplified test login for development
+  const handleTestLogin = async () => {
     setLoginLoading(true);
     setError('');
     
     try {
-      const result = await login(response.credential);
-      if (result.success) {
-        console.log('Login successful');
-        onClose();
-      } else {
-        console.error('Login failed:', result.error);
-        setError(result.error);
-      }
+      // Create a test Google credential token for development
+      const testCredential = 'test-google-credential-' + Date.now();
+      
+      // Show info about test mode
+      setError('Test mode: In production, this would be a real Google OAuth token.');
+      
+      setLoginLoading(false);
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Login failed. Please try again.');
+      setError('Test login failed.');
+      setLoginLoading(false);
     }
-    
-    setLoginLoading(false);
   };
 
   if (!isOpen) return null;
@@ -211,7 +210,7 @@ const LoginModal = ({ isOpen, onClose }) => {
           </p>
           
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded mb-4">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded mb-4 text-sm">
               {error}
             </div>
           )}
@@ -222,14 +221,34 @@ const LoginModal = ({ isOpen, onClose }) => {
             </div>
           )}
           
-          {/* Google Sign-In Button Container */}
-          <div id="google-signin-button" className="flex justify-center mb-4 min-h-[44px]">
-            <div className="text-gray-500 text-sm">Loading Google Sign-In...</div>
-          </div>
-          
-          {/* Debug Info */}
-          <div className="text-xs text-gray-400 mt-2">
-            Client ID: {GOOGLE_CLIENT_ID ? 'Configured' : 'Missing'}
+          {/* Temporary development buttons */}
+          <div className="space-y-3">
+            <button
+              onClick={handleGoogleLogin}
+              disabled={loginLoading}
+              className="w-full bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-50 font-medium flex items-center justify-center space-x-2 disabled:opacity-50"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              <span>Sign in with Google (Direct OAuth)</span>
+            </button>
+            
+            <div className="text-xs text-gray-500">
+              <p>Client ID: {GOOGLE_CLIENT_ID ? 'Configured' : 'Missing'}</p>
+              <p>Status: Working on OAuth redirect_uri_mismatch issue</p>
+            </div>
+            
+            <button
+              onClick={handleTestLogin}
+              disabled={loginLoading}
+              className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium disabled:opacity-50"
+            >
+              🧪 Test Login (Development)
+            </button>
           </div>
         </div>
         
