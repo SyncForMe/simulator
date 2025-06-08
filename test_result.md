@@ -122,6 +122,21 @@
         -agent: "testing"
         -comment: "Tested the new UI layout changes. The 'Start New Simulation' button is now correctly positioned underneath the scenario creation bar (ObserverInput) in the middle column, no longer in the right-side Control Panel. The conversation controls (Play/Pause, Generate Conversation, Next Period, Auto Mode) are now properly placed underneath the conversation section, also no longer in the Control Panel. The right-side Control Panel has been simplified and now only contains agent creation controls (Create Custom Agent, Create Crypto Team, Test Background Differences) and Fast Forward controls as expected. The StartSimulationControl component appears right after the scenario input area, and the ConversationControls component appears right after the ConversationViewer. All buttons maintain their functionality - the Start New Simulation button correctly shows the pre-conversation configuration modal when clicked, and the conversation controls work as expected. The new layout creates a more intuitive and logical flow: Create scenario → Start simulation → View conversations → Control simulation. The UI is cleaner and less cluttered with controls positioned closer to their related content."
 
+  - task: "Avatar Preview Consistency Fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for avatar preview consistency fix"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the avatar preview consistency fix in the AI Agent Simulation App. The 'Create Custom Agent' modal now correctly preserves the exact same avatar image from preview to final agent creation. The preview section displays a clear message '🎯 This exact image will be used for your agent!' and the preview image has a green border to indicate it's the final version. Success messages correctly indicate whether a preview image was used ('Preview image used as avatar') or if an avatar was generated from the prompt without preview ('Avatar generated from prompt'). Edge cases were also tested: when previewing an avatar, then changing the prompt without re-previewing, the system correctly uses the previewed image; and when canceling agent creation after preview, the preview is properly cleared for new agents. This fix ensures users get exactly the avatar they preview, eliminating the previous issue of random different images appearing."
+
 agent_communication:
     -agent: "testing"
     -message: "Tested the translation functionality with various language pairs. Found and fixed two issues: 1) The set_language function was defined but not registered as an API endpoint, and 2) The ConversationRound model was missing the language field in the response. After fixing these issues, comprehensive testing confirmed that the translation system is now working correctly for all tested language pairs, including the previously reported issue with translating back to English."
