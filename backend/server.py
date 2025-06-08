@@ -1,22 +1,26 @@
-from fastapi import FastAPI, APIRouter, HTTPException
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
-import logging
-from pathlib import Path
+from fastapi import FastAPI, HTTPException, Depends, status, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Optional, Dict, Any
+from datetime import datetime, timedelta, date
 import uuid
-from datetime import datetime, date
-import asyncio
-import re
-import urllib.parse
-import asyncio
+import logging
+import os
+from pathlib import Path
+from motor.motor_asyncio import AsyncIOMotorClient
+from dotenv import load_dotenv
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 from google.cloud import texttospeech
 import base64
 import fal_client
+from jose import JWTError, jwt
+from google.auth.transport import requests
+from google.oauth2 import id_token
+import httpx
+import asyncio
+import re
+import urllib.parse
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
