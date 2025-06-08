@@ -2541,7 +2541,16 @@ function App() {
     try {
       const response = await axios.post(`${API}/agents`, agentData);
       await refreshAllData();
-      alert(`✅ Agent "${agentData.name}" created successfully!${agentData.avatar_prompt ? ' Avatar generated.' : ''}`);
+      
+      // Create a more informative success message
+      let avatarMessage = '';
+      if (agentData.avatar_url) {
+        avatarMessage = ' Preview image used as avatar.';
+      } else if (agentData.avatar_prompt) {
+        avatarMessage = ' Avatar generated from prompt.';
+      }
+      
+      alert(`✅ Agent "${agentData.name}" created successfully!${avatarMessage}`);
     } catch (error) {
       console.error('Error creating agent:', error);
       alert('Failed to create agent. Please try again.');
