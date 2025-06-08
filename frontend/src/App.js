@@ -2350,6 +2350,7 @@ const AgentProfilesManager = ({ agents, onDeleteAll, onCreateAgent }) => {
 };
 
 const AvatarCreator = ({ onCreateAgent, archetypes }) => {
+  const { user, token, isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -2362,6 +2363,7 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
   const [loading, setLoading] = useState(false);
   const [generatingAvatar, setGeneratingAvatar] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [saveToLibrary, setSaveToLibrary] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -2374,7 +2376,23 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
         ...formData,
         avatar_url: previewUrl // Use the preview image as the final avatar
       };
+      
+      // Create agent in simulation
       await onCreateAgent(agentData);
+      
+      // Save to library if user is authenticated and wants to save
+      if (isAuthenticated && saveToLibrary) {
+        try {
+          await axios.post(`${API}/saved-agents`, agentData, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          alert(`✅ Agent "${agentData.name}" created and saved to your library!`);
+        } catch (error) {
+          console.error('Error saving to library:', error);
+          alert(`Agent created successfully, but couldn't save to library.`);
+        }
+      }
+      
       // Reset form
       setFormData({
         name: '',
@@ -2385,6 +2403,7 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
         avatar_prompt: ''
       });
       setPreviewUrl('');
+      setSaveToLibrary(false);
       setIsOpen(false);
     } catch (error) {
       console.error('Error creating agent:', error);
