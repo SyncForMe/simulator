@@ -2554,6 +2554,26 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
                 </div>
               </div>
 
+              {/* Save to Library Option */}
+              {isAuthenticated && (
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={saveToLibrary}
+                      onChange={(e) => setSaveToLibrary(e.target.checked)}
+                      className="rounded"
+                    />
+                    <span className="text-sm font-medium text-blue-800">
+                      💾 Save to my agent library for reuse
+                    </span>
+                  </label>
+                  <p className="text-xs text-blue-600 mt-1">
+                    Saved agents can be reused in future simulations
+                  </p>
+                </div>
+              )}
+
               <div className="flex space-x-3 mt-6">
                 <button
                   type="button"
