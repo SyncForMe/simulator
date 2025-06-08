@@ -1837,6 +1837,167 @@ const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange 
 
 
 
+const PreConversationConfigModal = ({ isOpen, onClose, onStartWithConfig }) => {
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [audioNarrative, setAudioNarrative] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  const languages = [
+    { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸', voiceSupported: true },
+    { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', voiceSupported: true },
+    { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', voiceSupported: true },
+    { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', voiceSupported: true },
+    { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', voiceSupported: true },
+    { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: '🇵🇹', voiceSupported: true },
+    { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺', voiceSupported: true },
+    { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵', voiceSupported: true },
+    { code: 'ko', name: 'Korean', nativeName: '한국어', flag: '🇰🇷', voiceSupported: true },
+    { code: 'zh', name: 'Chinese', nativeName: '中文', flag: '🇨🇳', voiceSupported: true },
+    { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳', voiceSupported: true },
+    { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦', voiceSupported: true },
+    { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', flag: '🇳🇱', voiceSupported: false },
+    { code: 'sv', name: 'Swedish', nativeName: 'Svenska', flag: '🇸🇪', voiceSupported: false },
+    { code: 'no', name: 'Norwegian', nativeName: 'Norsk', flag: '🇳🇴', voiceSupported: false }
+  ];
+
+  const selectedLang = languages.find(l => l.code === selectedLanguage) || languages[0];
+
+  const handleStartSimulation = async () => {
+    setSaving(true);
+    try {
+      await onStartWithConfig({
+        language: selectedLanguage,
+        audioNarrative: audioNarrative
+      });
+      onClose();
+    } catch (error) {
+      console.error('Error starting simulation with config:', error);
+    }
+    setSaving(false);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 className="text-xl font-bold mb-6 text-center">
+          🚀 Simulation Setup
+        </h3>
+        
+        <div className="space-y-6">
+          {/* Language Selection */}
+          <div>
+            <label className="block text-sm font-medium mb-3">
+              🌍 Choose Language / Elegir Idioma
+            </label>
+            <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-2">
+              {languages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => setSelectedLanguage(lang.code)}
+                  className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                    selectedLanguage === lang.code 
+                      ? 'bg-blue-50 border-blue-300 text-blue-700' 
+                      : 'bg-white border-gray-200 hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg">{lang.flag}</span>
+                    <div className="text-left">
+                      <div className="font-medium">{lang.nativeName}</div>
+                      <div className="text-xs text-gray-500">{lang.name}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    {lang.voiceSupported && (
+                      <span 
+                        className="text-green-600 text-sm" 
+                        title="Voice narration supported"
+                      >
+                        🔊
+                      </span>
+                    )}
+                    {selectedLanguage === lang.code && (
+                      <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Audio Narrative Toggle */}
+          <div>
+            <label className="block text-sm font-medium mb-3">
+              🎵 Audio Settings
+            </label>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="font-medium">Voice Narration</div>
+                  <div className="text-sm text-gray-600">
+                    Enable AI voice narration for conversations
+                    {!selectedLang.voiceSupported && (
+                      <div className="text-xs text-orange-600 mt-1">
+                        ⚠️ Voice not supported for {selectedLang.name} (will use browser TTS)
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={() => setAudioNarrative(!audioNarrative)}
+                  className={`ml-4 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    audioNarrative ? 'bg-blue-600' : 'bg-gray-200'
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                      audioNarrative ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Cost Information */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div className="text-sm text-blue-800">
+              <strong>💰 Estimated Monthly Cost (8 agents):</strong>
+              <div className="mt-1 text-xs">
+                • Text only: $0.10/month
+                • With voice: {audioNarrative ? '$3.34/month' : '$0.10/month'}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex space-x-3 mt-6">
+          <button
+            onClick={onClose}
+            className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+            disabled={saving}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleStartSimulation}
+            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            disabled={saving}
+          >
+            {saving ? 'Starting...' : 'Start Simulation'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AgentProfilesManager = ({ agents, onDeleteAll, onCreateAgent }) => {
   const handleDeleteAll = () => {
     if (agents.length === 0) return;
