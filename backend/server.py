@@ -207,6 +207,7 @@ class AgentCreate(BaseModel):
     expertise: str = ""
     background: str = ""
     avatar_prompt: str = ""  # Prompt for avatar generation
+    avatar_url: str = ""  # Pre-generated avatar URL (from preview)
 
 class AvatarGenerateRequest(BaseModel):
     prompt: str
