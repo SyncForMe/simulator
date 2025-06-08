@@ -142,6 +142,7 @@ const LoginModal = ({ isOpen, onClose }) => {
     // Listen for messages from popup
     const messageListener = (event) => {
       if (event.origin !== window.location.origin) return;
+      if (!event.data || typeof event.data !== 'object') return;
       
       if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
         clearInterval(checkClosed);
