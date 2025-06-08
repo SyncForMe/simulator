@@ -3457,13 +3457,37 @@ function App() {
             <h1 className="text-2xl font-bold text-gray-900">
               🤖 AI Agent Simulation
             </h1>
-            <button 
-              onClick={refreshAllData}
-              disabled={loading}
-              className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm"
-            >
-              {loading ? 'Loading...' : 'Refresh'}
-            </button>
+            
+            <div className="flex items-center space-x-4">
+              {/* User Library & History (only show when authenticated) */}
+              {isAuthenticated && (
+                <>
+                  <SavedAgentsLibrary />
+                  <ConversationHistoryViewer />
+                </>
+              )}
+              
+              {/* Refresh Button */}
+              <button
+                onClick={refreshAllData}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : 'Refresh'}
+              </button>
+              
+              {/* Authentication Section */}
+              {isAuthenticated ? (
+                <UserProfile user={user} onLogout={logout} />
+              ) : (
+                <button
+                  onClick={() => setShowLoginModal(true)}
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-medium"
+                >
+                  Sign In
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </header>
