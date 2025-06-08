@@ -2418,6 +2418,8 @@ const ControlPanel = ({
           <p className="text-xs text-gray-500 mb-3">
             {isActive ? 'Pause the ongoing simulation' : 'Resume the paused simulation'}
           </p>
+        </div>
+        
         {/* Fast Forward Section */}
         <div className="fast-forward-section">
           <h4 className="text-sm font-semibold mb-2 text-gray-700">Fast Forward</h4>
