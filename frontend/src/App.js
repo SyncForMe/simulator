@@ -2482,31 +2482,6 @@ const ControlPanel = ({
           </p>
         </div>
 
-        {/* Simulation Controls */}
-        <div className="simulation-section">
-          <h4 className="text-sm font-semibold mb-2 text-gray-700">Simulation</h4>
-          
-          {/* Pause/Resume Button */}
-          {isActive ? (
-            <button 
-              onClick={onPauseSimulation}
-              className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm mb-2"
-            >
-              ⏸️ Pause Simulation
-            </button>
-          ) : (
-            <button 
-              onClick={onResumeSimulation}
-              className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm mb-2"
-            >
-              ▶️ Resume Simulation
-            </button>
-          )}
-          <p className="text-xs text-gray-500 mb-3">
-            {isActive ? 'Pause the ongoing simulation' : 'Resume the paused simulation'}
-          </p>
-        </div>
-        
         {/* Fast Forward Section */}
         <div className="fast-forward-section">
           <h4 className="text-sm font-semibold mb-2 text-gray-700">Fast Forward</h4>
@@ -2520,26 +2495,6 @@ const ControlPanel = ({
           <p className="text-xs text-gray-500 mb-3">
             Generate multiple days of progressive conversations automatically
           </p>
-        </div>
-
-        {/* Manual Controls */}
-        <div className="manual-controls bg-gray-50 rounded p-3">
-          <p className="text-xs font-medium mb-2 text-gray-700">Manual Controls</p>
-          <button 
-            onClick={onNextPeriod}
-            className="w-full bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 text-xs mb-1"
-            disabled={!isActive}
-          >
-            Next Time Period
-          </button>
-          
-          <button 
-            onClick={onGenerateConversation}
-            className="w-full bg-orange-600 text-white px-3 py-2 rounded hover:bg-orange-700 text-xs"
-            disabled={!isActive || (apiUsage?.remaining || 0) <= 0}
-          >
-            Generate Conversation
-          </button>
         </div>
       </div>
     </div>
