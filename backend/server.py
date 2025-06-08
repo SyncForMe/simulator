@@ -115,7 +115,8 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ.get('DB_NAME', 'ai_simulation')]
 
 # Configure fal.ai
-fal_client.configure(key=os.environ.get('FAL_KEY'))
+import fal_client
+fal_client.api_key = os.environ.get('FAL_KEY')
 
 # Create the main app without a prefix
 app = FastAPI()
