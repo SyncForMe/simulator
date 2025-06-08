@@ -761,7 +761,7 @@ def test_api_usage_endpoint():
     # Test the API usage endpoint
     api_usage_test, api_usage_response = run_test(
         "API Usage Endpoint",
-        "/api-usage",
+        "/usage",
         method="GET",
         expected_keys=["date", "requests", "remaining"]
     )
