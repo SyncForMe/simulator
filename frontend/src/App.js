@@ -2359,6 +2359,22 @@ function App() {
     }
   };
 
+  const handleDeleteAllAgents = async () => {
+    if (agents.length === 0) return;
+    
+    try {
+      // Delete all agents one by one
+      for (const agent of agents) {
+        await axios.delete(`${API}/agents/${agent.id}`);
+      }
+      await refreshAllData();
+      alert(`✅ All ${agents.length} agents have been deleted successfully.`);
+    } catch (error) {
+      console.error('Error deleting all agents:', error);
+      alert('Failed to delete all agents. Please try again.');
+    }
+  };
+
   // Fetch data functions
   const fetchAgents = async () => {
     try {
