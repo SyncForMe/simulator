@@ -92,6 +92,21 @@
         -agent: "testing"
         -comment: "Tested the new agent profiles management functionality in the frontend. The 'Agent Profiles' section appears correctly in the left column of the main page, showing the agent count (X/8) and appropriate buttons ('Add Agent' and 'Clear All'). Individual agent deletion works properly - each agent card displays a red 🗑️ delete button that, when clicked, shows a confirmation dialog and removes the agent when confirmed. The 'Clear All' button successfully deletes all agents after confirmation. UI/UX improvements are implemented correctly, including hover animations on agent cards, delete button hover effects, and a tip message about using the delete button. The 'Add Agent' button correctly scrolls to the control panel. Error handling works as expected, with proper handling of cancellation in confirmation dialogs. The visual design is professional, with the agent profiles section prominently displayed and delete buttons clearly visible but not overwhelming."
 
+  - task: "Pre-Conversation Configuration Modal"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for pre-conversation configuration functionality"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the pre-conversation configuration functionality. When clicking 'Start New Simulation', a configuration modal appears BEFORE starting the simulation. The modal correctly displays language selection with flags and voice support indicators (🔊). Languages with voice support are properly marked. The audio narration toggle works smoothly, allowing users to turn it ON/OFF. Cost information updates based on audio setting ($0.10/month for text only vs $3.34/month with voice). Warning messages appear for languages without voice support. Selected language is properly highlighted. After selecting configuration and clicking 'Start Simulation', the simulation starts with the selected settings. Settings are saved to localStorage and persist across page reloads. The modal can be canceled, and transitions are smooth. All test scenarios passed successfully."
+
 agent_communication:
     -agent: "testing"
     -message: "Tested the translation functionality with various language pairs. Found and fixed two issues: 1) The set_language function was defined but not registered as an API endpoint, and 2) The ConversationRound model was missing the language field in the response. After fixing these issues, comprehensive testing confirmed that the translation system is now working correctly for all tested language pairs, including the previously reported issue with translating back to English."
