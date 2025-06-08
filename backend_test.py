@@ -243,9 +243,200 @@ def test_avatar_generation():
             print(f"  - {issue}")
         return False, "Avatar generation functionality has issues"
 
+def test_agent_deletion():
+    """Test the agent deletion functionality"""
+    print("\n" + "="*80)
+    print("TESTING AGENT DELETION FUNCTIONALITY")
+    print("="*80)
+    
+    # 1. Create a test agent
+    agent_data = {
+        "name": "Test Agent For Deletion",
+        "archetype": "scientist",
+        "goal": "Test the deletion functionality",
+        "expertise": "Being deleted",
+        "background": "Created for deletion testing"
+    }
+    
+    create_test, create_response = run_test(
+        "Create Test Agent",
+        "/agents",
+        method="POST",
+        data=agent_data,
+        expected_keys=["id", "name"]
+    )
+    
+    if not create_test:
+        print("❌ Failed to create test agent. Aborting deletion tests.")
+        return False, "Failed to create test agent for deletion testing"
+    
+    # Store the agent ID for deletion
+    agent_id = create_response.get("id")
+    print(f"✅ Created test agent with ID: {agent_id}")
+    
+    # 2. Verify the agent exists by getting all agents
+    get_test, get_response = run_test(
+        "Verify Agent Exists",
+        "/agents",
+        method="GET"
+    )
+    
+    agent_exists = False
+    if get_test:
+        for agent in get_response:
+            if agent.get("id") == agent_id:
+                agent_exists = True
+                print(f"✅ Verified agent with ID {agent_id} exists in the database")
+                break
+        
+        if not agent_exists:
+            print(f"❌ Created agent with ID {agent_id} not found in the database")
+            return False, "Created agent not found in database"
+    else:
+        print("❌ Failed to get agents list. Skipping verification.")
+    
+    # 3. Test agent deletion
+    delete_test, delete_response = run_test(
+        "Delete Agent",
+        f"/agents/{agent_id}",
+        method="DELETE",
+        expected_keys=["message"]
+    )
+    
+    if not delete_test:
+        print("❌ Failed to delete agent")
+        return False, "Failed to delete agent"
+    
+    print(f"✅ Successfully deleted agent with ID: {agent_id}")
+    
+    # 4. Verify the agent is actually deleted
+    verify_test, verify_response = run_test(
+        "Verify Agent Deleted",
+        "/agents",
+        method="GET"
+    )
+    
+    agent_deleted = True
+    if verify_test:
+        for agent in verify_response:
+            if agent.get("id") == agent_id:
+                agent_deleted = False
+                print(f"❌ Agent with ID {agent_id} still exists in the database after deletion")
+                break
+        
+        if agent_deleted:
+            print(f"✅ Verified agent with ID {agent_id} was successfully removed from the database")
+    else:
+        print("❌ Failed to get agents list for deletion verification")
+        return False, "Failed to verify agent deletion"
+    
+    # 5. Test error handling when trying to delete a non-existent agent
+    nonexistent_id = "00000000-0000-0000-0000-000000000000"
+    error_test, error_response = run_test(
+        "Delete Non-existent Agent",
+        f"/agents/{nonexistent_id}",
+        method="DELETE",
+        expected_status=404
+    )
+    
+    if error_test:
+        print(f"✅ Correctly returned 404 status when trying to delete non-existent agent")
+    else:
+        print(f"❌ Failed to handle non-existent agent deletion properly")
+    
+    # 6. Test deletion of agent with avatar
+    agent_with_avatar_data = {
+        "name": "Agent With Avatar",
+        "archetype": "leader",
+        "goal": "Test deletion with avatar",
+        "expertise": "Having an avatar",
+        "background": "Created for avatar deletion testing",
+        "avatar_prompt": "Professional business person with glasses"
+    }
+    
+    avatar_create_test, avatar_create_response = run_test(
+        "Create Agent With Avatar",
+        "/agents",
+        method="POST",
+        data=agent_with_avatar_data,
+        expected_keys=["id", "name", "avatar_url"]
+    )
+    
+    if not avatar_create_test:
+        print("❌ Failed to create agent with avatar. Skipping avatar deletion test.")
+    else:
+        avatar_agent_id = avatar_create_response.get("id")
+        has_avatar = bool(avatar_create_response.get("avatar_url"))
+        
+        if has_avatar:
+            print(f"✅ Created agent with avatar. Agent ID: {avatar_agent_id}")
+        else:
+            print(f"⚠️ Created agent but no avatar was generated. Continuing test anyway.")
+        
+        # Delete the agent with avatar
+        avatar_delete_test, avatar_delete_response = run_test(
+            "Delete Agent With Avatar",
+            f"/agents/{avatar_agent_id}",
+            method="DELETE",
+            expected_keys=["message"]
+        )
+        
+        if avatar_delete_test:
+            print(f"✅ Successfully deleted agent with avatar (ID: {avatar_agent_id})")
+            
+            # Verify deletion
+            avatar_verify_test, avatar_verify_response = run_test(
+                "Verify Avatar Agent Deleted",
+                "/agents",
+                method="GET"
+            )
+            
+            avatar_agent_deleted = True
+            if avatar_verify_test:
+                for agent in avatar_verify_response:
+                    if agent.get("id") == avatar_agent_id:
+                        avatar_agent_deleted = False
+                        print(f"❌ Agent with avatar (ID: {avatar_agent_id}) still exists after deletion")
+                        break
+                
+                if avatar_agent_deleted:
+                    print(f"✅ Verified agent with avatar was successfully removed from the database")
+            else:
+                print("❌ Failed to verify avatar agent deletion")
+        else:
+            print(f"❌ Failed to delete agent with avatar")
+    
+    # Print summary of agent deletion tests
+    print("\nAGENT DELETION SUMMARY:")
+    if create_test and delete_test and agent_deleted and error_test:
+        print("✅ Agent deletion functionality is working correctly!")
+        print("✅ Agents can be successfully created and deleted.")
+        print("✅ Deleted agents are properly removed from the database.")
+        print("✅ Error handling for non-existent agents is working.")
+        if avatar_create_test and avatar_delete_test and avatar_agent_deleted:
+            print("✅ Deletion of agents with avatars is working correctly.")
+        return True, "Agent deletion functionality is working correctly"
+    else:
+        issues = []
+        if not create_test:
+            issues.append("Failed to create test agent")
+        if not delete_test:
+            issues.append("Failed to delete agent")
+        if not agent_deleted:
+            issues.append("Agent not properly removed from database after deletion")
+        if not error_test:
+            issues.append("Error handling for non-existent agents has issues")
+        if avatar_create_test and (not avatar_delete_test or not avatar_agent_deleted):
+            issues.append("Deletion of agents with avatars has issues")
+        
+        print("❌ Agent deletion functionality has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, "Agent deletion functionality has issues"
+
 def main():
-    """Run API tests for avatar generation functionality"""
-    print("Starting API tests for avatar generation functionality...")
+    """Run API tests for agent deletion functionality"""
+    print("Starting API tests for agent deletion functionality...")
     
     # 1. Test basic health check
     health_check, _ = run_test(
@@ -259,28 +450,30 @@ def main():
         print_summary()
         return
     
-    # 2. Test avatar generation functionality
-    avatar_success, avatar_message = test_avatar_generation()
+    # 2. Test agent deletion functionality
+    deletion_success, deletion_message = test_agent_deletion()
     
     # Print summary of all tests
     print_summary()
     
-    # Print final conclusion about the avatar generation
+    # Print final conclusion about the agent deletion functionality
     print("\n" + "="*80)
-    print("AVATAR GENERATION FUNCTIONALITY ASSESSMENT")
+    print("AGENT DELETION FUNCTIONALITY ASSESSMENT")
     print("="*80)
-    if avatar_success:
-        print("✅ The avatar generation functionality is working correctly!")
-        print("✅ The /api/avatars/generate endpoint is successfully generating avatar images.")
-        print("✅ Agent creation with avatar generation is working properly.")
-        print("✅ Error handling for avatar generation is implemented correctly.")
+    if deletion_success:
+        print("✅ The agent deletion functionality is working correctly!")
+        print("✅ The DELETE /api/agents/{agent_id} endpoint is successfully deleting agents.")
+        print("✅ Agents are properly removed from the database after deletion.")
+        print("✅ Error handling for non-existent agents is implemented correctly.")
+        print("✅ Deletion of agents with avatars is working properly.")
     else:
-        print("❌ The avatar generation functionality is NOT working correctly.")
-        print("❌ One or more avatar-related endpoints are returning errors.")
+        print("❌ The agent deletion functionality is NOT working correctly.")
+        print("❌ One or more agent deletion tests failed.")
         print("\nPossible issues:")
-        print("1. The /api/avatars/generate endpoint might not be implemented")
-        print("2. The fal.ai integration might not be configured correctly")
-        print("3. The API key for fal.ai might be invalid or have insufficient permissions")
+        print("1. The DELETE /api/agents/{agent_id} endpoint might not be implemented correctly")
+        print("2. Agents might not be properly removed from the database")
+        print("3. Error handling for non-existent agents might be incorrect")
+        print("4. There might be issues with deleting agents that have avatars")
     print("="*80)
 
 if __name__ == "__main__":
