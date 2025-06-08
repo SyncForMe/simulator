@@ -474,6 +474,22 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
   );
 };
 
+const StartSimulationControl = ({ onStartSimulation }) => {
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4 mt-4">
+      <button 
+        onClick={onStartSimulation}
+        className="w-full bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 text-sm font-medium transition-colors"
+      >
+        🚀 Start New Simulation
+      </button>
+      <p className="text-xs text-gray-500 mt-2 text-center">
+        Resets all conversations and relationships, starts fresh with your configuration
+      </p>
+    </div>
+  );
+};
+
 const ConversationTimeStatus = ({ simulationState }) => {
   const autoConversations = simulationState?.auto_conversations || false;
   const autoTime = simulationState?.auto_time || false;
