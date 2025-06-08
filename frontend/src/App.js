@@ -104,7 +104,7 @@ const AuthProvider = ({ children }) => {
 };
 
 const LoginModal = ({ isOpen, onClose }) => {
-  const { login } = useAuth();
+  const { login, setUser, setToken } = useAuth();
   const [loginLoading, setLoginLoading] = useState(false);
   const [error, setError] = useState('');
 
