@@ -3838,12 +3838,14 @@ function App() {
   );
 }
 
-// Wrap App with AuthProvider
+// Wrap App with AuthProvider and Error Boundary
 const AppWithAuth = () => {
   return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <div>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </div>
   );
 };
 
