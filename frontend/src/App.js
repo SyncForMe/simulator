@@ -176,17 +176,38 @@ const LoginModal = ({ isOpen, onClose }) => {
     setError('');
     
     try {
-      // Create a test Google credential token for development
-      const testCredential = 'test-google-credential-' + Date.now();
+      // Create a mock user for testing
+      const mockUser = {
+        id: 'test-user-123',
+        email: 'test@example.com',
+        name: 'Test User',
+        picture: 'https://via.placeholder.com/40',
+        created_at: new Date().toISOString(),
+        last_login: new Date().toISOString()
+      };
       
-      // Show info about test mode
-      setError('Test mode: In production, this would be a real Google OAuth token.');
+      // Create a mock token
+      const mockToken = 'mock-jwt-token-' + Date.now();
       
-      setLoginLoading(false);
+      // Store in localStorage like a real login
+      localStorage.setItem('auth_token', mockToken);
+      
+      // Update auth context
+      setUser(mockUser);
+      setToken(mockToken);
+      
+      // Close modal
+      onClose();
+      
+      // Show success message
+      setTimeout(() => {
+        alert('✅ Test login successful! You can now use saved agents and conversation history features.');
+      }, 500);
+      
     } catch (err) {
       setError('Test login failed.');
-      setLoginLoading(false);
     }
+    setLoginLoading(false);
   };
 
   if (!isOpen) return null;
