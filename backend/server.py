@@ -716,6 +716,56 @@ Previous memory: {agent.memory_summary or 'None'}"""
 
 llm_manager = LLMManager()
 
+# Authentication Functions
+def create_access_token(data: dict):
+    """Create JWT access token"""
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(hours=JWT_EXPIRATION_HOURS)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return encoded_jwt
+
+async def verify_google_token(token: str) -> dict:
+    """Verify Google OAuth token and extract user info"""
+    try:
+        # Verify the token with Google
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), GOOGLE_CLIENT_ID)
+        
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Wrong issuer.')
+            
+        return {
+            'google_id': idinfo['sub'],
+            'email': idinfo['email'],
+            'name': idinfo['name'],
+            'picture': idinfo.get('picture', '')
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"Invalid token: {str(e)}")
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
+    """Get current user from JWT token"""
+    try:
+        payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    user = await db.users.find_one({"id": user_id})
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
+    
+    return User(**user)
+
+async def get_current_user_optional(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Optional[User]:
+    """Get current user from JWT token, return None if not authenticated"""
+    try:
+        return await get_current_user(credentials)
+    except HTTPException:
+        return None
+
 # API Routes
 @api_router.get("/")
 async def root():
