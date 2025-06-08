@@ -5,6 +5,207 @@ import GoogleLogin from 'react-google-login';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
+// Authentication Context
+const AuthContext = createContext();
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(localStorage.getItem('auth_token'));
+
+  useEffect(() => {
+    // Check if user is logged in on app start
+    if (token) {
+      checkAuthStatus();
+    } else {
+      setLoading(false);
+    }
+  }, [token]);
+
+  const checkAuthStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUser(response.data);
+    } catch (error) {
+      // Token is invalid, remove it
+      logout();
+    }
+    setLoading(false);
+  };
+
+  const login = async (googleCredential) => {
+    try {
+      const response = await axios.post(`${API}/auth/google`, {
+        credential: googleCredential
+      });
+      
+      const { access_token, user: userData } = response.data;
+      
+      // Store token and user data
+      localStorage.setItem('auth_token', access_token);
+      setToken(access_token);
+      setUser(userData);
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Login error:', error);
+      return { success: false, error: error.response?.data?.detail || 'Login failed' };
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('auth_token');
+    setToken(null);
+    setUser(null);
+  };
+
+  const value = {
+    user,
+    loading,
+    login,
+    logout,
+    token,
+    isAuthenticated: !!user
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+const LoginModal = ({ isOpen, onClose }) => {
+  const { login } = useAuth();
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleGoogleSuccess = async (response) => {
+    setLoginLoading(true);
+    setError('');
+    
+    try {
+      const result = await login(response.credential || response.tokenId);
+      if (result.success) {
+        onClose();
+      } else {
+        setError(result.error);
+      }
+    } catch (err) {
+      setError('Login failed. Please try again.');
+    }
+    
+    setLoginLoading(false);
+  };
+
+  const handleGoogleError = (error) => {
+    console.error('Google login error:', error);
+    setError('Google login failed. Please try again.');
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold">Welcome to AI Agent Simulation</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            ✕
+          </button>
+        </div>
+        
+        <div className="text-center mb-6">
+          <p className="text-gray-600 mb-4">
+            Sign in with your Google account to save your agents and conversation history.
+          </p>
+          
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded mb-4">
+              {error}
+            </div>
+          )}
+          
+          <GoogleLogin
+            clientId={GOOGLE_CLIENT_ID}
+            buttonText={loginLoading ? "Signing in..." : "Sign in with Google"}
+            onSuccess={handleGoogleSuccess}
+            onFailure={handleGoogleError}
+            cookiePolicy={'single_host_origin'}
+            disabled={loginLoading}
+            className="w-full"
+          />
+        </div>
+        
+        <div className="text-xs text-gray-500 text-center">
+          <p>✨ Free to use • 🔒 Secure authentication • 💾 Save your work</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const UserProfile = ({ user, onLogout }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setShowDropdown(!showDropdown)}
+        className="flex items-center space-x-2 bg-white rounded-lg p-2 shadow-md hover:shadow-lg transition-shadow"
+      >
+        {user.picture ? (
+          <img 
+            src={user.picture} 
+            alt={user.name}
+            className="w-8 h-8 rounded-full"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+            {user.name.charAt(0).toUpperCase()}
+          </div>
+        )}
+        <span className="text-sm font-medium text-gray-700">{user.name}</span>
+        <span className="text-gray-400">▼</span>
+      </button>
+
+      {showDropdown && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-50">
+          <div className="p-3 border-b">
+            <p className="text-sm font-medium text-gray-900">{user.name}</p>
+            <p className="text-xs text-gray-500">{user.email}</p>
+          </div>
+          <div className="p-1">
+            <button
+              onClick={() => {
+                onLogout();
+                setShowDropdown(false);
+              }}
+              className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Agent Archetypes - matching backend
 const AGENT_ARCHETYPES = {
