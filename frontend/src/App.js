@@ -115,7 +115,10 @@ const LoginModal = ({ isOpen, onClose }) => {
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
       script.defer = true;
-      script.onload = initializeGoogleSignIn;
+      script.onload = () => {
+        console.log('Google script loaded');
+        initializeGoogleSignIn();
+      };
       document.head.appendChild(script);
 
       return () => {
@@ -129,39 +132,58 @@ const LoginModal = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   const initializeGoogleSignIn = () => {
-    if (window.google) {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleCallback,
-        auto_select: false,
-        cancel_on_tap_outside: false,
-      });
-
-      // Render the sign-in button
-      const buttonDiv = document.getElementById('google-signin-button');
-      if (buttonDiv) {
-        window.google.accounts.id.renderButton(buttonDiv, {
-          theme: 'outline',
-          size: 'large',
-          text: 'signin_with',
-          width: '100%',
+    console.log('Initializing Google Sign-In with Client ID:', GOOGLE_CLIENT_ID);
+    
+    if (window.google && window.google.accounts) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCallback,
+          auto_select: false,
+          cancel_on_tap_outside: false,
+          use_fedcm_for_prompt: false
         });
+
+        // Render the sign-in button
+        const buttonDiv = document.getElementById('google-signin-button');
+        if (buttonDiv) {
+          console.log('Rendering Google Sign-In button');
+          window.google.accounts.id.renderButton(buttonDiv, {
+            theme: 'outline',
+            size: 'large',
+            text: 'signin_with',
+            width: 300,
+            locale: 'en'
+          });
+        } else {
+          console.error('Button div not found');
+        }
+      } catch (error) {
+        console.error('Error initializing Google Sign-In:', error);
+        setError('Failed to initialize Google Sign-In. Please refresh and try again.');
       }
+    } else {
+      console.error('Google Identity Services not loaded');
+      setError('Google services not available. Please refresh and try again.');
     }
   };
 
   const handleGoogleCallback = async (response) => {
+    console.log('Google callback received:', response);
     setLoginLoading(true);
     setError('');
     
     try {
       const result = await login(response.credential);
       if (result.success) {
+        console.log('Login successful');
         onClose();
       } else {
+        console.error('Login failed:', result.error);
         setError(result.error);
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('Login failed. Please try again.');
     }
     
@@ -201,17 +223,14 @@ const LoginModal = ({ isOpen, onClose }) => {
           )}
           
           {/* Google Sign-In Button Container */}
-          <div id="google-signin-button" className="flex justify-center mb-4"></div>
+          <div id="google-signin-button" className="flex justify-center mb-4 min-h-[44px]">
+            <div className="text-gray-500 text-sm">Loading Google Sign-In...</div>
+          </div>
           
-          {/* Fallback button if Google script doesn't load */}
-          <button
-            onClick={() => setError('Please refresh the page and try again.')}
-            className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium text-sm"
-            style={{ display: 'none' }}
-            id="fallback-signin"
-          >
-            Sign in with Google
-          </button>
+          {/* Debug Info */}
+          <div className="text-xs text-gray-400 mt-2">
+            Client ID: {GOOGLE_CLIENT_ID ? 'Configured' : 'Missing'}
+          </div>
         </div>
         
         <div className="text-xs text-gray-500 text-center">
