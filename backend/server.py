@@ -25,6 +25,90 @@ import urllib.parse
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Environment variables
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')  
+JWT_SECRET = os.environ.get('JWT_SECRET')
+JWT_ALGORITHM = "HS256"
+JWT_EXPIRATION_HOURS = 24
+
+# Security
+security = HTTPBearer()
+
+# Base Models
+class AgentPersonality(BaseModel):
+    extroversion: int = Field(ge=1, le=10)
+    optimism: int = Field(ge=1, le=10) 
+    curiosity: int = Field(ge=1, le=10)
+    cooperativeness: int = Field(ge=1, le=10)
+    energy: int = Field(ge=1, le=10)
+
+# User Models
+class User(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    name: str
+    picture: str = ""
+    google_id: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    last_login: datetime = Field(default_factory=datetime.utcnow)
+    is_active: bool = True
+
+class GoogleAuthRequest(BaseModel):
+    credential: str  # Google JWT token
+
+class UserResponse(BaseModel):
+    id: str
+    email: str
+    name: str
+    picture: str
+    created_at: datetime
+    last_login: datetime
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserResponse
+
+# Saved Agent Models
+class SavedAgent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    name: str
+    archetype: str
+    personality: AgentPersonality
+    goal: str
+    expertise: str = ""
+    background: str = ""
+    avatar_url: str = ""
+    avatar_prompt: str = ""
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    is_template: bool = False  # User can mark agents as templates
+    usage_count: int = 0  # How many times used in simulations
+
+class SavedAgentCreate(BaseModel):
+    name: str
+    archetype: str
+    personality: Optional[AgentPersonality] = None
+    goal: str
+    expertise: str = ""
+    background: str = ""
+    avatar_url: str = ""
+    avatar_prompt: str = ""
+    is_template: bool = False
+
+# Conversation History Models
+class ConversationHistory(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    simulation_id: str = ""  # Links to simulation session
+    participants: List[str] = []  # Agent names
+    messages: List[dict] = []  # Conversation messages
+    language: str = "en"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    title: str = ""  # Auto-generated or user-defined title
+    tags: List[str] = []  # User can tag conversations
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
