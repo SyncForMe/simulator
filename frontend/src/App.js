@@ -2477,6 +2477,11 @@ function App() {
     // Load saved language from localStorage or default to 'en'
     return localStorage.getItem('selectedLanguage') || 'en';
   });
+  const [showPreConfigModal, setShowPreConfigModal] = useState(false);
+  const [audioNarrativeEnabled, setAudioNarrativeEnabled] = useState(() => {
+    // Load saved audio preference from localStorage or default to true
+    return localStorage.getItem('audioNarrativeEnabled') !== 'false';
+  });
 
   const handleTestBackgrounds = async () => {
     setLoading(true);
