@@ -883,9 +883,10 @@ async def create_agent(agent_data: AgentCreate):
         else:
             raise HTTPException(status_code=400, detail="Invalid archetype")
     
-    # Generate avatar if prompt provided
-    avatar_url = ""
-    if agent_data.avatar_prompt:
+    # Use existing avatar URL if provided, otherwise generate new one
+    avatar_url = agent_data.avatar_url  # Use preview image if available
+    
+    if not avatar_url and agent_data.avatar_prompt:
         try:
             # Enhanced prompt for better avatar results
             enhanced_prompt = f"professional portrait, headshot, detailed face, {agent_data.avatar_prompt}, high quality, photorealistic, studio lighting, neutral background"
