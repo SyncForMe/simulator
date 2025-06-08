@@ -2709,6 +2709,7 @@ function App() {
                     onEdit={handleEditAgent}
                     onClearMemory={handleClearMemory}
                     onAddMemory={handleAddMemory}
+                    onDelete={handleDeleteAgent}
                   />
                 ))
               ) : (
