@@ -20,26 +20,31 @@ export const useAuth = () => {
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem('auth_token'));
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    // Check if user is logged in on app start
-    if (token) {
-      checkAuthStatus();
+    // Initialize token from localStorage
+    const savedToken = localStorage.getItem('auth_token');
+    if (savedToken) {
+      setToken(savedToken);
+      checkAuthStatus(savedToken);
     } else {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = async (authToken) => {
     try {
       const response = await axios.get(`${API}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${authToken}` }
       });
       setUser(response.data);
     } catch (error) {
       // Token is invalid, remove it
-      logout();
+      console.log('Token validation failed, logging out');
+      localStorage.removeItem('auth_token');
+      setToken(null);
+      setUser(null);
     }
     setLoading(false);
   };
