@@ -3650,4 +3650,13 @@ function App() {
   );
 }
 
-export default App;
+// Wrap App with AuthProvider
+const AppWithAuth = () => {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+};
+
+export default AppWithAuth;
