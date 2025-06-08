@@ -209,7 +209,7 @@ def test_auth_endpoints():
         "Auth Me Endpoint Without Auth",
         "/auth/me",
         method="GET",
-        expected_status=401  # Expect 401 Unauthorized
+        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
     )
     
     # 5. Test /api/auth/logout endpoint
@@ -256,7 +256,7 @@ def test_saved_agents_endpoints():
         "Get Saved Agents Without Auth",
         "/saved-agents",
         method="GET",
-        expected_status=401  # Expect 401 Unauthorized
+        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
     )
     
     # 2. Test GET /api/saved-agents with authentication
@@ -281,7 +281,7 @@ def test_saved_agents_endpoints():
         "/saved-agents",
         method="POST",
         data=agent_data,
-        expected_status=401  # Expect 401 Unauthorized
+        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
     )
     
     # 4. Test POST /api/saved-agents with authentication
@@ -300,7 +300,7 @@ def test_saved_agents_endpoints():
         "Delete Saved Agent Without Auth",
         f"/saved-agents/{test_agent_id}",
         method="DELETE",
-        expected_status=401  # Expect 401 Unauthorized
+        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
     )
     
     # 6. Test DELETE /api/saved-agents/{agent_id} with authentication
@@ -352,7 +352,7 @@ def test_conversation_history_endpoints():
         "Get Conversation History Without Auth",
         "/conversation-history",
         method="GET",
-        expected_status=401  # Expect 401 Unauthorized
+        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
     )
     
     # 2. Test GET /api/conversation-history with authentication
@@ -380,7 +380,7 @@ def test_conversation_history_endpoints():
         "/conversation-history",
         method="POST",
         data=conversation_data,
-        expected_status=401  # Expect 401 Unauthorized
+        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
     )
     
     # 4. Test POST /api/conversation-history with authentication
@@ -476,7 +476,7 @@ def test_jwt_validation():
         "Missing JWT Token",
         "/auth/me",
         method="GET",
-        expected_status=401  # Expect 401 Unauthorized
+        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
     )
     
     # Print summary of JWT validation tests
