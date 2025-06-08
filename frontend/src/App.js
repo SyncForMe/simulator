@@ -2771,27 +2771,25 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - Agent Profiles */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-4 mb-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-800">
-                  👤 Agent Profiles
-                </h2>
-                <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2 py-1 rounded-full">
-                  {agents.length}/8
-                </span>
-              </div>
-              
-              {agents.length > 0 && (
-                <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <div className="flex items-center">
-                    <span className="text-yellow-600 text-sm">⚠️</span>
-                    <p className="text-xs text-yellow-700 ml-2">
-                      <strong>Tip:</strong> Click the 🗑️ button on any agent card to delete unwanted agents
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+            <AgentProfilesManager 
+              agents={agents}
+              onDeleteAll={handleDeleteAllAgents}
+              onCreateAgent={() => {
+                // Find and trigger the Create Custom Agent button
+                // This will be handled by scrolling to the control panel
+                const controlPanel = document.querySelector('.control-panel');
+                if (controlPanel) {
+                  controlPanel.scrollIntoView({ behavior: 'smooth' });
+                }
+                // Flash the create button
+                setTimeout(() => {
+                  const createButton = document.querySelector('.control-panel button');
+                  if (createButton) {
+                    createButton.style.animation = 'pulse 1s ease-in-out 3 alternate';
+                  }
+                }, 500);
+              }}
+            />
             
             <div className="agent-grid">
               {agents.length > 0 ? (
