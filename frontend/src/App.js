@@ -3634,6 +3634,11 @@ function App() {
         onStartWithConfig={handleStartWithConfig}
       />
 
+      <LoginModal 
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
+
       <EditAgentModal
         agent={editingAgent}
         isOpen={!!editingAgent}
