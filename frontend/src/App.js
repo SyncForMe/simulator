@@ -2355,19 +2355,13 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
 
 const ControlPanel = ({ 
   simulationState, 
-  apiUsage, 
-  onStartSimulation, 
-  onPauseSimulation,
-  onResumeSimulation,
-  onNextPeriod, 
-  onGenerateConversation,
+  apiUsage,
   onInitResearchStation,
   onTestBackgrounds,
   onCreateAgent,
-  onToggleAuto,
   setShowFastForward
 }) => {
-  const isActive = simulationState?.is_active || false;
+  const isActive = simulationState?.auto_conversations || simulationState?.auto_time;
   const autoRunning = simulationState?.auto_conversations || simulationState?.auto_time;
 
   return (
