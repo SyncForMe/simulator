@@ -1194,6 +1194,13 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
         >
           🧠+
         </button>
+        <button
+          onClick={() => onDelete(agent.id, agent.name)}
+          className="bg-red-500 hover:bg-red-600 text-white p-1 rounded text-xs"
+          title="Delete Agent"
+        >
+          🗑️
+        </button>
       </div>
       
       {/* Avatar and Agent Header */}
