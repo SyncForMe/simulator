@@ -7,6 +7,9 @@ import sys
 from dotenv import load_dotenv
 import base64
 import re
+import uuid
+import jwt
+from datetime import datetime, timedelta
 
 # Load environment variables from frontend/.env
 load_dotenv('/app/frontend/.env')
@@ -21,12 +24,23 @@ if not BACKEND_URL:
 API_URL = f"{BACKEND_URL}/api"
 print(f"Using API URL: {API_URL}")
 
+# Load JWT secret from backend/.env for testing
+load_dotenv('/app/backend/.env')
+JWT_SECRET = os.environ.get('JWT_SECRET')
+if not JWT_SECRET:
+    print("Warning: JWT_SECRET not found in environment variables. Some tests may fail.")
+    JWT_SECRET = "test_secret"
+
 # Test results tracking
 test_results = {
     "passed": 0,
     "failed": 0,
     "tests": []
 }
+
+# Global variables for auth testing
+auth_token = None
+test_user_id = None
 
 def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None):
     """Run a test against the specified endpoint"""
