@@ -1837,6 +1837,63 @@ const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange 
 
 
 
+const AgentProfilesManager = ({ agents, onDeleteAll, onCreateAgent }) => {
+  const handleDeleteAll = () => {
+    if (agents.length === 0) return;
+    
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ALL ${agents.length} agents?\n\nThis action cannot be undone and will remove all agents from conversations.`
+    );
+    
+    if (confirmed) {
+      onDeleteAll();
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold text-gray-800">
+          👤 Agent Profiles
+        </h2>
+        <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2 py-1 rounded-full">
+          {agents.length}/8
+        </span>
+      </div>
+      
+      {/* Quick Actions */}
+      <div className="flex space-x-2 mb-4">
+        <button
+          onClick={() => onCreateAgent()}
+          className="flex-1 bg-emerald-600 text-white px-3 py-2 rounded text-sm hover:bg-emerald-700 transition-colors"
+        >
+          ➕ Add Agent
+        </button>
+        {agents.length > 0 && (
+          <button
+            onClick={handleDeleteAll}
+            className="bg-red-500 text-white px-3 py-2 rounded text-sm hover:bg-red-600 transition-colors"
+            title="Delete All Agents"
+          >
+            🗑️ Clear All
+          </button>
+        )}
+      </div>
+      
+      {agents.length > 0 && (
+        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-center">
+            <span className="text-yellow-600 text-sm">💡</span>
+            <p className="text-xs text-yellow-700 ml-2">
+              Click the <strong>🗑️ button</strong> on any agent card to delete individual agents
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AvatarCreator = ({ onCreateAgent, archetypes }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
