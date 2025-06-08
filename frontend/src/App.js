@@ -474,6 +474,77 @@ const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
   );
 };
 
+const ConversationControls = ({ 
+  simulationState, 
+  onPauseSimulation, 
+  onResumeSimulation, 
+  onGenerateConversation,
+  onNextPeriod,
+  onToggleAuto 
+}) => {
+  const isActive = simulationState?.auto_conversations || simulationState?.auto_time;
+  
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4 mt-4">
+      <h4 className="text-sm font-semibold mb-3 text-gray-700">Conversation Controls</h4>
+      
+      <div className="grid grid-cols-1 gap-2">
+        {/* Pause/Resume Button */}
+        {isActive ? (
+          <button 
+            onClick={onPauseSimulation}
+            className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm font-medium"
+          >
+            ⏸️ Pause Simulation
+          </button>
+        ) : (
+          <button 
+            onClick={onResumeSimulation}
+            className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium"
+          >
+            ▶️ Resume Simulation
+          </button>
+        )}
+        
+        {/* Generate Conversation Button */}
+        <button 
+          onClick={onGenerateConversation}
+          className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm font-medium"
+        >
+          💬 Generate Conversation
+        </button>
+        
+        {/* Next Period Button */}
+        <button 
+          onClick={onNextPeriod}
+          className="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm font-medium"
+        >
+          ⏭️ Next Period
+        </button>
+        
+        {/* Auto Toggle */}
+        <button 
+          onClick={onToggleAuto}
+          className={`w-full px-4 py-2 rounded text-sm font-medium ${
+            isActive 
+              ? 'bg-orange-600 text-white hover:bg-orange-700' 
+              : 'bg-gray-600 text-white hover:bg-gray-700'
+          }`}
+        >
+          🤖 Auto Mode: {isActive ? 'ON' : 'OFF'}
+        </button>
+      </div>
+      
+      <p className="text-xs text-gray-500 mt-3 text-center">
+        {isActive 
+          ? 'Auto mode is running - conversations and time advance automatically' 
+          : 'Manual mode - use buttons to control simulation flow'
+        }
+      </p>
+    </div>
+  );
+};
+
 const StartSimulationControl = ({ onStartSimulation }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4 mt-4">
