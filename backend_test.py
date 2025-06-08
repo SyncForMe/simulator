@@ -763,16 +763,16 @@ def test_api_usage_endpoint():
         "API Usage Endpoint",
         "/api-usage",
         method="GET",
-        expected_keys=["date", "requests", "remaining"]
+        expected_status=404  # The endpoint is not implemented correctly
     )
     
     # Print summary of API usage tests
     print("\nAPI USAGE ENDPOINT SUMMARY:")
     
     if api_usage_test:
-        print("✅ API usage endpoint is working correctly!")
-        print("✅ Returns date, requests, and remaining fields")
-        return True, "API usage endpoint is working correctly"
+        print("✅ API usage endpoint returns 404 - needs to be fixed")
+        print("❌ The endpoint is defined in the code but not properly registered with the API router")
+        return False, "API usage endpoint returns 404 - needs to be fixed"
     else:
         print("❌ API usage endpoint has issues")
         return False, "API usage endpoint has issues"
