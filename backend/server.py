@@ -262,6 +262,21 @@ Address the Observer respectfully but naturally according to your personality.""
         "agent_responses": conversation_round
     }
 
+@api_router.get("/api-usage")
+async def get_api_usage():
+    """Get current API usage statistics"""
+    try:
+        today = datetime.utcnow().strftime("%Y-%m-%d")
+        usage = await db.api_usage.find_one({"date": today}) or {
+            "date": today,
+            "requests": 0,
+            "remaining": 1000
+        }
+        return usage
+    except Exception as e:
+        logging.error(f"Error getting API usage: {e}")
+        return {"date": today, "requests": 0, "remaining": 1000}
+
 @api_router.get("/observer/messages")
 async def get_observer_messages():
     """Get all observer messages"""
