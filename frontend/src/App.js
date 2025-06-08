@@ -1539,6 +1539,11 @@ const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange,
   const [currentMessageIndex, setCurrentMessageIndex] = useState(-1);
   const [audioCache, setAudioCache] = useState(new Map());
 
+  // Update narration state when prop changes
+  useEffect(() => {
+    setIsNarrationEnabled(audioNarrativeEnabled);
+  }, [audioNarrativeEnabled]);
+
   const playAudioFromBase64 = (audioBase64) => {
     return new Promise((resolve) => {
       const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
