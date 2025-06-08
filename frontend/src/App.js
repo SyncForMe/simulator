@@ -90,12 +90,54 @@ const LoginModal = ({ isOpen, onClose }) => {
   const [loginLoading, setLoginLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleGoogleSuccess = async (response) => {
+  useEffect(() => {
+    if (isOpen && typeof window !== 'undefined') {
+      // Load Google Identity Services script
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeGoogleSignIn;
+      document.head.appendChild(script);
+
+      return () => {
+        // Cleanup
+        const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+        if (existingScript) {
+          document.head.removeChild(existingScript);
+        }
+      };
+    }
+  }, [isOpen]);
+
+  const initializeGoogleSignIn = () => {
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCallback,
+        auto_select: false,
+        cancel_on_tap_outside: false,
+      });
+
+      // Render the sign-in button
+      const buttonDiv = document.getElementById('google-signin-button');
+      if (buttonDiv) {
+        window.google.accounts.id.renderButton(buttonDiv, {
+          theme: 'outline',
+          size: 'large',
+          text: 'signin_with',
+          width: '100%',
+        });
+      }
+    }
+  };
+
+  const handleGoogleCallback = async (response) => {
     setLoginLoading(true);
     setError('');
     
     try {
-      const result = await login(response.credential || response.tokenId);
+      const result = await login(response.credential);
       if (result.success) {
         onClose();
       } else {
@@ -106,11 +148,6 @@ const LoginModal = ({ isOpen, onClose }) => {
     }
     
     setLoginLoading(false);
-  };
-
-  const handleGoogleError = (error) => {
-    console.error('Google login error:', error);
-    setError('Google login failed. Please try again.');
   };
 
   if (!isOpen) return null;
@@ -139,15 +176,24 @@ const LoginModal = ({ isOpen, onClose }) => {
             </div>
           )}
           
-          <GoogleLogin
-            clientId={GOOGLE_CLIENT_ID}
-            buttonText={loginLoading ? "Signing in..." : "Sign in with Google"}
-            onSuccess={handleGoogleSuccess}
-            onFailure={handleGoogleError}
-            cookiePolicy={'single_host_origin'}
-            disabled={loginLoading}
-            className="w-full"
-          />
+          {loginLoading && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded mb-4">
+              Signing in...
+            </div>
+          )}
+          
+          {/* Google Sign-In Button Container */}
+          <div id="google-signin-button" className="flex justify-center mb-4"></div>
+          
+          {/* Fallback button if Google script doesn't load */}
+          <button
+            onClick={() => setError('Please refresh the page and try again.')}
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium text-sm"
+            style={{ display: 'none' }}
+            id="fallback-signin"
+          >
+            Sign in with Google
+          </button>
         </div>
         
         <div className="text-xs text-gray-500 text-center">
