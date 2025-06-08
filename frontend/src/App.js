@@ -2416,7 +2416,7 @@ const PreConversationConfigModal = ({ isOpen, onClose, onStartWithConfig }) => {
   );
 };
 
-const AgentProfilesManager = ({ agents, onDeleteAll, onCreateAgent }) => {
+const AgentProfilesManager = ({ agents = [], onDeleteAll, onCreateAgent }) => {
   const handleDeleteAll = () => {
     if (agents.length === 0) return;
     
