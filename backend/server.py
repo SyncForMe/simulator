@@ -267,16 +267,27 @@ async def get_api_usage():
     """Get current API usage statistics"""
     try:
         today = datetime.utcnow().strftime("%Y-%m-%d")
-        usage = await db.api_usage.find_one({"date": today}) or {
+        usage = await db.api_usage.find_one({"date": today})
+        if usage:
+            # Convert MongoDB ObjectId to string
+            if '_id' in usage:
+                usage['_id'] = str(usage['_id'])
+            return usage
+        else:
+            # Return default values if no usage record found
+            return {
+                "date": today,
+                "requests": 0,
+                "remaining": 1000
+            }
+    except Exception as e:
+        logging.error(f"Error getting API usage: {e}")
+        today = datetime.utcnow().strftime("%Y-%m-%d")
+        return {
             "date": today,
             "requests": 0,
             "remaining": 1000
         }
-        return usage
-    except Exception as e:
-        logging.error(f"Error getting API usage: {e}")
-        today = datetime.utcnow().strftime("%Y-%m-%d")
-        return {"date": today, "requests": 0, "remaining": 1000}
 
 @api_router.get("/observer/messages")
 async def get_observer_messages():
