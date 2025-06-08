@@ -2705,6 +2705,261 @@ const ControlPanel = ({
   );
 };
 
+const SavedAgentsLibrary = () => {
+  const { user, token } = useAuth();
+  const [savedAgents, setSavedAgents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
+
+  const fetchSavedAgents = async () => {
+    if (!token) return;
+    
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/saved-agents`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSavedAgents(response.data);
+    } catch (error) {
+      console.error('Error fetching saved agents:', error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (showLibrary && token) {
+      fetchSavedAgents();
+    }
+  }, [showLibrary, token]);
+
+  const handleDeleteAgent = async (agentId) => {
+    if (!window.confirm('Are you sure you want to delete this saved agent?')) return;
+    
+    try {
+      await axios.delete(`${API}/saved-agents/${agentId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSavedAgents(savedAgents.filter(agent => agent.id !== agentId));
+      alert('Saved agent deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting saved agent:', error);
+      alert('Failed to delete saved agent.');
+    }
+  };
+
+  const handleUseAgent = (agent) => {
+    // Trigger agent creation with saved agent data
+    const agentData = {
+      name: `${agent.name} (Copy)`,
+      archetype: agent.archetype,
+      personality: agent.personality,
+      goal: agent.goal,
+      expertise: agent.expertise,
+      background: agent.background,
+      avatar_url: agent.avatar_url,
+      avatar_prompt: agent.avatar_prompt
+    };
+    
+    // Here you'd call the agent creation function
+    alert(`Using saved agent: ${agent.name}`);
+    setShowLibrary(false);
+  };
+
+  if (!user) return null;
+
+  return (
+    <>
+      <button
+        onClick={() => setShowLibrary(true)}
+        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm"
+      >
+        📚 My Agent Library ({savedAgents.length})
+      </button>
+
+      {showLibrary && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">📚 My Saved Agents</h2>
+              <button
+                onClick={() => setShowLibrary(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+
+            {loading ? (
+              <div className="text-center py-8">Loading saved agents...</div>
+            ) : savedAgents.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-4">📋</div>
+                <p>No saved agents yet.</p>
+                <p className="text-sm mt-2">Create agents and save them to your library for reuse!</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {savedAgents.map(agent => (
+                  <div key={agent.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+                    <div className="flex items-start space-x-3 mb-3">
+                      {agent.avatar_url ? (
+                        <img 
+                          src={agent.avatar_url} 
+                          alt={agent.name}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600">
+                          {agent.name.charAt(0)}
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <h3 className="font-bold text-gray-800">{agent.name}</h3>
+                        <p className="text-sm text-gray-600">{agent.archetype}</p>
+                      </div>
+                    </div>
+                    
+                    <p className="text-xs text-gray-600 mb-3 line-clamp-2">"{agent.goal}"</p>
+                    
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleUseAgent(agent)}
+                        className="flex-1 bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700"
+                      >
+                        🔄 Use Agent
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAgent(agent.id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                    
+                    <div className="text-xs text-gray-400 mt-2">
+                      Created: {new Date(agent.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+const ConversationHistoryViewer = () => {
+  const { user, token } = useAuth();
+  const [conversationHistory, setConversationHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+
+  const fetchConversationHistory = async () => {
+    if (!token) return;
+    
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/conversation-history`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setConversationHistory(response.data);
+    } catch (error) {
+      console.error('Error fetching conversation history:', error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (showHistory && token) {
+      fetchConversationHistory();
+    }
+  }, [showHistory, token]);
+
+  if (!user) return null;
+
+  return (
+    <>
+      <button
+        onClick={() => setShowHistory(true)}
+        className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm"
+      >
+        💬 My Conversations ({conversationHistory.length})
+      </button>
+
+      {showHistory && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">💬 My Conversation History</h2>
+              <button
+                onClick={() => setShowHistory(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+
+            {loading ? (
+              <div className="text-center py-8">Loading conversation history...</div>
+            ) : conversationHistory.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-4">💭</div>
+                <p>No conversation history yet.</p>
+                <p className="text-sm mt-2">Your conversations will be automatically saved here!</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {conversationHistory.map(conversation => (
+                  <div key={conversation.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-bold text-gray-800">
+                          {conversation.title || `Conversation from ${new Date(conversation.created_at).toLocaleDateString()}`}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          Participants: {conversation.participants.join(', ')}
+                        </p>
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {new Date(conversation.created_at).toLocaleString()}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 rounded p-3 max-h-40 overflow-y-auto">
+                      {conversation.messages.slice(0, 3).map((message, index) => (
+                        <div key={index} className="text-sm mb-2">
+                          <strong>{message.agent_name}:</strong> {message.message}
+                        </div>
+                      ))}
+                      {conversation.messages.length > 3 && (
+                        <div className="text-xs text-gray-500">
+                          ... and {conversation.messages.length - 3} more messages
+                        </div>
+                      )}
+                    </div>
+                    
+                    {conversation.tags.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {conversation.tags.map(tag => (
+                          <span key={tag} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 function App() {
   const [agents, setAgents] = useState([]);
   const [conversations, setConversations] = useState([]);
