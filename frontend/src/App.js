@@ -3018,6 +3018,7 @@ function App() {
               conversations={conversations} 
               selectedLanguage={selectedLanguage}
               onLanguageChange={handleLanguageChange}
+              audioNarrativeEnabled={audioNarrativeEnabled}
             />
             
             {/* Observer Input - Subtle placement below conversations */}
