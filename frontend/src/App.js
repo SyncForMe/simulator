@@ -2399,7 +2399,6 @@ const ControlPanel = ({
         <div className="simulation-section">
           <h4 className="text-sm font-semibold mb-2 text-gray-700">Simulation</h4>
           
-
           {/* Pause/Resume Button */}
           {isActive ? (
             <button 
@@ -2416,8 +2415,9 @@ const ControlPanel = ({
               ▶️ Resume Simulation
             </button>
           )}
-        </div>
-        
+          <p className="text-xs text-gray-500 mb-3">
+            {isActive ? 'Pause the ongoing simulation' : 'Resume the paused simulation'}
+          </p>
         {/* Fast Forward Section */}
         <div className="fast-forward-section">
           <h4 className="text-sm font-semibold mb-2 text-gray-700">Fast Forward</h4>
