@@ -142,6 +142,7 @@ def is_valid_url(url):
         r'(?::\d+)?'  # optional port
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return bool(url_pattern.match(url))
+    return bool(url_pattern.match(url))
 
 def test_avatar_generation():
     """Test the avatar generation functionality"""
