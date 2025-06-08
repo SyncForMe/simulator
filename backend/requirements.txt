@@ -10,3 +10,9 @@ emergentintegrations
 google-cloud-texttospeech==2.16.4
 aiohttp==3.10.12
 fal-client==0.7.0
+python-jose[cryptography]==3.5.0
+google-auth==2.40.3
+google-auth-oauthlib==1.2.2
+google-auth-httplib2==0.2.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.3.0
