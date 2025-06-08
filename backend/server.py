@@ -262,8 +262,8 @@ Address the Observer respectfully but naturally according to your personality.""
         "agent_responses": conversation_round
     }
 
-@api_router.get("/api-usage")
-async def get_api_usage():
+@api_router.get("/usage")
+async def get_usage():
     """Get current API usage statistics"""
     try:
         today = datetime.utcnow().strftime("%Y-%m-%d")
