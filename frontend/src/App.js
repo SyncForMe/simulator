@@ -1532,8 +1532,8 @@ const CompactLanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
   );
 };
 
-const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange }) => {
-  const [isNarrationEnabled, setIsNarrationEnabled] = useState(false);
+const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange, audioNarrativeEnabled = true }) => {
+  const [isNarrationEnabled, setIsNarrationEnabled] = useState(audioNarrativeEnabled);
   const [isNarrating, setIsNarrating] = useState(false);
   const [currentRoundIndex, setCurrentRoundIndex] = useState(-1);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(-1);
