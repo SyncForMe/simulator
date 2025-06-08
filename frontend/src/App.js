@@ -3104,15 +3104,9 @@ function App() {
             <ControlPanel
               simulationState={simulationState}
               apiUsage={apiUsage}
-              onStartSimulation={handleStartSimulation}
-              onPauseSimulation={handlePauseSimulation}
-              onResumeSimulation={handleResumeSimulation}
-              onNextPeriod={handleNextPeriod}
-              onGenerateConversation={handleGenerateConversation}
               onInitResearchStation={handleInitResearchStation}
               onTestBackgrounds={handleTestBackgrounds}
               onCreateAgent={handleCreateAgent}
-              onToggleAuto={handleToggleAuto}
               setShowFastForward={setShowFastForward}
             />
 
