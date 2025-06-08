@@ -3061,6 +3061,16 @@ function App() {
               audioNarrativeEnabled={audioNarrativeEnabled}
             />
             
+            {/* Conversation Controls - Underneath conversations */}
+            <ConversationControls 
+              simulationState={simulationState}
+              onPauseSimulation={handlePauseSimulation}
+              onResumeSimulation={handleResumeSimulation}
+              onGenerateConversation={handleGenerateConversation}
+              onNextPeriod={handleNextPeriod}
+              onToggleAuto={handleToggleAuto}
+            />
+            
             {/* Observer Input - Subtle placement below conversations */}
             <ObserverInput onSendMessage={handleSendObserverMessage} />
             
