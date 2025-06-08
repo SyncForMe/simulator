@@ -3341,9 +3341,34 @@ function App() {
     try {
       await axios.post(`${API}/conversation/generate`);
       await refreshAllData();
+      
+      // Auto-save conversation to history if user is authenticated
+      if (isAuthenticated && token) {
+        try {
+          const currentConversations = await axios.get(`${API}/conversations`);
+          if (currentConversations.data.length > 0) {
+            const latestConversation = currentConversations.data[currentConversations.data.length - 1];
+            
+            const conversationData = {
+              simulation_id: simulationState?.id || '',
+              participants: latestConversation.messages.map(m => m.agent_name),
+              messages: latestConversation.messages,
+              language: selectedLanguage,
+              title: `Conversation - Day ${simulationState?.current_day || 1}`,
+              tags: ['auto-saved', `day-${simulationState?.current_day || 1}`]
+            };
+            
+            await axios.post(`${API}/conversation-history`, conversationData, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+          }
+        } catch (error) {
+          console.error('Error auto-saving conversation:', error);
+          // Don't show error to user for auto-save failures
+        }
+      }
     } catch (error) {
       console.error('Error generating conversation:', error);
-      alert('Error generating conversation. Check API usage limits.');
     }
     setLoading(false);
   };
