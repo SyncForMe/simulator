@@ -3253,10 +3253,12 @@ function App() {
 
   const fetchApiUsage = async () => {
     try {
-      const response = await axios.get(`${API}/api-usage`);
+      const response = await axios.get(`${API}/usage`);
       setApiUsage(response.data);
     } catch (error) {
       console.error('Error fetching API usage:', error);
+      // Set default values if endpoint fails
+      setApiUsage({ requests: 0, remaining: 1000 });
     }
   };
 
