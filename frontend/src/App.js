@@ -1648,37 +1648,33 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
       <div className="action-buttons flex flex-wrap gap-2 mb-3">
         <button
           onClick={() => onEdit(agent)}
-          className="bg-blue-100 hover:bg-blue-200 text-blue-600 px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+          className="bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded transition-colors"
           title="Edit Agent"
         >
-          <span>✏️</span>
-          <span>Edit</span>
+          ✏️
         </button>
         {agent.memory_summary && (
           <button
             onClick={() => onClearMemory(agent.id)}
-            className="bg-red-100 hover:bg-red-200 text-red-600 px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+            className="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded transition-colors"
             title="Clear Memory"
           >
-            <span>🧠</span>
-            <span>Clear</span>
+            🧠❌
           </button>
         )}
         <button
           onClick={() => setShowMemoryInput(!showMemoryInput)}
-          className="bg-green-100 hover:bg-green-200 text-green-600 px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+          className="bg-green-100 hover:bg-green-200 text-green-600 p-2 rounded transition-colors"
           title="Add Memory"
         >
-          <span>🧠</span>
-          <span>Add</span>
+          🧠+
         </button>
         <button
           onClick={() => onDelete(agent.id, agent.name)}
-          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+          className="bg-red-500 hover:bg-red-600 text-white p-2 rounded transition-colors"
           title="Delete Agent"
         >
-          <span>🗑️</span>
-          <span>Delete</span>
+          🗑️
         </button>
       </div>
 
