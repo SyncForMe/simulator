@@ -2510,12 +2510,12 @@ const AgentProfilesManager = ({
       <div className="space-y-2 mb-4">
         {/* Primary Actions Row */}
         <div className="flex space-x-2">
-          <button
-            onClick={() => onCreateAgent()}
-            className="flex-1 bg-emerald-600 text-white px-3 py-2 rounded text-sm hover:bg-emerald-700 transition-colors"
-          >
-            ➕ Add Agent
-          </button>
+          <div className="flex-1">
+            <AvatarCreator 
+              onCreateAgent={onCreateAgent}
+              archetypes={AGENT_ARCHETYPES}
+            />
+          </div>
           {agents.length > 0 && (
             <button
               onClick={handleDeleteAll}
