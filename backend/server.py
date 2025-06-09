@@ -1277,6 +1277,8 @@ async def update_agent(agent_id: str, agent_update: AgentUpdate):
         # Process URLs in memory before storing
         processed_memory = await llm_manager.process_memory_with_urls(agent_update.memory_summary)
         update_data["memory_summary"] = processed_memory
+    if agent_update.avatar_url is not None:
+        update_data["avatar_url"] = agent_update.avatar_url
     
     # Update the agent
     await db.agents.update_one(
