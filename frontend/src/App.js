@@ -2997,14 +2997,6 @@ const ControlPanel = ({
       </div>
 
       <div className="controls space-y-3">
-        {/* Setup Controls */}
-        <div className="setup-section">
-          <h4 className="text-sm font-semibold mb-2 text-gray-700">Setup</h4>
-          <p className="text-xs text-gray-500 mb-3">
-            Agent creation is now available in the Agent Profiles section above.
-          </p>
-        </div>
-
         {/* Fast Forward Section */}
         <div className="fast-forward-section">
           <h4 className="text-sm font-semibold mb-2 text-gray-700">Fast Forward</h4>
