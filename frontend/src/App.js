@@ -4150,9 +4150,6 @@ function App() {
             {/* Observer Input - Subtle placement below conversations */}
             <ObserverInput onSendMessage={handleSendObserverMessage} />
             
-            {/* Start New Simulation Control - Underneath scenario creation */}
-            <StartSimulationControl onStartSimulation={handleStartSimulation} />
-            
             {/* Conversation and Time Status - Underneath Observer Input */}
             <ConversationTimeStatus simulationState={simulationState} />
             
