@@ -3184,7 +3184,7 @@ const ConversationHistoryViewer = () => {
 };
 
 function App() {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, token } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [agents, setAgents] = useState([]);
   const [conversations, setConversations] = useState([]);
