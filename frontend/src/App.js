@@ -15,6 +15,155 @@ console.log('Environment variables loaded:', {
 });
 
 // Animated Observer Logo Component
+const ObserverLogo = () => {
+  const pupilControls = useAnimationControls();
+  const eyelidControls = useAnimationControls();
+
+  useEffect(() => {
+    // Animation sequences
+    const animatePupil = async () => {
+      while (true) {
+        // Random chance for different movements
+        const movementType = Math.random();
+        
+        if (movementType < 0.4) {
+          // Scanning motion (40% chance)
+          await pupilControls.start({
+            x: -8,
+            y: Math.random() * 4 + 8, // 8-12px
+            transition: {
+              type: "spring",
+              stiffness: 60,
+              damping: 20
+            }
+          });
+          
+          await new Promise(resolve => setTimeout(resolve, 200));
+          
+          await pupilControls.start({
+            x: 8,
+            y: Math.random() * 4 + 8, // 8-12px
+            transition: {
+              type: "spring",
+              stiffness: 60,
+              damping: 20
+            }
+          });
+          
+          await new Promise(resolve => setTimeout(resolve, 200));
+        } else {
+          // Random movement (60% chance)
+          await pupilControls.start({
+            x: Math.random() * 20 - 10, // -10 to 10px
+            y: Math.random() * 4 + 8,   // 8-12px
+            transition: {
+              type: "spring",
+              stiffness: Math.random() * 20 + 50, // 50-70
+              damping: 20
+            }
+          });
+        }
+        
+        // Wait before next movement
+        await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 1000));
+      }
+    };
+
+    const animateBlink = async () => {
+      while (true) {
+        // Wait 5-10 seconds between blinks
+        await new Promise(resolve => setTimeout(resolve, Math.random() * 5000 + 5000));
+        
+        // Blink sequence
+        await eyelidControls.start({
+          y: "0%",
+          transition: { duration: 0.1 }
+        });
+        
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        await eyelidControls.start({
+          y: "-100%",
+          transition: { duration: 0.15 }
+        });
+      }
+    };
+
+    // Start animations
+    animatePupil();
+    animateBlink();
+
+    return () => {
+      pupilControls.stop();
+      eyelidControls.stop();
+    };
+  }, [pupilControls, eyelidControls]);
+
+  return (
+    <div className="flex items-center select-none" style={{ fontFamily: 'Merriweather, serif' }}>
+      <div className="text-6xl font-bold tracking-tight text-gray-900 flex items-center">
+        {/* Animated Eye as "O" */}
+        <div 
+          className="relative inline-flex items-center justify-center border-gray-900"
+          style={{
+            height: '1em',
+            width: '0.95em',
+            borderWidth: '0.14em',
+            borderRadius: '45%',
+            marginRight: '0.05em'
+          }}
+        >
+          {/* Eyeball background */}
+          <div 
+            className="bg-white flex items-center justify-center"
+            style={{
+              height: '0.84em',
+              width: '0.84em',
+              borderRadius: '40%'
+            }}
+          >
+            {/* Animated pupil */}
+            <motion.div
+              animate={pupilControls}
+              className="bg-black rounded-full"
+              style={{
+                height: '0.23em',
+                width: '0.23em'
+              }}
+            />
+          </div>
+          
+          {/* Animated eyelid */}
+          <motion.div
+            animate={eyelidControls}
+            initial={{ y: "-100%" }}
+            className="absolute inset-0 bg-gray-200 overflow-hidden"
+            style={{
+              borderRadius: '45%'
+            }}
+          >
+            {/* Eyelashes */}
+            <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-1">
+              {[...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-gray-500"
+                  style={{
+                    width: '1px',
+                    height: '4px',
+                    transform: `rotate(${(i - 2) * 10}deg)`
+                  }}
+                />
+              ))}
+            </div>
+          </motion.div>
+        </div>
+        
+        {/* Rest of the text "bserver" */}
+        <span>bserver</span>
+      </div>
+    </div>
+  );
 console.log('Environment variables loaded:', {
   BACKEND_URL,
   GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID ? 'Present' : 'Missing',
