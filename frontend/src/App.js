@@ -13,6 +13,13 @@ console.log('Environment variables loaded:', {
   NODE_ENV: process.env.NODE_ENV
 });
 
+// Debug logging
+console.log('Environment variables loaded:', {
+  BACKEND_URL,
+  GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID ? 'Present' : 'Missing',
+  NODE_ENV: process.env.NODE_ENV
+});
+
 // Authentication Context
 const AuthContext = createContext();
 
