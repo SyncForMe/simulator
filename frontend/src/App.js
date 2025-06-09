@@ -4019,7 +4019,7 @@ function App() {
               {/* User Library & History (only show when authenticated) */}
               {isAuthenticated && (
                 <>
-                  <SavedAgentsLibrary />
+                  <SavedAgentsLibrary onCreateAgent={handleCreateAgent} />
                   <ConversationHistoryViewer />
                 </>
               )}
