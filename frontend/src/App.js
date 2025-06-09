@@ -3266,9 +3266,8 @@ function App() {
             
             if (avatarResponse.data.success) {
               console.log(`Avatar generated for ${agent.name}, updating agent...`);
-              // Update the agent with the generated avatar
+              // Update the agent with the generated avatar - send only the avatar_url field
               await axios.put(`${API}/agents/${agent.id}`, {
-                ...agent,
                 avatar_url: avatarResponse.data.image_url
               });
               console.log(`Agent ${agent.name} updated with avatar`);
