@@ -1645,7 +1645,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
       </div>
 
       {/* Action Buttons - Now positioned below header to avoid overlap */}
-      <div className="action-buttons flex flex-wrap gap-1 mb-3">
+      <div className="action-buttons flex flex-wrap gap-2 mb-3">
         <button
           onClick={() => onEdit(agent)}
           className="bg-blue-100 hover:bg-blue-200 text-blue-600 px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
