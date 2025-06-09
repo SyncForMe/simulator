@@ -1839,52 +1839,6 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
         </button>
       </div>
 
-      {/* Action Buttons - Now positioned below header to avoid overlap */}
-      <div className="action-buttons flex flex-wrap gap-1 mb-3">
-        <button
-          onClick={() => onEdit(agent)}
-          className="text-blue-600 hover:text-blue-800 transition-colors p-1"
-          title="Edit Agent"
-          style={{ fontSize: '0.75rem' }}
-        >
-          ✏️
-        </button>
-        {agent.memory_summary && (
-          <button
-            onClick={() => onClearMemory(agent.id)}
-            className="text-red-600 hover:text-red-800 transition-colors p-1"
-            title="Clear Memory"
-            style={{ fontSize: '0.75rem' }}
-          >
-            🧠❌
-          </button>
-        )}
-        <button
-          onClick={() => setShowMemoryInput(!showMemoryInput)}
-          className="text-green-600 hover:text-green-800 transition-colors p-1"
-          title="Add Memory"
-          style={{ fontSize: '0.75rem' }}
-        >
-          🧠+
-        </button>
-        <button
-          onClick={() => onDelete(agent.id, agent.name)}
-          className="text-red-600 hover:text-red-800 transition-colors p-1"
-          title="Delete Agent"
-          style={{ fontSize: '0.75rem' }}
-        >
-          <svg 
-            width="12" 
-            height="12" 
-            viewBox="0 0 24 24" 
-            fill="currentColor"
-            className="inline-block"
-          >
-            <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-          </svg>
-        </button>
-      </div>
-
       {/* Expandable Details Section */}
       {isExpanded && (
         <div className="expanded-details mt-4 pt-4 border-t border-gray-100 animate-fade-in">
