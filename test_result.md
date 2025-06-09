@@ -423,7 +423,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - ""
+    - "Animated Observer Logo"
   stuck_tasks:
     - ""
   test_all: false
