@@ -317,6 +317,7 @@ test_plan:
     - "Conversation History with Authentication"
     - "Complete Authentication Flow"
     - "Agent Card UI Improvements"
+    - "UI Reorganization - Agent Profiles Section"
   stuck_tasks:
     - ""
   test_all: false
