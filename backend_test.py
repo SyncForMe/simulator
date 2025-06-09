@@ -1168,26 +1168,29 @@ def main():
         print_summary()
         return
     
-    # 2. Test avatar generation endpoint
-    avatar_success, avatar_message = test_avatar_generation()
+    # 2. Test test login endpoint and complete flow
+    complete_flow_success, complete_flow_message = test_complete_flow()
     
-    # 3. Test agent creation endpoint
-    agent_success, agent_message = test_agent_creation()
-    
-    # 4. Test API usage endpoint
-    api_usage_success, api_usage_message = test_api_usage_endpoint()
-    
-    # 5. Test auth/me endpoint
-    auth_me_success, auth_me_message = test_auth_me_endpoint()
-    
-    # 6. Test authentication endpoints
+    # 3. Test authentication endpoints
     auth_success, auth_message = test_auth_endpoints()
     
-    # 7. Test saved agents endpoints
+    # 4. Test saved agents endpoints
     saved_agents_success, saved_agents_message = test_saved_agents_endpoints()
     
-    # 8. Test conversation history endpoints
+    # 5. Test conversation history endpoints
     conversation_history_success, conversation_history_message = test_conversation_history_endpoints()
+    
+    # 6. Test JWT validation
+    jwt_validation_success, jwt_validation_message = test_jwt_validation()
+    
+    # 7. Test avatar generation endpoint
+    avatar_success, avatar_message = test_avatar_generation()
+    
+    # 8. Test agent creation endpoint
+    agent_success, agent_message = test_agent_creation()
+    
+    # 9. Test API usage endpoint
+    api_usage_success, api_usage_message = test_api_usage_endpoint()
     
     # Print summary of all tests
     print_summary()
@@ -1198,40 +1201,44 @@ def main():
     print("="*80)
     
     all_tests_passed = (
-        avatar_success and 
-        agent_success and 
-        api_usage_success and
-        auth_me_success and
+        complete_flow_success and
         auth_success and 
         saved_agents_success and 
-        conversation_history_success
+        conversation_history_success and
+        jwt_validation_success and
+        avatar_success and 
+        agent_success and 
+        api_usage_success
     )
     
     if all_tests_passed:
         print("✅ The AI Agent Simulation App is working correctly!")
+        print("✅ Test login endpoint and complete authentication flow are working correctly")
+        print("✅ Authentication endpoints are properly implemented")
+        print("✅ Saved agents endpoints are working correctly")
+        print("✅ Conversation history endpoints are working correctly")
+        print("✅ JWT token validation is working correctly")
         print("✅ Avatar generation endpoint is working correctly")
         print("✅ Agent creation endpoint is working correctly")
         print("✅ API usage endpoint is working correctly")
-        print("✅ Auth/Me endpoint is working correctly")
-        print("✅ Authentication endpoints are properly implemented")
-        print("✅ Saved agents endpoints require authentication")
-        print("✅ Conversation history endpoints require authentication")
     else:
         print("❌ The AI Agent Simulation App has issues:")
-        if not avatar_success:
-            print(f"  - {avatar_message}")
-        if not agent_success:
-            print(f"  - {agent_message}")
-        if not api_usage_success:
-            print(f"  - {api_usage_message}")
-        if not auth_me_success:
-            print(f"  - {auth_me_message}")
+        if not complete_flow_success:
+            print(f"  - {complete_flow_message}")
         if not auth_success:
             print(f"  - {auth_message}")
         if not saved_agents_success:
             print(f"  - {saved_agents_message}")
         if not conversation_history_success:
             print(f"  - {conversation_history_message}")
+        if not jwt_validation_success:
+            print(f"  - {jwt_validation_message}")
+        if not avatar_success:
+            print(f"  - {avatar_message}")
+        if not agent_success:
+            print(f"  - {agent_message}")
+        if not api_usage_success:
+            print(f"  - {api_usage_message}")
     print("="*80)
 
 if __name__ == "__main__":
