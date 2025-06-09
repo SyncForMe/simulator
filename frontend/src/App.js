@@ -3102,7 +3102,7 @@ const ControlPanel = ({
   );
 };
 
-const SavedAgentsLibrary = () => {
+const SavedAgentsLibrary = ({ onCreateAgent }) => {
   const { user, token } = useAuth();
   const [savedAgents, setSavedAgents] = useState([]);
   const [loading, setLoading] = useState(false);
