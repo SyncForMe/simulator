@@ -3159,7 +3159,7 @@ const SavedAgentsLibrary = ({ onCreateAgent }) => {
       };
       
       // Call the agent creation function
-      await handleCreateAgent(agentData);
+      await onCreateAgent(agentData);
       
       // Update usage count for the saved agent
       await axios.put(`${API}/saved-agents/${agent.id}/use`, {}, {
