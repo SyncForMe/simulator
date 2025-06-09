@@ -3161,17 +3161,9 @@ const SavedAgentsLibrary = ({ onCreateAgent }) => {
       // Call the agent creation function
       await onCreateAgent(agentData);
       
-      // Update usage count for the saved agent
-      await axios.put(`${API}/saved-agents/${agent.id}/use`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
       setShowLibrary(false);
       
-      // Refresh saved agents to update usage count
-      await loadSavedAgents();
+      alert(`Agent "${agent.name}" has been added to your simulation!`);
     } catch (error) {
       console.error('Error using saved agent:', error);
       alert('Failed to create agent from library. Please try again.');
