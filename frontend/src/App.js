@@ -1035,7 +1035,7 @@ const StartSimulationControl = ({ onStartSimulation }) => {
         onClick={onStartSimulation}
         className="w-full bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 text-sm font-medium transition-colors"
       >
-        🚀 Start New Simulation
+        Start New Simulation
       </button>
       <p className="text-xs text-gray-500 mt-2 text-center">
         Resets all conversations and relationships, starts fresh with your configuration
