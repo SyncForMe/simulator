@@ -2656,9 +2656,9 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
     <div className="avatar-creator">
       <button
         onClick={() => setIsOpen(true)}
-        className="w-full bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 text-sm mb-2"
+        className="w-full bg-emerald-600 text-white px-3 py-2 rounded hover:bg-emerald-700 text-sm transition-colors"
       >
-        👤 Create Custom Agent
+        ➕ Add Agent
       </button>
       
       {isOpen && (
