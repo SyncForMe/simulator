@@ -1678,16 +1678,6 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
         >
           ✏️
         </button>
-        {agent.memory_summary && (
-          <button
-            onClick={() => onClearMemory(agent.id)}
-            className="text-red-600 hover:text-red-800 transition-colors p-1"
-            title="Clear Memory"
-            style={{ fontSize: '0.75rem' }}
-          >
-            🧠❌
-          </button>
-        )}
         <button
           onClick={() => setShowMemoryInput(!showMemoryInput)}
           className="text-green-600 hover:text-green-800 transition-colors p-1"
@@ -1715,21 +1705,16 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
       </div>
 
       {/* Header Content - Agent name aligned with avatar height */}
-      <div className="ml-16 mr-20 flex flex-col justify-center" style={{ minHeight: '48px' }}>
+      <div className="ml-16 mr-16 flex flex-col justify-center" style={{ minHeight: '48px' }}>
         <h3 className="font-bold text-gray-800 break-words leading-tight">{agent.name}</h3>
         <p className="text-sm text-gray-600">{agent.archetype}</p>
         {agent.goal && (
-          <p className="text-xs text-gray-500 italic mt-1">"{agent.goal}"</p>
+          <p className="text-xs text-gray-500 italic mt-1 pr-4">"{agent.goal}"</p>
         )}
         <div className="flex items-center flex-wrap gap-2 mt-1">
           <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
             {agent.current_mood}
           </span>
-          {agent.memory_summary && (
-            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
-              🧠 Has Memory
-            </span>
-          )}
         </div>
       </div>
 
