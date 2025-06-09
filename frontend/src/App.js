@@ -2507,22 +2507,52 @@ const AgentProfilesManager = ({
       </div>
       
       {/* Quick Actions */}
-      <div className="flex space-x-2 mb-4">
-        <button
-          onClick={() => onCreateAgent()}
-          className="flex-1 bg-emerald-600 text-white px-3 py-2 rounded text-sm hover:bg-emerald-700 transition-colors"
-        >
-          ➕ Add Agent
-        </button>
-        {agents.length > 0 && (
+      <div className="space-y-2 mb-4">
+        {/* Primary Actions Row */}
+        <div className="flex space-x-2">
           <button
-            onClick={handleDeleteAll}
-            className="bg-red-500 text-white px-3 py-2 rounded text-sm hover:bg-red-600 transition-colors"
-            title="Delete All Agents"
+            onClick={() => onCreateAgent()}
+            className="flex-1 bg-emerald-600 text-white px-3 py-2 rounded text-sm hover:bg-emerald-700 transition-colors"
           >
-            🗑️ Clear All
+            ➕ Add Agent
           </button>
-        )}
+          {agents.length > 0 && (
+            <button
+              onClick={handleDeleteAll}
+              className="bg-red-500 text-white px-3 py-2 rounded text-sm hover:bg-red-600 transition-colors"
+              title="Delete All Agents"
+            >
+              🗑️ Clear All
+            </button>
+          )}
+        </div>
+
+        {/* Team Builder Actions */}
+        <div className="space-y-2">
+          <div className="border-t border-gray-200 pt-2">
+            <h4 className="text-xs font-semibold text-gray-600 mb-2">🚀 Quick Team Builders</h4>
+          </div>
+          
+          <button 
+            onClick={onInitResearchStation}
+            className="w-full bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700 text-sm"
+          >
+            Create Crypto Team
+          </button>
+          <p className="text-xs text-gray-500 mb-2">
+            Creates 3 crypto experts: Mark (Marketing Veteran), Alex (DeFi Product Leader), Dex (Trend-Spotting Generalist)
+          </p>
+          
+          <button 
+            onClick={onTestBackgrounds}
+            className="w-full bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700 text-sm"
+          >
+            🎲 Generate Random Team
+          </button>
+          <p className="text-xs text-gray-500">
+            Creates 4 agents with dramatically different professional backgrounds to showcase how background influences thinking
+          </p>
+        </div>
       </div>
       
       {agents.length > 0 && (
