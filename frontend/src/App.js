@@ -3144,22 +3144,38 @@ const SavedAgentsLibrary = () => {
     }
   };
 
-  const handleUseAgent = (agent) => {
-    // Trigger agent creation with saved agent data
-    const agentData = {
-      name: `${agent.name} (Copy)`,
-      archetype: agent.archetype,
-      personality: agent.personality,
-      goal: agent.goal,
-      expertise: agent.expertise,
-      background: agent.background,
-      avatar_url: agent.avatar_url,
-      avatar_prompt: agent.avatar_prompt
-    };
-    
-    // Here you'd call the agent creation function
-    alert(`Using saved agent: ${agent.name}`);
-    setShowLibrary(false);
+  const handleUseAgent = async (agent) => {
+    try {
+      // Trigger agent creation with saved agent data
+      const agentData = {
+        name: `${agent.name} (Copy)`,
+        archetype: agent.archetype,
+        personality: agent.personality,
+        goal: agent.goal,
+        expertise: agent.expertise,
+        background: agent.background,
+        avatar_url: agent.avatar_url,
+        avatar_prompt: agent.avatar_prompt
+      };
+      
+      // Call the agent creation function
+      await handleCreateAgent(agentData);
+      
+      // Update usage count for the saved agent
+      await axios.put(`${API}/saved-agents/${agent.id}/use`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      setShowLibrary(false);
+      
+      // Refresh saved agents to update usage count
+      await loadSavedAgents();
+    } catch (error) {
+      console.error('Error using saved agent:', error);
+      alert('Failed to create agent from library. Please try again.');
+    }
   };
 
   if (!user) return null;
