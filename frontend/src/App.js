@@ -179,46 +179,24 @@ const LoginModal = ({ isOpen, onClose }) => {
     setError('');
     
     try {
-      // Create a test Google credential for backend authentication
-      const testCredential = `eyJhbGciOiJSUzI1NiIsImtpZCI6InRlc3QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXVkIjoiMjUxNDU0MjY1NDM3LTg4MmJmZjM2MDFuN2lyN2R0MGVxdWg1aWpndTVoOWNsLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoidGVzdC11c2VyLTEyMyIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsIm5hbWUiOiJUZXN0IFVzZXIiLCJwaWN0dXJlIjoiaHR0cHM6Ly92aWEucGxhY2Vob2xkZXIuY29tLzQwIiwiaWF0Ijoke0RhdGUubm93KCl9LCJleHAiOjoke0RhdGUubm93KCkgKyAzNjAwMDAwfX0.test-signature`;
+      // Call the backend test login endpoint
+      const response = await axios.post(`${API}/auth/test-login`);
+      const { access_token, user: userData } = response.data;
       
-      // Try to authenticate with the backend using the test credential
-      const result = await login(testCredential);
+      // Store token and user data
+      localStorage.setItem('auth_token', access_token);
+      setToken(access_token);
+      setUser(userData);
       
-      if (result.success) {
-        // Close modal and show success
-        onClose();
-        setTimeout(() => {
-          alert('✅ Test login successful! You can now save agents and access conversation history.');
-        }, 500);
-      } else {
-        // If backend test login fails, show a helpful message
-        setError(`Backend authentication not available in test mode. Error: ${result.error}`);
-        
-        // For development, create local-only authentication
-        const mockUser = {
-          id: 'test-user-123',
-          email: 'test@example.com',
-          name: 'Test User (Local Only)',
-          picture: 'https://via.placeholder.com/40',
-          created_at: new Date().toISOString(),
-          last_login: new Date().toISOString()
-        };
-        
-        const mockToken = 'local-test-token-' + Date.now();
-        localStorage.setItem('auth_token', mockToken);
-        setUser(mockUser);
-        setToken(mockToken);
-        
-        onClose();
-        setTimeout(() => {
-          alert('⚠️ Using local-only test login. Agent library and conversation history features will not work until you set up proper Google OAuth.');
-        }, 500);
-      }
+      // Close modal and show success
+      onClose();
+      setTimeout(() => {
+        alert('✅ Test login successful! You can now save agents and access conversation history.');
+      }, 500);
       
     } catch (err) {
       console.error('Test login error:', err);
-      setError('Test login failed. Please try again or use Google OAuth.');
+      setError(`Test login failed: ${err.response?.data?.detail || err.message}`);
     }
     setLoginLoading(false);
   };
