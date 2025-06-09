@@ -4168,6 +4168,9 @@ function App() {
 
           {/* Right Column - Controls */}
           <div className="lg:col-span-1">
+            {/* Start New Simulation Control - Above scenario creation */}
+            <StartSimulationControl onStartSimulation={handleStartSimulation} />
+            
             <ScenarioInput onSetScenario={handleSetScenario} />
             
             <SimulationStatusBar simulationState={simulationState} />
