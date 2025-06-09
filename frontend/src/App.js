@@ -3525,8 +3525,43 @@ function App() {
     try {
       const response = await axios.get(`${API}/conversations`);
       setConversations(response.data);
+      
+      // Auto-save new conversations to user's history if authenticated
+      if (token && response.data.length > 0) {
+        await saveConversationsToHistory(response.data);
+      }
     } catch (error) {
       console.error('Error fetching conversations:', error);
+    }
+  };
+
+  const saveConversationsToHistory = async (conversations) => {
+    if (!token || !conversations.length) return;
+    
+    try {
+      // Save the latest conversation to user's history
+      const latestConversation = conversations[conversations.length - 1];
+      
+      if (latestConversation && latestConversation.messages && latestConversation.messages.length > 0) {
+        const conversationData = {
+          simulation_id: `sim_${Date.now()}`,
+          participants: latestConversation.messages.map(m => m.agent_name),
+          messages: latestConversation.messages.map(m => ({
+            agent_name: m.agent_name,
+            message: m.message,
+            timestamp: m.timestamp || new Date().toISOString()
+          })),
+          language: latestConversation.language || 'en',
+          title: `${latestConversation.time_period} - ${latestConversation.scenario}`,
+          tags: ['simulation', 'auto-generated']
+        };
+        
+        await axios.post(`${API}/conversation-history`, conversationData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+    } catch (error) {
+      console.error('Error saving conversation to history:', error);
     }
   };
 
