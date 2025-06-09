@@ -20,6 +20,9 @@ const ObserverLogo = () => {
   const eyelidControls = useAnimationControls();
 
   useEffect(() => {
+    // Initialize eyelid to be completely hidden
+    eyelidControls.set({ y: "-100%" });
+
     // Animation sequences
     const animatePupil = async () => {
       while (true) {
@@ -74,17 +77,19 @@ const ObserverLogo = () => {
         // Wait 5-10 seconds between blinks
         await new Promise(resolve => setTimeout(resolve, Math.random() * 5000 + 5000));
         
-        // Blink sequence
+        // Blink sequence - eyelid closes and opens quickly
         await eyelidControls.start({
           y: "0%",
-          transition: { duration: 0.1 }
+          transition: { duration: 0.1, ease: "easeOut" }
         });
         
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Keep closed briefly
+        await new Promise(resolve => setTimeout(resolve, 50));
         
+        // Open eye
         await eyelidControls.start({
           y: "-100%",
-          transition: { duration: 0.15 }
+          transition: { duration: 0.15, ease: "easeIn" }
         });
       }
     };
@@ -101,7 +106,7 @@ const ObserverLogo = () => {
 
   return (
     <div className="flex items-center select-none" style={{ fontFamily: 'Merriweather, serif' }}>
-      <div className="text-6xl font-bold tracking-tight text-gray-900 flex items-center">
+      <div className="text-4xl font-bold tracking-tight text-gray-900 flex items-center">
         {/* Animated Eye as "O" */}
         <div 
           className="relative inline-flex items-center justify-center border-gray-900"
@@ -133,7 +138,7 @@ const ObserverLogo = () => {
             />
           </div>
           
-          {/* Animated eyelid */}
+          {/* Animated eyelid - Only visible during blink */}
           <motion.div
             animate={eyelidControls}
             initial={{ y: "-100%" }}
