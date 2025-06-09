@@ -135,6 +135,26 @@
   100% { transform: scale(1); }
 }
 
+/* Tooltip Styles */
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+.tooltip {
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+/* Info icon hover effects */
+.info-icon {
+  transition: all 0.2s ease;
+}
+
+.info-icon:hover {
+  color: #4f46e5;
+  transform: scale(1.1);
+}
+
 /* Copy functionality styles */
 .copy-button {
   transition: all 0.2s ease-in-out;
