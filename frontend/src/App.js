@@ -2533,25 +2533,51 @@ const AgentProfilesManager = ({
             <h4 className="text-xs font-semibold text-gray-600 mb-2">🚀 Quick Team Builders</h4>
           </div>
           
-          <button 
-            onClick={onInitResearchStation}
-            className="w-full bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700 text-sm"
-          >
-            Create Crypto Team
-          </button>
-          <p className="text-xs text-gray-500 mb-2">
-            Creates 3 crypto experts: Mark (Marketing Veteran), Alex (DeFi Product Leader), Dex (Trend-Spotting Generalist)
-          </p>
+          <div className="flex items-center space-x-2">
+            <button 
+              onClick={onInitResearchStation}
+              className="flex-1 bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700 text-sm"
+            >
+              Create Crypto Team
+            </button>
+            <div className="relative group">
+              <svg 
+                className="w-4 h-4 text-gray-400 cursor-help" 
+                fill="currentColor" 
+                viewBox="0 0 20 20"
+              >
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+              {/* Hover Tooltip */}
+              <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
+                Creates 3 crypto experts: Mark (Marketing Veteran), Alex (DeFi Product Leader), Dex (Trend-Spotting Generalist)
+                <div className="absolute top-full right-4 border-4 border-transparent border-t-gray-800"></div>
+              </div>
+            </div>
+          </div>
           
-          <button 
-            onClick={onTestBackgrounds}
-            className="w-full bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700 text-sm"
-          >
-            🎲 Generate Random Team
-          </button>
-          <p className="text-xs text-gray-500">
-            Creates 4 agents with dramatically different professional backgrounds to showcase how background influences thinking
-          </p>
+          <div className="flex items-center space-x-2 mt-2">
+            <button 
+              onClick={onTestBackgrounds}
+              className="flex-1 bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700 text-sm"
+            >
+              🎲 Generate Random Team
+            </button>
+            <div className="relative group">
+              <svg 
+                className="w-4 h-4 text-gray-400 cursor-help" 
+                fill="currentColor" 
+                viewBox="0 0 20 20"
+              >
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+              {/* Hover Tooltip */}
+              <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
+                Creates 4 agents with dramatically different professional backgrounds to showcase how background influences thinking
+                <div className="absolute top-full right-4 border-4 border-transparent border-t-gray-800"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
