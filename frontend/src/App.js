@@ -1738,28 +1738,28 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
 
   return (
     <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 relative transition-all duration-300 hover:shadow-lg">
-      {/* Compact Header - Always Visible */}
-      <div className="agent-header flex items-center justify-between mb-3">
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          {/* Avatar */}
-          <div className="flex-shrink-0">
-            {agent.avatar_url ? (
-              <div className="relative">
-                <img 
-                  src={agent.avatar_url} 
-                  alt={`${agent.name} avatar`}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 avatar-animation"
-                />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-              </div>
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold border-2 border-gray-300">
-                {agent.name.charAt(0).toUpperCase()}
-              </div>
-            )}
+      {/* Avatar positioned at absolute top-left */}
+      <div className="absolute top-3 left-3">
+        {agent.avatar_url ? (
+          <div className="relative">
+            <img 
+              src={agent.avatar_url} 
+              alt={`${agent.name} avatar`}
+              className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 avatar-animation"
+            />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
           </div>
-          
-          {/* Basic Info - Allow text to wrap properly */}
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold border-2 border-gray-300">
+            {agent.name.charAt(0).toUpperCase()}
+          </div>
+        )}
+      </div>
+
+      {/* Compact Header - With left margin for avatar */}
+      <div className="agent-header flex items-center justify-between mb-3 ml-16">
+        <div className="flex-1 min-w-0">
+          {/* Basic Info */}
           <div className="flex-1 min-w-0">
             <h3 className="font-bold text-gray-800 break-words">{agent.name}</h3>
             <p className="text-sm text-gray-600">{agent.archetype}</p>
