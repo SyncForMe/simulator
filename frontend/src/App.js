@@ -6,6 +6,13 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
+// Debug logging
+console.log('Environment variables loaded:', {
+  BACKEND_URL,
+  GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID ? 'Present' : 'Missing',
+  NODE_ENV: process.env.NODE_ENV
+});
+
 // Authentication Context
 const AuthContext = createContext();
 
