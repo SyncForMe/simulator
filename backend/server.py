@@ -845,6 +845,50 @@ async def google_auth(auth_request: GoogleAuthRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@api_router.post("/auth/test-login", response_model=TokenResponse)
+async def test_login():
+    """Test login endpoint for development (creates a test user)"""
+    try:
+        # Create or get test user
+        test_user_data = {
+            "id": "test-user-123",
+            "email": "test@example.com",
+            "name": "Test User",
+            "picture": "https://via.placeholder.com/40",
+            "google_id": "test-google-id-123",
+            "created_at": datetime.utcnow(),
+            "last_login": datetime.utcnow(),
+            "is_active": True
+        }
+        
+        # Check if test user exists
+        existing_user = await db.users.find_one({"id": "test-user-123"})
+        
+        if existing_user:
+            # Update last login
+            await db.users.update_one(
+                {"id": "test-user-123"},
+                {"$set": {"last_login": datetime.utcnow()}}
+            )
+            user = User(**existing_user)
+        else:
+            # Create test user
+            user = User(**test_user_data)
+            await db.users.insert_one(user.dict())
+        
+        # Create JWT token
+        access_token = create_access_token(data={"sub": user.id})
+        
+        return TokenResponse(
+            access_token=access_token,
+            token_type="bearer",
+            user=UserResponse(**user.dict())
+        )
+        
+    except Exception as e:
+        logging.error(f"Test login error: {e}")
+        raise HTTPException(status_code=500, detail="Test login failed")
+
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_me(current_user: User = Depends(get_current_user)):
     """Get current user info"""
