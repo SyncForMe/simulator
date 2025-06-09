@@ -457,16 +457,16 @@ def test_conversation_history_endpoints():
         "Get Conversation History Without Auth",
         "/conversation-history",
         method="GET",
-        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
+        expected_status=403  # Expect 403 Forbidden
     )
     
     # 2. Test GET /api/conversation-history with authentication
-    get_auth_test, _ = run_test(
+    get_auth_test, get_auth_response = run_test(
         "Get Conversation History With Auth",
         "/conversation-history",
         method="GET",
         auth=True,
-        expected_status=401  # Expect 401 since our token isn't from a real user in DB
+        expected_status=200  # Expect 200 OK with test login token
     )
     
     # 3. Test POST /api/conversation-history without authentication
@@ -485,35 +485,73 @@ def test_conversation_history_endpoints():
         "/conversation-history",
         method="POST",
         data=conversation_data,
-        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
+        expected_status=403  # Expect 403 Forbidden
     )
     
     # 4. Test POST /api/conversation-history with authentication
-    post_auth_test, _ = run_test(
+    post_auth_test, post_auth_response = run_test(
         "Save Conversation With Auth",
         "/conversation-history",
         method="POST",
         data=conversation_data,
         auth=True,
-        expected_status=401  # Expect 401 since our token isn't from a real user in DB
+        expected_status=200,  # Expect 200 OK with test login token
+        expected_keys=["message"]
     )
+    
+    # 5. Verify conversation was saved by getting it again
+    conversation_saved = False
+    if post_auth_test:
+        # Get all conversations
+        _, get_after_save_response = run_test(
+            "Get Conversation History After Save",
+            "/conversation-history",
+            method="GET",
+            auth=True,
+            expected_status=200
+        )
+        
+        # Check if the saved conversation is in the list
+        if get_after_save_response:
+            # Look for a conversation with matching title
+            for conv in get_after_save_response:
+                if conv.get("title") == conversation_data["title"]:
+                    conversation_saved = True
+                    break
+            
+            print(f"Conversation save verification: {'Passed' if conversation_saved else 'Failed'}")
     
     # Print summary of conversation history tests
     print("\nCONVERSATION HISTORY ENDPOINTS SUMMARY:")
     
-    all_tests_passed = get_no_auth_test and post_no_auth_test
+    all_tests_passed = (
+        get_no_auth_test and 
+        get_auth_test and
+        post_no_auth_test and 
+        post_auth_test
+    )
+    
+    if post_auth_test:
+        all_tests_passed = all_tests_passed and conversation_saved
     
     if all_tests_passed:
-        print("✅ Conversation history endpoints require authentication!")
+        print("✅ Conversation history endpoints are working correctly!")
         print("✅ GET /api/conversation-history requires authentication")
         print("✅ POST /api/conversation-history requires authentication")
-        return True, "Conversation history endpoints require authentication"
+        print("✅ Conversations can be successfully saved and retrieved")
+        return True, "Conversation history endpoints are working correctly"
     else:
         issues = []
         if not get_no_auth_test:
             issues.append("GET /api/conversation-history authentication check has issues")
+        if not get_auth_test:
+            issues.append("GET /api/conversation-history with authentication has issues")
         if not post_no_auth_test:
             issues.append("POST /api/conversation-history authentication check has issues")
+        if not post_auth_test:
+            issues.append("POST /api/conversation-history with authentication has issues")
+        if post_auth_test and not conversation_saved:
+            issues.append("Conversation was not successfully saved")
         
         print("❌ Conversation history endpoints have issues:")
         for issue in issues:
