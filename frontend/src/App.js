@@ -1756,43 +1756,87 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
         )}
       </div>
 
-      {/* Compact Header - With left margin for avatar */}
-      <div className="agent-header flex items-center justify-between mb-3 ml-16">
-        <div className="flex-1 min-w-0">
-          {/* Basic Info */}
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-gray-800 break-words">{agent.name}</h3>
-            <p className="text-sm text-gray-600">{agent.archetype}</p>
-            <div className="flex items-center flex-wrap gap-2 mt-1">
-              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                {agent.current_mood}
-              </span>
-              {agent.memory_summary && (
-                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                  🧠 Has Memory
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Expand/Collapse Button - Positioned within card boundaries */}
-        <div className="flex items-center space-x-2 ml-3">
+      {/* Action Buttons - Positioned at top-right */}
+      <div className="absolute top-3 right-3 flex gap-1">
+        <button
+          onClick={() => onEdit(agent)}
+          className="text-blue-600 hover:text-blue-800 transition-colors p-1"
+          title="Edit Agent"
+          style={{ fontSize: '0.75rem' }}
+        >
+          ✏️
+        </button>
+        {agent.memory_summary && (
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-full transition-all duration-200 flex-shrink-0"
-            title={isExpanded ? "Hide Details" : "Show Details"}
+            onClick={() => onClearMemory(agent.id)}
+            className="text-red-600 hover:text-red-800 transition-colors p-1"
+            title="Clear Memory"
+            style={{ fontSize: '0.75rem' }}
           >
-            <svg 
-              className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+            🧠❌
           </button>
+        )}
+        <button
+          onClick={() => setShowMemoryInput(!showMemoryInput)}
+          className="text-green-600 hover:text-green-800 transition-colors p-1"
+          title="Add Memory"
+          style={{ fontSize: '0.75rem' }}
+        >
+          🧠+
+        </button>
+        <button
+          onClick={() => onDelete(agent.id, agent.name)}
+          className="text-red-600 hover:text-red-800 transition-colors p-1"
+          title="Delete Agent"
+          style={{ fontSize: '0.75rem' }}
+        >
+          <svg 
+            width="12" 
+            height="12" 
+            viewBox="0 0 24 24" 
+            fill="currentColor"
+            className="inline-block"
+          >
+            <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          </svg>
+        </button>
+      </div>
+
+      {/* Header Content - Agent name aligned with avatar height */}
+      <div className="ml-16 mr-20 flex flex-col justify-center" style={{ minHeight: '48px' }}>
+        <h3 className="font-bold text-gray-800 break-words leading-tight">{agent.name}</h3>
+        <p className="text-sm text-gray-600">{agent.archetype}</p>
+        {agent.goal && (
+          <p className="text-xs text-gray-500 italic mt-1">"{agent.goal}"</p>
+        )}
+        <div className="flex items-center flex-wrap gap-2 mt-1">
+          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+            {agent.current_mood}
+          </span>
+          {agent.memory_summary && (
+            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+              🧠 Has Memory
+            </span>
+          )}
         </div>
+      </div>
+
+      {/* Expand/Collapse Button - Below header */}
+      <div className="flex justify-center mt-3">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-full transition-all duration-200 flex-shrink-0"
+          title={isExpanded ? "Hide Details" : "Show Details"}
+        >
+          <svg 
+            className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </div>
 
       {/* Action Buttons - Now positioned below header to avoid overlap */}
