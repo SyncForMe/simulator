@@ -406,7 +406,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Avatar generation for team builders"
+    - ""
   stuck_tasks:
     - ""
   test_all: false
