@@ -355,6 +355,7 @@ test_plan:
     - "Complete Authentication Flow"
     - "Agent Card UI Improvements"
     - "UI Reorganization - Agent Profiles Section"
+    - "Info Icon Hover Tooltips for Team Builder Buttons"
   stuck_tasks:
     - ""
   test_all: false
