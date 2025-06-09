@@ -3510,8 +3510,57 @@ function App() {
   const handleInitResearchStation = async () => {
     setLoading(true);
     try {
+      // Create the crypto team
       await axios.post(`${API}/simulation/init-research-station`);
+      
+      // Refresh data to get the new agents
       await refreshAllData();
+      
+      // Generate avatars for the newly created agents
+      const agentsResponse = await axios.get(`${API}/agents`);
+      const newAgents = agentsResponse.data;
+      
+      // Generate avatars for agents that don't have them
+      const agentsNeedingAvatars = newAgents.filter(agent => !agent.avatar_url);
+      
+      if (agentsNeedingAvatars.length > 0) {
+        console.log(`Generating avatars for ${agentsNeedingAvatars.length} crypto team agents...`);
+        
+        for (const agent of agentsNeedingAvatars) {
+          try {
+            // Create specific prompts for the crypto team members
+            let avatarPrompt;
+            if (agent.name.includes('Mark') || agent.name.includes('Castellano')) {
+              avatarPrompt = 'Professional headshot of an experienced marketing executive, mature confident businessman, crypto industry veteran, high quality realistic photo';
+            } else if (agent.name.includes('Alex') || agent.name.includes('Chen')) {
+              avatarPrompt = 'Professional headshot of a female tech product leader, confident and charismatic, DeFi industry executive, high quality realistic photo';
+            } else if (agent.name.includes('Diego') || agent.name.includes('Dex')) {
+              avatarPrompt = 'Professional headshot of a young crypto analyst, tech-savvy researcher, trend spotter, high quality realistic photo';
+            } else {
+              avatarPrompt = `Professional headshot of a ${agent.archetype.replace('_', ' ')} in the crypto industry, ${agent.background ? agent.background.substring(0, 100) : 'professional appearance'}, high quality realistic photo`;
+            }
+            
+            const avatarResponse = await axios.post(`${API}/avatars/generate`, {
+              prompt: avatarPrompt
+            });
+            
+            if (avatarResponse.data.success) {
+              // Update the agent with the generated avatar
+              await axios.put(`${API}/agents/${agent.id}`, {
+                ...agent,
+                avatar_url: avatarResponse.data.image_url
+              });
+            }
+          } catch (avatarError) {
+            console.error(`Failed to generate avatar for ${agent.name}:`, avatarError);
+            // Continue with other agents even if one fails
+          }
+        }
+        
+        // Refresh data again to show the new avatars
+        await refreshAllData();
+      }
+      
     } catch (error) {
       console.error('Error initializing research station:', error);
     }
