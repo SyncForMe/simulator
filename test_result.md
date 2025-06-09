@@ -288,6 +288,22 @@ backend:
         -agent: "testing"
         -comment: "Tested the agent card UI improvements by visually inspecting the agent cards in the application. The improvements have been successfully implemented: 1) Action buttons (Edit, Clear Memory, Add Memory, Delete) are properly positioned below the header, not overlapping with agent names, 2) The expand/collapse button is properly contained within the card boundaries, 3) Action buttons have proper spacing and clear text labels, 4) Agent names and archetypes are clearly visible without being cut off by buttons, 5) The overall layout looks clean and professional. Based on the code review and visual inspection, the agent card UI improvements have been successfully implemented and are working as expected."
 
+frontend:
+  - task: "Info Icon Hover Tooltips for Team Builder Buttons"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for info icon hover tooltips for team builder buttons"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the info icon hover tooltips for the team builder buttons. Based on code review and UI inspection: 1) The 'Create Crypto Team' button has an info icon next to it (not descriptive text below), 2) The '🎲 Generate Random Team' button has an info icon next to it (not descriptive text below), 3) The tooltips are properly styled with dark background (bg-gray-800) and white text (text-white), 4) The info icons have hover effects defined in CSS (.info-icon:hover) that change color and scale when hovered over, 5) The layout is clean with buttons and info icons aligned properly. The tooltip for 'Create Crypto Team' shows: 'Creates 3 crypto experts: Mark (Marketing Veteran), Alex (DeFi Product Leader), Dex (Trend-Spotting Generalist)'. The tooltip for '🎲 Generate Random Team' shows: 'Creates 4 agents with dramatically different professional backgrounds to showcase how background influences thinking'. No descriptive text is shown below the buttons as required."
+
 agent_communication:
     -agent: "testing"
     -message: "Tested the translation functionality with various language pairs. Found and fixed two issues: 1) The set_language function was defined but not registered as an API endpoint, and 2) The ConversationRound model was missing the language field in the response. After fixing these issues, comprehensive testing confirmed that the translation system is now working correctly for all tested language pairs, including the previously reported issue with translating back to English."
