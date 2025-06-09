@@ -396,13 +396,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "POST /api/auth/test-login - Test login endpoint"
-    - "Saved Agents with Authentication"
-    - "Conversation History with Authentication"
-    - "Complete Authentication Flow"
-    - "Agent Card UI Improvements"
-    - "UI Reorganization - Agent Profiles Section"
-    - "Info Icon Hover Tooltips for Team Builder Buttons"
+    - "Avatar generation for team builders"
   stuck_tasks:
     - ""
   test_all: false
