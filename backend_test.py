@@ -650,40 +650,222 @@ def test_jwt_validation():
             print(f"  - {issue}")
         return False, "JWT token validation has issues"
 
-def test_user_data_isolation():
-    """Test user data isolation"""
+def test_complete_flow():
+    """Test the complete flow: login, save agent, retrieve agent"""
     print("\n" + "="*80)
-    print("TESTING USER DATA ISOLATION")
+    print("TESTING COMPLETE FLOW")
     print("="*80)
     
-    # Since we can't create real users with Google OAuth in testing,
-    # we'll test the endpoint structure to ensure they're designed for user isolation
+    # 1. Login with test endpoint
+    login_test, login_response = run_test(
+        "Test Login",
+        "/auth/test-login",
+        method="POST",
+        expected_keys=["access_token", "token_type", "user"]
+    )
     
-    # 1. Check saved agents endpoint includes user_id filter
-    saved_agents_test, _ = run_test(
-        "Saved Agents User Isolation",
+    if not login_test or not login_response:
+        print("❌ Test login failed. Skipping remaining flow tests.")
+        return False, "Test login failed"
+    
+    # Store the token for further testing
+    flow_token = login_response.get("access_token")
+    user_data = login_response.get("user", {})
+    flow_user_id = user_data.get("id")
+    
+    print(f"Test login successful. User ID: {flow_user_id}")
+    
+    # Set custom headers with the flow token
+    auth_headers = {"Authorization": f"Bearer {flow_token}"}
+    
+    # 2. Save an agent to library
+    agent_data = {
+        "name": "Flow Test Agent",
+        "archetype": "scientist",
+        "goal": "Test the complete authentication flow",
+        "expertise": "Flow Testing",
+        "background": "Comprehensive testing background",
+        "is_template": True
+    }
+    
+    save_agent_test, save_agent_response = run_test(
+        "Save Agent to Library",
+        "/saved-agents",
+        method="POST",
+        data=agent_data,
+        headers=auth_headers,
+        expected_keys=["id", "name", "archetype", "goal", "user_id"]
+    )
+    
+    if not save_agent_test or not save_agent_response:
+        print("❌ Saving agent failed. Skipping remaining flow tests.")
+        return False, "Saving agent failed"
+    
+    saved_agent_id = save_agent_response.get("id")
+    print(f"Agent saved successfully. Agent ID: {saved_agent_id}")
+    
+    # Verify user_id in saved agent
+    agent_user_id = save_agent_response.get("user_id")
+    user_id_valid = agent_user_id == flow_user_id
+    print(f"User ID validation: {'Passed' if user_id_valid else 'Failed'}")
+    
+    # 3. Retrieve agent from library
+    retrieve_agents_test, retrieve_agents_response = run_test(
+        "Retrieve Agents from Library",
         "/saved-agents",
         method="GET",
-        auth=True,
-        expected_status=401  # Expect 401 since our token isn't from a real user in DB
+        headers=auth_headers,
+        expected_status=200
     )
     
-    # 2. Check conversation history endpoint includes user_id filter
-    conversation_history_test, _ = run_test(
-        "Conversation History User Isolation",
+    if not retrieve_agents_test or not retrieve_agents_response:
+        print("❌ Retrieving agents failed.")
+        return False, "Retrieving agents failed"
+    
+    # Verify the saved agent is in the response
+    agent_found = False
+    for agent in retrieve_agents_response:
+        if agent.get("id") == saved_agent_id:
+            agent_found = True
+            # Verify agent data
+            data_valid = (
+                agent.get("name") == agent_data["name"] and
+                agent.get("archetype") == agent_data["archetype"] and
+                agent.get("goal") == agent_data["goal"] and
+                agent.get("expertise") == agent_data["expertise"] and
+                agent.get("background") == agent_data["background"] and
+                agent.get("is_template") == agent_data["is_template"] and
+                agent.get("user_id") == flow_user_id
+            )
+            print(f"Agent data validation: {'Passed' if data_valid else 'Failed'}")
+            break
+    
+    print(f"Agent retrieval validation: {'Passed' if agent_found else 'Failed'}")
+    
+    # 4. Save a conversation
+    conversation_data = {
+        "simulation_id": str(uuid.uuid4()),
+        "participants": ["Flow Test Agent", "Another Agent"],
+        "messages": [
+            {"agent_name": "Flow Test Agent", "message": "Hello, this is a test conversation"},
+            {"agent_name": "Another Agent", "message": "Hi there, testing the flow"}
+        ],
+        "title": "Flow Test Conversation"
+    }
+    
+    save_conversation_test, save_conversation_response = run_test(
+        "Save Conversation",
+        "/conversation-history",
+        method="POST",
+        data=conversation_data,
+        headers=auth_headers,
+        expected_keys=["message"]
+    )
+    
+    if not save_conversation_test or not save_conversation_response:
+        print("❌ Saving conversation failed.")
+        return False, "Saving conversation failed"
+    
+    print("Conversation saved successfully.")
+    
+    # 5. Retrieve conversations
+    retrieve_conversations_test, retrieve_conversations_response = run_test(
+        "Retrieve Conversations",
         "/conversation-history",
         method="GET",
-        auth=True,
-        expected_status=401  # Expect 401 since our token isn't from a real user in DB
+        headers=auth_headers,
+        expected_status=200
     )
     
-    # Print summary of user data isolation tests
-    print("\nUSER DATA ISOLATION SUMMARY:")
-    print("✅ Endpoints are designed for user data isolation")
-    print("✅ Saved agents endpoint requires authentication and includes user_id filter")
-    print("✅ Conversation history endpoint requires authentication and includes user_id filter")
+    if not retrieve_conversations_test or not retrieve_conversations_response:
+        print("❌ Retrieving conversations failed.")
+        return False, "Retrieving conversations failed"
     
-    return True, "User data isolation is properly implemented"
+    # Verify the saved conversation is in the response
+    conversation_found = False
+    for conversation in retrieve_conversations_response:
+        if conversation.get("title") == conversation_data["title"]:
+            conversation_found = True
+            # Verify conversation data
+            conv_data_valid = (
+                conversation.get("simulation_id") == conversation_data["simulation_id"] and
+                conversation.get("user_id") == flow_user_id and
+                len(conversation.get("messages", [])) == len(conversation_data["messages"])
+            )
+            print(f"Conversation data validation: {'Passed' if conv_data_valid else 'Failed'}")
+            break
+    
+    print(f"Conversation retrieval validation: {'Passed' if conversation_found else 'Failed'}")
+    
+    # 6. Clean up - delete the saved agent
+    if saved_agent_id:
+        delete_agent_test, delete_agent_response = run_test(
+            "Delete Saved Agent",
+            f"/saved-agents/{saved_agent_id}",
+            method="DELETE",
+            headers=auth_headers,
+            expected_keys=["message"]
+        )
+        
+        print(f"Agent deletion: {'Passed' if delete_agent_test else 'Failed'}")
+    
+    # Print summary of complete flow tests
+    print("\nCOMPLETE FLOW SUMMARY:")
+    
+    all_tests_passed = (
+        login_test and
+        save_agent_test and
+        user_id_valid and
+        retrieve_agents_test and
+        agent_found and
+        data_valid and
+        save_conversation_test and
+        retrieve_conversations_test and
+        conversation_found and
+        conv_data_valid
+    )
+    
+    if saved_agent_id:
+        all_tests_passed = all_tests_passed and delete_agent_test
+    
+    if all_tests_passed:
+        print("✅ Complete authentication flow is working correctly!")
+        print("✅ Test login creates a valid JWT token")
+        print("✅ Token can be used to save agents to library")
+        print("✅ Token can be used to retrieve agents from library")
+        print("✅ Token can be used to save conversations")
+        print("✅ Token can be used to retrieve conversations")
+        print("✅ User data isolation is working correctly")
+        return True, "Complete authentication flow is working correctly"
+    else:
+        issues = []
+        if not login_test:
+            issues.append("Test login failed")
+        if not save_agent_test:
+            issues.append("Saving agent failed")
+        if not user_id_valid:
+            issues.append("User ID in saved agent is incorrect")
+        if not retrieve_agents_test:
+            issues.append("Retrieving agents failed")
+        if not agent_found:
+            issues.append("Saved agent not found in retrieved agents")
+        if agent_found and not data_valid:
+            issues.append("Retrieved agent data doesn't match saved data")
+        if not save_conversation_test:
+            issues.append("Saving conversation failed")
+        if not retrieve_conversations_test:
+            issues.append("Retrieving conversations failed")
+        if not conversation_found:
+            issues.append("Saved conversation not found in retrieved conversations")
+        if conversation_found and not conv_data_valid:
+            issues.append("Retrieved conversation data doesn't match saved data")
+        if saved_agent_id and not delete_agent_test:
+            issues.append("Deleting agent failed")
+        
+        print("❌ Complete authentication flow has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, "Complete authentication flow has issues"
 
 def test_avatar_generation():
     """Test the avatar generation endpoint"""
