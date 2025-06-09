@@ -258,6 +258,21 @@ backend:
         -agent: "testing"
         -comment: "Tested the complete authentication flow: 1) Login with the test login endpoint to get a JWT token, 2) Use the token to save an agent to the library, 3) Retrieve the agent from the library, 4) Save a conversation, 5) Retrieve the conversation, and 6) Delete the agent. All steps worked correctly, confirming that the authentication system is properly integrated with the saved agents and conversation history features. User data isolation is working correctly, with data being associated with the correct user_id."
 
+  - task: "UI Reorganization - Agent Profiles Section"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for UI reorganization of Agent Profiles section"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the UI reorganization changes in the AI Agent Simulation app. The Agent Profiles section now correctly contains all agent-related buttons consolidated: ➕ Add Agent button, 🗑️ Clear All button, Create Crypto Team button, and 🎲 Generate Random Team button (renamed from 'Test Background Differences'). The Control Panel (Simulation Control section) no longer has the team builder buttons. All buttons in the Agent Profiles section work correctly - the Add Agent button opens the agent creation modal, and the team builder buttons create the appropriate agents. The agent creation modal title correctly says '➕ Create New Agent'. The overall UI organization is improved with better consolidation of related functionality. The layout looks clean and organized with agent-related controls properly grouped in the Agent Profiles section."
+
   - task: "Agent Card UI Improvements"
     implemented: true
     working: true
