@@ -2923,26 +2923,6 @@ const ControlPanel = ({
             onCreateAgent={onCreateAgent}
             archetypes={AGENT_ARCHETYPES}
           />
-          
-          <button 
-            onClick={onInitResearchStation}
-            className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm mb-2"
-          >
-            Create Crypto Team
-          </button>
-          <p className="text-xs text-gray-500 mb-2">
-            Creates 3 crypto experts: Mark (Marketing Veteran), Alex (DeFi Product Leader), Dex (Trend-Spotting Generalist)
-          </p>
-          
-          <button 
-            onClick={onTestBackgrounds}
-            className="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm mb-2"
-          >
-            🧪 Test Background Differences
-          </button>
-          <p className="text-xs text-gray-500 mb-3">
-            Creates 4 agents with dramatically different professional backgrounds to showcase how background influences thinking
-          </p>
         </div>
 
         {/* Fast Forward Section */}
