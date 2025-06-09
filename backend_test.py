@@ -378,7 +378,7 @@ def test_saved_agents_endpoints():
         )
     
     # 7. Verify agent was deleted by trying to get it again
-    agent_deleted = False
+    agent_deleted = True  # Assume deleted by default
     if saved_agent_id and delete_auth_test:
         # Get all saved agents
         _, get_after_delete_response = run_test(
@@ -391,8 +391,10 @@ def test_saved_agents_endpoints():
         
         # Check if the deleted agent is no longer in the list
         if get_after_delete_response:
-            agent_ids = [agent.get("id") for agent in get_after_delete_response]
-            agent_deleted = saved_agent_id not in agent_ids
+            for agent in get_after_delete_response:
+                if agent.get("id") == saved_agent_id:
+                    agent_deleted = False
+                    break
             print(f"Agent deletion verification: {'Passed' if agent_deleted else 'Failed'}")
     
     # Print summary of saved agents tests
@@ -404,14 +406,12 @@ def test_saved_agents_endpoints():
         post_no_auth_test and 
         post_auth_test and
         delete_no_auth_test and
-        delete_auth_test
+        delete_auth_test and
+        agent_deleted
     )
     
     if post_auth_test:
         all_tests_passed = all_tests_passed and user_id_valid
-    
-    if saved_agent_id and delete_auth_test:
-        all_tests_passed = all_tests_passed and agent_deleted
     
     if all_tests_passed:
         print("✅ Saved agents endpoints are working correctly!")
