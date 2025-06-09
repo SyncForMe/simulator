@@ -1587,43 +1587,9 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
 
   return (
     <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 relative transition-all duration-300 hover:shadow-lg">
-      {/* Action Buttons - Top Right */}
-      <div className="absolute top-2 right-2 flex space-x-1">
-        <button
-          onClick={() => onEdit(agent)}
-          className="bg-blue-100 hover:bg-blue-200 text-blue-600 p-1 rounded text-xs transition-colors"
-          title="Edit Agent"
-        >
-          ✏️
-        </button>
-        {agent.memory_summary && (
-          <button
-            onClick={() => onClearMemory(agent.id)}
-            className="bg-red-100 hover:bg-red-200 text-red-600 p-1 rounded text-xs transition-colors"
-            title="Clear Memory"
-          >
-            🧠❌
-          </button>
-        )}
-        <button
-          onClick={() => setShowMemoryInput(!showMemoryInput)}
-          className="bg-green-100 hover:bg-green-200 text-green-600 p-1 rounded text-xs transition-colors"
-          title="Add Memory"
-        >
-          🧠+
-        </button>
-        <button
-          onClick={() => onDelete(agent.id, agent.name)}
-          className="bg-red-500 hover:bg-red-600 text-white p-1 rounded text-xs transition-colors"
-          title="Delete Agent"
-        >
-          🗑️
-        </button>
-      </div>
-      
       {/* Compact Header - Always Visible */}
-      <div className="agent-header flex items-center justify-between pr-20">
-        <div className="flex items-center space-x-3">
+      <div className="agent-header flex items-center justify-between mb-3">
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
           {/* Avatar */}
           <div className="flex-shrink-0">
             {agent.avatar_url ? (
@@ -1642,11 +1608,11 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
             )}
           </div>
           
-          {/* Basic Info */}
-          <div className="flex-1">
-            <h3 className="font-bold text-gray-800 truncate">{agent.name}</h3>
+          {/* Basic Info - Allow text to wrap properly */}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-gray-800 break-words">{agent.name}</h3>
             <p className="text-sm text-gray-600">{agent.archetype}</p>
-            <div className="flex items-center space-x-2 mt-1">
+            <div className="flex items-center flex-wrap gap-2 mt-1">
               <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                 {agent.current_mood}
               </span>
@@ -1659,20 +1625,60 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
           </div>
         </div>
 
-        {/* Expand/Collapse Button */}
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-full transition-all duration-200 ml-2"
-          title={isExpanded ? "Hide Details" : "Show Details"}
-        >
-          <svg 
-            className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
+        {/* Expand/Collapse Button - Positioned within card boundaries */}
+        <div className="flex items-center space-x-2 ml-3">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-full transition-all duration-200 flex-shrink-0"
+            title={isExpanded ? "Hide Details" : "Show Details"}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
+            <svg 
+              className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Action Buttons - Now positioned below header to avoid overlap */}
+      <div className="action-buttons flex flex-wrap gap-1 mb-3">
+        <button
+          onClick={() => onEdit(agent)}
+          className="bg-blue-100 hover:bg-blue-200 text-blue-600 px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+          title="Edit Agent"
+        >
+          <span>✏️</span>
+          <span>Edit</span>
+        </button>
+        {agent.memory_summary && (
+          <button
+            onClick={() => onClearMemory(agent.id)}
+            className="bg-red-100 hover:bg-red-200 text-red-600 px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+            title="Clear Memory"
+          >
+            <span>🧠</span>
+            <span>Clear</span>
+          </button>
+        )}
+        <button
+          onClick={() => setShowMemoryInput(!showMemoryInput)}
+          className="bg-green-100 hover:bg-green-200 text-green-600 px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+          title="Add Memory"
+        >
+          <span>🧠</span>
+          <span>Add</span>
+        </button>
+        <button
+          onClick={() => onDelete(agent.id, agent.name)}
+          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs transition-colors flex items-center space-x-1"
+          title="Delete Agent"
+        >
+          <span>🗑️</span>
+          <span>Delete</span>
         </button>
       </div>
 
