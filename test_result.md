@@ -336,6 +336,39 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Verified that all agent card action buttons are now icon-only with proper hover tooltips. The Edit button shows only the ✏️ icon with 'Edit Agent' tooltip. The Add Memory button shows only the 🧠+ icon with 'add memory' tooltip (lowercase as required). The Delete button shows only the 🗑️ icon with 'Delete Agent' tooltip. The Clear Memory button shows only the 🧠❌ icon with 'Clear Memory' tooltip when an agent has memory. All buttons have proper styling and hover effects."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the agent card action buttons. Confirmed that the buttons are now approximately 75% smaller than before (Edit button: 23px × 26px, Add Memory button: 30px × 26px, Delete button: 20px × 26px). All buttons have transparent backgrounds (rgba(0, 0, 0, 0)) showing only the icons. The delete button now correctly uses an SVG trash can icon instead of the emoji. All buttons have proper tooltips on hover. The agent card UI looks cleaner and more professional with these improvements."
+        
+  - task: "Agent Avatar Position"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for agent avatar position"
+        -working: true
+        -agent: "testing"
+        -comment: "Verified that agent profile pictures are now correctly positioned at the absolute top-left of each agent card. The avatar element has the CSS classes 'absolute top-3 left-3' which positions it at the top-left with appropriate padding. The agent card header now has a left margin (ml-16) to accommodate the avatar. This creates a clean layout with the avatar visually separated from the other content while maintaining a cohesive design."
+        
+  - task: "Conversation History Fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for conversation history fix"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the conversation history functionality. The 'My Conversations' button in the header now correctly shows the count of saved conversations. When clicked, it opens a modal showing the conversation history. The modal displays real simulation conversations with proper titles, participants, and message content. Each conversation entry shows the date and time it was created, the participants involved, and a preview of the messages. The saveConversationsToHistory function is correctly saving conversations to the user's history when they are generated. The fix ensures that actual simulation conversations are being saved and displayed instead of just test conversations."
 
   - task: "Avatar generation for team builders"
     implemented: true
