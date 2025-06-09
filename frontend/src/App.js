@@ -1665,7 +1665,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
         <button
           onClick={() => setShowMemoryInput(!showMemoryInput)}
           className="bg-green-100 hover:bg-green-200 text-green-600 p-2 rounded transition-colors"
-          title="Add Memory"
+          title="add memory"
         >
           🧠+
         </button>
