@@ -3763,21 +3763,7 @@ function App() {
               onDeleteAll={handleDeleteAllAgents}
               onInitResearchStation={handleInitResearchStation}
               onTestBackgrounds={handleTestBackgrounds}
-              onCreateAgent={() => {
-                // Find and trigger the Create Custom Agent button
-                // This will be handled by scrolling to the control panel
-                const controlPanel = document.querySelector('.control-panel');
-                if (controlPanel) {
-                  controlPanel.scrollIntoView({ behavior: 'smooth' });
-                }
-                // Flash the create button
-                setTimeout(() => {
-                  const createButton = document.querySelector('.control-panel button');
-                  if (createButton) {
-                    createButton.style.animation = 'pulse 1s ease-in-out 3 alternate';
-                  }
-                }, 500);
-              }}
+              onCreateAgent={handleCreateAgent}
             />
             
             <div className="agent-grid">
