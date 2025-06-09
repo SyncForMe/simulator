@@ -3531,17 +3531,21 @@ function App() {
       // Refresh data to get the new agents
       await refreshAllData();
       
+      // Wait a moment for the agents to be properly created
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Generate avatars for the newly created agents
       const agentsResponse = await axios.get(`${API}/agents`);
       const newAgents = agentsResponse.data;
       
       // Generate avatars for agents that don't have them
-      const agentsNeedingAvatars = newAgents.filter(agent => !agent.avatar_url);
+      const agentsNeedingAvatars = newAgents.filter(agent => !agent.avatar_url || agent.avatar_url === '');
       
       if (agentsNeedingAvatars.length > 0) {
         console.log(`Generating avatars for ${agentsNeedingAvatars.length} crypto team agents...`);
         
-        for (const agent of agentsNeedingAvatars) {
+        // Generate all avatars in parallel for better performance
+        const avatarPromises = agentsNeedingAvatars.map(async (agent) => {
           try {
             // Create specific prompts for the crypto team members
             let avatarPrompt;
@@ -3555,22 +3559,34 @@ function App() {
               avatarPrompt = `Professional headshot of a ${agent.archetype.replace('_', ' ')} in the crypto industry, ${agent.background ? agent.background.substring(0, 100) : 'professional appearance'}, high quality realistic photo`;
             }
             
+            console.log(`Generating avatar for ${agent.name}...`);
             const avatarResponse = await axios.post(`${API}/avatars/generate`, {
               prompt: avatarPrompt
             });
             
             if (avatarResponse.data.success) {
+              console.log(`Avatar generated for ${agent.name}, updating agent...`);
               // Update the agent with the generated avatar
               await axios.put(`${API}/agents/${agent.id}`, {
                 ...agent,
                 avatar_url: avatarResponse.data.image_url
               });
+              console.log(`Agent ${agent.name} updated with avatar`);
+              return true;
+            } else {
+              console.error(`Failed to generate avatar for ${agent.name}:`, avatarResponse.data.error);
+              return false;
             }
           } catch (avatarError) {
             console.error(`Failed to generate avatar for ${agent.name}:`, avatarError);
-            // Continue with other agents even if one fails
+            return false;
           }
-        }
+        });
+        
+        // Wait for all avatar generations to complete
+        const results = await Promise.all(avatarPromises);
+        const successCount = results.filter(r => r).length;
+        console.log(`Successfully generated ${successCount}/${agentsNeedingAvatars.length} avatars`);
         
         // Refresh data again to show the new avatars
         await refreshAllData();
