@@ -1025,9 +1025,6 @@ const ConversationControls = ({
         </svg>
       </button>
     </div>
-        }
-      </p>
-    </div>
   );
 };
 
