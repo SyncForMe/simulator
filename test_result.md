@@ -321,11 +321,11 @@ frontend:
 
   - task: "Avatar generation for team builders"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -336,6 +336,9 @@ frontend:
         -working: false
         -agent: "testing"
         -comment: "Conducted comprehensive testing of the avatar generation functionality for team builders. The backend API for avatar generation (/api/avatars/generate) is working correctly and returns valid image URLs when tested directly. The team builder buttons ('Create Crypto Team' and '🎲 Generate Random Team') successfully create the expected number of agents (3 for crypto team, 4 for random team). However, the avatars are not being displayed in the UI for the team builder agents. When checking the agents via the API, their avatar_url fields remain empty even after the avatar generation process should have completed. This suggests there might be an issue with updating the agent records with the generated avatar URLs, or the avatar generation process is failing silently. The issue persists even after waiting for extended periods (20+ seconds) and refreshing the page."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the avatar generation functionality for team builders after the fixes were implemented. The fixes included: 1) Adding avatar_url to the AgentUpdate model in the backend, and 2) Modifying the frontend to send only the avatar_url field instead of the full agent object when updating agents. Comprehensive testing confirmed that both team builder functions now work correctly: 'Create Crypto Team' successfully creates 3 agents with avatars, and '🎲 Generate Random Team' successfully creates 4 agents with avatars. The console logs show the entire process working correctly: avatar generation is triggered, avatars are successfully generated, and agents are updated with the avatar URLs. The avatars are now properly displayed in the UI for all team builder agents. The fix was successful and the avatar generation functionality for team builders is now working as expected."
 
   - task: "Info Icon Hover Tooltips for Team Builder Buttons"
     implemented: true
