@@ -964,60 +964,67 @@ const ConversationControls = ({
   const isActive = simulationState?.auto_conversations || simulationState?.auto_time;
   
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mt-4">
-      <h4 className="text-sm font-semibold mb-3 text-gray-700">Conversation Controls</h4>
+    <div className="flex items-center justify-center gap-2 mt-3">
+      {/* Pause/Resume Button */}
+      {isActive ? (
+        <button 
+          onClick={onPauseSimulation}
+          className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+          title="Pause Simulation"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+          </svg>
+        </button>
+      ) : (
+        <button 
+          onClick={onResumeSimulation}
+          className="p-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors"
+          title="Resume Simulation"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+      )}
       
-      <div className="grid grid-cols-1 gap-2">
-        {/* Pause/Resume Button */}
-        {isActive ? (
-          <button 
-            onClick={onPauseSimulation}
-            className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm font-medium"
-          >
-            ⏸️ Pause Simulation
-          </button>
-        ) : (
-          <button 
-            onClick={onResumeSimulation}
-            className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium"
-          >
-            ▶️ Resume Simulation
-          </button>
-        )}
-        
-        {/* Generate Conversation Button */}
-        <button 
-          onClick={onGenerateConversation}
-          className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm font-medium"
-        >
-          💬 Generate Conversation
-        </button>
-        
-        {/* Next Period Button */}
-        <button 
-          onClick={onNextPeriod}
-          className="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm font-medium"
-        >
-          ⏭️ Next Period
-        </button>
-        
-        {/* Auto Toggle */}
-        <button 
-          onClick={onToggleAuto}
-          className={`w-full px-4 py-2 rounded text-sm font-medium ${
-            isActive 
-              ? 'bg-orange-600 text-white hover:bg-orange-700' 
-              : 'bg-gray-600 text-white hover:bg-gray-700'
-          }`}
-        >
-          🤖 Auto Mode: {isActive ? 'ON' : 'OFF'}
-        </button>
-      </div>
+      {/* Generate Conversation Button */}
+      <button 
+        onClick={onGenerateConversation}
+        className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors"
+        title="Generate Conversation"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+        </svg>
+      </button>
       
-      <p className="text-xs text-gray-500 mt-3 text-center">
-        {isActive 
-          ? 'Auto mode is running - conversations and time advance automatically' 
-          : 'Manual mode - use buttons to control simulation flow'
+      {/* Next Period Button */}
+      <button 
+        onClick={onNextPeriod}
+        className="p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors"
+        title="Next Period"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
+        </svg>
+      </button>
+      
+      {/* Auto Toggle */}
+      <button 
+        onClick={onToggleAuto}
+        className={`p-2 rounded-full transition-colors ${
+          isActive 
+            ? 'bg-orange-600 text-white hover:bg-orange-700' 
+            : 'bg-gray-600 text-white hover:bg-gray-700'
+        }`}
+        title={`Auto Mode: ${isActive ? 'ON' : 'OFF'}`}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      </button>
+    </div>
         }
       </p>
     </div>
