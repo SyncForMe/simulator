@@ -624,127 +624,35 @@ const SimulationStatusBar = ({ simulationState }) => {
 };
 
 const AutoControls = ({ simulationState, onToggleAuto }) => {
-  const [autoConversations, setAutoConversations] = useState(false);
-  const [autoTime, setAutoTime] = useState(false);
-  const [conversationInterval, setConversationInterval] = useState(10);
-  const [timeInterval, setTimeInterval] = useState(60);
-
-  useEffect(() => {
-    if (simulationState) {
-      setAutoConversations(simulationState.auto_conversations || false);
-      setAutoTime(simulationState.auto_time || false);
-      setConversationInterval(simulationState.conversation_interval || 10);
-      setTimeInterval(simulationState.time_interval || 60);
-    }
-  }, [simulationState]);
-
-  const handleToggleAutoConversations = async () => {
-    const newValue = !autoConversations;
-    setAutoConversations(newValue);
+  const isRunning = simulationState?.auto_conversations || simulationState?.auto_time;
+  
+  const handleToggleSimulation = async () => {
+    const newState = !isRunning;
     await onToggleAuto({
-      auto_conversations: newValue,
-      auto_time: autoTime,
-      conversation_interval: conversationInterval,
-      time_interval: timeInterval
+      auto_conversations: newState,
+      auto_time: newState,
+      conversation_interval: 10,
+      time_interval: 60
     });
-  };
-
-  const handleToggleAutoTime = async () => {
-    const newValue = !autoTime;
-    setAutoTime(newValue);
-    await onToggleAuto({
-      auto_conversations: autoConversations,
-      auto_time: newValue,
-      conversation_interval: conversationInterval,
-      time_interval: timeInterval
-    });
-  };
-
-  const handleIntervalChange = async (type, value) => {
-    const newData = {
-      auto_conversations: autoConversations,
-      auto_time: autoTime,
-      conversation_interval: type === 'conversation' ? value : conversationInterval,
-      time_interval: type === 'time' ? value : timeInterval
-    };
-    
-    if (type === 'conversation') {
-      setConversationInterval(value);
-    } else {
-      setTimeInterval(value);
-    }
-    
-    await onToggleAuto(newData);
   };
 
   return (
     <div className="auto-controls bg-white rounded-lg shadow-md p-4 mb-4">
-      <h3 className="text-lg font-bold mb-3">🤖 Automation Controls</h3>
-      
-      <div className="space-y-4">
-        {/* Auto Conversations */}
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-          <div>
-            <h4 className="font-semibold">Auto Conversations</h4>
-            <p className="text-xs text-gray-600">Generate conversations automatically</p>
-          </div>
-          <button
-            onClick={handleToggleAutoConversations}
-            className={`px-4 py-2 rounded text-sm font-medium ${
-              autoConversations 
-                ? 'bg-green-600 text-white' 
-                : 'bg-gray-300 text-gray-700'
-            }`}
-          >
-            {autoConversations ? 'ON' : 'OFF'}
-          </button>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-bold">Simulation Control</h3>
+          <p className="text-xs text-gray-600">Start/stop automatic conversations and time progression</p>
         </div>
-
-        {autoConversations && (
-          <div className="ml-4">
-            <label className="block text-xs font-medium mb-1">Interval (seconds)</label>
-            <input
-              type="number"
-              min="5"
-              max="300"
-              value={conversationInterval}
-              onChange={(e) => handleIntervalChange('conversation', parseInt(e.target.value))}
-              className="w-20 px-2 py-1 border rounded text-sm"
-            />
-          </div>
-        )}
-
-        {/* Auto Time */}
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-          <div>
-            <h4 className="font-semibold">Auto Time Progression</h4>
-            <p className="text-xs text-gray-600">Advance time periods automatically</p>
-          </div>
-          <button
-            onClick={handleToggleAutoTime}
-            className={`px-4 py-2 rounded text-sm font-medium ${
-              autoTime 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-300 text-gray-700'
-            }`}
-          >
-            {autoTime ? 'ON' : 'OFF'}
-          </button>
-        </div>
-
-        {autoTime && (
-          <div className="ml-4">
-            <label className="block text-xs font-medium mb-1">Interval (seconds)</label>
-            <input
-              type="number"
-              min="30"
-              max="600"
-              value={timeInterval}
-              onChange={(e) => handleIntervalChange('time', parseInt(e.target.value))}
-              className="w-20 px-2 py-1 border rounded text-sm"
-            />
-          </div>
-        )}
+        <button
+          onClick={handleToggleSimulation}
+          className={`px-6 py-3 rounded-lg text-sm font-medium transition-colors ${
+            isRunning 
+              ? 'bg-red-600 text-white hover:bg-red-700' 
+              : 'bg-green-600 text-white hover:bg-green-700'
+          }`}
+        >
+          {isRunning ? 'Stop Simulation' : 'Start Simulation'}
+        </button>
       </div>
     </div>
   );
