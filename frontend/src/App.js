@@ -1567,6 +1567,7 @@ URLs will be automatically fetched and summarized!"
 const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, onDelete }) => {
   const [showMemoryInput, setShowMemoryInput] = useState(false);
   const [newMemory, setNewMemory] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleAddMemory = async (e) => {
     e.preventDefault();
@@ -1575,6 +1576,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
     setNewMemory('');
     setShowMemoryInput(false);
   };
+
   const getPersonalityColor = (value) => {
     if (value <= 3) return "bg-red-500";
     if (value <= 6) return "bg-yellow-500"; 
@@ -1584,11 +1586,12 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
   const agentRelationships = relationships ? relationships.filter(r => r.agent1_id === agent.id) : [];
 
   return (
-    <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 relative">
+    <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 relative transition-all duration-300 hover:shadow-lg">
+      {/* Action Buttons - Top Right */}
       <div className="absolute top-2 right-2 flex space-x-1">
         <button
           onClick={() => onEdit(agent)}
-          className="bg-blue-100 hover:bg-blue-200 text-blue-600 p-1 rounded text-xs"
+          className="bg-blue-100 hover:bg-blue-200 text-blue-600 p-1 rounded text-xs transition-colors"
           title="Edit Agent"
         >
           ✏️
@@ -1596,7 +1599,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
         {agent.memory_summary && (
           <button
             onClick={() => onClearMemory(agent.id)}
-            className="bg-red-100 hover:bg-red-200 text-red-600 p-1 rounded text-xs"
+            className="bg-red-100 hover:bg-red-200 text-red-600 p-1 rounded text-xs transition-colors"
             title="Clear Memory"
           >
             🧠❌
@@ -1604,62 +1607,161 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
         )}
         <button
           onClick={() => setShowMemoryInput(!showMemoryInput)}
-          className="bg-green-100 hover:bg-green-200 text-green-600 p-1 rounded text-xs"
+          className="bg-green-100 hover:bg-green-200 text-green-600 p-1 rounded text-xs transition-colors"
           title="Add Memory"
         >
           🧠+
         </button>
         <button
           onClick={() => onDelete(agent.id, agent.name)}
-          className="bg-red-500 hover:bg-red-600 text-white p-1 rounded text-xs"
+          className="bg-red-500 hover:bg-red-600 text-white p-1 rounded text-xs transition-colors"
           title="Delete Agent"
         >
           🗑️
         </button>
       </div>
       
-      {/* Avatar and Agent Header */}
-      <div className="agent-header flex items-start space-x-3">
-        {/* Avatar */}
-        <div className="flex-shrink-0">
-          {agent.avatar_url ? (
-            <div className="relative">
-              <img 
-                src={agent.avatar_url} 
-                alt={`${agent.name} avatar`}
-                className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 avatar-animation"
-              />
-              {/* Subtle animation overlay */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-            </div>
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl font-bold border-2 border-gray-300">
-              {agent.name.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
-        
-        {/* Agent Info */}
-        <div className="flex-1 pr-16">
-          <h3 className="text-lg font-bold text-gray-800">{agent.name}</h3>
-          <p className="text-sm text-gray-600">{agent.archetype}</p>
-          <p className="text-xs text-gray-500 italic">"{agent.goal}"</p>
+      {/* Compact Header - Always Visible */}
+      <div className="agent-header flex items-center justify-between pr-20">
+        <div className="flex items-center space-x-3">
+          {/* Avatar */}
+          <div className="flex-shrink-0">
+            {agent.avatar_url ? (
+              <div className="relative">
+                <img 
+                  src={agent.avatar_url} 
+                  alt={`${agent.name} avatar`}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 avatar-animation"
+                />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
+              </div>
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold border-2 border-gray-300">
+                {agent.name.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
           
-          {agent.expertise && (
-            <p className="text-xs text-blue-600 mt-1">
-              <strong>Expertise:</strong> {agent.expertise}
-            </p>
-          )}
-          
-          {agent.background && (
-            <p className="text-xs text-gray-500 mt-1">
-              {agent.background.substring(0, 80)}{agent.background.length > 80 ? '...' : ''}
-            </p>
-          )}
+          {/* Basic Info */}
+          <div className="flex-1">
+            <h3 className="font-bold text-gray-800 truncate">{agent.name}</h3>
+            <p className="text-sm text-gray-600">{agent.archetype}</p>
+            <div className="flex items-center space-x-2 mt-1">
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                {agent.current_mood}
+              </span>
+              {agent.memory_summary && (
+                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                  🧠 Has Memory
+                </span>
+              )}
+            </div>
+          </div>
         </div>
+
+        {/* Expand/Collapse Button */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-full transition-all duration-200 ml-2"
+          title={isExpanded ? "Hide Details" : "Show Details"}
+        >
+          <svg 
+            className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </div>
 
-      {/* Add Memory Input */}
+      {/* Expandable Details Section */}
+      {isExpanded && (
+        <div className="expanded-details mt-4 pt-4 border-t border-gray-100 animate-fade-in">
+          {/* Goal */}
+          <div className="mb-3">
+            <h4 className="text-sm font-semibold text-gray-700 mb-1">🎯 Goal</h4>
+            <p className="text-sm text-gray-600 italic">"{agent.goal}"</p>
+          </div>
+
+          {/* Expertise & Background */}
+          {(agent.expertise || agent.background) && (
+            <div className="mb-3 grid grid-cols-1 gap-2">
+              {agent.expertise && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-1">🔬 Expertise</h4>
+                  <p className="text-sm text-blue-600">{agent.expertise}</p>
+                </div>
+              )}
+              {agent.background && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-1">📋 Background</h4>
+                  <p className="text-sm text-gray-600">{agent.background}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Personality Traits */}
+          <div className="mb-3">
+            <h4 className="text-sm font-semibold text-gray-700 mb-2">🧠 Personality</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {Object.entries(agent.personality).map(([trait, value]) => (
+                <div key={trait} className="trait-item">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs capitalize text-gray-600">{trait}</span>
+                    <span className="text-xs font-medium">{value}/10</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5">
+                    <div 
+                      className={`h-1.5 rounded-full transition-all duration-300 ${getPersonalityColor(value)}`}
+                      style={{width: `${value * 10}%`}}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Relationships */}
+          {agentRelationships.length > 0 && (
+            <div className="mb-3">
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">🤝 Relationships</h4>
+              <div className="flex flex-wrap gap-1">
+                {agentRelationships.map(rel => (
+                  <span key={rel.id} className={`text-xs px-2 py-1 rounded ${
+                    rel.status === 'friends' ? 'bg-green-100 text-green-800' :
+                    rel.status === 'tension' ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {rel.status} ({rel.score})
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Memory */}
+          {agent.memory_summary && (
+            <div className="mb-3">
+              <h4 className="text-sm font-semibold text-gray-700 mb-1">🧠 Memory</h4>
+              <p className="text-xs text-gray-600 bg-blue-50 p-2 rounded border">
+                {agent.memory_summary}
+              </p>
+            </div>
+          )}
+
+          {/* Current Activity */}
+          <div className="flex items-center space-x-2">
+            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+              📍 {agent.current_activity}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Add Memory Input (outside of expandable section) */}
       {showMemoryInput && (
         <div className="add-memory mt-3 p-3 bg-green-50 rounded border">
           <form onSubmit={handleAddMemory}>
@@ -1700,56 +1802,6 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
           </form>
         </div>
       )}
-      
-      <div className="personality-traits mt-3">
-        <h4 className="text-sm font-semibold mb-2">Personality</h4>
-        {Object.entries(agent.personality).map(([trait, value]) => (
-          <div key={trait} className="trait-bar mb-1">
-            <div className="flex justify-between items-center">
-              <span className="text-xs capitalize">{trait}</span>
-              <span className="text-xs">{value}/10</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className={`h-2 rounded-full ${getPersonalityColor(value)}`}
-                style={{width: `${value * 10}%`}}
-              ></div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {agentRelationships.length > 0 && (
-        <div className="relationships mt-3">
-          <h4 className="text-sm font-semibold mb-2">Relationships</h4>
-          {agentRelationships.map(rel => (
-            <div key={rel.id} className="text-xs">
-              <span className={`px-2 py-1 rounded ${
-                rel.status === 'friends' ? 'bg-green-100 text-green-800' :
-                rel.status === 'tension' ? 'bg-red-100 text-red-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {rel.status} ({rel.score})
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {agent.memory_summary && (
-        <div className="memory mt-3">
-          <h4 className="text-sm font-semibold mb-1">🧠 Memory</h4>
-          <p className="text-xs text-gray-600 bg-blue-50 p-2 rounded border">
-            {agent.memory_summary}
-          </p>
-        </div>
-      )}
-      
-      <div className="agent-status mt-3">
-        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-          {agent.current_mood} • {agent.current_activity}
-        </span>
-      </div>
     </div>
   );
 };
