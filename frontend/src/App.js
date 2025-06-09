@@ -2580,17 +2580,6 @@ const AgentProfilesManager = ({
           </div>
         </div>
       </div>
-      
-      {agents.length > 0 && (
-        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <div className="flex items-center">
-            <span className="text-yellow-600 text-sm">💡</span>
-            <p className="text-xs text-yellow-700 ml-2">
-              Click the <strong>🗑️ button</strong> on any agent card to delete individual agents
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
