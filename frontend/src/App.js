@@ -3233,9 +3233,50 @@ function App() {
   const handleTestBackgrounds = async () => {
     setLoading(true);
     try {
+      // Create agents with diverse backgrounds
       const response = await axios.post(`${API}/test/background-differences`);
       alert(`Created test agents with diverse backgrounds! Scenario: ${response.data.scenario}`);
+      
+      // Refresh data to get the new agents
       await refreshAllData();
+      
+      // Generate avatars for the newly created agents
+      // We'll get the agents again to see which ones are new
+      const agentsResponse = await axios.get(`${API}/agents`);
+      const newAgents = agentsResponse.data;
+      
+      // Generate avatars for agents that don't have them
+      const agentsNeedingAvatars = newAgents.filter(agent => !agent.avatar_url);
+      
+      if (agentsNeedingAvatars.length > 0) {
+        console.log(`Generating avatars for ${agentsNeedingAvatars.length} agents...`);
+        
+        for (const agent of agentsNeedingAvatars) {
+          try {
+            // Create a prompt based on the agent's characteristics
+            const avatarPrompt = `Professional headshot of a ${agent.archetype.replace('_', ' ')} named ${agent.name}, ${agent.background ? agent.background.substring(0, 100) : 'professional appearance'}, high quality, realistic, business professional style`;
+            
+            const avatarResponse = await axios.post(`${API}/avatars/generate`, {
+              prompt: avatarPrompt
+            });
+            
+            if (avatarResponse.data.success) {
+              // Update the agent with the generated avatar
+              await axios.put(`${API}/agents/${agent.id}`, {
+                ...agent,
+                avatar_url: avatarResponse.data.image_url
+              });
+            }
+          } catch (avatarError) {
+            console.error(`Failed to generate avatar for ${agent.name}:`, avatarError);
+            // Continue with other agents even if one fails
+          }
+        }
+        
+        // Refresh data again to show the new avatars
+        await refreshAllData();
+      }
+      
     } catch (error) {
       console.error('Error creating test agents:', error);
     }
