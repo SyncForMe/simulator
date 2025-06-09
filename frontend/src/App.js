@@ -3864,8 +3864,6 @@ function App() {
             <ControlPanel
               simulationState={simulationState}
               apiUsage={apiUsage}
-              onInitResearchStation={handleInitResearchStation}
-              onTestBackgrounds={handleTestBackgrounds}
               onCreateAgent={handleCreateAgent}
               setShowFastForward={setShowFastForward}
             />
