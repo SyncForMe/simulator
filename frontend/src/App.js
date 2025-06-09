@@ -2825,8 +2825,6 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
 const ControlPanel = ({ 
   simulationState, 
   apiUsage,
-  onInitResearchStation,
-  onTestBackgrounds,
   onCreateAgent,
   setShowFastForward
 }) => {
