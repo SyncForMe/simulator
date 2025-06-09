@@ -314,6 +314,7 @@ test_plan:
     - "Saved Agents with Authentication"
     - "Conversation History with Authentication"
     - "Complete Authentication Flow"
+    - "Agent Card UI Improvements"
   stuck_tasks:
     - ""
   test_all: false
