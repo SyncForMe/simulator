@@ -3763,6 +3763,8 @@ function App() {
             <AgentProfilesManager 
               agents={agents}
               onDeleteAll={handleDeleteAllAgents}
+              onInitResearchStation={handleInitResearchStation}
+              onTestBackgrounds={handleTestBackgrounds}
               onCreateAgent={() => {
                 // Find and trigger the Create Custom Agent button
                 // This will be handled by scrolling to the control panel
