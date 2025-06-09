@@ -91,13 +91,24 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* Action Buttons Styles */
+.action-buttons button {
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.action-buttons button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Delete Button Animation */
 .agent-card button[title="Delete Agent"] {
   transition: all 0.2s ease;
 }
 
 .agent-card button[title="Delete Agent"]:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
