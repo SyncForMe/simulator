@@ -398,6 +398,7 @@ class AgentUpdate(BaseModel):
     expertise: Optional[str] = None
     background: Optional[str] = None
     memory_summary: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 # LLM Integration and Request Management
 class LLMManager:
