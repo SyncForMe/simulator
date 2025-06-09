@@ -2676,10 +2676,10 @@ const AgentProfilesManager = ({
           {agents.length > 0 && (
             <button
               onClick={handleDeleteAll}
-              className="bg-red-500 text-white px-3 py-2 rounded text-sm hover:bg-red-600 transition-colors"
+              className="bg-red-50 text-red-600 px-3 py-2 rounded text-sm hover:bg-red-100 transition-colors border border-red-200"
               title="Delete All Agents"
             >
-              🗑️ Clear All
+              Clear All
             </button>
           )}
         </div>
@@ -2687,13 +2687,13 @@ const AgentProfilesManager = ({
         {/* Team Builder Actions */}
         <div className="space-y-2">
           <div className="border-t border-gray-200 pt-2">
-            <h4 className="text-xs font-semibold text-gray-600 mb-2">🚀 Quick Team Builders</h4>
+            <h4 className="text-xs font-semibold text-gray-600 mb-2">Quick Team Builders</h4>
           </div>
           
           <div className="flex items-center space-x-2">
             <button 
               onClick={onInitResearchStation}
-              className="flex-1 bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700 text-sm"
+              className="flex-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 text-sm"
             >
               Create Crypto Team
             </button>
@@ -2716,9 +2716,9 @@ const AgentProfilesManager = ({
           <div className="flex items-center space-x-2 mt-2">
             <button 
               onClick={onTestBackgrounds}
-              className="flex-1 bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700 text-sm"
+              className="flex-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 text-sm"
             >
-              🎲 Generate Random Team
+              Generate Random Team
             </button>
             <div className="relative group">
               <svg 
