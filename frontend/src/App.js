@@ -2916,11 +2916,9 @@ const ControlPanel = ({
         {/* Setup Controls */}
         <div className="setup-section">
           <h4 className="text-sm font-semibold mb-2 text-gray-700">Setup</h4>
-          
-          <AvatarCreator 
-            onCreateAgent={onCreateAgent}
-            archetypes={AGENT_ARCHETYPES}
-          />
+          <p className="text-xs text-gray-500 mb-3">
+            Agent creation is now available in the Agent Profiles section above.
+          </p>
         </div>
 
         {/* Fast Forward Section */}
