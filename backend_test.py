@@ -289,16 +289,16 @@ def test_saved_agents_endpoints():
         "Get Saved Agents Without Auth",
         "/saved-agents",
         method="GET",
-        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
+        expected_status=403  # Expect 403 Forbidden
     )
     
     # 2. Test GET /api/saved-agents with authentication
-    get_auth_test, _ = run_test(
+    get_auth_test, get_auth_response = run_test(
         "Get Saved Agents With Auth",
         "/saved-agents",
         method="GET",
         auth=True,
-        expected_status=401  # Expect 401 since our token isn't from a real user in DB
+        expected_status=200  # Expect 200 OK with test login token
     )
     
     # 3. Test POST /api/saved-agents without authentication
@@ -314,60 +314,132 @@ def test_saved_agents_endpoints():
         "/saved-agents",
         method="POST",
         data=agent_data,
-        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
+        expected_status=403  # Expect 403 Forbidden
     )
     
     # 4. Test POST /api/saved-agents with authentication
-    post_auth_test, _ = run_test(
+    post_auth_test, post_auth_response = run_test(
         "Create Saved Agent With Auth",
         "/saved-agents",
         method="POST",
         data=agent_data,
         auth=True,
-        expected_status=401  # Expect 401 since our token isn't from a real user in DB
+        expected_status=200,  # Expect 200 OK with test login token
+        expected_keys=["id", "name", "archetype", "goal", "user_id"]
     )
+    
+    # Verify user_id in created agent
+    user_id_valid = False
+    saved_agent_id = None
+    if post_auth_test and post_auth_response:
+        user_id = post_auth_response.get("user_id")
+        user_id_valid = user_id == test_user_id
+        saved_agent_id = post_auth_response.get("id")
+        print(f"User ID validation: {'Passed' if user_id_valid else 'Failed'}")
+        print(f"Created saved agent ID: {saved_agent_id}")
     
     # 5. Test DELETE /api/saved-agents/{agent_id} without authentication
-    test_agent_id = str(uuid.uuid4())
-    delete_no_auth_test, _ = run_test(
-        "Delete Saved Agent Without Auth",
-        f"/saved-agents/{test_agent_id}",
-        method="DELETE",
-        expected_status=403  # Expect 403 Forbidden (not 401 as initially expected)
-    )
+    delete_no_auth_test = False
+    if saved_agent_id:
+        delete_no_auth_test, _ = run_test(
+            "Delete Saved Agent Without Auth",
+            f"/saved-agents/{saved_agent_id}",
+            method="DELETE",
+            expected_status=403  # Expect 403 Forbidden
+        )
+    else:
+        test_agent_id = str(uuid.uuid4())
+        delete_no_auth_test, _ = run_test(
+            "Delete Saved Agent Without Auth",
+            f"/saved-agents/{test_agent_id}",
+            method="DELETE",
+            expected_status=403  # Expect 403 Forbidden
+        )
     
     # 6. Test DELETE /api/saved-agents/{agent_id} with authentication
-    delete_auth_test, _ = run_test(
-        "Delete Saved Agent With Auth",
-        f"/saved-agents/{test_agent_id}",
-        method="DELETE",
-        auth=True,
-        expected_status=401  # Expect 401 since our token isn't from a real user in DB
-    )
+    delete_auth_test = False
+    if saved_agent_id:
+        delete_auth_test, delete_auth_response = run_test(
+            "Delete Saved Agent With Auth",
+            f"/saved-agents/{saved_agent_id}",
+            method="DELETE",
+            auth=True,
+            expected_status=200,  # Expect 200 OK with test login token
+            expected_keys=["message"]
+        )
+    else:
+        test_agent_id = str(uuid.uuid4())
+        delete_auth_test, _ = run_test(
+            "Delete Saved Agent With Auth",
+            f"/saved-agents/{test_agent_id}",
+            method="DELETE",
+            auth=True,
+            expected_status=404  # Expect 404 Not Found for non-existent agent
+        )
+    
+    # 7. Verify agent was deleted by trying to get it again
+    agent_deleted = False
+    if saved_agent_id and delete_auth_test:
+        # Get all saved agents
+        _, get_after_delete_response = run_test(
+            "Get Saved Agents After Delete",
+            "/saved-agents",
+            method="GET",
+            auth=True,
+            expected_status=200
+        )
+        
+        # Check if the deleted agent is no longer in the list
+        if get_after_delete_response:
+            agent_ids = [agent.get("id") for agent in get_after_delete_response]
+            agent_deleted = saved_agent_id not in agent_ids
+            print(f"Agent deletion verification: {'Passed' if agent_deleted else 'Failed'}")
     
     # Print summary of saved agents tests
     print("\nSAVED AGENTS ENDPOINTS SUMMARY:")
     
     all_tests_passed = (
         get_no_auth_test and 
+        get_auth_test and
         post_no_auth_test and 
-        delete_no_auth_test
+        post_auth_test and
+        delete_no_auth_test and
+        delete_auth_test
     )
     
+    if post_auth_test:
+        all_tests_passed = all_tests_passed and user_id_valid
+    
+    if saved_agent_id and delete_auth_test:
+        all_tests_passed = all_tests_passed and agent_deleted
+    
     if all_tests_passed:
-        print("✅ Saved agents endpoints require authentication!")
+        print("✅ Saved agents endpoints are working correctly!")
         print("✅ GET /api/saved-agents requires authentication")
         print("✅ POST /api/saved-agents requires authentication")
         print("✅ DELETE /api/saved-agents/{agent_id} requires authentication")
-        return True, "Saved agents endpoints require authentication"
+        print("✅ Created agents have correct user_id")
+        if saved_agent_id:
+            print("✅ Agents can be successfully deleted")
+        return True, "Saved agents endpoints are working correctly"
     else:
         issues = []
         if not get_no_auth_test:
             issues.append("GET /api/saved-agents authentication check has issues")
+        if not get_auth_test:
+            issues.append("GET /api/saved-agents with authentication has issues")
         if not post_no_auth_test:
             issues.append("POST /api/saved-agents authentication check has issues")
+        if not post_auth_test:
+            issues.append("POST /api/saved-agents with authentication has issues")
+        if post_auth_test and not user_id_valid:
+            issues.append("Created agent has incorrect user_id")
         if not delete_no_auth_test:
             issues.append("DELETE /api/saved-agents/{agent_id} authentication check has issues")
+        if not delete_auth_test:
+            issues.append("DELETE /api/saved-agents/{agent_id} with authentication has issues")
+        if saved_agent_id and delete_auth_test and not agent_deleted:
+            issues.append("Agent was not successfully deleted")
         
         print("❌ Saved agents endpoints have issues:")
         for issue in issues:
