@@ -189,11 +189,27 @@ def test_auth_endpoints():
         expected_status=400  # Expect 400 since token is invalid
     )
     
-    # 2. Create a test user and token for further testing
-    test_user_id = str(uuid.uuid4())
-    auth_token = create_test_jwt_token(test_user_id)
-    print(f"Created test user ID: {test_user_id}")
-    print(f"Created test JWT token: {auth_token}")
+    # 2. Test the test login endpoint
+    test_login_test, test_login_response = run_test(
+        "Test Login Endpoint",
+        "/auth/test-login",
+        method="POST",
+        expected_keys=["access_token", "token_type", "user"]
+    )
+    
+    # Store the token for further testing if successful
+    if test_login_test and test_login_response:
+        auth_token = test_login_response.get("access_token")
+        user_data = test_login_response.get("user", {})
+        test_user_id = user_data.get("id")
+        print(f"Test login successful. User ID: {test_user_id}")
+        print(f"JWT Token: {auth_token}")
+    else:
+        # Create a test user and token for further testing if test login fails
+        test_user_id = str(uuid.uuid4())
+        auth_token = create_test_jwt_token(test_user_id)
+        print(f"Created test user ID: {test_user_id}")
+        print(f"Created test JWT token: {auth_token}")
     
     # 3. Test /api/auth/me endpoint with authentication
     me_auth_test, me_auth_response = run_test(
@@ -201,8 +217,15 @@ def test_auth_endpoints():
         "/auth/me",
         method="GET",
         auth=True,
-        expected_status=401  # Expect 401 since our token isn't from a real user in DB
+        expected_status=200 if test_login_test else 401  # Expect 200 if test login worked, 401 otherwise
     )
+    
+    # Verify user data if me endpoint worked
+    user_data_valid = False
+    if me_auth_test and me_auth_response:
+        user_id = me_auth_response.get("id")
+        user_data_valid = user_id == test_user_id
+        print(f"User data validation: {'Passed' if user_data_valid else 'Failed'}")
     
     # 4. Test /api/auth/me endpoint without authentication
     me_no_auth_test, _ = run_test(
@@ -223,18 +246,28 @@ def test_auth_endpoints():
     # Print summary of authentication tests
     print("\nAUTHENTICATION ENDPOINTS SUMMARY:")
     
-    all_tests_passed = google_auth_test and me_no_auth_test and logout_test
+    all_tests_passed = google_auth_test and test_login_test and me_no_auth_test and logout_test
+    if test_login_test:
+        all_tests_passed = all_tests_passed and me_auth_test and user_data_valid
     
     if all_tests_passed:
-        print("✅ Authentication endpoints are structured correctly!")
+        print("✅ Authentication endpoints are working correctly!")
         print("✅ Google auth endpoint accepts credential token")
+        print("✅ Test login endpoint creates a test user and returns a valid JWT token")
+        print("✅ /api/auth/me endpoint returns correct user data with valid authentication")
         print("✅ /api/auth/me endpoint requires authentication")
         print("✅ /api/auth/logout endpoint works without authentication")
-        return True, "Authentication endpoints are structured correctly"
+        return True, "Authentication endpoints are working correctly"
     else:
         issues = []
         if not google_auth_test:
             issues.append("Google auth endpoint structure has issues")
+        if not test_login_test:
+            issues.append("Test login endpoint has issues")
+        if test_login_test and not me_auth_test:
+            issues.append("/api/auth/me endpoint authentication with test login token has issues")
+        if test_login_test and not user_data_valid and me_auth_test:
+            issues.append("User data returned by /api/auth/me doesn't match test login user")
         if not me_no_auth_test:
             issues.append("/api/auth/me endpoint authentication check has issues")
         if not logout_test:
