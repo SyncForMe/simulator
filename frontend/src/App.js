@@ -623,40 +623,6 @@ const SimulationStatusBar = ({ simulationState }) => {
   );
 };
 
-const AutoControls = ({ simulationState, onToggleAuto }) => {
-  const isRunning = simulationState?.auto_conversations || simulationState?.auto_time;
-  
-  const handleToggleSimulation = async () => {
-    const newState = !isRunning;
-    await onToggleAuto({
-      auto_conversations: newState,
-      auto_time: newState,
-      conversation_interval: 10,
-      time_interval: 60
-    });
-  };
-
-  return (
-    <div className="auto-controls bg-white rounded-lg shadow-md p-4 mb-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-bold">Simulation Control</h3>
-          <p className="text-xs text-gray-600">Start/stop automatic conversations and time progression</p>
-        </div>
-        <button
-          onClick={handleToggleSimulation}
-          className={`px-6 py-3 rounded-lg text-sm font-medium transition-colors ${
-            isRunning 
-              ? 'bg-red-600 text-white hover:bg-red-700' 
-              : 'bg-green-600 text-white hover:bg-green-700'
-          }`}
-        >
-          {isRunning ? 'Stop Simulation' : 'Start Simulation'}
-        </button>
-      </div>
-    </div>
-  );
-};
 
 const LanguageSelector = ({ selectedLanguage, onLanguageChange }) => {
   const [isOpen, setIsOpen] = useState(false);
