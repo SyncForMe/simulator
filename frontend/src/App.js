@@ -1783,10 +1783,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
       {agent.goal && (
         <div className="mt-3 mx-2">
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 w-full">
-            <div className="flex items-start space-x-2">
-              <span className="text-sm text-gray-600 font-medium flex-shrink-0">🎯</span>
-              <p className="text-sm text-gray-700 italic flex-1">"{agent.goal}"</p>
-            </div>
+            <p className="text-sm text-gray-700 italic">"{agent.goal}"</p>
           </div>
         </div>
       )}
