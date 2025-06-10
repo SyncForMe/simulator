@@ -1910,7 +1910,6 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
           </form>
         </div>
       )}
-      )}
     </div>
   );
 };
