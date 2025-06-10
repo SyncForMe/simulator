@@ -1610,25 +1610,21 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
               </div>
             </div>
           </div>
-                rows="3"
-                placeholder="Professional background and experience"
-                disabled={loading}
-              />
-            </div>
-            
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">
-                🧠 Memory & Knowledge 
-                <span className="text-xs text-gray-500 ml-2">
-                  (What the agent remembers + real-world URLs for additional context)
-                </span>
-              </label>
-              <textarea
-                value={formData.memory_summary}
-                onChange={(e) => setFormData(prev => ({...prev, memory_summary: e.target.value}))}
-                className="w-full p-2 border rounded bg-blue-50"
-                rows="4"
-                placeholder="Key memories, insights, relationships, and important developments...
+          
+          {/* Memory section - Full width below the avatar and form */}
+          <div className="mt-6">
+            <label className="block text-sm font-medium mb-1">
+              🧠 Memory & Knowledge 
+              <span className="text-xs text-gray-500 ml-2">
+                (What the agent remembers + real-world URLs for additional context)
+              </span>
+            </label>
+            <textarea
+              value={formData.memory_summary}
+              onChange={(e) => setFormData(prev => ({...prev, memory_summary: e.target.value}))}
+              className="w-full p-2 border rounded bg-blue-50"
+              rows="4"
+              placeholder="Key memories, insights, relationships, and important developments...
 
 🌐 Include URLs for real-world context:
 • Social media profiles (LinkedIn, Twitter)
@@ -1637,17 +1633,17 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
 • Any web content that should influence this agent's thinking
 
 URLs will be automatically fetched and summarized!"
-                disabled={loading}
-              />
-              <p className="text-xs text-blue-600 mt-1">
-                💡 <strong>Pro tip:</strong> Add URLs to give agents real-world knowledge that will shape their responses
+              disabled={loading}
+            />
+            <p className="text-xs text-blue-600 mt-1">
+              💡 <strong>Pro tip:</strong> Add URLs to give agents real-world knowledge that will shape their responses
+            </p>
+            {formData.memory_summary.includes('http') && (
+              <p className="text-xs text-green-600 mt-1">
+                🌐 URLs detected! They will be processed when you save.
               </p>
-              {formData.memory_summary.includes('http') && (
-                <p className="text-xs text-green-600 mt-1">
-                  🌐 URLs detected! They will be processed when you save.
-                </p>
-              )}
-            </div>
+            )}
+          </div>
           </div>
 
           <div className="mt-4">
