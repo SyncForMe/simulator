@@ -118,6 +118,53 @@ const ObserverLogo = () => {
   );
 };
 
+const CurrentScenarioCard = ({ currentScenario }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  if (!currentScenario) {
+    return null;
+  }
+
+  return (
+    <div className="current-scenario-card bg-white rounded-lg shadow-md mb-4 overflow-hidden">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full p-4 text-left hover:bg-gray-50 transition-colors border-none bg-white"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <span className="text-blue-600">📋</span>
+            <h3 className="text-md font-semibold text-gray-800">Current Scenario</h3>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs text-gray-500">
+              {isExpanded ? 'Click to collapse' : 'Click to view'}
+            </span>
+            <svg 
+              className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </button>
+      
+      {isExpanded && (
+        <div className="px-4 pb-4 border-t border-gray-100">
+          <div className="mt-3 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+            <p className="text-sm text-gray-700 leading-relaxed">
+              {currentScenario}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Authentication Context
 const AuthContext = createContext();
 
