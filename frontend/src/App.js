@@ -1524,29 +1524,26 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
         <h3 className="text-lg font-bold mb-6">✏️ Edit Agent: {agent.name}</h3>
         <form onSubmit={handleSubmit}>
           <div className="flex gap-8">
-            {/* Left side - Large Avatar (300% larger) */}
+            {/* Left side - Large Avatar (30% smaller) */}
             <div className="flex-shrink-0">
-              <div className="w-96 h-96 mb-4">
+              <div className="w-72 h-72">
                 {agent.avatar_url ? (
                   <img 
                     src={agent.avatar_url} 
                     alt={`${agent.name} avatar`}
-                    className="w-96 h-96 rounded-lg object-cover border-4 border-gray-200 shadow-lg"
+                    className="w-72 h-72 rounded-lg object-cover border-4 border-gray-200 shadow-lg"
                     style={{ imageRendering: 'high-quality' }}
                   />
                 ) : (
-                  <div className="w-96 h-96 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 border-4 border-gray-300">
-                    <span className="text-9xl font-bold">{agent.name.charAt(0).toUpperCase()}</span>
+                  <div className="w-72 h-72 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 border-4 border-gray-300">
+                    <span className="text-8xl font-bold">{agent.name.charAt(0).toUpperCase()}</span>
                   </div>
                 )}
               </div>
-              <p className="text-sm text-gray-500 text-center max-w-96">
-                Agent Avatar (High Resolution)
-              </p>
             </div>
             
             {/* Right side - Form fields */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 ml-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Name</label>
