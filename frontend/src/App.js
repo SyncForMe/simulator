@@ -26,10 +26,10 @@ const ObserverLogo = () => {
         const movementType = Math.random();
         
         if (movementType < 0.4) {
-          // Scanning motion (40% chance)
+          // Scanning motion (40% chance) - reduced range to prevent touching outline
           await pupilControls.start({
-            x: -8,
-            y: Math.random() * 4 + 8, // 8-12px
+            x: -4,
+            y: Math.random() * 2 + 6, // 6-8px (reduced range)
             transition: {
               type: "spring",
               stiffness: 60,
@@ -40,8 +40,8 @@ const ObserverLogo = () => {
           await new Promise(resolve => setTimeout(resolve, 200));
           
           await pupilControls.start({
-            x: 8,
-            y: Math.random() * 4 + 8, // 8-12px
+            x: 4,
+            y: Math.random() * 2 + 6, // 6-8px (reduced range)
             transition: {
               type: "spring",
               stiffness: 60,
@@ -51,10 +51,10 @@ const ObserverLogo = () => {
           
           await new Promise(resolve => setTimeout(resolve, 200));
         } else {
-          // Random movement (60% chance)
+          // Random movement (60% chance) - reduced range to prevent touching outline
           await pupilControls.start({
-            x: Math.random() * 20 - 10, // -10 to 10px
-            y: Math.random() * 4 + 8,   // 8-12px
+            x: Math.random() * 8 - 4, // -4 to 4px (reduced from -10 to 10)
+            y: Math.random() * 2 + 6,   // 6-8px (reduced range)
             transition: {
               type: "spring",
               stiffness: Math.random() * 20 + 50, // 50-70
