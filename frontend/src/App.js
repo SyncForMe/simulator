@@ -1815,12 +1815,6 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
       {/* Expandable Details Section */}
       {isExpanded && (
         <div className="expanded-details mt-4 pt-4 border-t border-gray-100 animate-fade-in">
-          {/* Goal */}
-          <div className="mb-3">
-            <h4 className="text-sm font-semibold text-gray-700 mb-1">🎯 Goal</h4>
-            <p className="text-sm text-gray-600 italic">"{agent.goal}"</p>
-          </div>
-
           {/* Expertise & Background */}
           {(agent.expertise || agent.background) && (
             <div className="mb-3 grid grid-cols-1 gap-2">
