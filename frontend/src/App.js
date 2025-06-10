@@ -1520,64 +1520,96 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-bold mb-4">✏️ Edit Agent: {agent.name}</h3>
+      <div className="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+        <h3 className="text-lg font-bold mb-6">✏️ Edit Agent: {agent.name}</h3>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Name</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
-                className="w-full p-2 border rounded"
-                disabled={loading}
-              />
+          <div className="flex gap-6">
+            {/* Left side - Large Avatar */}
+            <div className="flex-shrink-0">
+              <div className="w-32 h-32 mb-4">
+                {agent.avatar_url ? (
+                  <img 
+                    src={agent.avatar_url} 
+                    alt={`${agent.name} avatar`}
+                    className="w-32 h-32 rounded-lg object-cover border-4 border-gray-200 shadow-lg"
+                    style={{ imageRendering: 'high-quality' }}
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 text-4xl font-bold border-4 border-gray-300">
+                    {agent.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 text-center max-w-32">
+                Agent Avatar
+              </p>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium mb-1">Archetype</label>
-              <select
-                value={formData.archetype}
-                onChange={(e) => setFormData(prev => ({...prev, archetype: e.target.value}))}
-                className="w-full p-2 border rounded"
-                disabled={loading}
-              >
-                {archetypes && Object.entries(archetypes).map(([key, value]) => (
-                  <option key={key} value={key}>{value?.name || key}</option>
-                ))}
-              </select>
+            {/* Right side - Form fields */}
+            <div className="flex-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    disabled={loading}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Archetype</label>
+                  <select
+                    value={formData.archetype}
+                    onChange={(e) => setFormData(prev => ({...prev, archetype: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    disabled={loading}
+                  >
+                    {archetypes && Object.entries(archetypes).map(([key, value]) => (
+                      <option key={key} value={key}>{value?.name || key}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-1">Goal</label>
+                  <textarea
+                    value={formData.goal}
+                    onChange={(e) => setFormData(prev => ({...prev, goal: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    rows="2"
+                    disabled={loading}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Expertise</label>
+                  <input
+                    type="text"
+                    value={formData.expertise}
+                    onChange={(e) => setFormData(prev => ({...prev, expertise: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    placeholder="e.g., Machine Learning, Psychology"
+                    disabled={loading}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Background</label>
+                  <textarea
+                    value={formData.background}
+                    onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
+                    className="w-full p-2 border rounded"
+                    rows="3"
+                    placeholder="Professional background and experience"
+                    disabled={loading}
+                  />
+                </div>
+              </div>
             </div>
-            
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">Goal</label>
-              <textarea
-                value={formData.goal}
-                onChange={(e) => setFormData(prev => ({...prev, goal: e.target.value}))}
-                className="w-full p-2 border rounded"
-                rows="2"
-                disabled={loading}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-1">Expertise</label>
-              <input
-                type="text"
-                value={formData.expertise}
-                onChange={(e) => setFormData(prev => ({...prev, expertise: e.target.value}))}
-                className="w-full p-2 border rounded"
-                placeholder="e.g., Machine Learning, Psychology"
-                disabled={loading}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-1">Background</label>
-              <textarea
-                value={formData.background}
-                onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
-                className="w-full p-2 border rounded"
+          </div>
                 rows="3"
                 placeholder="Professional background and experience"
                 disabled={loading}
