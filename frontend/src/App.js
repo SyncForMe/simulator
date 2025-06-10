@@ -136,19 +136,6 @@ const CurrentScenarioCard = ({ currentScenario }) => {
             <span className="text-blue-600">📋</span>
             <h3 className="text-md font-semibold text-gray-800">Current Scenario</h3>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-xs text-gray-500">
-              {isExpanded ? 'Click to collapse' : 'Click to view'}
-            </span>
-            <svg 
-              className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </div>
         </div>
       </button>
       
