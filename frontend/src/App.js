@@ -1711,101 +1711,122 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
   const agentRelationships = relationships ? relationships.filter(r => r.agent1_id === agent.id) : [];
 
   return (
-    <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 relative transition-all duration-300 hover:shadow-lg">
-      {/* Avatar positioned at absolute top-left */}
-      <div className="absolute top-3 left-3">
-        {agent.avatar_url ? (
-          <div className="relative">
-            <img 
-              src={agent.avatar_url} 
-              alt={`${agent.name} avatar`}
-              className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 avatar-animation"
-              style={{ imageRendering: 'high-quality' }}
-              loading="lazy"
-            />
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-          </div>
-        ) : (
-          <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold border-2 border-gray-300">
-            {agent.name.charAt(0).toUpperCase()}
-          </div>
-        )}
-        
-        {/* Mood Bar underneath avatar */}
-        <div className="mt-2 w-12">
-          <div className="bg-blue-100 text-blue-800 px-1 py-0.5 rounded text-xs text-center text-[10px] leading-tight">
-            {agent.current_mood}
-          </div>
+    <div className="agent-card bg-white rounded-lg shadow-md p-4 m-2 transition-all duration-300 hover:shadow-lg">
+      {/* First Line - Action Buttons (far right) */}
+      <div className="flex justify-end mb-3">
+        <div className="flex gap-1">
+          <button
+            onClick={() => onEdit(agent)}
+            className="text-blue-600 hover:text-blue-800 transition-colors p-1"
+            title="Edit Agent"
+            style={{ fontSize: '0.75rem' }}
+          >
+            ✏️
+          </button>
+          <button
+            onClick={() => setShowMemoryInput(!showMemoryInput)}
+            className="text-green-600 hover:text-green-800 transition-colors p-1"
+            title="Add Memory"
+            style={{ fontSize: '0.75rem' }}
+          >
+            🧠+
+          </button>
+          <button
+            onClick={() => onDelete(agent.id, agent.name)}
+            className="text-red-600 hover:text-red-800 transition-colors p-1"
+            title="Delete Agent"
+            style={{ fontSize: '0.75rem' }}
+          >
+            <svg 
+              width="12" 
+              height="12" 
+              viewBox="0 0 24 24" 
+              fill="currentColor"
+              className="inline-block"
+            >
+              <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            </svg>
+          </button>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-gray-600 hover:text-gray-800 transition-colors p-1"
+            title={isExpanded ? "Hide Details" : "Show Details"}
+            style={{ fontSize: '0.75rem' }}
+          >
+            <svg 
+              className={`w-3 h-3 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* Action Buttons - Positioned at top-right */}
-      <div className="absolute top-3 right-3 flex gap-1">
-        <button
-          onClick={() => onEdit(agent)}
-          className="text-blue-600 hover:text-blue-800 transition-colors p-1"
-          title="Edit Agent"
-          style={{ fontSize: '0.75rem' }}
-        >
-          ✏️
-        </button>
-        <button
-          onClick={() => setShowMemoryInput(!showMemoryInput)}
-          className="text-green-600 hover:text-green-800 transition-colors p-1"
-          title="Add Memory"
-          style={{ fontSize: '0.75rem' }}
-        >
-          🧠+
-        </button>
-        <button
-          onClick={() => onDelete(agent.id, agent.name)}
-          className="text-red-600 hover:text-red-800 transition-colors p-1"
-          title="Delete Agent"
-          style={{ fontSize: '0.75rem' }}
-        >
-          <svg 
-            width="12" 
-            height="12" 
-            viewBox="0 0 24 24" 
-            fill="currentColor"
-            className="inline-block"
-          >
-            <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-          </svg>
-        </button>
+      {/* Second Line - Avatar and Name (perfectly aligned) */}
+      <div className="flex items-start mb-3">
+        <div className="flex-shrink-0">
+          {agent.avatar_url ? (
+            <div className="relative">
+              <img 
+                src={agent.avatar_url} 
+                alt={`${agent.name} avatar`}
+                className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 avatar-animation"
+                style={{ imageRendering: 'high-quality' }}
+                loading="lazy"
+              />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
+            </div>
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold border-2 border-gray-300">
+              {agent.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+          
+          {/* Mood Bar underneath avatar */}
+          <div className="mt-2 w-12">
+            <div className="bg-blue-100 text-blue-800 px-1 py-0.5 rounded text-xs text-center text-[10px] leading-tight">
+              {agent.current_mood}
+            </div>
+          </div>
+        </div>
+        
+        <div className="ml-3 flex-1">
+          <h3 className="font-bold text-gray-800 break-words leading-tight">{agent.name}</h3>
+          <p className="text-sm text-gray-600">{agent.archetype}</p>
+        </div>
       </div>
 
-      {/* Header Content - Agent name aligned with avatar height */}
-      <div className="ml-16 mr-16 flex flex-col justify-center" style={{ minHeight: '72px' }}>
-        <h3 className="font-bold text-gray-800 break-words leading-tight">{agent.name}</h3>
-        <p className="text-sm text-gray-600">{agent.archetype}</p>
-      </div>
-
-      {/* Goal Section - Full Width */}
+      {/* Goal Section - Wider */}
       {agent.goal && (
-        <div className="mt-3 mx-2">
+        <div className="mb-3">
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 w-full">
             <p className="text-sm text-gray-700 italic">"{agent.goal}"</p>
           </div>
         </div>
       )}
 
-      {/* Expand/Collapse Button - Below header */}
-      <div className="flex justify-center mt-3">
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-full transition-all duration-200 flex-shrink-0"
-          title={isExpanded ? "Hide Details" : "Show Details"}
-        >
-          <svg 
-            className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+      {/* Personality Traits - Always Visible */}
+      <div className="mb-3">
+        <h4 className="text-sm font-semibold text-gray-700 mb-2">🧠 Personality</h4>
+        <div className="grid grid-cols-2 gap-2">
+          {Object.entries(agent.personality).map(([trait, value]) => (
+            <div key={trait} className="trait-item">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-xs capitalize text-gray-600">{trait}</span>
+                <span className="text-xs font-medium">{value}/10</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-1.5">
+                <div 
+                  className={`h-1.5 rounded-full transition-all duration-300 ${getPersonalityColor(value)}`}
+                  style={{width: `${value * 10}%`}}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Expandable Details Section */}
