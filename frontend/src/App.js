@@ -1645,8 +1645,9 @@ URLs will be automatically fetched and summarized!"
             )}
           </div>
           </div>
-
-          <div className="mt-4">
+          
+          {/* Personality Traits section - Full width below memory */}
+          <div className="mt-6">
             <h4 className="font-medium mb-3">Personality Traits</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {Object.entries(formData.personality).map(([trait, value]) => (
