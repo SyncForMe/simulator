@@ -1730,6 +1730,13 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
             {agent.name.charAt(0).toUpperCase()}
           </div>
         )}
+        
+        {/* Mood Bar underneath avatar */}
+        <div className="mt-2 w-12">
+          <div className="bg-blue-100 text-blue-800 px-1 py-0.5 rounded text-xs text-center text-[10px] leading-tight">
+            {agent.current_mood}
+          </div>
+        </div>
       </div>
 
       {/* Action Buttons - Positioned at top-right */}
