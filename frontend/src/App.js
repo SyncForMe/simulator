@@ -1695,6 +1695,8 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
               src={agent.avatar_url} 
               alt={`${agent.name} avatar`}
               className="w-12 h-12 rounded-full object-cover border-2 border-gray-200 avatar-animation"
+              style={{ imageRendering: 'high-quality' }}
+              loading="lazy"
             />
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
           </div>
