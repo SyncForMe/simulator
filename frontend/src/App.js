@@ -871,30 +871,44 @@ const ConversationControls = ({
 }) => {
   const isActive = simulationState?.auto_conversations || simulationState?.auto_time;
   
+  // Enhanced play/pause logic to handle start simulation
+  const handlePlayPause = async () => {
+    if (isActive) {
+      // If simulation is running, pause it
+      await onPauseSimulation();
+    } else {
+      // If simulation is paused/stopped, start/resume it
+      // This combines the start simulation and resume functionality
+      const newState = true;
+      await onToggleAuto({
+        auto_conversations: newState,
+        auto_time: newState,
+        conversation_interval: 10,
+        time_interval: 60
+      });
+    }
+  };
+  
   return (
     <div className="flex items-center justify-center gap-2 mt-3">
-      {/* Pause/Resume Button */}
-      {isActive ? (
-        <button 
-          onClick={onPauseSimulation}
-          className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
-          title="Pause Simulation"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      {/* Enhanced Play/Pause Button with Start Simulation functionality */}
+      <button 
+        onClick={handlePlayPause}
+        className={`p-2 text-white rounded-full transition-colors ${
+          isActive 
+            ? 'bg-red-600 hover:bg-red-700' 
+            : 'bg-green-600 hover:bg-green-700'
+        }`}
+        title={isActive ? "Pause Simulation" : "Start/Resume Simulation"}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          {isActive ? (
             <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-          </svg>
-        </button>
-      ) : (
-        <button 
-          onClick={onResumeSimulation}
-          className="p-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors"
-          title="Resume Simulation"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          ) : (
             <path d="M8 5v14l11-7z"/>
-          </svg>
-        </button>
-      )}
+          )}
+        </svg>
+      </button>
       
       {/* Generate Conversation Button */}
       <button 
