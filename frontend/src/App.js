@@ -4119,7 +4119,10 @@ function App() {
             {/* Start New Simulation Control - Above scenario creation */}
             <StartSimulationControl onStartSimulation={handleStartSimulation} />
             
-            <ScenarioInput onSetScenario={handleSetScenario} />
+            <ScenarioInput 
+              onSetScenario={handleSetScenario} 
+              currentScenario={simulationState?.scenario}
+            />
             
             <SimulationStatusBar simulationState={simulationState} />
             
