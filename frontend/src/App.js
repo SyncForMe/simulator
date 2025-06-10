@@ -1776,14 +1776,9 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
       </div>
 
       {/* Header Content - Agent name aligned with avatar height */}
-      <div className="ml-16 mr-16 flex flex-col justify-center" style={{ minHeight: '48px' }}>
+      <div className="ml-16 mr-16 flex flex-col justify-center" style={{ minHeight: '72px' }}>
         <h3 className="font-bold text-gray-800 break-words leading-tight">{agent.name}</h3>
         <p className="text-sm text-gray-600">{agent.archetype}</p>
-        <div className="flex items-center flex-wrap gap-2 mt-1">
-          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-            {agent.current_mood}
-          </span>
-        </div>
       </div>
 
       {/* Goal Section - Full Width */}
