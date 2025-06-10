@@ -4075,11 +4075,6 @@ function App() {
             
             <SimulationStatusBar simulationState={simulationState} />
             
-            <AutoControls 
-              simulationState={simulationState}
-              onToggleAuto={handleToggleAuto}
-            />
-            
             <ControlPanel
               simulationState={simulationState}
               apiUsage={apiUsage}
