@@ -17,12 +17,8 @@ console.log('Environment variables loaded:', {
 // Animated Observer Logo Component
 const ObserverLogo = () => {
   const pupilControls = useAnimationControls();
-  const eyelidControls = useAnimationControls();
 
   useEffect(() => {
-    // Initialize eyelid to be completely hidden
-    eyelidControls.set({ y: "-100%" });
-
     // Animation sequences
     const animatePupil = async () => {
       while (true) {
@@ -72,37 +68,13 @@ const ObserverLogo = () => {
       }
     };
 
-    const animateBlink = async () => {
-      while (true) {
-        // Wait 5-10 seconds between blinks
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 5000 + 5000));
-        
-        // Blink sequence - eyelid closes and opens quickly
-        await eyelidControls.start({
-          y: "0%",
-          transition: { duration: 0.1, ease: "easeOut" }
-        });
-        
-        // Keep closed briefly
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
-        // Open eye
-        await eyelidControls.start({
-          y: "-100%",
-          transition: { duration: 0.15, ease: "easeIn" }
-        });
-      }
-    };
-
     // Start animations
     animatePupil();
-    animateBlink();
 
     return () => {
       pupilControls.stop();
-      eyelidControls.stop();
     };
-  }, [pupilControls, eyelidControls]);
+  }, [pupilControls]);
 
   return (
     <div className="flex items-center select-none" style={{ fontFamily: 'Merriweather, serif' }}>
@@ -137,31 +109,6 @@ const ObserverLogo = () => {
               }}
             />
           </div>
-          
-          {/* Animated eyelid - Only visible during blink */}
-          <motion.div
-            animate={eyelidControls}
-            initial={{ y: "-100%" }}
-            className="absolute inset-0 bg-gray-200 overflow-hidden"
-            style={{
-              borderRadius: '45%'
-            }}
-          >
-            {/* Eyelashes */}
-            <div className="absolute bottom-0 left-0 right-0 flex justify-center space-x-1">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-gray-500"
-                  style={{
-                    width: '1px',
-                    height: '4px',
-                    transform: `rotate(${(i - 2) * 10}deg)`
-                  }}
-                />
-              ))}
-            </div>
-          </motion.div>
         </div>
         
         {/* Rest of the text "bserver" */}
