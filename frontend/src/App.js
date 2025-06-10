@@ -523,7 +523,32 @@ const AGENT_ARCHETYPES = {
 const ScenarioInput = ({ onSetScenario }) => {
   const [scenario, setScenario] = useState("");
   const [loading, setLoading] = useState(false);
+  const [randomLoading, setRandomLoading] = useState(false);
   const [justSubmitted, setJustSubmitted] = useState(false);
+
+  // Collection of random scenarios
+  const randomScenarios = [
+    "A massive data breach has exposed sensitive information from a major tech company. The team must decide how to respond to the crisis and protect affected users.",
+    "An alien signal has been detected from deep space. Scientists must determine if it's natural phenomenon or intelligent communication.",
+    "A revolutionary AI breakthrough has been announced, but concerns about its implications are growing. The team debates the benefits and risks.",
+    "A global pandemic has emerged, and the team must coordinate an international response while managing economic and social impacts.",
+    "Climate change has reached a tipping point. Emergency measures are being discussed, but there's disagreement on the best approach.",
+    "A major cryptocurrency exchange has collapsed, causing market panic. Financial experts debate regulatory responses and investor protection.",
+    "A whistleblower has revealed unethical practices at a pharmaceutical company. The team must decide how to handle the revelations.",
+    "Ancient artifacts with unknown properties have been discovered. Archaeologists and scientists debate their significance and study methods.",
+    "A social media platform has been manipulating public opinion. Experts discuss the implications for democracy and free speech.",
+    "A breakthrough in quantum computing threatens current encryption methods. Cybersecurity professionals debate immediate actions needed.",
+    "A massive volcanic eruption is predicted to affect global climate. Scientists and policymakers debate evacuation and mitigation strategies.",
+    "Gene editing technology has advanced rapidly, raising ethical questions about human enhancement. Bioethicists debate regulatory frameworks.",
+    "A major oil spill threatens marine ecosystems. Environmental scientists and cleanup crews coordinate response efforts while activists demand action.",
+    "Artificial general intelligence has been achieved in a lab. Researchers debate whether to announce the breakthrough or continue secret development.",
+    "A mysterious disease is affecting bee populations worldwide. Agricultural experts and ecologists urgently seek solutions to prevent ecosystem collapse.",
+    "Space debris is threatening critical satellites. Aerospace engineers and international agencies debate cleanup missions and future space traffic management.",
+    "A deepfake video of a world leader has gone viral, causing international tensions. Digital forensics experts and diplomats work to address the crisis.",
+    "Autonomous vehicles have malfunctioned in multiple cities simultaneously. Engineers and safety regulators investigate the cause and response protocols.",
+    "A major social movement is gaining momentum globally. Political analysts and activists debate the movement's goals and potential outcomes.",
+    "Advanced brain-computer interfaces have enabled direct neural communication. Neuroscientists and ethicists discuss the implications for human consciousness and privacy."
+  ];
 
   const handleSubmit = async (e) => {
     if (e && e.preventDefault) {
@@ -543,6 +568,28 @@ const ScenarioInput = ({ onSetScenario }) => {
     }, 3000);
   };
 
+  const handleGenerateRandomScenario = async () => {
+    setRandomLoading(true);
+    
+    // Select a random scenario
+    const randomIndex = Math.floor(Math.random() * randomScenarios.length);
+    const selectedScenario = randomScenarios[randomIndex];
+    
+    // Set it in the textarea
+    setScenario(selectedScenario);
+    
+    // Apply it automatically
+    setJustSubmitted(true);
+    await onSetScenario(selectedScenario);
+    setRandomLoading(false);
+    
+    // Keep the text visible for 3 seconds to show it was applied
+    setTimeout(() => {
+      setScenario("");
+      setJustSubmitted(false);
+    }, 3000);
+  };
+
   return (
     <div className="scenario-input bg-white rounded-lg shadow-md p-4 mb-4">
       <h3 className="text-lg font-bold mb-3">🎭 Custom Scenario</h3>
@@ -554,7 +601,7 @@ const ScenarioInput = ({ onSetScenario }) => {
             placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.')"
             className={`w-full p-3 border rounded-lg resize-none ${justSubmitted ? 'bg-green-50 border-green-300' : ''}`}
             rows="3"
-            disabled={loading || justSubmitted}
+            disabled={loading || justSubmitted || randomLoading}
           />
           {justSubmitted && (
             <p className="text-xs text-green-600 mt-1">
@@ -562,13 +609,24 @@ const ScenarioInput = ({ onSetScenario }) => {
             </p>
           )}
         </div>
-        <button
-          type="submit"
-          disabled={loading || !scenario.trim() || justSubmitted}
-          className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
-        >
-          {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Set New Scenario"}
-        </button>
+        <div className="space-y-2">
+          <button
+            type="submit"
+            disabled={loading || !scenario.trim() || justSubmitted || randomLoading}
+            className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+          >
+            {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Set New Scenario"}
+          </button>
+          
+          <button
+            type="button"
+            onClick={handleGenerateRandomScenario}
+            disabled={loading || justSubmitted || randomLoading}
+            className="w-full bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 disabled:opacity-50 transition-colors"
+          >
+            {randomLoading ? "Generating & Applying..." : "🎲 Generate Random Scenario"}
+          </button>
+        </div>
       </form>
     </div>
   );
