@@ -1850,27 +1850,6 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
             </div>
           )}
 
-          {/* Personality Traits */}
-          <div className="mb-3">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">🧠 Personality</h4>
-            <div className="grid grid-cols-2 gap-2">
-              {Object.entries(agent.personality).map(([trait, value]) => (
-                <div key={trait} className="trait-item">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs capitalize text-gray-600">{trait}</span>
-                    <span className="text-xs font-medium">{value}/10</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
-                    <div 
-                      className={`h-1.5 rounded-full transition-all duration-300 ${getPersonalityColor(value)}`}
-                      style={{width: `${value * 10}%`}}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Relationships */}
           {agentRelationships.length > 0 && (
             <div className="mb-3">
@@ -1898,56 +1877,39 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
               </p>
             </div>
           )}
-
-          {/* Current Activity */}
-          <div className="flex items-center space-x-2">
-            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-              📍 {agent.current_activity}
-            </span>
-          </div>
         </div>
       )}
 
-      {/* Add Memory Input (outside of expandable section) */}
+      {/* Memory Input */}
       {showMemoryInput && (
-        <div className="add-memory mt-3 p-3 bg-green-50 rounded border">
-          <form onSubmit={handleAddMemory}>
-            <label className="block text-sm font-medium mb-1">🧠 Add Memory</label>
+        <div className="memory-input mt-4 pt-4 border-t border-gray-100">
+          <form onSubmit={handleAddMemory} className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">Add Memory</label>
             <textarea
               value={newMemory}
               onChange={(e) => setNewMemory(e.target.value)}
-              placeholder="Add a specific memory, experience, or knowledge... 
-
-💡 Pro tips:
-• Include URLs to real websites/social media for additional context
-• Example: 'I read this article https://example.com/ai-research that changed my perspective on AI safety'
-• URLs will be automatically processed and summarized"
-              className="w-full p-2 border rounded text-sm"
-              rows="4"
+              placeholder="What should this agent remember?"
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              rows="3"
             />
-            <div className="flex space-x-2 mt-2">
+            <div className="flex gap-2">
               <button
                 type="submit"
-                className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
-                disabled={!newMemory.trim()}
+                className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
               >
-                {newMemory.includes('http') ? '🌐 Add with URL Processing' : 'Add Memory'}
+                Add Memory
               </button>
               <button
                 type="button"
                 onClick={() => setShowMemoryInput(false)}
-                className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs hover:bg-gray-400"
+                className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-400"
               >
                 Cancel
               </button>
             </div>
-            {newMemory.includes('http') && (
-              <p className="text-xs text-blue-600 mt-1">
-                🌐 URLs detected! They will be fetched and summarized automatically.
-              </p>
-            )}
           </form>
         </div>
+      )}
       )}
     </div>
   );
