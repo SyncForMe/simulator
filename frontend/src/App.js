@@ -520,7 +520,7 @@ const AGENT_ARCHETYPES = {
   }
 };
 
-const ScenarioInput = ({ onSetScenario }) => {
+const ScenarioInput = ({ onSetScenario, currentScenario }) => {
   const [scenario, setScenario] = useState("");
   const [loading, setLoading] = useState(false);
   const [randomLoading, setRandomLoading] = useState(false);
@@ -592,7 +592,31 @@ const ScenarioInput = ({ onSetScenario }) => {
 
   return (
     <div className="scenario-input bg-white rounded-lg shadow-md p-4 mb-4">
-      <h3 className="text-lg font-bold mb-3">🎭 Custom Scenario</h3>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-lg font-bold">🎭 Custom Scenario</h3>
+        
+        {/* Current Scenario Info Icon */}
+        {currentScenario && (
+          <div className="relative group">
+            <button 
+              className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              type="button"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+            </button>
+            
+            {/* Hover Tooltip */}
+            <div className="absolute right-0 bottom-full mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 max-w-sm">
+              <div className="font-semibold mb-1">Current Scenario:</div>
+              <div className="text-xs leading-relaxed">{currentScenario}</div>
+              <div className="absolute top-full right-4 border-4 border-transparent border-t-gray-800"></div>
+            </div>
+          </div>
+        )}
+      </div>
+      
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <textarea
@@ -622,9 +646,9 @@ const ScenarioInput = ({ onSetScenario }) => {
             type="button"
             onClick={handleGenerateRandomScenario}
             disabled={loading || justSubmitted || randomLoading}
-            className="w-full bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 disabled:opacity-50 transition-colors"
+            className="w-full bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 disabled:opacity-50 transition-colors"
           >
-            {randomLoading ? "Generating & Applying..." : "🎲 Generate Random Scenario"}
+            {randomLoading ? "Generating & Applying..." : "Random Scenario"}
           </button>
         </div>
       </form>
