@@ -1644,7 +1644,6 @@ URLs will be automatically fetched and summarized!"
               </p>
             )}
           </div>
-          </div>
           
           {/* Personality Traits section - Full width below memory */}
           <div className="mt-6">
