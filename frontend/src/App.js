@@ -3109,7 +3109,7 @@ const SavedAgentsLibrary = ({ onCreateAgent }) => {
     try {
       // Trigger agent creation with saved agent data
       const agentData = {
-        name: `${agent.name} (Copy)`,
+        name: agent.name,
         archetype: agent.archetype,
         personality: agent.personality,
         goal: agent.goal,
