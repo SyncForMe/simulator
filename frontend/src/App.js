@@ -898,56 +898,78 @@ const ConversationControls = ({
   return (
     <div className="flex items-center justify-center gap-2 mt-3">
       {/* Enhanced Play/Pause Button with Start Simulation functionality */}
-      <button 
-        onClick={handlePlayPause}
-        className={`p-2 text-white rounded-full transition-colors ${
-          isActive 
-            ? 'bg-red-600 hover:bg-red-700' 
-            : 'bg-green-600 hover:bg-green-700'
-        }`}
-        title={isActive ? "Pause Simulation" : "Start/Resume Simulation"}
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          {isActive ? (
-            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-          ) : (
-            <path d="M8 5v14l11-7z"/>
-          )}
-        </svg>
-      </button>
+      <div className="relative group">
+        <button 
+          onClick={handlePlayPause}
+          className={`p-2 text-white rounded-full transition-colors ${
+            isActive 
+              ? 'bg-red-600 hover:bg-red-700' 
+              : 'bg-green-600 hover:bg-green-700'
+          }`}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            {isActive ? (
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+            ) : (
+              <path d="M8 5v14l11-7z"/>
+            )}
+          </svg>
+        </button>
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
+          {isActive ? "Pause Simulation" : "Start/Resume Simulation"}
+        </div>
+      </div>
       
       {/* Generate Conversation Button */}
-      <button 
-        onClick={onGenerateConversation}
-        className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors"
-        title="Generate Conversation"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-        </svg>
-      </button>
+      <div className="relative group">
+        <button 
+          onClick={onGenerateConversation}
+          className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+          </svg>
+        </button>
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
+          Generate Conversation
+        </div>
+      </div>
       
       {/* Next Period Button */}
-      <button 
-        onClick={onNextPeriod}
-        className="p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors"
-        title="Next Period"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
-        </svg>
-      </button>
+      <div className="relative group">
+        <button 
+          onClick={onNextPeriod}
+          className="p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
+          </svg>
+        </button>
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
+          Next Time Period
+        </div>
+      </div>
       
       {/* Auto Toggle */}
-      <button 
-        onClick={onToggleAuto}
-        className={`p-2 rounded-full transition-colors ${
-          isActive 
-            ? 'bg-orange-600 text-white hover:bg-orange-700' 
-            : 'bg-gray-600 text-white hover:bg-gray-700'
-        }`}
-        title={`Auto Mode: ${isActive ? 'ON' : 'OFF'}`}
-      >
+      <div className="relative group">
+        <button 
+          onClick={onToggleAuto}
+          className={`p-2 rounded-full transition-colors ${
+            isActive 
+              ? 'bg-orange-600 text-white hover:bg-orange-700' 
+              : 'bg-gray-600 text-white hover:bg-gray-700'
+          }`}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </button>
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
+          {isActive ? "Auto Mode: ON" : "Auto Mode: OFF"}
+        </div>
+      </div>
+    </div>
+  );
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
         </svg>
