@@ -3178,6 +3178,8 @@ const SavedAgentsLibrary = ({ onCreateAgent }) => {
                           src={agent.avatar_url} 
                           alt={agent.name}
                           className="w-12 h-12 rounded-full object-cover"
+                          style={{ imageRendering: 'high-quality' }}
+                          loading="lazy"
                         />
                       ) : (
                         <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600">
