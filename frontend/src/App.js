@@ -1520,10 +1520,10 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg p-6 w-full max-w-7xl max-h-[95vh] overflow-y-auto">
+      <div className="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[95vh] overflow-y-auto">
         <h3 className="text-lg font-bold mb-6">✏️ Edit Agent: {agent.name}</h3>
         <form onSubmit={handleSubmit}>
-          <div className="flex gap-8">
+          <div className="flex gap-6">
             {/* Left side - Large Avatar (30% smaller) */}
             <div className="flex-shrink-0">
               <div className="w-72 h-72">
