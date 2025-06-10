@@ -1775,15 +1775,24 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
       <div className="ml-16 mr-16 flex flex-col justify-center" style={{ minHeight: '48px' }}>
         <h3 className="font-bold text-gray-800 break-words leading-tight">{agent.name}</h3>
         <p className="text-sm text-gray-600">{agent.archetype}</p>
-        {agent.goal && (
-          <p className="text-xs text-gray-500 italic mt-1 pr-4">"{agent.goal}"</p>
-        )}
         <div className="flex items-center flex-wrap gap-2 mt-1">
           <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
             {agent.current_mood}
           </span>
         </div>
       </div>
+
+      {/* Goal Section - Full Width */}
+      {agent.goal && (
+        <div className="mt-3 mx-2">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 w-full">
+            <div className="flex items-start space-x-2">
+              <span className="text-sm text-gray-600 font-medium flex-shrink-0">🎯 Goal:</span>
+              <p className="text-sm text-gray-700 italic flex-1">"{agent.goal}"</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Expand/Collapse Button - Below header */}
       <div className="flex justify-center mt-3">
