@@ -858,7 +858,25 @@ Previous memory: {agent.memory_summary or 'None'}"""
             "we should establish",
             "let's build a system",
             "we need standards for",
-            "let's create a manual"
+            "let's create a manual",
+            "i'll create", 
+            "let me create",
+            "i'll develop",
+            "i'll draft",
+            "i'm creating",
+            "i'll work on",
+            "let me work on",
+            "i'll put together",
+            "let me put together",
+            "we need to create",
+            "let's put together",
+            "we should put together",
+            "we need documentation",
+            "let's document",
+            "we should document",
+            "create a document",
+            "make a document",
+            "write a document"
         ]
         
         # Check if any trigger phrases are present
