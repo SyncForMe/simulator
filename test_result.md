@@ -653,6 +653,8 @@ test_plan:
     - "Document Update Workflow"
     - "API Endpoints"
   stuck_tasks:
+    - "Universal Topic Support"
+    - "Document Awareness in Conversations"
     - "Document Update Workflow"
     - "API Endpoints"
   test_all: false
