@@ -963,154 +963,264 @@ Respond with ONLY: YES, NO, or ABSTAIN followed by a brief 1-sentence reason."""
         if not await self.can_make_request():
             return f"# {title}\n\n*Document generation failed - API limit reached*"
         
-        # Document templates based on type
+        # Document templates based on type (generic, not medical-specific)
         templates = {
             "protocol": """# {title}
 
 ## Purpose
-[Brief description of when and why to use this protocol]
+[Clear description of when and why to use this protocol]
 
 ## Scope
 [Specific situations where this protocol applies]
 
-## Equipment Required
-- [List all necessary equipment and supplies]
-- [Include backup alternatives where applicable]
+## Requirements
+- [List all necessary resources, tools, or conditions]
+- [Include prerequisites and dependencies]
 
 ## Procedure
-1. **Initial Assessment** ([timeframe])
-   - [Specific steps with clear criteria]
-   - [Decision points and alternatives]
+1. **Preparation Phase** ([estimated timeframe])
+   - [Specific preparation steps]
+   - [Key checkpoints and validation criteria]
 
-2. **Primary Intervention** ([timeframe])
-   - [Step-by-step instructions]
-   - [Include safety considerations]
+2. **Execution Phase** ([estimated timeframe])
+   - [Step-by-step implementation instructions]
+   - [Decision points and alternative paths]
 
-3. **Monitoring & Documentation** ([timeframe])
-   - [What to monitor and how often]
-   - [Required documentation]
-
-## Risk Mitigation
-- **Safety Measures**: [Critical safety protocols]
-- **Common Complications**: [What to watch for]
-- **When to Escalate**: [Clear escalation criteria]
+3. **Completion Phase** ([estimated timeframe])
+   - [Verification and completion steps]
+   - [Documentation and reporting requirements]
 
 ## Quality Assurance
-- [Success criteria and metrics]
-- [Review and update schedule]
+- **Success Criteria**: [How to measure successful completion]
+- **Common Issues**: [Potential problems and solutions]
+- **Review Process**: [How and when to review this protocol]
+
+## Updates and Maintenance
+- [How to propose improvements]
+- [Review schedule and ownership]
 
 ---
 *Created by: {agent_name} based on team discussion*
-*Category: Clinical Protocols*""",
+*Category: {category}*""",
 
             "training": """# {title}
 
-## Learning Objectives
-By the end of this training, participants will be able to:
-- [Specific, measurable learning outcomes]
-- [Skills and knowledge to be acquired]
+## Objective
+[Clear statement of what participants will achieve]
 
 ## Target Audience
-[Who should complete this training]
+[Who should complete this training and prerequisites]
 
-## Prerequisites
-[Required knowledge or certifications]
+## Learning Outcomes
+By completing this training, participants will be able to:
+- [Specific, measurable learning objectives]
+- [Skills and knowledge to be acquired]
 
-## Scenario Description
+## Content Overview
 {scenario_details}
 
-## Key Teaching Points
-1. **Critical Concepts**
-   - [Core principles participants must understand]
-   - [Why these concepts matter in real situations]
+## Core Concepts
+1. **Fundamental Principles**
+   - [Key concepts participants must understand]
+   - [Why these concepts are important]
 
-2. **Common Mistakes to Avoid**
-   - [Frequent errors seen in practice]
-   - [How to prevent these mistakes]
+2. **Practical Applications**
+   - [Real-world application scenarios]
+   - [Hands-on exercises and examples]
 
-3. **Best Practices**
-   - [Evidence-based approaches]
-   - [Tips from experienced practitioners]
+3. **Advanced Considerations**
+   - [Complex scenarios and edge cases]
+   - [Integration with other systems/processes]
 
-## Simulation Setup
-**Equipment Needed:**
-- [Training equipment and supplies]
-- [Technology requirements]
+## Implementation Guide
+**Setup Requirements:**
+- [Materials, tools, or technology needed]
+- [Environment and space requirements]
 
-**Environment:**
-- [Physical space requirements]
-- [Setup instructions]
+**Delivery Methods:**
+- [Training format options]
+- [Duration and scheduling considerations]
 
-## Assessment Criteria
+## Assessment and Evaluation
 **Performance Indicators:**
-- [How to measure competency]
-- [Pass/fail criteria]
+- [How to measure learning success]
+- [Competency validation methods]
 
-**Evaluation Methods:**
-- [Practical assessment]
-- [Knowledge verification]
-
-## Resources for Further Learning
-- [Additional references]
-- [Continuing education opportunities]
+**Continuous Improvement:**
+- [Feedback collection methods]
+- [Update and revision process]
 
 ---
-*Created by: {agent_name} for professional development*
-*Category: Educational Materials*""",
+*Created by: {agent_name} for knowledge transfer*
+*Category: {category}*""",
 
             "research": """# {title}
 
 ## Executive Summary
 [Key findings and recommendations in 2-3 sentences]
 
-## Background
-[Context and rationale for this research]
+## Background and Context
+[Problem statement, motivation, and scope]
 
-## Current Evidence
-### Literature Review Findings
-- [Summary of relevant studies and guidelines]
-- [Strength of evidence levels]
+## Methodology
+[How the research was conducted or should be conducted]
 
-### Gap Analysis
-- [What we know vs. what we need to know]
-- [Areas requiring further investigation]
+## Key Findings
+### Primary Insights
+- [Main discoveries or conclusions]
+- [Supporting evidence and data]
+
+### Secondary Observations
+- [Additional insights and patterns]
+- [Areas for further investigation]
+
+## Analysis and Implications
+**Impact Assessment:**
+- [What these findings mean for the organization/project]
+- [Potential benefits and risks]
+
+**Strategic Considerations:**
+- [How findings align with goals and objectives]
+- [Resource and timeline implications]
 
 ## Recommendations
-### Evidence-Based Conclusions
-1. **Primary Recommendation**
-   - [Main actionable conclusion]
-   - [Supporting evidence]
-
-2. **Secondary Recommendations**
-   - [Additional evidence-based suggestions]
-   - [Implementation considerations]
-
-### Implementation Strategy
-**Immediate Actions (0-30 days):**
+### Immediate Actions
 - [Steps that can be taken right away]
+- [Quick wins and low-hanging fruit]
 
-**Short-term Goals (1-6 months):**
-- [Medium-term implementation steps]
+### Medium-term Initiatives
+- [Projects requiring planning and resources]
+- [Timeline: 1-6 months]
 
-**Long-term Objectives (6+ months):**
-- [Strategic long-term changes]
+### Long-term Strategic Changes
+- [Major shifts requiring significant investment]
+- [Timeline: 6+ months]
 
-## Resource Requirements
-- **Personnel**: [Staffing needs]
-- **Equipment**: [Material requirements]
-- **Training**: [Educational needs]
-- **Budget**: [Financial considerations]
+## Implementation Roadmap
+- **Phase 1**: [Immediate priorities]
+- **Phase 2**: [Medium-term development]
+- **Phase 3**: [Long-term transformation]
 
-## Quality Metrics
-- [How to measure success]
-- [Key performance indicators]
-
-## References
-[Relevant literature and guidelines cited]
+## Resources and References
+[Relevant sources, data, and supporting materials]
 
 ---
-*Created by: {agent_name} based on evidence review*
-*Category: Evidence Reviews*"""
+*Created by: {agent_name} based on research and analysis*
+*Category: {category}*""",
+
+            "reference": """# {title}
+
+## Quick Reference
+[Essential information for immediate use]
+
+## Overview
+[Purpose and scope of this reference guide]
+
+## Key Information
+### Core Data
+- [Essential facts, figures, and constants]
+- [Important formulas, calculations, or rules]
+
+### Process Guidelines
+- [Step-by-step procedures for common tasks]
+- [Decision trees and flowcharts]
+
+### Troubleshooting
+- [Common problems and solutions]
+- [Diagnostic procedures and fixes]
+
+## Detailed Specifications
+### Technical Details
+- [Comprehensive technical information]
+- [Standards, specifications, and requirements]
+
+### Configuration Settings
+- [Setup parameters and options]
+- [Best practices and recommendations]
+
+## Examples and Use Cases
+### Typical Scenarios
+- [Common use patterns and examples]
+- [Sample implementations and configurations]
+
+### Advanced Applications
+- [Complex use cases and customizations]
+- [Integration with other systems]
+
+## Maintenance and Updates
+- [How to keep information current]
+- [Review schedule and responsibility]
+
+---
+*Created by: {agent_name} for reference and guidance*
+*Category: {category}*""",
+
+            "plan": """# {title}
+
+## Executive Summary
+[Brief overview of the plan's purpose and key elements]
+
+## Objectives
+### Primary Goals
+- [Main objectives to be achieved]
+- [Success criteria and measurable outcomes]
+
+### Secondary Goals
+- [Supporting objectives and benefits]
+- [Long-term strategic alignment]
+
+## Current Situation Analysis
+**Strengths:**
+- [Current advantages and capabilities]
+
+**Challenges:**
+- [Obstacles and limitations to address]
+
+**Opportunities:**
+- [External factors that can be leveraged]
+
+## Strategic Approach
+### Methodology
+- [Overall approach and framework]
+- [Key principles and guidelines]
+
+### Resource Requirements
+- **Personnel**: [Team composition and roles]
+- **Budget**: [Financial requirements and allocation]
+- **Technology**: [Tools and systems needed]
+- **Timeline**: [Overall duration and key milestones]
+
+## Implementation Timeline
+### Phase 1: [Phase Name] ([Duration])
+- [Key activities and deliverables]
+- [Milestones and checkpoints]
+
+### Phase 2: [Phase Name] ([Duration])
+- [Key activities and deliverables]
+- [Dependencies and prerequisites]
+
+### Phase 3: [Phase Name] ([Duration])
+- [Key activities and deliverables]
+- [Final outcomes and transition]
+
+## Risk Management
+**Potential Risks:**
+- [Identified risks and impact assessment]
+
+**Mitigation Strategies:**
+- [Preventive measures and contingency plans]
+
+## Success Metrics
+- [Key performance indicators]
+- [Measurement methods and reporting schedule]
+
+## Communication Plan
+- [Stakeholder engagement strategy]
+- [Progress reporting and feedback mechanisms]
+
+---
+*Created by: {agent_name} for strategic planning*
+*Category: {category}*"""
         }
         
         # Get appropriate template
