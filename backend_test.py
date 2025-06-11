@@ -139,6 +139,88 @@ def print_summary():
     print(f"OVERALL RESULT: {overall_result}")
     print("="*80)
 
+def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None, auth=False, headers=None):
+    """Run a test against the specified endpoint"""
+    url = f"{API_URL}{endpoint}"
+    print(f"\n{'='*80}\nTesting: {test_name} ({method} {url})")
+    
+    # Set up headers with auth token if needed
+    if headers is None:
+        headers = {}
+    
+    if auth and auth_token:
+        headers["Authorization"] = f"Bearer {auth_token}"
+    
+    try:
+        if method == "GET":
+            response = requests.get(url, headers=headers)
+        elif method == "POST":
+            response = requests.post(url, json=data, headers=headers)
+        elif method == "PUT":
+            response = requests.put(url, json=data, headers=headers)
+        elif method == "DELETE":
+            response = requests.delete(url, headers=headers)
+        else:
+            print(f"Unsupported method: {method}")
+            return False, None
+        
+        # Print response details
+        print(f"Status Code: {response.status_code}")
+        
+        # Check if response is JSON
+        try:
+            response_data = response.json()
+            print(f"Response: {json.dumps(response_data, indent=2)}")
+        except json.JSONDecodeError:
+            print(f"Response is not JSON: {response.text}")
+            response_data = {}
+        
+        # Verify status code
+        status_ok = response.status_code == expected_status
+        
+        # Verify expected keys if provided
+        keys_ok = True
+        if expected_keys and status_ok:
+            for key in expected_keys:
+                if key not in response_data:
+                    print(f"Missing expected key in response: {key}")
+                    keys_ok = False
+        
+        # Determine test result
+        test_passed = status_ok and keys_ok
+        
+        # Update test results
+        result = "PASSED" if test_passed else "FAILED"
+        print(f"Test Result: {result}")
+        
+        test_results["tests"].append({
+            "name": test_name,
+            "endpoint": endpoint,
+            "method": method,
+            "status_code": response.status_code,
+            "expected_status": expected_status,
+            "result": result
+        })
+        
+        if test_passed:
+            test_results["passed"] += 1
+        else:
+            test_results["failed"] += 1
+        
+        return test_passed, response_data
+    
+    except Exception as e:
+        print(f"Error during test: {e}")
+        test_results["tests"].append({
+            "name": test_name,
+            "endpoint": endpoint,
+            "method": method,
+            "result": "ERROR",
+            "error": str(e)
+        })
+        test_results["failed"] += 1
+        return False, None
+
 def test_speech_languages():
     """Test the speech languages endpoint"""
     print("\n" + "="*80)
