@@ -944,7 +944,6 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                 </button>
               )}
             </div>
-            </div>
           </div>
           
           {/* Enhanced Status Messages */}
