@@ -157,11 +157,18 @@ def test_document_categories():
     print("TESTING DOCUMENT CATEGORIES ENDPOINT")
     print("="*80)
     
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test document categories without authentication")
+            return False, "Authentication failed"
+    
     # Test GET /api/documents/categories
     categories_test, categories_response = run_test(
         "Document Categories",
         "/documents/categories",
         method="GET",
+        auth=True,  # Add authentication
         expected_keys=["categories"]
     )
     
@@ -219,10 +226,31 @@ def test_action_trigger_analysis():
     Dr. Smith: Great idea. We'll need to train everyone on the new protocol once it's ready.
     """
     
+    # Create test agents for the conversation
+    agents = []
+    for i in range(2):
+        agent_data = {
+            "name": f"Dr. Test {i+1}",
+            "archetype": "scientist",
+            "goal": "Test action trigger analysis",
+            "expertise": "Testing"
+        }
+        
+        agent_test, agent_response = run_test(
+            f"Create Test Agent {i+1} for Action Trigger Analysis",
+            "/agents",
+            method="POST",
+            data=agent_data,
+            expected_keys=["id", "name"]
+        )
+        
+        if agent_test and agent_response:
+            agents.append(agent_response)
+    
     # Test the conversation analysis endpoint
     analysis_data = {
         "conversation_text": conversation_text,
-        "agent_ids": []  # No real agents needed for this test
+        "agent_ids": [agent.get("id") for agent in agents]  # Use created agent IDs
     }
     
     analysis_test, analysis_response = run_test(
@@ -250,6 +278,16 @@ def test_action_trigger_analysis():
             print(f"✅ Document title: {document_title}")
         else:
             print("❌ Trigger not detected or missing information")
+    
+    # Clean up - delete test agents
+    for agent in agents:
+        agent_id = agent.get("id")
+        if agent_id:
+            run_test(
+                f"Delete Test Agent {agent_id}",
+                f"/agents/{agent_id}",
+                method="DELETE"
+            )
     
     # Print summary
     print("\nACTION TRIGGER ANALYSIS SUMMARY:")
@@ -497,7 +535,7 @@ This protocol applies to all test scenarios.
             f"/documents/{document_id}",
             method="DELETE",
             auth=True,
-            expected_keys=["message"]
+            expected_keys=["success", "message"]
         )
         
         if delete_test:
