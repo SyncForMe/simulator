@@ -2112,10 +2112,15 @@ async def generate_weekly_summary():
 
 {conv_text}
 
-Provide a weekly summary in this format:
+{document_summary}
+
+Provide a comprehensive weekly summary in this format:
 **Week Summary - Day {current_day}**
 
-**1. 🔥 KEY EVENTS & DISCOVERIES**
+**📊 EXECUTIVE SUMMARY**
+[2-3 sentences highlighting the most significant developments, breakthroughs, and documents created this week]
+
+**🔥 KEY EVENTS & DISCOVERIES**
 
 1. [First major event or discovery - detailed paragraph with specific examples]
 
@@ -2123,7 +2128,15 @@ Provide a weekly summary in this format:
 
 3. [Third major event or discovery - detailed paragraph with specific examples]
 
-**2. 📈 RELATIONSHIP DEVELOPMENTS**
+**📋 DOCUMENTS & DELIVERABLES**
+
+1. [First document created - title, purpose, impact, and why it was needed]
+
+2. [Second document created - title, purpose, impact, and strategic value]
+
+3. [Third document created - title, purpose, impact, and implementation potential]
+
+**📈 RELATIONSHIP DEVELOPMENTS**
 
 1. [First relationship change or development - detailed paragraph]
 
@@ -2131,7 +2144,7 @@ Provide a weekly summary in this format:
 
 3. [Third relationship change or development - detailed paragraph]
 
-**3. 🎭 EMERGING PERSONALITIES**
+**🎭 EMERGING PERSONALITIES**
 
 1. [First agent's personality development - detailed paragraph]
 
@@ -2139,15 +2152,21 @@ Provide a weekly summary in this format:
 
 3. [Third agent's personality development - detailed paragraph]
 
-**4. 🤝 SOCIAL DYNAMICS**
+**🤝 SOCIAL DYNAMICS**
 
 1. [First social pattern or team dynamic - detailed paragraph]
 
 2. [Second social pattern or team dynamic - detailed paragraph]
 
-3. [Third social pattern or team dynamic - detailed paragraph]
+**⚡ ACTION-ORIENTED OUTCOMES**
 
-**5. 🔮 LOOKING AHEAD**
+1. [First tangible result or deliverable produced by the team]
+
+2. [Second concrete achievement or implementation]
+
+3. [Third measurable outcome or progress]
+
+**🔮 LOOKING AHEAD**
 
 1. [First prediction for future developments - detailed paragraph]
 
