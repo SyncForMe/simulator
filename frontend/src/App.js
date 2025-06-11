@@ -5039,6 +5039,7 @@ function App() {
                     onClearMemory={handleClearMemory}
                     onAddMemory={handleAddMemory}
                     onDelete={handleDeleteAgent}
+                    onSave={handleSaveAgent}
                   />
                 ))
               ) : (
