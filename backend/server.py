@@ -1300,6 +1300,102 @@ Make it immediately usable for medical professionals. Include specific details, 
 
 llm_manager = LLMManager()
 
+# Document Review Function for Action-Oriented Behavior
+async def trigger_document_review(document: Document, all_agents: List[Agent], creating_agent: Agent, scenario: str):
+    """Trigger automatic document review by other agents"""
+    try:
+        # Get other agents (exclude the creator)
+        reviewing_agents = [agent for agent in all_agents if agent.id != creating_agent.id]
+        
+        if not reviewing_agents:
+            return  # No other agents to review
+        
+        # Select one agent to lead the review (most cooperative or leader archetype)
+        lead_reviewer = reviewing_agents[0]
+        for agent in reviewing_agents:
+            if agent.archetype in ["leader", "mediator"] or agent.personality.cooperativeness >= 8:
+                lead_reviewer = agent
+                break
+        
+        # Generate a review and potential improvement suggestions
+        review_context = f"""Document to review:
+Title: {document.metadata.title}
+Category: {document.metadata.category}
+Created by: {creating_agent.name}
+Scenario: {scenario}
+
+Content summary: {document.content[:500]}...
+
+Review this document and suggest specific improvements if needed."""
+        
+        if await llm_manager.can_make_request():
+            system_message = f"""You are {lead_reviewer.name}, a {AGENT_ARCHETYPES[lead_reviewer.archetype]['description']}.
+
+Your expertise: {lead_reviewer.expertise}
+Your background: {lead_reviewer.background}
+
+Review the document created by {creating_agent.name}. If you see opportunities for improvement, suggest specific changes. If the document is good as-is, acknowledge its quality.
+
+Respond with either:
+1. "APPROVE: This document is well-structured and ready for use."
+2. "IMPROVE: [Specific suggestions for improvement]"
+
+Be constructive and focus on actionable feedback."""
+
+            chat = LlmChat(
+                api_key=llm_manager.api_key,
+                session_id=f"review_{document.id}_{lead_reviewer.id}",
+                system_message=system_message
+            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(200)
+            
+            user_message = UserMessage(text=review_context)
+            review_response = await chat.send_message(user_message)
+            await llm_manager.increment_usage()
+            
+            # If improvements are suggested, store them for the creator to consider
+            if review_response.startswith("IMPROVE:"):
+                improvement_suggestion = review_response.replace("IMPROVE:", "").strip()
+                
+                # Store the improvement suggestion in the database
+                suggestion_doc = {
+                    "id": str(uuid.uuid4()),
+                    "document_id": document.id,
+                    "suggesting_agent_id": lead_reviewer.id,
+                    "suggesting_agent_name": lead_reviewer.name,
+                    "suggestion": improvement_suggestion,
+                    "status": "pending",  # pending, accepted, rejected
+                    "created_at": datetime.utcnow().isoformat()
+                }
+                
+                await db.document_suggestions.insert_one(suggestion_doc)
+                
+                # Update the suggesting agent's memory
+                suggestion_memory = f"I reviewed '{document.metadata.title}' by {creating_agent.name} and suggested improvements: {improvement_suggestion[:100]}..."
+                current_memory = lead_reviewer.memory_summary or ""
+                updated_memory = f"{current_memory}\n\n[Document Review]: {suggestion_memory}".strip()
+                
+                await db.agents.update_one(
+                    {"id": lead_reviewer.id},
+                    {"$set": {"memory_summary": updated_memory}}
+                )
+                
+                logging.info(f"Document review completed with suggestions by {lead_reviewer.name}")
+            else:
+                # Document approved as-is
+                approval_memory = f"I reviewed '{document.metadata.title}' by {creating_agent.name} and found it well-structured and ready for use."
+                current_memory = lead_reviewer.memory_summary or ""
+                updated_memory = f"{current_memory}\n\n[Document Review]: {approval_memory}".strip()
+                
+                await db.agents.update_one(
+                    {"id": lead_reviewer.id},
+                    {"$set": {"memory_summary": updated_memory}}
+                )
+                
+                logging.info(f"Document approved by {lead_reviewer.name}")
+    
+    except Exception as e:
+        logging.error(f"Error in document review process: {e}")
+
 # Authentication Functions
 def create_access_token(data: dict):
     """Create JWT access token"""
