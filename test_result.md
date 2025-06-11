@@ -13,6 +13,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "The document categories endpoint is defined in the code but returns a 404 error. However, the expected categories (Protocol, Training, Research, Equipment, Budget, Reference) are correctly defined in the code. This is a minor issue as the categories are still available through other endpoints."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the document categories endpoint after the route ordering fix. The endpoint now works correctly and returns all expected categories (Protocol, Training, Research, Equipment, Budget, Reference). The issue with the endpoint being shadowed by /documents/{id} has been resolved."
 
   - task: "POST /api/documents/analyze-conversation - Action Trigger Analysis"
     implemented: true
@@ -28,6 +31,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "The action trigger analysis endpoint is working correctly. It accepts conversation text and agent IDs and returns the expected response structure. The trigger detection logic may need improvement as it did not detect clear trigger phrases in our test, but the endpoint itself is functioning properly."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the action trigger analysis with the enhanced trigger phrases. The endpoint now correctly detects a variety of trigger phrases including 'we need a protocol for', 'i'll create', 'let me create', and 'let's put together'. Tested with multiple conversation scenarios and all were correctly identified, including non-trigger conversations which were properly classified as not requiring document creation."
 
   - task: "POST /api/documents/generate - Document Generation"
     implemented: true
@@ -43,6 +49,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "The document generation endpoint is working correctly. It successfully generates properly formatted documents with the expected structure (Purpose, Scope, Procedure sections) and includes appropriate metadata. The generated documents are well-structured and contain relevant content based on the input conversation context."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the document generation functionality as part of the end-to-end flow. The endpoint continues to work correctly, generating well-structured documents with appropriate sections based on the document type. The generated documents are properly stored in the database and can be retrieved via the GET /api/documents endpoint."
 
   - task: "File Center API Endpoints - CRUD Operations"
     implemented: true
