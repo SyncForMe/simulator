@@ -4164,19 +4164,7 @@ async def delete_document(
         logging.error(f"Error deleting document {document_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete document: {str(e)}")
 
-@api_router.get("/documents/categories")
-async def get_document_categories():
-    """Get available document categories"""
-    return {
-        "categories": [
-            "Protocol",
-            "Training",
-            "Research",
-            "Equipment",
-            "Budget",
-            "Reference"
-        ]
-    }
+
 
 @api_router.post("/documents/analyze-conversation")
 async def analyze_conversation_for_documents(
