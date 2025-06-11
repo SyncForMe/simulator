@@ -982,45 +982,100 @@ Respond with ONLY: YES, NO, or ABSTAIN followed by a brief 1-sentence reason."""
         if not await self.can_make_request():
             return f"# {title}\n\n*Document generation failed - API limit reached*"
         
-        # Document templates based on type (generic, not medical-specific)
+        # Enhanced Document templates with visual representations and analysis
         templates = {
             "protocol": """# {title}
 
-## Purpose
-[Clear description of when and why to use this protocol]
+## Executive Summary
+[2-3 sentence overview of the protocol and its key benefits]
 
-## Scope
-[Specific situations where this protocol applies]
+## Purpose & Scope
+**Purpose:** [Clear description of when and why to use this protocol]
+**Scope:** [Specific situations where this protocol applies]
 
-## Requirements
-- [List all necessary resources, tools, or conditions]
-- [Include prerequisites and dependencies]
+## Visual Process Flow
+```mermaid
+graph TD
+    A[Start] --> B[Preparation Phase]
+    B --> C[Execution Phase]
+    C --> D[Completion Phase]
+    D --> E[Quality Check]
+    E --> F[End]
+    E --> G[Issues Found]
+    G --> C
+```
 
-## Procedure
-1. **Preparation Phase** ([estimated timeframe])
-   - [Specific preparation steps]
-   - [Key checkpoints and validation criteria]
+## Requirements & Resources
+| Resource Type | Requirement | Backup Option |
+|---------------|-------------|---------------|
+| Personnel | [Required team members] | [Alternative staffing] |
+| Equipment | [Necessary tools/systems] | [Backup equipment] |
+| Time | [Estimated duration] | [Minimum viable time] |
+| Budget | [Cost estimate] | [Reduced scope option] |
 
-2. **Execution Phase** ([estimated timeframe])
-   - [Step-by-step implementation instructions]
-   - [Decision points and alternative paths]
+## Detailed Procedure
 
-3. **Completion Phase** ([estimated timeframe])
-   - [Verification and completion steps]
-   - [Documentation and reporting requirements]
+### 1. Preparation Phase ([estimated timeframe])
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Resource      │    │   Environment   │    │   Team Brief    │
+│   Assembly      │ -> │   Setup         │ -> │   & Training    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+- [Specific preparation steps]
+- [Key checkpoints and validation criteria]
 
-## Quality Assurance
-- **Success Criteria**: [How to measure successful completion]
-- **Common Issues**: [Potential problems and solutions]
-- **Review Process**: [How and when to review this protocol]
+### 2. Execution Phase ([estimated timeframe])
+- [Step-by-step implementation instructions]
+- [Decision points and alternative paths]
 
-## Updates and Maintenance
-- [How to propose improvements]
-- [Review schedule and ownership]
+### 3. Completion Phase ([estimated timeframe])
+- [Verification and completion steps]
+- [Documentation and reporting requirements]
+
+## Decision Analysis
+
+### Why This Protocol?
+**Primary Reasoning:**
+- [Main reasons for choosing this approach]
+- [Key benefits that drove the decision]
+
+### Pros & Cons Analysis
+| Advantages ✅ | Disadvantages ❌ |
+|---------------|------------------|
+| [Key benefits] | [Limitations] |
+| [Efficiency gains] | [Resource requirements] |
+| [Risk reduction] | [Complexity factors] |
+
+### Alternative Solutions Considered
+1. **Alternative A:** [Brief description]
+   - **Pros:** [Benefits]
+   - **Cons:** [Drawbacks]
+   - **Why rejected:** [Reasoning]
+
+2. **Alternative B:** [Brief description]
+   - **Pros:** [Benefits]
+   - **Cons:** [Drawbacks]
+   - **Why rejected:** [Reasoning]
+
+### Why Our Solution Wins
+[Detailed explanation of why this protocol beats the alternatives, including cost-benefit analysis, risk assessment, and implementation feasibility]
+
+## Quality Assurance & Metrics
+**Success Criteria:**
+- [Quantifiable measures of success]
+- [KPIs and benchmarks]
+
+**Risk Mitigation:**
+```
+High Risk    ████████░░ 80%  -> [Mitigation strategy]
+Medium Risk  ██████░░░░ 60%  -> [Mitigation strategy]
+Low Risk     ███░░░░░░░ 30%  -> [Mitigation strategy]
+```
 
 ---
-*Created by: {agent_name} based on team discussion*
-*Category: {category}*""",
+*Created by: {agent_name} | Category: {category} | Confidence Level: [High/Medium/Low]*
+*Alternative solutions evaluated: [Number] | Decision based on: [Key factors]*""",
 
             "training": """# {title}
 
