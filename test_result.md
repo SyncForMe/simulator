@@ -316,11 +316,11 @@ backend:
 
   - task: "API Endpoints"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -328,6 +328,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Tested all API endpoints related to the enhanced Action-Oriented Agent Behavior System. The GET /api/documents endpoint works correctly, returning a list of documents with their metadata and content. The POST /api/documents/{id}/propose-update endpoint handles document updates with voting. The POST /api/documents/analyze-conversation endpoint correctly detects action triggers in conversations. All endpoints are functioning properly and return the expected responses."
+        -working: false
+        -agent: "testing"
+        -comment: "Comprehensive testing of all API endpoints revealed significant issues. The document-related endpoints are not functioning properly: GET /api/documents/categories returns a 404 error, POST /api/documents returns a 405 Method Not Allowed error, GET /api/documents/search returns a 404 error, GET /api/documents/category/{category} returns a 404 error, and POST /api/documents/generate returns a 500 error. The only endpoint that returns a 200 response is POST /api/documents/analyze-conversation, but it never detects document creation triggers even with clear trigger phrases in the conversations. These issues prevent the proper functioning of the enhanced Action-Oriented Agent Behavior System."
 
 frontend:
   - task: "Animated Observer Logo"
