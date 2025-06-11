@@ -4566,13 +4566,7 @@ function App() {
             {/* File Center for Action-Oriented Agent Behavior */}
             <div className="mt-4">
               <FileCenter 
-                documents={documents}
-                onRefresh={fetchDocuments}
-                categories={documentCategories}
-                selectedCategory={selectedDocumentCategory}
-                onCategoryChange={setSelectedDocumentCategory}
-                searchTerm={documentSearchTerm}
-                onSearchChange={setDocumentSearchTerm}
+                onRefresh={refreshAllData}
               />
             </div>
           </div>
