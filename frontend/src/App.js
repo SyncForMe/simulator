@@ -802,7 +802,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
           </div>
           
           {/* Enhanced Status Messages */}
-          {isListening && (
+          {isRecording && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
               <div className="flex items-center space-x-3">
                 <div className="flex space-x-1">
@@ -811,9 +811,9 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                   <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                 </div>
                 <div>
-                  <div className="text-blue-700 font-semibold text-sm">🎤 Listening...</div>
+                  <div className="text-blue-700 font-semibold text-sm">🎤 Recording...</div>
                   <div className="text-blue-600 text-xs">
-                    Speak your scenario in {voiceLanguages.find(l => l.code === selectedLanguage)?.name}
+                    Speak your scenario in {supportedLanguages.find(l => l.code === selectedLanguage)?.name}
                   </div>
                 </div>
               </div>
