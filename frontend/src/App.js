@@ -412,8 +412,8 @@ const LoginModal = ({ isOpen, onClose }) => {
     setLoginLoading(true);
     setError('');
     
-    // Use the proper OAuth flow for production
-    const redirectUri = window.location.origin + '/auth/callback';
+    // Use the main domain as redirect URI (simpler for hosting platforms)
+    const redirectUri = window.location.origin;
     const googleAuthUrl = new URL('https://accounts.google.com/oauth/authorize');
     
     googleAuthUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
