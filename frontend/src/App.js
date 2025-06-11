@@ -3314,18 +3314,69 @@ const ConversationHistoryViewer = () => {
   );
 };
 
-// File Center Component for Action-Oriented Agent Behavior
-const FileCenter = ({ documents, onRefresh, categories, selectedCategory, onCategoryChange, searchTerm, onSearchChange }) => {
+// Enhanced File Center Component with Beautiful UI and Scenario Organization
+const FileCenter = ({ onRefresh }) => {
   const { user, token } = useAuth();
   const [showFileCenter, setShowFileCenter] = useState(false);
+  const [scenarioDocuments, setScenarioDocuments] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
-  const [proposedChanges, setProposedChanges] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [documentSuggestions, setDocumentSuggestions] = useState([]);
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false);
+  
+  const categories = ["Protocol", "Training", "Research", "Equipment", "Budget", "Reference"];
 
-  const handleDownloadDocument = async (document) => {
+  const fetchScenarioDocuments = async () => {
+    if (!token) return;
+    
+    setLoading(true);
     try {
-      // Convert markdown content to downloadable format
+      const response = await axios.get(`${API}/documents/by-scenario`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setScenarioDocuments(response.data);
+    } catch (error) {
+      console.error('Error fetching documents by scenario:', error);
+    }
+    setLoading(false);
+  };
+
+  const fetchDocumentSuggestions = async (documentId) => {
+    try {
+      const response = await axios.get(`${API}/documents/${documentId}/suggestions`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDocumentSuggestions(response.data);
+    } catch (error) {
+      console.error('Error fetching document suggestions:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (showFileCenter && token) {
+      fetchScenarioDocuments();
+    }
+  }, [showFileCenter, token]);
+
+  const handleDocumentView = async (document) => {
+    try {
+      const response = await axios.get(`${API}/documents/${document.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSelectedDocument(response.data);
+      await fetchDocumentSuggestions(document.id);
+      setShowDocumentModal(true);
+    } catch (error) {
+      console.error('Error fetching document:', error);
+      alert('Failed to load document');
+    }
+  };
+
+  const handleDownloadDocument = (document) => {
+    try {
       const blob = new Blob([document.content], { type: 'text/markdown' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -3342,93 +3393,51 @@ const FileCenter = ({ documents, onRefresh, categories, selectedCategory, onCate
     }
   };
 
-  const handleViewDocument = async (document) => {
+  const handleSuggestionDecision = async (suggestionId, decision) => {
     try {
-      const response = await axios.get(`${API}/documents/${document.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setSelectedDocument(response.data);
-      setShowDocumentModal(true);
-    } catch (error) {
-      console.error('Error fetching document:', error);
-      alert('Failed to load document');
-    }
-  };
-
-  const handleProposeUpdate = async (documentId, proposedChanges) => {
-    try {
-      // Get current agents for voting
-      const agentsResponse = await axios.get(`${API}/agents`);
-      const agents = agentsResponse.data;
-      
-      if (agents.length === 0) {
-        alert('No agents available for voting');
+      const agents = await axios.get(`${API}/agents`);
+      if (agents.data.length === 0) {
+        alert('No agents available');
         return;
       }
-      
-      const updateData = {
-        proposed_changes: proposedChanges,
-        proposing_agent_id: agents[0].id, // Use first agent as proposer
-        agent_ids: agents.map(a => a.id)
-      };
-      
-      const response = await axios.post(`${API}/documents/${documentId}/propose-update`, updateData, {
+
+      const response = await axios.post(`${API}/documents/${selectedDocument.id}/review-suggestion`, {
+        suggestion_id: suggestionId,
+        decision: decision,
+        creator_agent_id: agents.data[0].id // Use first agent as creator for demo
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       if (response.data.success) {
-        alert(`Document update approved! Vote: ${response.data.voting_results.summary}`);
-        onRefresh(); // Refresh documents list
-        setShowDocumentModal(false);
-      } else {
-        alert(`Document update rejected. Vote: ${response.data.voting_results.summary}`);
+        alert(`Suggestion ${decision}ed successfully!`);
+        await fetchScenarioDocuments();
+        await fetchDocumentSuggestions(selectedDocument.id);
+        if (decision === 'accept') {
+          // Refresh the document content
+          handleDocumentView(selectedDocument);
+        }
       }
     } catch (error) {
-      console.error('Error proposing document update:', error);
-      alert('Failed to propose document update');
-    }
-  };
-
-  const handleDeleteDocument = async (documentId) => {
-    if (!window.confirm('Are you sure you want to delete this document?')) return;
-    
-    try {
-      await axios.delete(`${API}/documents/${documentId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      alert('Document deleted successfully!');
-      onRefresh();
-    } catch (error) {
-      console.error('Error deleting document:', error);
-      alert('Failed to delete document');
+      console.error('Error handling suggestion:', error);
+      alert('Failed to handle suggestion');
     }
   };
 
   const getCategoryColor = (category) => {
     const colors = {
-      'Protocol': 'bg-red-100 text-red-800',
-      'Training': 'bg-blue-100 text-blue-800',
-      'Research': 'bg-green-100 text-green-800',
-      'Equipment': 'bg-yellow-100 text-yellow-800',
-      'Budget': 'bg-purple-100 text-purple-800',
-      'Reference': 'bg-gray-100 text-gray-800'
+      'Protocol': 'bg-red-100 text-red-800 border-red-200',
+      'Training': 'bg-blue-100 text-blue-800 border-blue-200',
+      'Research': 'bg-green-100 text-green-800 border-green-200',
+      'Equipment': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      'Budget': 'bg-purple-100 text-purple-800 border-purple-200',
+      'Reference': 'bg-gray-100 text-gray-800 border-gray-200'
     };
-    return colors[category] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      'Draft': 'bg-yellow-100 text-yellow-800',
-      'Review': 'bg-blue-100 text-blue-800',
-      'Approved': 'bg-green-100 text-green-800',
-      'Implemented': 'bg-purple-100 text-purple-800'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return colors[category] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -3436,247 +3445,307 @@ const FileCenter = ({ documents, onRefresh, categories, selectedCategory, onCate
     });
   };
 
+  // Filter documents based on search and category
+  const filteredScenarios = scenarioDocuments.map(scenario => ({
+    ...scenario,
+    documents: scenario.documents.filter(doc => {
+      const matchesSearch = searchTerm === "" || 
+        doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doc.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === "" || doc.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    })
+  })).filter(scenario => scenario.documents.length > 0);
+
   if (!user) {
     return (
-      <div className="text-center p-4 bg-gray-50 rounded-lg">
-        <p className="text-gray-600">Sign in to access the File Center</p>
+      <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-bold">📁 File Center</h3>
+          <div className="text-xs text-gray-500">Sign in required</div>
+        </div>
+        <p className="text-center text-gray-500 py-4">Sign in to access your team's documents</p>
       </div>
     );
   }
 
   return (
     <>
-      <div className="file-center bg-white rounded-lg shadow-md p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold flex items-center">
-            📁 File Center
-            <span className="ml-2 text-sm font-normal text-gray-500">
-              ({documents.length} documents)
-            </span>
-          </h3>
-          <div className="flex space-x-2">
+      {/* File Center Card */}
+      <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-bold">📁 File Center</h3>
+          <div className="flex items-center space-x-2">
+            <div className="text-xs text-gray-500">
+              {scenarioDocuments.reduce((total, scenario) => total + scenario.document_count, 0)} documents
+            </div>
             <button
-              onClick={onRefresh}
-              className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-xs transition-colors"
-              title="Refresh documents"
+              onClick={() => setShowFileCenter(true)}
+              className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors"
             >
-              🔄 Refresh
-            </button>
-            <button
-              onClick={() => setShowFileCenter(!showFileCenter)}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs transition-colors"
-            >
-              {showFileCenter ? '▼ Hide' : '▶ Show'}
+              📖 Open File Center
             </button>
           </div>
         </div>
+        
+        {/* Quick Stats */}
+        <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className="bg-blue-50 p-2 rounded text-center">
+            <div className="font-semibold text-blue-700">
+              {scenarioDocuments.length}
+            </div>
+            <div className="text-blue-600">Scenarios</div>
+          </div>
+          <div className="bg-green-50 p-2 rounded text-center">
+            <div className="font-semibold text-green-700">
+              {scenarioDocuments.reduce((total, scenario) => total + scenario.document_count, 0)}
+            </div>
+            <div className="text-green-600">Documents</div>
+          </div>
+          <div className="bg-purple-50 p-2 rounded text-center">
+            <div className="font-semibold text-purple-700">
+              {new Set(scenarioDocuments.flatMap(s => s.documents.map(d => d.category))).size}
+            </div>
+            <div className="text-purple-600">Categories</div>
+          </div>
+        </div>
+      </div>
 
-        {showFileCenter && (
-          <div>
-            {/* Search and Filter Controls */}
-            <div className="mb-4 space-y-2">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Search documents..."
-                  value={searchTerm}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  className="flex-1 p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
+      {/* File Center Modal */}
+      {showFileCenter && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-7xl max-h-[95vh] overflow-hidden">
+            {/* Header */}
+            <div className="border-b border-gray-200 p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">📁 File Center</h2>
+                  <p className="text-gray-600 mt-1">Documents organized by simulation scenario</p>
+                </div>
+                <button
+                  onClick={() => setShowFileCenter(false)}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Search and Filter Bar */}
+              <div className="mt-6 flex gap-4">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Search documents..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
                 <select
                   value={selectedCategory}
-                  onChange={(e) => onCategoryChange(e.target.value)}
-                  className="p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">All Categories</option>
                   {categories.map(category => (
                     <option key={category} value={category}>{category}</option>
                   ))}
                 </select>
+                <button
+                  onClick={fetchScenarioDocuments}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  🔄 Refresh
+                </button>
               </div>
             </div>
 
-            {/* Documents List */}
-            <div className="space-y-2 max-h-96 overflow-y-auto">
-              {documents.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p className="text-lg mb-2">📄</p>
-                  <p>No documents created yet</p>
-                  <p className="text-xs mt-1">Documents are automatically created when agents reach consensus on creating protocols, training materials, or research summaries.</p>
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(95vh-200px)]">
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading documents...</p>
+                </div>
+              ) : filteredScenarios.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="text-6xl mb-4">📄</div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">No Documents Found</h3>
+                  <p className="text-gray-600">
+                    {searchTerm || selectedCategory 
+                      ? "Try adjusting your search criteria" 
+                      : "Documents will appear here when your agents create them during conversations"
+                    }
+                  </p>
                 </div>
               ) : (
-                documents.map((doc) => (
-                  <div key={doc.id} className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 mb-1">{doc.metadata.title}</h4>
-                        <div className="flex items-center space-x-2 mb-2">
-                          <span className={`text-xs px-2 py-1 rounded ${getCategoryColor(doc.metadata.category)}`}>
-                            {doc.metadata.category}
-                          </span>
-                          <span className={`text-xs px-2 py-1 rounded ${getStatusColor(doc.metadata.status)}`}>
-                            {doc.metadata.status}
-                          </span>
+                <div className="space-y-8">
+                  {filteredScenarios.map((scenario, index) => (
+                    <div key={index} className="bg-gray-50 rounded-lg p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-900">{scenario.scenario}</h3>
+                          <p className="text-gray-600">{scenario.documents.length} documents</p>
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{doc.metadata.description}</p>
-                        <div className="text-xs text-gray-500">
-                          <div>By: {doc.metadata.authors.join(', ')}</div>
-                          <div>Created: {formatDate(doc.metadata.created_at)}</div>
-                          <div>File: {doc.metadata.filename}</div>
+                        <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                          Active Scenario
                         </div>
                       </div>
-                      <div className="flex flex-col space-y-1 ml-4">
-                        <button
-                          onClick={() => handleViewDocument(doc)}
-                          className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded text-xs transition-colors"
-                          title="View document"
-                        >
-                          👁 View
-                        </button>
-                        <button
-                          onClick={() => handleDownloadDocument(doc)}
-                          className="bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded text-xs transition-colors"
-                          title="Download document"
-                        >
-                          ⬇ Download
-                        </button>
-                        <button
-                          onClick={() => handleDeleteDocument(doc.id)}
-                          className="bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded text-xs transition-colors"
-                          title="Delete document"
-                        >
-                          🗑 Delete
-                        </button>
-                      </div>
-                    </div>
-                    
-                    {/* Preview */}
-                    <div className="mt-2 p-2 bg-gray-50 rounded text-xs text-gray-600 border-l-2 border-blue-300">
-                      {doc.preview}
-                    </div>
-                    
-                    {/* Keywords */}
-                    {doc.metadata.keywords && doc.metadata.keywords.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {doc.metadata.keywords.map((keyword, index) => (
-                          <span key={index} className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
-                            {keyword}
-                          </span>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {scenario.documents.map((doc) => (
+                          <div key={doc.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-gray-900 mb-2 truncate" title={doc.title}>
+                                  {doc.title}
+                                </h4>
+                                <div className={`inline-block text-xs px-2 py-1 rounded border ${getCategoryColor(doc.category)}`}>
+                                  {doc.category}
+                                </div>
+                              </div>
+                            </div>
+
+                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                              {doc.description}
+                            </p>
+
+                            <div className="text-xs text-gray-500 mb-3">
+                              <div>By: {doc.authors.join(', ')}</div>
+                              <div>{formatDate(doc.created_at)}</div>
+                            </div>
+
+                            <div className="bg-gray-50 p-2 rounded text-xs text-gray-600 mb-3 h-16 overflow-hidden">
+                              {doc.preview}
+                            </div>
+
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleDocumentView(doc)}
+                                className="flex-1 bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 transition-colors"
+                              >
+                                👁 View
+                              </button>
+                              <button
+                                onClick={() => handleDownloadDocument(doc)}
+                                className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition-colors"
+                              >
+                                ⬇
+                              </button>
+                            </div>
+                          </div>
                         ))}
                       </div>
-                    )}
-                  </div>
-                ))
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Document Viewer Modal */}
       {showDocumentModal && selectedDocument && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <div>
-                <h2 className="text-xl font-bold">{selectedDocument.metadata.title}</h2>
-                <div className="flex items-center space-x-2 mt-1">
-                  <span className={`text-xs px-2 py-1 rounded ${getCategoryColor(selectedDocument.metadata.category)}`}>
-                    {selectedDocument.metadata.category}
-                  </span>
-                  <span className={`text-xs px-2 py-1 rounded ${getStatusColor(selectedDocument.metadata.status)}`}>
-                    {selectedDocument.metadata.status}
-                  </span>
+          <div className="bg-white rounded-lg w-full max-w-5xl max-h-[95vh] overflow-hidden">
+            {/* Header */}
+            <div className="border-b border-gray-200 p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-xl font-bold">{selectedDocument.metadata.title}</h2>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <span className={`text-xs px-2 py-1 rounded border ${getCategoryColor(selectedDocument.metadata.category)}`}>
+                      {selectedDocument.metadata.category}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      by {selectedDocument.metadata.authors.join(', ')}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {formatDate(selectedDocument.metadata.created_at)}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex space-x-2">
+                  {documentSuggestions.length > 0 && (
+                    <button
+                      onClick={() => setShowSuggestionModal(true)}
+                      className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors"
+                    >
+                      📝 Suggestions ({documentSuggestions.length})
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleDownloadDocument(selectedDocument)}
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
+                  >
+                    ⬇ Download
+                  </button>
+                  <button
+                    onClick={() => setShowDocumentModal(false)}
+                    className="text-gray-500 hover:text-gray-700 text-xl"
+                  >
+                    ✕
+                  </button>
                 </div>
               </div>
-              <div className="flex space-x-2">
+            </div>
+
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(95vh-150px)]">
+              <div className="prose max-w-none">
+                <pre className="whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded">
+                  {selectedDocument.content}
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Suggestions Modal */}
+      {showSuggestionModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[80vh] overflow-hidden">
+            <div className="border-b border-gray-200 p-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-bold">💡 Improvement Suggestions</h3>
                 <button
-                  onClick={() => setShowUpdateForm(!showUpdateForm)}
-                  className="bg-orange-600 text-white px-3 py-2 rounded hover:bg-orange-700 transition-colors"
-                >
-                  📝 Propose Update
-                </button>
-                <button
-                  onClick={() => handleDownloadDocument(selectedDocument)}
-                  className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition-colors"
-                >
-                  ⬇ Download
-                </button>
-                <button
-                  onClick={() => setShowDocumentModal(false)}
+                  onClick={() => setShowSuggestionModal(false)}
                   className="text-gray-500 hover:text-gray-700"
                 >
                   ✕
                 </button>
               </div>
             </div>
-            
-            {/* Document Update Form */}
-            {showUpdateForm && (
-              <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded">
-                <h3 className="font-semibold mb-2">Propose Document Update</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  Describe the changes you'd like to make. The team will vote on whether to approve this update.
-                </p>
-                <textarea
-                  value={proposedChanges}
-                  onChange={(e) => setProposedChanges(e.target.value)}
-                  placeholder="Describe the proposed changes..."
-                  className="w-full p-2 border border-gray-300 rounded h-20 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500"
-                />
-                <div className="flex space-x-2 mt-2">
-                  <button
-                    onClick={() => {
-                      if (proposedChanges.trim()) {
-                        handleProposeUpdate(selectedDocument.id, proposedChanges);
-                        setProposedChanges("");
-                        setShowUpdateForm(false);
-                      }
-                    }}
-                    disabled={!proposedChanges.trim()}
-                    className="bg-orange-600 text-white px-3 py-1 rounded text-sm hover:bg-orange-700 disabled:opacity-50 transition-colors"
-                  >
-                    Submit for Team Vote
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowUpdateForm(false);
-                      setProposedChanges("");
-                    }}
-                    className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-400 transition-colors"
-                  >
-                    Cancel
-                  </button>
+            <div className="p-4 overflow-y-auto max-h-96">
+              {documentSuggestions.map((suggestion, index) => (
+                <div key={suggestion.id} className="border border-gray-200 rounded p-4 mb-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-gray-900">
+                      From: {suggestion.suggesting_agent_name}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {formatDate(suggestion.created_at)}
+                    </div>
+                  </div>
+                  <p className="text-gray-700 mb-3">{suggestion.suggestion}</p>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleSuggestionDecision(suggestion.id, 'accept')}
+                      className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
+                    >
+                      ✅ Accept
+                    </button>
+                    <button
+                      onClick={() => handleSuggestionDecision(suggestion.id, 'reject')}
+                      className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+                    >
+                      ❌ Reject
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-            
-            {/* Document Metadata */}
-            <div className="mb-4 p-3 bg-gray-50 rounded">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <strong>Authors:</strong> {selectedDocument.metadata.authors.join(', ')}
-                </div>
-                <div>
-                  <strong>Created:</strong> {formatDate(selectedDocument.metadata.created_at)}
-                </div>
-                <div>
-                  <strong>Filename:</strong> {selectedDocument.metadata.filename}
-                </div>
-                <div>
-                  <strong>Status:</strong> {selectedDocument.metadata.status}
-                </div>
-              </div>
-              <div className="mt-2">
-                <strong>Description:</strong> {selectedDocument.metadata.description}
-              </div>
-            </div>
-            
-            {/* Document Content */}
-            <div className="border rounded p-4 bg-white max-h-96 overflow-y-auto">
-              <pre className="whitespace-pre-wrap font-mono text-sm">
-                {selectedDocument.content}
-              </pre>
+              ))}
             </div>
           </div>
         </div>
