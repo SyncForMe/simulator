@@ -4251,11 +4251,12 @@ function App() {
       const state = urlParams.get('state');
       const error = urlParams.get('error');
       
-      // Check if this is an OAuth callback
-      if (window.location.pathname === '/auth/callback') {
+      // Check if this is an OAuth callback (code parameter present)
+      if (code || error) {
         if (error) {
           alert('Google authentication failed: ' + error);
-          window.history.replaceState({}, document.title, '/');
+          // Clean up URL
+          window.history.replaceState({}, document.title, window.location.pathname);
           return;
         }
         
@@ -4264,7 +4265,7 @@ function App() {
           const storedState = localStorage.getItem('oauth_state');
           if (state !== storedState) {
             alert('Invalid authentication state. Please try again.');
-            window.history.replaceState({}, document.title, '/');
+            window.history.replaceState({}, document.title, window.location.pathname);
             return;
           }
           
@@ -4272,7 +4273,7 @@ function App() {
             // Exchange code for tokens
             const response = await axios.post(`${API}/auth/google/callback`, {
               code: code,
-              redirect_uri: window.location.origin + '/auth/callback'
+              redirect_uri: window.location.origin
             });
             
             const { access_token, user: userData } = response.data;
@@ -4285,14 +4286,14 @@ function App() {
             // Clean up
             localStorage.removeItem('oauth_state');
             
-            // Redirect to main app
-            window.history.replaceState({}, document.title, '/');
+            // Clean up URL and show success
+            window.history.replaceState({}, document.title, window.location.pathname);
             alert('✅ Successfully signed in with Google!');
             
           } catch (error) {
             console.error('OAuth callback error:', error);
             alert('Authentication failed. Please try again.');
-            window.history.replaceState({}, document.title, '/');
+            window.history.replaceState({}, document.title, window.location.pathname);
           }
         }
       }
