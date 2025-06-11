@@ -841,12 +841,12 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
             </div>
           )}
           
-          {isSupported && !isListening && !voiceError && !justSubmitted && (
+          {!isRecording && !voiceError && !justSubmitted && (
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 mt-2">
               <p className="text-gray-600 text-xs flex items-center space-x-2">
                 <span>💡</span>
                 <span>
-                  Tip: Click "Speak" to use voice input in {voiceLanguages.find(l => l.code === selectedLanguage)?.name}, 
+                  Tip: Click "Speak" to use voice input in {supportedLanguages.find(l => l.code === selectedLanguage)?.name}, 
                   or type your scenario manually
                 </span>
               </p>
