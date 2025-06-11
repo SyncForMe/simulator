@@ -681,7 +681,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - ""
+    - "GET /api/documents/categories - Document Categories Endpoint"
+    - "POST /api/documents/analyze-conversation - Action Trigger Analysis"
+    - "POST /api/documents/generate - Document Generation"
+    - "File Center API Endpoints - CRUD Operations"
+    - "Conversation Integration with Document Generation"
   stuck_tasks:
     - ""
   test_all: false
