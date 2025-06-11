@@ -2360,6 +2360,8 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
                 />
               </div>
             </div>
+              </div>
+            </div>
             <div className="flex gap-2">
               <button
                 type="submit"
