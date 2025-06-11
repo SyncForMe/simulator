@@ -2147,7 +2147,7 @@ URLs will be automatically fetched and summarized!"
   );
 };
 
-const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, onDelete }) => {
+const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, onDelete, onSave }) => {
   const [showMemoryInput, setShowMemoryInput] = useState(false);
   const [newMemory, setNewMemory] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
