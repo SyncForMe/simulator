@@ -5147,7 +5147,7 @@ function App() {
         agent={editingAgent}
         isOpen={!!editingAgent}
         onClose={() => setEditingAgent(null)}
-        onSave={handleSaveAgent}
+        onSave={handleUpdateAgent}
         archetypes={archetypes}
       />
     </div>
