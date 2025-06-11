@@ -1279,7 +1279,8 @@ Make it immediately usable for medical professionals. Include specific details, 
             formatted_content = template.format(
                 title=title,
                 agent_name=creating_agent.name,
-                scenario_details="[Based on team discussion and expertise]"
+                scenario_details="[Based on team discussion and expertise]",
+                category=document_type.title()
             )
             
             # Replace template placeholders with LLM-generated content
