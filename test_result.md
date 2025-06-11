@@ -720,5 +720,9 @@ test_plan:
     - "Document Awareness in Conversations"
     - "Document Update Workflow"
     - "API Endpoints"
+    - "GET /api/speech/languages - Voice Input Languages Endpoint"
+    - "POST /api/speech/transcribe-and-summarize - Voice Input Transcription and Summarization"
+    - "Croatian Language Support in Voice Input"
+    - "Field-Specific AI Summarization"
   test_all: false
   test_priority: "high_first"
