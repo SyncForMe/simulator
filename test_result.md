@@ -637,5 +637,6 @@ test_plan:
     - "API Endpoints"
   stuck_tasks:
     - "Document Update Workflow"
+    - "API Endpoints"
   test_all: false
   test_priority: "high_first"
