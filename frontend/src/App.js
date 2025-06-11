@@ -1,60 +1,170 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import axios from 'axios';
+import { motion, useAnimationControls } from 'framer-motion';
+import './App.css';
 
-const API = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
-// AuthContext and useAuth hook
-const AuthContext = React.createContext();
+// Debug logging
+console.log('Environment variables loaded:', {
+  BACKEND_URL,
+  GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID ? 'Present' : 'Missing',
+  NODE_ENV: process.env.NODE_ENV
+});
 
-const useAuth = () => {
-  const context = React.useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+// Enhanced VoiceInput Component for any text field
+const VoiceInput = ({ 
+  onTextUpdate, 
+  fieldType = "general", 
+  language = "hr", 
+  disabled = false,
+  className = "",
+  size = "small" // "small", "medium", "large"
+}) => {
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [error, setError] = useState("");
+  const { token } = useAuth();
+
+  const sizeClasses = {
+    small: "w-6 h-6 text-xs",
+    medium: "w-8 h-8 text-sm", 
+    large: "w-10 h-10 text-base"
+  };
+
+  const startRecording = async () => {
+    try {
+      setError("");
+      
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          sampleRate: 16000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true
+        } 
+      });
+
+      const recorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus'
+      });
+
+      const chunks = [];
+      
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        await processAudio(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      if (error.name === 'NotAllowedError') {
+        setError("Microphone access denied");
+      } else if (error.name === 'NotFoundError') {
+        setError("No microphone found");
+      } else {
+        setError("Recording failed");
+      }
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      setIsRecording(false);
+      setIsProcessing(true);
+    }
+  };
+
+  const processAudio = async (audioBlob) => {
+    try {
+      setIsProcessing(true);
+      
+      const formData = new FormData();
+      formData.append('audio', audioBlob, `${fieldType}_audio.webm`);
+      formData.append('field_type', fieldType);
+      if (language) {
+        formData.append('language', language);
+      }
+
+      const response = await axios.post(`${API}/speech/transcribe-and-summarize`, formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.success && response.data.formatted_text) {
+        onTextUpdate(response.data.formatted_text);
+      } else {
+        setError("No speech detected");
+      }
+
+    } catch (error) {
+      console.error('Error processing audio:', error);
+      if (error.response?.status === 401) {
+        setError("Please sign in");
+      } else {
+        setError("Processing failed");
+      }
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  if (!token) {
+    return null; // Don't show voice input if not authenticated
   }
-  return context;
+
+  return (
+    <div className={`relative ${className}`}>
+      {!isRecording && !isProcessing ? (
+        <button
+          type="button"
+          onClick={startRecording}
+          disabled={disabled}
+          className={`${sizeClasses[size]} bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-full transition-colors flex items-center justify-center`}
+          title={`Voice input for ${fieldType}`}
+        >
+          🎤
+        </button>
+      ) : isRecording ? (
+        <button
+          type="button"
+          onClick={stopRecording}
+          className={`${sizeClasses[size]} bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors animate-pulse flex items-center justify-center`}
+          title="Stop recording"
+        >
+          ⏹️
+        </button>
+      ) : (
+        <div className={`${sizeClasses[size]} bg-blue-100 text-blue-600 rounded-full flex items-center justify-center`} title="Processing...">
+          <div className="animate-spin">🔄</div>
+        </div>
+      )}
+      
+      {error && (
+        <div className="absolute top-full left-0 mt-1 bg-red-100 text-red-700 text-xs px-2 py-1 rounded shadow-lg z-10 whitespace-nowrap">
+          {error}
+        </div>
+      )}
+    </div>
+  );
 };
-
-// Enhanced VoiceInput Component for any text field
-const VoiceInput = ({ 
-  onTextUpdate, 
-  fieldType = "general", 
-  language = "hr", 
-  disabled = false,
-  className = "",
-  size = "small" // "small", "medium", "large"
-}) => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [error, setError] = useState("");
-  const { token } = useAuth();
-
-  const sizeClasses = {
-    small: "w-6 h-6 text-xs",
-    medium: "w-8 h-8 text-sm", 
-    large: "w-10 h-10 text-base"
-  };
-
-// Enhanced VoiceInput Component for any text field
-const VoiceInput = ({ 
-  onTextUpdate, 
-  fieldType = "general", 
-  language = "hr", 
-  disabled = false,
-  className = "",
-  size = "small" // "small", "medium", "large"
-}) => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [error, setError] = useState("");
-  const { token } = useAuth();
-
-  const sizeClasses = {
-    small: "w-6 h-6 text-xs",
-    medium: "w-8 h-8 text-sm", 
-    large: "w-10 h-10 text-base"
-  };
 
 // Animated Observer Logo Component
 const ObserverLogo = () => {
