@@ -4243,6 +4243,64 @@ const FileCenter = ({ onRefresh }) => {
 };
 
 function App() {
+  // Handle OAuth callback
+  useEffect(() => {
+    const handleOAuthCallback = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const state = urlParams.get('state');
+      const error = urlParams.get('error');
+      
+      // Check if this is an OAuth callback
+      if (window.location.pathname === '/auth/callback') {
+        if (error) {
+          alert('Google authentication failed: ' + error);
+          window.history.replaceState({}, document.title, '/');
+          return;
+        }
+        
+        if (code && state) {
+          // Verify state to prevent CSRF attacks
+          const storedState = localStorage.getItem('oauth_state');
+          if (state !== storedState) {
+            alert('Invalid authentication state. Please try again.');
+            window.history.replaceState({}, document.title, '/');
+            return;
+          }
+          
+          try {
+            // Exchange code for tokens
+            const response = await axios.post(`${API}/auth/google/callback`, {
+              code: code,
+              redirect_uri: window.location.origin + '/auth/callback'
+            });
+            
+            const { access_token, user: userData } = response.data;
+            
+            // Store token and user data
+            localStorage.setItem('auth_token', access_token);
+            setToken(access_token);
+            setUser(userData);
+            
+            // Clean up
+            localStorage.removeItem('oauth_state');
+            
+            // Redirect to main app
+            window.history.replaceState({}, document.title, '/');
+            alert('✅ Successfully signed in with Google!');
+            
+          } catch (error) {
+            console.error('OAuth callback error:', error);
+            alert('Authentication failed. Please try again.');
+            window.history.replaceState({}, document.title, '/');
+          }
+        }
+      }
+    };
+    
+    handleOAuthCallback();
+  }, []);
+
   const { user, logout, isAuthenticated, token } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [agents, setAgents] = useState([]);
