@@ -665,24 +665,96 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
       
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <textarea
-            value={scenario}
-            onChange={(e) => setScenario(e.target.value)}
-            placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.')"
-            className={`w-full p-3 border rounded-lg resize-none ${justSubmitted ? 'bg-green-50 border-green-300' : ''}`}
-            rows="3"
-            disabled={loading || justSubmitted || randomLoading}
-          />
+          <div className="relative">
+            <textarea
+              value={scenario}
+              onChange={(e) => setScenario(e.target.value)}
+              placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.') You can type or use voice input!"
+              className={`w-full p-3 border rounded-lg resize-none pr-20 ${justSubmitted ? 'bg-green-50 border-green-300' : ''} ${isListening ? 'bg-blue-50 border-blue-300' : ''}`}
+              rows="3"
+              disabled={loading || justSubmitted || randomLoading}
+            />
+            
+            {/* Voice Input Controls */}
+            <div className="absolute right-2 top-2 flex flex-col space-y-1">
+              {isSupported ? (
+                <>
+                  {!isListening ? (
+                    <button
+                      type="button"
+                      onClick={startListening}
+                      disabled={loading || justSubmitted || randomLoading}
+                      className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white p-2 rounded-lg transition-colors text-xs"
+                      title="Start voice input"
+                    >
+                      🎤
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={stopListening}
+                      className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors text-xs animate-pulse"
+                      title="Stop voice input"
+                    >
+                      ⏹️
+                    </button>
+                  )}
+                  
+                  {scenario.trim() && (
+                    <button
+                      type="button"
+                      onClick={clearScenario}
+                      disabled={loading || justSubmitted || randomLoading || isListening}
+                      className="bg-gray-500 hover:bg-gray-600 disabled:opacity-50 text-white p-2 rounded-lg transition-colors text-xs"
+                      title="Clear text"
+                    >
+                      🗑️
+                    </button>
+                  )}
+                </>
+              ) : (
+                <div className="text-xs text-gray-400 p-2" title="Voice input not supported in this browser">
+                  🎤❌
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Status Messages */}
+          {isListening && (
+            <div className="flex items-center space-x-2 mt-2 text-blue-600 text-sm">
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              </div>
+              <span>Listening... Speak your scenario</span>
+            </div>
+          )}
+          
+          {voiceError && (
+            <p className="text-xs text-red-600 mt-1">
+              ⚠️ {voiceError}
+            </p>
+          )}
+          
           {justSubmitted && (
             <p className="text-xs text-green-600 mt-1">
               ✅ Scenario applied! Text will clear in a moment...
             </p>
           )}
+          
+          {isSupported && !isListening && !voiceError && (
+            <p className="text-xs text-gray-500 mt-1">
+              💡 Tip: Click the microphone button to use voice input, or type your scenario
+            </p>
+          )}
         </div>
+        
         <div className="space-y-2">
           <button
             type="submit"
-            disabled={loading || !scenario.trim() || justSubmitted || randomLoading}
+            disabled={loading || !scenario.trim() || justSubmitted || randomLoading || isListening}
             className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
           >
             {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Set New Scenario"}
@@ -691,7 +763,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
           <button
             type="button"
             onClick={handleGenerateRandomScenario}
-            disabled={loading || justSubmitted || randomLoading}
+            disabled={loading || justSubmitted || randomLoading || isListening}
             className="w-full bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 disabled:opacity-50 transition-colors"
           >
             {randomLoading ? "Generating & Applying..." : "Random Scenario"}
