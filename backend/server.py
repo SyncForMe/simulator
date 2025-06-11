@@ -2100,7 +2100,8 @@ async def google_auth(auth_request: GoogleAuthRequest):
             await db.users.insert_one(user.dict())
         
         # Create JWT token
-        access_token = create_access_token(data={"sub": user.id})
+        token_data = {"sub": user.id}
+        access_token = create_access_token(data=token_data)
         
         return TokenResponse(
             access_token=access_token,
@@ -2109,7 +2110,79 @@ async def google_auth(auth_request: GoogleAuthRequest):
         )
         
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        logging.error(f"Google auth error: {e}")
+        raise HTTPException(status_code=400, detail="Invalid Google token")
+
+class GoogleOAuthCallbackRequest(BaseModel):
+    code: str
+    redirect_uri: str
+
+@api_router.post("/auth/google/callback", response_model=TokenResponse)
+async def google_oauth_callback(callback_request: GoogleOAuthCallbackRequest):
+    """Handle Google OAuth callback"""
+    try:
+        # Exchange authorization code for tokens
+        async with httpx.AsyncClient() as client:
+            token_response = await client.post(
+                "https://oauth2.googleapis.com/token",
+                data={
+                    "client_id": GOOGLE_CLIENT_ID,
+                    "client_secret": GOOGLE_CLIENT_SECRET,
+                    "code": callback_request.code,
+                    "grant_type": "authorization_code",
+                    "redirect_uri": callback_request.redirect_uri,
+                }
+            )
+            
+            if token_response.status_code != 200:
+                raise HTTPException(status_code=400, detail="Failed to exchange code for tokens")
+            
+            tokens = token_response.json()
+            
+            # Get user info from Google
+            user_info_response = await client.get(
+                "https://www.googleapis.com/oauth2/v2/userinfo",
+                headers={"Authorization": f"Bearer {tokens['access_token']}"}
+            )
+            
+            if user_info_response.status_code != 200:
+                raise HTTPException(status_code=400, detail="Failed to get user info")
+            
+            user_info = user_info_response.json()
+            
+            # Check if user exists
+            existing_user = await db.users.find_one({"google_id": user_info['id']})
+            
+            if existing_user:
+                # Update last login
+                await db.users.update_one(
+                    {"id": existing_user["id"]},
+                    {"$set": {"last_login": datetime.utcnow()}}
+                )
+                user = User(**existing_user)
+            else:
+                # Create new user
+                user = User(
+                    email=user_info['email'],
+                    name=user_info['name'],
+                    picture=user_info.get('picture', ''),
+                    google_id=user_info['id']
+                )
+                await db.users.insert_one(user.dict())
+            
+            # Create JWT token
+            token_data = {"sub": user.id}
+            access_token = create_access_token(data=token_data)
+            
+            return TokenResponse(
+                access_token=access_token,
+                token_type="bearer",
+                user=UserResponse(**user.dict())
+            )
+            
+    except Exception as e:
+        logging.error(f"Google OAuth callback error: {e}")
+        raise HTTPException(status_code=400, detail="OAuth authentication failed")
 
 @api_router.post("/auth/test-login", response_model=TokenResponse)
 async def test_login():
