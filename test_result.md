@@ -771,16 +771,9 @@ backend:
 
 test_plan:
   current_focus:
-    - "Universal Topic Support"
-    - "Agent Voting System"
-    - "Document Awareness in Conversations"
-    - "Document Update Workflow"
-    - "API Endpoints"
+    - "GET /api/speech/languages - Voice Input Languages Endpoint"
+    - "POST /api/speech/transcribe-and-summarize - Voice Input Transcription and Summarization"
   stuck_tasks:
-    - "Universal Topic Support"
-    - "Document Awareness in Conversations"
-    - "Document Update Workflow"
-    - "API Endpoints"
     - "GET /api/speech/languages - Voice Input Languages Endpoint"
     - "POST /api/speech/transcribe-and-summarize - Voice Input Transcription and Summarization"
     - "Croatian Language Support in Voice Input"
