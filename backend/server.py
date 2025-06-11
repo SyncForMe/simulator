@@ -1367,7 +1367,17 @@ Be constructive and focus on actionable feedback."""
                     "created_at": datetime.utcnow().isoformat()
                 }
                 
-                await db.document_suggestions.insert_one(suggestion_doc)
+                # Ensure collection exists
+                try:
+                    await db.document_suggestions.insert_one(suggestion_doc)
+                except Exception as e:
+                    logging.error(f"Error storing document suggestion: {e}")
+                    # Create the collection if it doesn't exist
+                    try:
+                        await db.create_collection("document_suggestions")
+                        await db.document_suggestions.insert_one(suggestion_doc)
+                    except Exception as e2:
+                        logging.error(f"Error creating document_suggestions collection: {e2}")
                 
                 # Update the suggesting agent's memory
                 suggestion_memory = f"I reviewed '{document.metadata.title}' by {creating_agent.name} and suggested improvements: {improvement_suggestion[:100]}..."
