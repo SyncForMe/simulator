@@ -67,6 +67,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "All File Center API endpoints are working correctly. Documents can be created, retrieved, searched, filtered by category, and deleted. The endpoints handle authentication properly and return the expected responses. The search and filtering functionality works as expected, returning relevant documents based on the search term or category."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the File Center API endpoints after the route ordering fix. The GET /api/documents/categories endpoint now works correctly, and all other endpoints continue to function as expected. Documents can be created, retrieved, searched, filtered by category, and deleted without issues."
 
   - task: "Conversation Integration with Document Generation"
     implemented: true
@@ -82,6 +85,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "The conversation generation endpoint is working correctly and integrates with the document generation functionality. While we cannot guarantee that a document will be created for every conversation (as it depends on the conversation content containing action triggers), the integration between the conversation and document systems is functioning properly. The system correctly detects when agents agree to create documentation and then generates the actual documents."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the conversation integration with document generation after the trigger phrase enhancements. The system now correctly detects a wider range of trigger phrases in conversations, including 'i'll create', 'let me create', and 'let's put together'. This significantly improves the automatic document generation capability when agents have conversations with action-oriented phrases."
 
   - task: "POST /api/conversations/translate - Translate conversations to different languages"
     implemented: true
