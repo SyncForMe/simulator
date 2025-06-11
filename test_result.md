@@ -355,11 +355,11 @@ backend:
 
   - task: "API Endpoints"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
-    stuck_count: 2
+    stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -373,6 +373,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Conducted comprehensive testing of all document-related API endpoints. Found that several endpoints are not working as expected: GET /api/documents/categories returns a 404 error, POST /api/documents returns a 405 Method Not Allowed error (the correct endpoint is POST /api/documents/create), GET /api/documents/search returns a 404 error, GET /api/documents/category/{category} returns a 404 error, and POST /api/documents/generate returns a 500 error when used with certain parameters. The POST /api/documents/analyze-conversation endpoint works but never detects document creation triggers even with clear trigger phrases. The GET /api/documents and GET /api/documents/{id} endpoints work correctly, as does POST /api/documents/create. These issues significantly impact the functionality of the document generation and File Center features."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested all document-related API endpoints after the route ordering fix and trigger phrase enhancements. All endpoints are now working correctly: GET /api/documents/categories returns the expected categories, POST /api/documents/create successfully creates documents, GET /api/documents and GET /api/documents/{id} retrieve documents as expected, GET /api/documents/search and GET /api/documents/category/{category} correctly filter documents, and POST /api/documents/analyze-conversation now properly detects action triggers with the enhanced trigger phrases. The POST /api/documents/generate endpoint successfully generates well-structured documents based on conversation context. These improvements have resolved all the previous issues with the document-related API endpoints."
 
 frontend:
   - task: "Animated Observer Logo"
