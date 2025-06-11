@@ -571,7 +571,7 @@ class LLMManager:
         # No hardcoded limit since we're on paid tier now
         return usage < self.max_daily_requests
 
-    async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None, language_instruction: str = "Respond in English."):
+    async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None, language_instruction: str = "Respond in English.", existing_documents: List = None):
         """Generate a single agent response with better context and progression"""
         if not await self.can_make_request():
             return f"{agent.name} is taking a moment to think... (daily API limit reached)"
@@ -579,6 +579,14 @@ class LLMManager:
         # Build a simple, direct prompt for better LLM performance
         other_agent_names = [a.name for a in other_agents if a.id != agent.id]
         others_text = f"Others present: {', '.join(other_agent_names)}" if other_agent_names else "You are alone"
+        
+        # Build document context if available
+        document_context = ""
+        if existing_documents and len(existing_documents) > 0:
+            document_context = f"\n\nAVAILABLE DOCUMENTS (you can reference these):\n"
+            for i, doc in enumerate(existing_documents[:5], 1):  # Limit to 5 most recent
+                document_context += f"{i}. '{doc.get('title', 'Untitled')}' ({doc.get('category', 'Unknown')}) - {doc.get('description', 'No description')}\n"
+            document_context += "\nYou can reference these documents by name in your responses and suggest improvements if relevant.\n"
         
         # Enhanced system message for conversational responses with ACTION-ORIENTED BEHAVIOR
         system_message = f"""You are {agent.name}, a {AGENT_ARCHETYPES[agent.archetype]['description']}.
@@ -603,20 +611,28 @@ NATURAL CONVERSATION RULES:
 6. Show your expertise and background in your responses
 
 ACTION-ORIENTED BEHAVIOR (CRITICAL):
-When you or others mention creating documentation, protocols, checklists, or training materials:
+When you or others mention creating documentation, protocols, plans, or any deliverables:
 - IMMEDIATELY offer to create it: "Let me create that right now."
 - Don't just discuss what should be in it - COMMIT to making it
 - Be the agent who takes action, not just talks about action
 - Phrases that should trigger immediate creation:
-  * "We need a protocol for..." → "I'll create that protocol now."
-  * "Let's create a checklist..." → "I'm creating that checklist."
-  * "We should develop training materials..." → "I'll develop those materials immediately."
+  * "We need a [anything] for..." → "I'll create that [item] now."
+  * "Let's create a [anything]..." → "I'm creating that [item]."
+  * "We should develop [anything]..." → "I'll develop that immediately."
+
+DOCUMENT AWARENESS:
+- You can reference existing documents by name when relevant
+- Suggest improvements to existing documents if you see opportunities
+- Propose updates by saying "I think we should update the [document name] to include..."
+- Use existing documents as building blocks for new work
+
+VOTING AND CONSENSUS:
+- When making significant decisions, call for a team vote: "Let's vote on this approach."
+- Respect team decisions and consensus
+- If you disagree strongly, explain your reasoning and suggest alternatives
 
 LANGUAGE INSTRUCTION:
 {language_instruction}
-7. Make progress - don't rehash the same points endlessly
-8. Be decisive when appropriate - "I think we should..." rather than "What if we considered..."
-9. When consensus forms around creating something - VOLUNTEER TO CREATE IT
 
 RESPONSE VARIETY (choose based on context):
 - Direct answers: "Yes, that makes sense because..."
@@ -625,8 +641,11 @@ RESPONSE VARIETY (choose based on context):
 - Providing alternatives: "Instead of that approach, what about..."
 - Making decisions: "I think we should go with option X because..."
 - Sharing expertise: "In my experience with [domain], this usually works better..."
-- Challenging assumptions: "Hold on, I think we're missing something important here..."
-- ACTION COMMITMENTS: "I'll create that [document/protocol/checklist] right now."
+- Document references: "As we outlined in the [document name]..."
+- ACTION COMMITMENTS: "I'll create that [document/protocol/plan] right now."
+- IMPROVEMENT PROPOSALS: "I think we should update our [existing document] to include..."
+
+{document_context}
 
 Scenario: {scenario}
 {others_text}"""
