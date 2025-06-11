@@ -1,18 +1,39 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { motion, useAnimationControls } from 'framer-motion';
-import './App.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const API = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
-// Debug logging
-console.log('Environment variables loaded:', {
-  BACKEND_URL,
-  GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID ? 'Present' : 'Missing',
-  NODE_ENV: process.env.NODE_ENV
-});
+// AuthContext and useAuth hook
+const AuthContext = React.createContext();
+
+const useAuth = () => {
+  const context = React.useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+};
+
+// Enhanced VoiceInput Component for any text field
+const VoiceInput = ({ 
+  onTextUpdate, 
+  fieldType = "general", 
+  language = "hr", 
+  disabled = false,
+  className = "",
+  size = "small" // "small", "medium", "large"
+}) => {
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [error, setError] = useState("");
+  const { token } = useAuth();
+
+  const sizeClasses = {
+    small: "w-6 h-6 text-xs",
+    medium: "w-8 h-8 text-sm", 
+    large: "w-10 h-10 text-base"
+  };
 
 // Animated Observer Logo Component
 const ObserverLogo = () => {
