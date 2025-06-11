@@ -309,7 +309,7 @@ backend:
     implemented: true
     working: false
     file: "/app/backend/server.py"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
     needs_retesting: true
     status_history:
@@ -322,6 +322,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Attempted to test the document update workflow but encountered issues with document creation. The POST /api/documents endpoint returns a 405 Method Not Allowed error, preventing the creation of test documents. Without the ability to create documents, it's not possible to test the update workflow. The document update feature cannot be verified due to this API endpoint issue."
+        -working: false
+        -agent: "testing"
+        -comment: "Attempted to test the document update workflow again but encountered the same issues. The POST /api/documents endpoint returns a 405 Method Not Allowed error. The correct endpoint appears to be POST /api/documents/create, which works for creating documents, but when trying to test the update workflow with POST /api/documents/{id}/propose-update, the system returns a 500 error with the message 'Failed to propose document update'. The document update workflow cannot be verified due to these API endpoint issues."
 
   - task: "API Endpoints"
     implemented: true
