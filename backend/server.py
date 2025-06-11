@@ -2249,78 +2249,107 @@ async def generate_conversation():
             conversation_text, agent_objects
         )
         
-        # If document should be created, generate it automatically
+        # If document should be created, get team consensus first
         if trigger_result.should_create_document:
             logging.info(f"Action trigger detected: {trigger_result.trigger_phrase}")
-            logging.info(f"Creating {trigger_result.document_type}: {trigger_result.document_title}")
+            logging.info(f"Requesting team vote for: {trigger_result.document_title}")
             
-            # Find the agent who should create the document (choose one who volunteered or is most relevant)
-            creating_agent = agent_objects[0]  # Default to first agent
-            for agent in agent_objects:
-                # Look for commitment phrases in their messages
-                for msg in messages:
-                    if msg.agent_name == agent.name:
-                        commitment_phrases = ["i'll create", "let me create", "i'll develop", "i'll draft", "i'm creating"]
-                        if any(phrase in msg.message.lower() for phrase in commitment_phrases):
-                            creating_agent = agent
-                            break
-                if creating_agent.id != agent_objects[0].id:
-                    break
-            
-            # Generate document content
-            document_content = await llm_manager.generate_document_content(
-                trigger_result.document_type,
-                trigger_result.document_title,
-                conversation_text,
-                creating_agent
+            # Get team vote on document creation
+            voting_results = await llm_manager.check_agent_voting_consensus(
+                agent_objects, 
+                f"Create {trigger_result.document_type} titled '{trigger_result.document_title}'",
+                conversation_text
             )
             
-            # Create document metadata
-            safe_title = re.sub(r'[^a-zA-Z0-9\s\-_]', '', trigger_result.document_title)
-            safe_title = re.sub(r'\s+', '_', safe_title)
-            filename = f"{safe_title}_{datetime.now().strftime('%Y%m%d')}.md"
-            
-            # Get user_id from conversation round (this is tricky - we need to find current user)
-            # For now, we'll store it without user_id and let the frontend associate it
-            metadata = DocumentMetadata(
-                title=trigger_result.document_title,
-                filename=filename,
-                authors=[creating_agent.name],
-                category=trigger_result.document_type.title(),
-                description=f"Auto-generated from team discussion - {trigger_result.document_title}",
-                keywords=[trigger_result.document_type, "team-generated", "action-oriented"],
-                simulation_id=str(conversation_round.id),
-                conversation_round=conversation_round.round_number,
-                user_id=""  # Will be set by frontend when user is available
-            )
-            
-            document = Document(
-                metadata=metadata,
-                content=document_content,
-                created_by_agents=[creating_agent.id],
-                conversation_context=conversation_text[:500],
-                action_trigger=trigger_result.trigger_phrase
-            )
-            
-            # Save document to database
-            await db.documents.insert_one(document.dict())
-            
-            # Add document creation notification to conversation round
-            doc_notification = ConversationMessage(
-                agent_id=creating_agent.id,
-                agent_name=creating_agent.name,
-                message=f"📋 **Document Created: {trigger_result.document_title}**\n\nI've created and uploaded the {trigger_result.document_type} to our File Center. It's ready for review and implementation.\n\n*Filename: {filename}*\n*Category: {metadata.category}*",
-                mood="productive"
-            )
-            
-            # Update the conversation round with the document creation message
-            conversation_round.messages.append(doc_notification)
-            await db.conversations.update_one(
-                {"id": conversation_round.id},
-                {"$set": {"messages": [msg.dict() for msg in conversation_round.messages]}}
-            )
-            
-            logging.info(f"Document created successfully: {document.id}")
+            if voting_results["consensus"]:
+                logging.info(f"Team voted YES - Creating {trigger_result.document_type}: {trigger_result.document_title}")
+                
+                # Find the agent who should create the document (choose one who volunteered or is most relevant)
+                creating_agent = agent_objects[0]  # Default to first agent
+                for agent in agent_objects:
+                    # Look for commitment phrases in their messages
+                    for msg in messages:
+                        if msg.agent_name == agent.name:
+                            commitment_phrases = ["i'll create", "let me create", "i'll develop", "i'll draft", "i'm creating"]
+                            if any(phrase in msg.message.lower() for phrase in commitment_phrases):
+                                creating_agent = agent
+                                break
+                    if creating_agent.id != agent_objects[0].id:
+                        break
+                
+                # Generate document content
+                document_content = await llm_manager.generate_document_content(
+                    trigger_result.document_type,
+                    trigger_result.document_title,
+                    conversation_text,
+                    creating_agent
+                )
+                
+                # Create document metadata
+                safe_title = re.sub(r'[^a-zA-Z0-9\s\-_]', '', trigger_result.document_title)
+                safe_title = re.sub(r'\s+', '_', safe_title)
+                filename = f"{safe_title}_{datetime.now().strftime('%Y%m%d')}.md"
+                
+                # Get user_id from conversation round (this is tricky - we need to find current user)
+                # For now, we'll store it without user_id and let the frontend associate it
+                metadata = DocumentMetadata(
+                    title=trigger_result.document_title,
+                    filename=filename,
+                    authors=[creating_agent.name],
+                    category=trigger_result.document_type.title(),
+                    description=f"Team-approved creation from discussion - {trigger_result.document_title}",
+                    keywords=[trigger_result.document_type, "team-generated", "action-oriented", "voted-approved"],
+                    simulation_id=str(conversation_round.id),
+                    conversation_round=conversation_round.round_number,
+                    user_id=""  # Will be set by frontend when user is available
+                )
+                
+                document = Document(
+                    metadata=metadata,
+                    content=document_content,
+                    created_by_agents=[creating_agent.id],
+                    conversation_context=conversation_text[:500],
+                    action_trigger=trigger_result.trigger_phrase
+                )
+                
+                # Save document to database
+                await db.documents.insert_one(document.dict())
+                
+                # Add voting results and document creation notification to conversation round
+                voting_summary = f"Team Vote: {voting_results['summary']}"
+                
+                doc_notification = ConversationMessage(
+                    agent_id=creating_agent.id,
+                    agent_name=creating_agent.name,
+                    message=f"📋 **Document Created: {trigger_result.document_title}**\n\n{voting_summary} - The team has approved this creation!\n\nI've created and uploaded the {trigger_result.document_type} to our File Center. It's ready for review and implementation.\n\n*Filename: {filename}*\n*Category: {metadata.category}*",
+                    mood="productive"
+                )
+                
+                # Update the conversation round with the document creation message
+                conversation_round.messages.append(doc_notification)
+                await db.conversations.update_one(
+                    {"id": conversation_round.id},
+                    {"$set": {"messages": [msg.dict() for msg in conversation_round.messages]}}
+                )
+                
+                logging.info(f"Document created successfully with team approval: {document.id}")
+            else:
+                logging.info(f"Team voted NO - Document creation rejected: {voting_results['summary']}")
+                
+                # Add voting results notification showing the rejection
+                rejection_notification = ConversationMessage(
+                    agent_id=agent_objects[0].id,  # Use first agent as messenger
+                    agent_name=agent_objects[0].name,
+                    message=f"📊 **Team Vote Results**: {voting_results['summary']}\n\nThe proposal to create '{trigger_result.document_title}' was not approved by the team. We'll continue the discussion.",
+                    mood="neutral"
+                )
+                
+                # Update the conversation round with the voting results
+                conversation_round.messages.append(rejection_notification)
+                await db.conversations.update_one(
+                    {"id": conversation_round.id},
+                    {"$set": {"messages": [msg.dict() for msg in conversation_round.messages]}}
+                )
             
     except Exception as e:
         logging.error(f"Error in action-oriented document creation: {e}")
