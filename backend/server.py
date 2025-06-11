@@ -4617,6 +4617,182 @@ async def transcribe_scenario_audio(
         logging.error(f"Error in scenario transcription: {e}")
         raise HTTPException(status_code=500, detail=f"Scenario transcription failed: {str(e)}")
 
+@api_router.post("/speech/transcribe-and-summarize")
+async def transcribe_and_summarize_for_field(
+    audio: UploadFile = File(...),
+    field_type: str = "general",  # "goal", "expertise", "background", "memory", "scenario", "general"
+    language: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Transcribe audio and create AI-summarized text suitable for specific field types"""
+    try:
+        # Validate file type
+        if not audio.content_type or not audio.content_type.startswith(('audio/', 'video/')):
+            raise HTTPException(status_code=400, detail="File must be audio or video format")
+        
+        # Read audio file
+        audio_data = await audio.read()
+        
+        if len(audio_data) == 0:
+            raise HTTPException(status_code=400, detail="Audio file is empty")
+        
+        # Transcribe using Whisper
+        transcription_result = await whisper_service.transcribe_audio(
+            audio_data, 
+            language=language,
+            filename=audio.filename or f"{field_type}_audio.webm"
+        )
+        
+        if not transcription_result["success"] or not transcription_result["text"]:
+            raise HTTPException(status_code=400, detail="No speech detected in audio")
+        
+        raw_text = transcription_result["text"]
+        
+        # AI Summarization and Formatting based on field type
+        if await llm_manager.can_make_request():
+            summarized_text = await create_field_appropriate_text(raw_text, field_type)
+        else:
+            # Fallback to raw text if API limit reached
+            summarized_text = raw_text.strip()
+        
+        response = {
+            "success": True,
+            "raw_transcription": raw_text,
+            "formatted_text": summarized_text,
+            "field_type": field_type,
+            "language_detected": transcription_result.get("language", "unknown"),
+            "duration_seconds": transcription_result.get("duration", 0),
+            "word_count": len(summarized_text.split()) if summarized_text else 0,
+            "processing_info": {
+                "model": "whisper-1",
+                "summarization": "gemini-2.0-flash",
+                "timestamp": datetime.utcnow().isoformat(),
+                "user_id": current_user.id
+            }
+        }
+        
+        logging.info(f"Field transcription successful for user {current_user.id}: {field_type} field, {len(raw_text)} → {len(summarized_text)} characters")
+        
+        return response
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error in field transcription and summarization: {e}")
+        raise HTTPException(status_code=500, detail=f"Field transcription failed: {str(e)}")
+
+async def create_field_appropriate_text(raw_text: str, field_type: str) -> str:
+    """Use AI to create field-appropriate text from raw voice transcription"""
+    
+    field_prompts = {
+        "goal": """Take this voice input and create a clear, concise agent goal statement. 
+        Make it action-oriented and specific. Keep it to 1-2 sentences.
+        Remove filler words, ums, ahs, and conversational elements.
+        
+        Example formats:
+        - "Analyze data to identify trends and provide actionable insights"
+        - "Lead team discussions and facilitate decision-making processes"
+        - "Research emerging technologies and assess their potential impact"
+        
+        Voice input: {text}
+        
+        Clean goal statement:""",
+        
+        "expertise": """Take this voice input and create a clean, professional expertise description.
+        Focus on skills, knowledge areas, and professional capabilities.
+        Remove conversational elements and organize into clear, readable text.
+        Keep it concise but comprehensive.
+        
+        Example format:
+        "Data analysis, machine learning, statistical modeling, Python programming, business intelligence, and strategic planning with 8+ years of experience in healthcare analytics."
+        
+        Voice input: {text}
+        
+        Clean expertise description:""",
+        
+        "background": """Take this voice input and create a professional background description.
+        Include relevant experience, education, or context that shapes this person/agent.
+        Remove conversational elements and create flowing, readable text.
+        
+        Example format:
+        "Former senior analyst at tech startups with experience in rapid growth environments. Holds an MBA and has led multiple cross-functional teams through digital transformation projects."
+        
+        Voice input: {text}
+        
+        Clean background description:""",
+        
+        "memory": """Take this voice input and create a clear memory entry.
+        Keep the personal/contextual elements but make it readable and organized.
+        Remove filler words and conversational elements while preserving the essential information.
+        
+        Voice input: {text}
+        
+        Clean memory entry:""",
+        
+        "scenario": """Take this voice input and create an engaging, clear scenario description.
+        Make it narrative and immersive while removing conversational elements.
+        Keep the core situation but enhance the presentation.
+        
+        Example format:
+        "A mysterious signal has been detected from deep space. The research team must decide whether to investigate immediately or gather more data first. Time is critical as the signal appears to be weakening."
+        
+        Voice input: {text}
+        
+        Clean scenario description:""",
+        
+        "general": """Take this voice input and create clean, readable text.
+        Remove filler words, ums, ahs, and conversational elements.
+        Improve grammar and flow while preserving the original meaning.
+        
+        Voice input: {text}
+        
+        Clean text:"""
+    }
+    
+    prompt_template = field_prompts.get(field_type, field_prompts["general"])
+    
+    try:
+        chat = LlmChat(
+            api_key=llm_manager.api_key,
+            session_id=f"voice_summary_{field_type}_{datetime.now().timestamp()}",
+            system_message=f"""You are an expert at converting voice input into clean, professional text. 
+            You specialize in creating {field_type} descriptions that are clear, concise, and appropriate for AI agent profiles.
+            
+            Always respond with just the clean text, no explanations or additional formatting."""
+        ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(200)
+        
+        user_message = UserMessage(text=prompt_template.format(text=raw_text))
+        response = await chat.send_message(user_message)
+        await llm_manager.increment_usage()
+        
+        # Clean up the response
+        cleaned_text = response.strip()
+        
+        # Remove common AI response prefixes
+        prefixes_to_remove = [
+            "Clean text:", "Clean goal statement:", "Clean expertise description:",
+            "Clean background description:", "Clean memory entry:", "Clean scenario description:",
+            "Here is the cleaned text:", "The cleaned text is:", "Cleaned version:"
+        ]
+        
+        for prefix in prefixes_to_remove:
+            if cleaned_text.startswith(prefix):
+                cleaned_text = cleaned_text[len(prefix):].strip()
+        
+        # Remove quotes if the entire text is wrapped in them
+        if cleaned_text.startswith('"') and cleaned_text.endswith('"'):
+            cleaned_text = cleaned_text[1:-1].strip()
+        
+        # Fallback to raw text if AI response is too short or seems invalid
+        if len(cleaned_text) < 10 or len(cleaned_text) > len(raw_text) * 2:
+            return raw_text.strip()
+        
+        return cleaned_text
+        
+    except Exception as e:
+        logging.error(f"Error in AI summarization for {field_type}: {e}")
+        return raw_text.strip()  # Fallback to raw text
+
 # Include the router in the main app
 app.include_router(api_router)
 
