@@ -3777,15 +3777,6 @@ function App() {
     // Load saved audio preference from localStorage or default to true
     return localStorage.getItem('audioNarrativeEnabled') !== 'false';
   });
-  
-  // File Center state for Action-Oriented Agent Behavior
-  const [documents, setDocuments] = useState([]);
-  const [showFileCenter, setShowFileCenter] = useState(false);
-  const [documentCategories] = useState([
-    "Protocol", "Training", "Research", "Equipment", "Budget", "Reference"
-  ]);
-  const [selectedDocumentCategory, setSelectedDocumentCategory] = useState("");
-  const [documentSearchTerm, setDocumentSearchTerm] = useState("");
 
   const handleTestBackgrounds = async () => {
     setLoading(true);
