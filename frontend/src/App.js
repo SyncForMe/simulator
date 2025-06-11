@@ -4360,13 +4360,6 @@ function App() {
     refreshAllData();
   }, []);
 
-  // Fetch documents when search/filter criteria change
-  useEffect(() => {
-    if (token) {
-      fetchDocuments();
-    }
-  }, [selectedDocumentCategory, documentSearchTerm, token]);
-
   // Auto-start timers when simulation state loads with auto-mode enabled
   useEffect(() => {
     if (simulationState) {
