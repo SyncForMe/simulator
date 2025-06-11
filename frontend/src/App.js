@@ -4435,40 +4435,6 @@ function App() {
     }
   };
 
-  const handleSaveAgent = async (agent) => {
-    if (!token) {
-      alert('Please sign in to save agents to your library.');
-      return;
-    }
-
-    try {
-      const agentData = {
-        name: agent.name,
-        archetype: agent.archetype,
-        personality: agent.personality,
-        goal: agent.goal,
-        expertise: agent.expertise || "",
-        background: agent.background || "",
-        avatar_url: agent.avatar_url || "",
-        avatar_prompt: agent.avatar_prompt || "",
-        is_template: true // Mark as template for reuse
-      };
-
-      await axios.post(`${API}/saved-agents`, agentData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      alert(`✅ Agent "${agent.name}" has been saved to your library!`);
-    } catch (error) {
-      console.error('Error saving agent:', error);
-      if (error.response?.status === 401) {
-        alert('Please sign in to save agents.');
-      } else {
-        alert('Failed to save agent. Please try again.');
-      }
-    }
-  };
-
   const handleDeleteAllAgents = async () => {
     if (agents.length === 0) return;
     
