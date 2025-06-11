@@ -307,11 +307,11 @@ backend:
 
   - task: "Document Awareness in Conversations"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
-    stuck_count: 2
+    stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -325,14 +325,17 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Attempted to test document awareness in conversations again but encountered the same issue. The POST /api/documents endpoint returns a 405 Method Not Allowed error. The correct endpoint appears to be POST /api/documents/create, which works for creating documents, but the system doesn't seem to have a way to make agents aware of these documents in conversations. The document awareness feature cannot be fully verified due to these API endpoint issues."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested document awareness in conversations after the route ordering fix. The POST /api/documents/create endpoint works correctly for creating documents, and the GET /api/documents endpoint returns the list of documents. The conversation generation system now correctly references existing documents in conversations, with agents mentioning document titles and content in their messages. This confirms that agents are aware of existing documents and can reference them appropriately."
 
   - task: "Document Update Workflow"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
-    stuck_count: 3
+    stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -346,6 +349,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Attempted to test the document update workflow again but encountered the same issues. The POST /api/documents endpoint returns a 405 Method Not Allowed error. The correct endpoint appears to be POST /api/documents/create, which works for creating documents, but when trying to test the update workflow with POST /api/documents/{id}/propose-update, the system returns a 500 error with the message 'Failed to propose document update'. The document update workflow cannot be verified due to these API endpoint issues."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the document update workflow after the route ordering fix. The POST /api/documents/create endpoint works correctly for creating documents, and the POST /api/documents/{id}/propose-update endpoint now works for both approval and rejection scenarios. The voting mechanism functions as expected, with agents voting based on their personalities and goals. When a majority of agents approve, the document is updated; when they reject, the document remains unchanged. The category field issue has been resolved."
 
   - task: "API Endpoints"
     implemented: true
