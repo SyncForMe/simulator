@@ -3591,6 +3591,12 @@ const FileCenter = ({ documents, onRefresh, categories, selectedCategory, onCate
               </div>
               <div className="flex space-x-2">
                 <button
+                  onClick={() => setShowUpdateForm(!showUpdateForm)}
+                  className="bg-orange-600 text-white px-3 py-2 rounded hover:bg-orange-700 transition-colors"
+                >
+                  📝 Propose Update
+                </button>
+                <button
                   onClick={() => handleDownloadDocument(selectedDocument)}
                   className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition-colors"
                 >
@@ -3604,6 +3610,46 @@ const FileCenter = ({ documents, onRefresh, categories, selectedCategory, onCate
                 </button>
               </div>
             </div>
+            
+            {/* Document Update Form */}
+            {showUpdateForm && (
+              <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded">
+                <h3 className="font-semibold mb-2">Propose Document Update</h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  Describe the changes you'd like to make. The team will vote on whether to approve this update.
+                </p>
+                <textarea
+                  value={proposedChanges}
+                  onChange={(e) => setProposedChanges(e.target.value)}
+                  placeholder="Describe the proposed changes..."
+                  className="w-full p-2 border border-gray-300 rounded h-20 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500"
+                />
+                <div className="flex space-x-2 mt-2">
+                  <button
+                    onClick={() => {
+                      if (proposedChanges.trim()) {
+                        handleProposeUpdate(selectedDocument.id, proposedChanges);
+                        setProposedChanges("");
+                        setShowUpdateForm(false);
+                      }
+                    }}
+                    disabled={!proposedChanges.trim()}
+                    className="bg-orange-600 text-white px-3 py-1 rounded text-sm hover:bg-orange-700 disabled:opacity-50 transition-colors"
+                  >
+                    Submit for Team Vote
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowUpdateForm(false);
+                      setProposedChanges("");
+                    }}
+                    className="bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-400 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
             
             {/* Document Metadata */}
             <div className="mb-4 p-3 bg-gray-50 rounded">
