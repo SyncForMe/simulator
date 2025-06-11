@@ -288,7 +288,7 @@ backend:
     implemented: true
     working: false
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: true
     status_history:
@@ -301,6 +301,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Attempted to test document awareness in conversations but encountered issues with document creation. The POST /api/documents endpoint returns a 405 Method Not Allowed error, preventing the creation of test documents. Without the ability to create documents, it's not possible to test whether agents can reference them in conversations. The document awareness feature cannot be verified due to this API endpoint issue."
+        -working: false
+        -agent: "testing"
+        -comment: "Attempted to test document awareness in conversations again but encountered the same issue. The POST /api/documents endpoint returns a 405 Method Not Allowed error. The correct endpoint appears to be POST /api/documents/create, which works for creating documents, but the system doesn't seem to have a way to make agents aware of these documents in conversations. The document awareness feature cannot be fully verified due to these API endpoint issues."
 
   - task: "Document Update Workflow"
     implemented: true
