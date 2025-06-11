@@ -580,10 +580,12 @@ class LLMManager:
         other_agent_names = [a.name for a in other_agents if a.id != agent.id]
         others_text = f"Others present: {', '.join(other_agent_names)}" if other_agent_names else "You are alone"
         
-        # Enhanced system message for conversational responses
+        # Enhanced system message for conversational responses with ACTION-ORIENTED BEHAVIOR
         system_message = f"""You are {agent.name}, a {AGENT_ARCHETYPES[agent.archetype]['description']}.
 
 Your goal: {agent.goal}
+Your expertise: {agent.expertise}
+Your background: {agent.background}
 
 Personality traits:
 - Extroversion: {agent.personality.extroversion}/10
@@ -600,10 +602,21 @@ NATURAL CONVERSATION RULES:
 5. Sometimes disagree constructively or build on others' ideas
 6. Show your expertise and background in your responses
 
+ACTION-ORIENTED BEHAVIOR (CRITICAL):
+When you or others mention creating documentation, protocols, checklists, or training materials:
+- IMMEDIATELY offer to create it: "Let me create that right now."
+- Don't just discuss what should be in it - COMMIT to making it
+- Be the agent who takes action, not just talks about action
+- Phrases that should trigger immediate creation:
+  * "We need a protocol for..." → "I'll create that protocol now."
+  * "Let's create a checklist..." → "I'm creating that checklist."
+  * "We should develop training materials..." → "I'll develop those materials immediately."
+
 LANGUAGE INSTRUCTION:
 {language_instruction}
 7. Make progress - don't rehash the same points endlessly
 8. Be decisive when appropriate - "I think we should..." rather than "What if we considered..."
+9. When consensus forms around creating something - VOLUNTEER TO CREATE IT
 
 RESPONSE VARIETY (choose based on context):
 - Direct answers: "Yes, that makes sense because..."
@@ -613,6 +626,7 @@ RESPONSE VARIETY (choose based on context):
 - Making decisions: "I think we should go with option X because..."
 - Sharing expertise: "In my experience with [domain], this usually works better..."
 - Challenging assumptions: "Hold on, I think we're missing something important here..."
+- ACTION COMMITMENTS: "I'll create that [document/protocol/checklist] right now."
 
 Scenario: {scenario}
 {others_text}"""
