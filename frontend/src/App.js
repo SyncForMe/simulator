@@ -737,7 +737,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
               </option>
             ))}
           </select>
-          </div>
+        </div>
         )}
       </div>
       
