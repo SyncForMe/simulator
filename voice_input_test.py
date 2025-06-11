@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 import base64
 import io
 import uuid
-from datetime import datetime
+import jwt
+from datetime import datetime, timedelta
 
 # Load environment variables from frontend/.env
 load_dotenv('/app/frontend/.env')
@@ -23,6 +24,13 @@ if not BACKEND_URL:
 API_URL = f"{BACKEND_URL}/api"
 print(f"Using API URL: {API_URL}")
 
+# Load JWT secret from backend/.env for testing
+load_dotenv('/app/backend/.env')
+JWT_SECRET = os.environ.get('JWT_SECRET')
+if not JWT_SECRET:
+    print("Warning: JWT_SECRET not found in environment variables. Some tests may fail.")
+    JWT_SECRET = "test_secret"
+
 # Test results tracking
 test_results = {
     "passed": 0,
@@ -30,14 +38,61 @@ test_results = {
     "tests": []
 }
 
-def run_test(test_name, endpoint, method="GET", data=None, files=None, expected_status=200, expected_keys=None, headers=None):
+# Global variables for auth testing
+auth_token = None
+test_user_id = None
+
+def create_test_jwt_token(user_id):
+    """Create a test JWT token for authentication testing"""
+    # Create token payload
+    payload = {
+        "sub": user_id,
+        "exp": datetime.utcnow() + timedelta(hours=24)
+    }
+    
+    # Encode the token
+    token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+    
+    # If token is bytes, convert to string
+    if isinstance(token, bytes):
+        token = token.decode('utf-8')
+    
+    return token
+
+def test_login():
+    """Login with test endpoint to get auth token"""
+    global auth_token, test_user_id
+    
+    test_login_test, test_login_response = run_test(
+        "Test Login Endpoint",
+        "/auth/test-login",
+        method="POST",
+        expected_keys=["access_token", "token_type", "user"]
+    )
+    
+    # Store the token for further testing if successful
+    if test_login_test and test_login_response:
+        auth_token = test_login_response.get("access_token")
+        user_data = test_login_response.get("user", {})
+        test_user_id = user_data.get("id")
+        print(f"Test login successful. User ID: {test_user_id}")
+        print(f"JWT Token: {auth_token}")
+        return True
+    else:
+        print("Test login failed. Some tests may not work correctly.")
+        return False
+
+def run_test(test_name, endpoint, method="GET", data=None, files=None, expected_status=200, expected_keys=None, auth=False, headers=None):
     """Run a test against the specified endpoint"""
     url = f"{API_URL}{endpoint}"
     print(f"\n{'='*80}\nTesting: {test_name} ({method} {url})")
     
-    # Set up headers
+    # Set up headers with auth token if needed
     if headers is None:
         headers = {}
+    
+    if auth and auth_token:
+        headers["Authorization"] = f"Bearer {auth_token}"
     
     try:
         if method == "GET":
@@ -207,6 +262,12 @@ def test_transcribe_and_summarize():
     print("TESTING SPEECH TRANSCRIBE AND SUMMARIZE ENDPOINT")
     print("="*80)
     
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test transcribe and summarize without authentication")
+            return False, "Authentication failed"
+    
     # We'll test with different field types
     field_types = ["goal", "expertise", "background", "memory", "scenario"]
     
@@ -239,7 +300,8 @@ def test_transcribe_and_summarize():
             method="POST",
             data=data,
             files=files,
-            expected_status=400  # We expect a 400 error for our dummy file
+            expected_status=400,  # We expect a 400 error for our dummy file
+            auth=True  # Use authentication
         )
         
         # Check if the endpoint exists and returns the expected error format
@@ -275,6 +337,12 @@ def test_croatian_language_support():
         croatian_supported = languages_response.get("croatian_supported", False)
         print(f"Croatian language supported: {croatian_supported}")
     
+    # Login first to get auth token if not already logged in
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test Croatian language parameter without authentication")
+            return False, "Authentication failed"
+    
     # Test with Croatian language parameter
     test_audio = create_test_audio_file()
     
@@ -294,7 +362,8 @@ def test_croatian_language_support():
         method="POST",
         data=data,
         files=files,
-        expected_status=400  # We expect a 400 error for our dummy file
+        expected_status=400,  # We expect a 400 error for our dummy file
+        auth=True  # Use authentication
     )
     
     # Print summary
