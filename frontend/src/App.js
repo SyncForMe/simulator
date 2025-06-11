@@ -723,21 +723,20 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
         <h3 className="text-lg font-bold">🎭 Custom Scenario</h3>
         
         {/* Language Selector for Voice Input */}
-        {isSupported && (
-          <div className="flex items-center space-x-2">
-            <label className="text-sm text-gray-600">Voice Language:</label>
-            <select
-              value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value)}
-              disabled={isListening || loading || justSubmitted}
-              className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              {voiceLanguages.map(lang => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.name}
-                </option>
-              ))}
-            </select>
+        <div className="flex items-center space-x-2">
+          <label className="text-sm text-gray-600">Voice Language:</label>
+          <select
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+            disabled={isRecording || loading || justSubmitted}
+            className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            {supportedLanguages.map(lang => (
+              <option key={lang.code} value={lang.code}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
           </div>
         )}
       </div>
