@@ -2182,6 +2182,14 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
             ✏️
           </button>
           <button
+            onClick={() => onSave(agent)}
+            className="text-purple-600 hover:text-purple-800 transition-colors p-1"
+            title="Save Agent to Library"
+            style={{ fontSize: '0.75rem' }}
+          >
+            💾
+          </button>
+          <button
             onClick={() => setShowMemoryInput(!showMemoryInput)}
             className="text-green-600 hover:text-green-800 transition-colors p-1"
             title="Add Memory"
