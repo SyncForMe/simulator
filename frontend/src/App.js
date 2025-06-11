@@ -5,7 +5,7 @@ import './App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || "251454265437-882bff3601n7ir7dt0equh5ijgu5h9cl.apps.googleusercontent.com";
 
 // Debug logging
 console.log('Environment variables loaded:', {
