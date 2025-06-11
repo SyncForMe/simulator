@@ -750,7 +750,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
               placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.') You can type or use voice input!"
               className={`w-full p-3 border rounded-lg resize-none pr-16 ${
                 justSubmitted ? 'bg-green-50 border-green-300' : 
-                isListening ? 'bg-blue-50 border-blue-300' : ''
+                isRecording ? 'bg-blue-50 border-blue-300' : ''
               }`}
               rows="4"
               disabled={loading || justSubmitted || randomLoading}
