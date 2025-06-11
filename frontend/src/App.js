@@ -738,9 +738,8 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
             ))}
           </select>
         </div>
-        )}
       </div>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <div className="relative">
