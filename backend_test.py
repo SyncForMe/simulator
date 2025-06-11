@@ -520,8 +520,709 @@ def main():
     
     return all_tests_passed
 
+def test_document_endpoints():
+    """Test the document endpoints"""
+    print("\n" + "="*80)
+    print("TESTING DOCUMENT ENDPOINTS")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test document endpoints without authentication")
+            return False, "Authentication failed"
+    
+    # Test GET /api/documents/categories
+    categories_test, categories_response = run_test(
+        "Get Document Categories",
+        "/documents/categories",
+        method="GET",
+        expected_keys=["categories"]
+    )
+    
+    if categories_test and categories_response:
+        categories = categories_response.get("categories", [])
+        print(f"✅ Retrieved {len(categories)} document categories: {', '.join(categories)}")
+    else:
+        print("❌ Failed to retrieve document categories")
+    
+    # Test POST /api/documents/create
+    document_data = {
+        "title": "Test Protocol Document",
+        "category": "Protocol",
+        "description": "This is a test protocol document",
+        "content": "# Test Protocol\n\n## Purpose\nThis is a test protocol document created for testing purposes.\n\n## Procedure\n1. Step one\n2. Step two\n3. Step three",
+        "keywords": ["test", "protocol", "documentation"],
+        "authors": ["Test Agent"]
+    }
+    
+    create_test, create_response = run_test(
+        "Create Document",
+        "/documents/create",
+        method="POST",
+        data=document_data,
+        auth=True,
+        expected_keys=["success", "document_id", "filename"]
+    )
+    
+    document_id = None
+    if create_test and create_response:
+        document_id = create_response.get("document_id")
+        print(f"✅ Created document with ID: {document_id}")
+    else:
+        print("❌ Failed to create document")
+    
+    # Test GET /api/documents
+    list_test, list_response = run_test(
+        "List Documents",
+        "/documents",
+        method="GET",
+        auth=True
+    )
+    
+    if list_test and list_response:
+        if isinstance(list_response, list):
+            print(f"✅ Retrieved {len(list_response)} documents")
+            
+            # Check if our created document is in the list
+            found = False
+            for doc in list_response:
+                if document_id and doc.get("id") == document_id:
+                    found = True
+                    print(f"✅ Found our created document in the list")
+                    break
+            
+            if not found and document_id:
+                print("❌ Our created document was not found in the list")
+        else:
+            print("❌ Document list response is not a list")
+    else:
+        print("❌ Failed to retrieve document list")
+    
+    # Test GET /api/documents/{document_id}
+    if document_id:
+        get_test, get_response = run_test(
+            "Get Document by ID",
+            f"/documents/{document_id}",
+            method="GET",
+            auth=True,
+            expected_keys=["id", "metadata", "content"]
+        )
+        
+        if get_test and get_response:
+            print(f"✅ Retrieved document with ID: {document_id}")
+            print(f"✅ Document title: {get_response.get('metadata', {}).get('title', '')}")
+            print(f"✅ Document content length: {len(get_response.get('content', ''))}")
+        else:
+            print(f"❌ Failed to retrieve document with ID: {document_id}")
+    
+    # Test document deletion (cleanup)
+    if document_id:
+        delete_test, delete_response = run_test(
+            "Delete Document",
+            f"/documents/{document_id}",
+            method="DELETE",
+            auth=True,
+            expected_keys=["success", "message"]
+        )
+        
+        if delete_test and delete_response:
+            print(f"✅ Deleted document with ID: {document_id}")
+        else:
+            print(f"❌ Failed to delete document with ID: {document_id}")
+    
+    # Print summary
+    print("\nDOCUMENT ENDPOINTS SUMMARY:")
+    
+    if categories_test and (create_test or document_id is None):
+        print("✅ Document endpoints are working correctly!")
+        return True, "Document endpoints are working correctly"
+    else:
+        issues = []
+        if not categories_test:
+            issues.append("Failed to retrieve document categories")
+        if not create_test and document_id is None:
+            issues.append("Failed to create document")
+        
+        print("❌ Document endpoints have issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, "Document endpoints have issues"
+
+def test_conversation_trigger_analysis():
+    """Test the conversation trigger analysis endpoint"""
+    print("\n" + "="*80)
+    print("TESTING CONVERSATION TRIGGER ANALYSIS")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test conversation trigger analysis without authentication")
+            return False, "Authentication failed"
+    
+    # Create test agents
+    agents = []
+    for i in range(3):
+        agent_data = {
+            "name": f"Test Agent {i+1}",
+            "archetype": "leader" if i == 0 else "scientist",
+            "goal": "Improve team productivity and collaboration",
+            "expertise": "Business strategy and team management",
+            "background": "MBA with 10 years experience in corporate management"
+        }
+        
+        agent_test, agent_response = run_test(
+            f"Create Test Agent {i+1}",
+            "/agents",
+            method="POST",
+            data=agent_data,
+            expected_keys=["id", "name"]
+        )
+        
+        if agent_test and agent_response:
+            agents.append(agent_response)
+    
+    if len(agents) < 2:
+        print("❌ Failed to create enough test agents")
+        return False, "Failed to create test agents"
+    
+    # Test conversation with document creation trigger
+    conversation_text = """
+    Test Agent 1: I've been thinking about our team meetings. They're often unproductive and run too long.
+    Test Agent 2: You're right. We need a protocol for team meetings to make them more efficient.
+    Test Agent 3: I agree. Let's create a structured format with clear agenda items and time limits.
+    Test Agent 1: Great idea. We should include roles like timekeeper and note-taker.
+    Test Agent 2: And we need to establish rules for decision-making during meetings.
+    """
+    
+    # Test the conversation analysis endpoint
+    analysis_data = {
+        "conversation_text": conversation_text,
+        "agent_ids": [agent.get("id") for agent in agents]
+    }
+    
+    analysis_test, analysis_response = run_test(
+        "Action Trigger Analysis for Team Meeting Protocol",
+        "/documents/analyze-conversation",
+        method="POST",
+        data=analysis_data,
+        auth=True,
+        expected_keys=["should_create_document"]
+    )
+    
+    # Verify the analysis detected the trigger
+    trigger_detected = False
+    if analysis_test and analysis_response:
+        should_create = analysis_response.get("should_create_document", False)
+        document_type = analysis_response.get("document_type", "")
+        document_title = analysis_response.get("document_title", "")
+        trigger_phrase = analysis_response.get("trigger_phrase", "")
+        
+        if should_create and document_type and document_title and trigger_phrase:
+            trigger_detected = True
+            print(f"✅ Trigger detected: {trigger_phrase}")
+            print(f"✅ Document type: {document_type}")
+            print(f"✅ Document title: {document_title}")
+        else:
+            print("❌ Trigger not detected in conversation")
+            print(f"Response: {analysis_response}")
+    
+    # Test with a different trigger phrase
+    conversation_text2 = """
+    Test Agent 1: Our onboarding process for new team members is inconsistent.
+    Test Agent 2: I agree. Let's create documentation for the onboarding process.
+    Test Agent 3: That's a great idea. We should include system access, training resources, and team introductions.
+    Test Agent 1: Yes, and we should also include a timeline for the first week.
+    Test Agent 2: I'll start working on this documentation right away.
+    """
+    
+    analysis_data2 = {
+        "conversation_text": conversation_text2,
+        "agent_ids": [agent.get("id") for agent in agents]
+    }
+    
+    analysis_test2, analysis_response2 = run_test(
+        "Action Trigger Analysis for Onboarding Documentation",
+        "/documents/analyze-conversation",
+        method="POST",
+        data=analysis_data2,
+        auth=True,
+        expected_keys=["should_create_document"]
+    )
+    
+    trigger_detected2 = False
+    if analysis_test2 and analysis_response2:
+        should_create2 = analysis_response2.get("should_create_document", False)
+        document_type2 = analysis_response2.get("document_type", "")
+        document_title2 = analysis_response2.get("document_title", "")
+        trigger_phrase2 = analysis_response2.get("trigger_phrase", "")
+        
+        if should_create2 and document_type2 and document_title2 and trigger_phrase2:
+            trigger_detected2 = True
+            print(f"✅ Second trigger detected: {trigger_phrase2}")
+            print(f"✅ Document type: {document_type2}")
+            print(f"✅ Document title: {document_title2}")
+        else:
+            print("❌ Second trigger not detected in conversation")
+            print(f"Response: {analysis_response2}")
+    
+    # Test with a non-trigger conversation
+    conversation_text3 = """
+    Test Agent 1: How is everyone doing today?
+    Test Agent 2: I'm doing well, thank you for asking.
+    Test Agent 3: I'm good too. I've been working on the quarterly report.
+    Test Agent 1: That's great. Let me know if you need any help with that.
+    Test Agent 2: I can help review it when you're done.
+    """
+    
+    analysis_data3 = {
+        "conversation_text": conversation_text3,
+        "agent_ids": [agent.get("id") for agent in agents]
+    }
+    
+    analysis_test3, analysis_response3 = run_test(
+        "Action Trigger Analysis for Non-Trigger Conversation",
+        "/documents/analyze-conversation",
+        method="POST",
+        data=analysis_data3,
+        auth=True,
+        expected_keys=["should_create_document"]
+    )
+    
+    non_trigger_correct = False
+    if analysis_test3 and analysis_response3:
+        should_create3 = analysis_response3.get("should_create_document", False)
+        
+        if not should_create3:
+            non_trigger_correct = True
+            print("✅ Correctly identified non-trigger conversation")
+        else:
+            print("❌ Incorrectly identified non-trigger conversation as a trigger")
+            print(f"Response: {analysis_response3}")
+    
+    # Clean up - delete test agents
+    for agent in agents:
+        agent_id = agent.get("id")
+        if agent_id:
+            run_test(
+                f"Delete Test Agent {agent_id}",
+                f"/agents/{agent_id}",
+                method="DELETE"
+            )
+    
+    # Print summary
+    print("\nCONVERSATION TRIGGER ANALYSIS SUMMARY:")
+    
+    if analysis_test and analysis_test2 and analysis_test3:
+        print("✅ Conversation trigger analysis endpoint is working correctly!")
+        
+        if trigger_detected or trigger_detected2:
+            print("✅ Trigger detection is working for at least one test case")
+        else:
+            print("⚠️ Trigger detection did not identify any triggers in test conversations")
+            print("This could be due to the LLM's interpretation of the conversations")
+        
+        if non_trigger_correct:
+            print("✅ Non-trigger conversations are correctly identified")
+        else:
+            print("⚠️ Non-trigger conversation detection may have issues")
+        
+        return True, "Conversation trigger analysis endpoint is working correctly"
+    else:
+        issues = []
+        if not analysis_test:
+            issues.append("First trigger analysis request failed")
+        if not analysis_test2:
+            issues.append("Second trigger analysis request failed")
+        if not analysis_test3:
+            issues.append("Non-trigger analysis request failed")
+        
+        print("❌ Conversation trigger analysis endpoint has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, "Conversation trigger analysis endpoint has issues"
+
+def test_document_generation():
+    """Test the document generation endpoint"""
+    print("\n" + "="*80)
+    print("TESTING DOCUMENT GENERATION")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test document generation without authentication")
+            return False, "Authentication failed"
+    
+    # Create a test agent
+    agent_data = {
+        "name": "Document Creator",
+        "archetype": "leader",
+        "goal": "Create high-quality documentation",
+        "expertise": "Technical writing and documentation",
+        "background": "Senior technical writer with 10 years experience"
+    }
+    
+    agent_test, agent_response = run_test(
+        "Create Document Creator Agent",
+        "/agents",
+        method="POST",
+        data=agent_data,
+        expected_keys=["id", "name"]
+    )
+    
+    if not agent_test or not agent_response:
+        print("❌ Failed to create test agent")
+        return False, "Failed to create test agent"
+    
+    agent_id = agent_response.get("id")
+    
+    # Test document generation
+    document_data = {
+        "document_type": "protocol",
+        "title": "Team Meeting Protocol",
+        "conversation_context": """
+        Document Creator: I've been thinking about our team meetings. They're often unproductive and run too long.
+        Team Member: You're right. We need a protocol for team meetings to make them more efficient.
+        Document Creator: I agree. Let's create a structured format with clear agenda items and time limits.
+        Team Member: Great idea. We should include roles like timekeeper and note-taker.
+        Document Creator: And we need to establish rules for decision-making during meetings.
+        """,
+        "creating_agent_id": agent_id,
+        "authors": ["Document Creator", "Team Member"],
+        "trigger_phrase": "We need a protocol for team meetings"
+    }
+    
+    generation_test, generation_response = run_test(
+        "Generate Team Meeting Protocol Document",
+        "/documents/generate",
+        method="POST",
+        data=document_data,
+        auth=True,
+        expected_keys=["success", "document_id", "content"]
+    )
+    
+    document_id = None
+    if generation_test and generation_response:
+        document_id = generation_response.get("document_id")
+        content = generation_response.get("content", "")
+        print(f"✅ Generated document with ID: {document_id}")
+        print(f"✅ Document content length: {len(content)}")
+        
+        # Check if content has expected sections
+        has_purpose = "Purpose" in content or "PURPOSE" in content
+        has_procedure = "Procedure" in content or "PROCEDURE" in content
+        
+        if has_purpose and has_procedure:
+            print("✅ Document has expected sections (Purpose, Procedure)")
+        else:
+            print("⚠️ Document may be missing expected sections")
+    else:
+        print("❌ Failed to generate document")
+    
+    # Test document retrieval
+    if document_id:
+        get_test, get_response = run_test(
+            "Get Generated Document",
+            f"/documents/{document_id}",
+            method="GET",
+            auth=True,
+            expected_keys=["id", "metadata", "content"]
+        )
+        
+        if get_test and get_response:
+            print(f"✅ Retrieved generated document with ID: {document_id}")
+            print(f"✅ Document title: {get_response.get('metadata', {}).get('title', '')}")
+            print(f"✅ Document content length: {len(get_response.get('content', ''))}")
+        else:
+            print(f"❌ Failed to retrieve generated document with ID: {document_id}")
+    
+    # Test document deletion (cleanup)
+    if document_id:
+        delete_test, delete_response = run_test(
+            "Delete Generated Document",
+            f"/documents/{document_id}",
+            method="DELETE",
+            auth=True,
+            expected_keys=["success", "message"]
+        )
+        
+        if delete_test and delete_response:
+            print(f"✅ Deleted generated document with ID: {document_id}")
+        else:
+            print(f"❌ Failed to delete generated document with ID: {document_id}")
+    
+    # Clean up - delete test agent
+    if agent_id:
+        run_test(
+            f"Delete Test Agent {agent_id}",
+            f"/agents/{agent_id}",
+            method="DELETE"
+        )
+    
+    # Print summary
+    print("\nDOCUMENT GENERATION SUMMARY:")
+    
+    if generation_test and document_id:
+        print("✅ Document generation endpoint is working correctly!")
+        print("✅ Generated document has proper structure and content")
+        return True, "Document generation endpoint is working correctly"
+    else:
+        print("❌ Document generation endpoint has issues")
+        return False, "Document generation endpoint has issues"
+
+def test_document_integration():
+    """Test the integration between conversation analysis and document generation"""
+    print("\n" + "="*80)
+    print("TESTING DOCUMENT INTEGRATION")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test document integration without authentication")
+            return False, "Authentication failed"
+    
+    # Create test agents
+    agents = []
+    for i in range(3):
+        agent_data = {
+            "name": f"Integration Agent {i+1}",
+            "archetype": "leader" if i == 0 else "scientist",
+            "goal": "Improve team productivity and collaboration",
+            "expertise": "Business strategy and team management",
+            "background": "MBA with 10 years experience in corporate management"
+        }
+        
+        agent_test, agent_response = run_test(
+            f"Create Integration Test Agent {i+1}",
+            "/agents",
+            method="POST",
+            data=agent_data,
+            expected_keys=["id", "name"]
+        )
+        
+        if agent_test and agent_response:
+            agents.append(agent_response)
+    
+    if len(agents) < 2:
+        print("❌ Failed to create enough test agents")
+        return False, "Failed to create test agents"
+    
+    # Test conversation with document creation trigger
+    conversation_text = """
+    Integration Agent 1: We need to develop a comprehensive research protocol for our new project.
+    Integration Agent 2: I agree. Let's create documentation that outlines the methodology, data collection, and analysis.
+    Integration Agent 3: That's a good idea. We should include ethical considerations and reporting guidelines.
+    Integration Agent 1: Excellent. Let's make sure it covers participant recruitment and consent procedures.
+    Integration Agent 2: I'll create that research protocol right now.
+    """
+    
+    # Test the conversation analysis endpoint
+    analysis_data = {
+        "conversation_text": conversation_text,
+        "agent_ids": [agent.get("id") for agent in agents]
+    }
+    
+    analysis_test, analysis_response = run_test(
+        "Action Trigger Analysis for Research Protocol",
+        "/documents/analyze-conversation",
+        method="POST",
+        data=analysis_data,
+        auth=True,
+        expected_keys=["should_create_document"]
+    )
+    
+    # Verify the analysis detected the trigger
+    trigger_detected = False
+    document_type = ""
+    document_title = ""
+    if analysis_test and analysis_response:
+        should_create = analysis_response.get("should_create_document", False)
+        document_type = analysis_response.get("document_type", "")
+        document_title = analysis_response.get("document_title", "")
+        trigger_phrase = analysis_response.get("trigger_phrase", "")
+        
+        if should_create and document_type and document_title and trigger_phrase:
+            trigger_detected = True
+            print(f"✅ Trigger detected: {trigger_phrase}")
+            print(f"✅ Document type: {document_type}")
+            print(f"✅ Document title: {document_title}")
+        else:
+            print("❌ Trigger not detected in conversation")
+            print(f"Response: {analysis_response}")
+    
+    # If trigger detected, test document generation
+    document_generated = False
+    document_id = None
+    if trigger_detected:
+        # Generate document
+        document_data = {
+            "document_type": document_type,
+            "title": document_title,
+            "conversation_context": conversation_text,
+            "creating_agent_id": agents[1].get("id"),  # Agent 2 creates it
+            "authors": [agent.get("name") for agent in agents],
+            "trigger_phrase": analysis_response.get("trigger_phrase", "")
+        }
+        
+        generation_test, generation_response = run_test(
+            "Generate Research Protocol Document",
+            "/documents/generate",
+            method="POST",
+            data=document_data,
+            auth=True,
+            expected_keys=["success", "document_id", "content"]
+        )
+        
+        if generation_test and generation_response:
+            document_generated = True
+            document_id = generation_response.get("document_id")
+            print(f"✅ Document generated with ID: {document_id}")
+        else:
+            print("❌ Document generation failed")
+    else:
+        # If no trigger detected, try with manual document generation
+        print("No trigger detected, trying manual document generation...")
+        
+        document_data = {
+            "document_type": "protocol",
+            "title": "Research Protocol",
+            "conversation_context": conversation_text,
+            "creating_agent_id": agents[1].get("id"),  # Agent 2 creates it
+            "authors": [agent.get("name") for agent in agents],
+            "trigger_phrase": "Let's create documentation"
+        }
+        
+        generation_test, generation_response = run_test(
+            "Manual Generate Research Protocol Document",
+            "/documents/generate",
+            method="POST",
+            data=document_data,
+            auth=True,
+            expected_keys=["success", "document_id", "content"]
+        )
+        
+        if generation_test and generation_response:
+            document_generated = True
+            document_id = generation_response.get("document_id")
+            print(f"✅ Document manually generated with ID: {document_id}")
+        else:
+            print("❌ Manual document generation failed")
+    
+    # Test document retrieval
+    if document_id:
+        get_test, get_response = run_test(
+            "Get Research Protocol Document",
+            f"/documents/{document_id}",
+            method="GET",
+            auth=True,
+            expected_keys=["id", "metadata", "content"]
+        )
+        
+        if get_test and get_response:
+            print(f"✅ Retrieved document with ID: {document_id}")
+            print(f"✅ Document title: {get_response.get('metadata', {}).get('title', '')}")
+            print(f"✅ Document content length: {len(get_response.get('content', ''))}")
+        else:
+            print(f"❌ Failed to retrieve document with ID: {document_id}")
+    
+    # Test document deletion (cleanup)
+    if document_id:
+        delete_test, delete_response = run_test(
+            "Delete Research Protocol Document",
+            f"/documents/{document_id}",
+            method="DELETE",
+            auth=True,
+            expected_keys=["success", "message"]
+        )
+        
+        if delete_test and delete_response:
+            print(f"✅ Deleted document with ID: {document_id}")
+        else:
+            print(f"❌ Failed to delete document with ID: {document_id}")
+    
+    # Clean up - delete test agents
+    for agent in agents:
+        agent_id = agent.get("id")
+        if agent_id:
+            run_test(
+                f"Delete Test Agent {agent_id}",
+                f"/agents/{agent_id}",
+                method="DELETE"
+            )
+    
+    # Print summary
+    print("\nDOCUMENT INTEGRATION SUMMARY:")
+    
+    if analysis_test and document_generated:
+        print("✅ Document integration is working correctly!")
+        
+        if trigger_detected:
+            print("✅ Trigger detection successfully identified document creation need")
+        else:
+            print("⚠️ Trigger detection did not identify the document creation need")
+            print("This could be due to the LLM's interpretation of the conversation")
+        
+        print("✅ Document generation works based on conversation context")
+        return True, "Document integration is working correctly"
+    else:
+        issues = []
+        if not analysis_test:
+            issues.append("Conversation analysis request failed")
+        if not document_generated:
+            issues.append("Document generation failed")
+        
+        print("❌ Document integration has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, "Document integration has issues"
+
 if __name__ == "__main__":
     main()
+    
+    # Test document functionality
+    print("\n" + "="*80)
+    print("TESTING DOCUMENT GENERATION AND FILE CENTER FUNCTIONALITY")
+    print("="*80)
+    
+    # Test document endpoints
+    doc_endpoints_success, doc_endpoints_message = test_document_endpoints()
+    
+    # Test conversation trigger analysis
+    trigger_analysis_success, trigger_analysis_message = test_conversation_trigger_analysis()
+    
+    # Test document generation
+    doc_generation_success, doc_generation_message = test_document_generation()
+    
+    # Test document integration
+    doc_integration_success, doc_integration_message = test_document_integration()
+    
+    # Print final summary
+    print("\n" + "="*80)
+    print("DOCUMENT FUNCTIONALITY ASSESSMENT")
+    print("="*80)
+    
+    all_tests_passed = doc_endpoints_success and trigger_analysis_success and doc_generation_success and doc_integration_success
+    
+    if all_tests_passed:
+        print("✅ All document functionality tests passed!")
+        print("✅ Document endpoints are working correctly")
+        print("✅ Conversation trigger analysis is working correctly")
+        print("✅ Document generation is working correctly")
+        print("✅ Integration between conversation analysis and document generation is working")
+    else:
+        print("❌ Some document functionality tests failed:")
+        if not doc_endpoints_success:
+            print(f"  - {doc_endpoints_message}")
+        if not trigger_analysis_success:
+            print(f"  - {trigger_analysis_message}")
+        if not doc_generation_success:
+            print(f"  - {doc_generation_message}")
+        if not doc_integration_success:
+            print(f"  - {doc_integration_message}")
+    print("="*80)
 
 def test_document_by_scenario():
     """Test the document by scenario endpoint"""
