@@ -1294,7 +1294,8 @@ Make it immediately usable for medical professionals. Include specific details, 
             return template.format(
                 title=title,
                 agent_name=creating_agent.name,
-                scenario_details="[Template - Content generation failed]"
+                scenario_details="[Template - Content generation failed]",
+                category=document_type.title()
             )
 
 llm_manager = LLMManager()
