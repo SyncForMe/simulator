@@ -3702,35 +3702,207 @@ The team has voted to approve these changes. Create an updated version of the do
         logging.error(f"Error proposing document update: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to propose document update: {str(e)}")
 
-@api_router.get("/documents/for-agents")
-async def get_documents_for_agents(
+@api_router.post("/documents/{document_id}/review-suggestion")
+async def handle_improvement_suggestion(
+    document_id: str,
+    request: Dict[str, Any],
     current_user: User = Depends(get_current_user)
 ):
-    """Get simplified document list for agents to reference in conversations"""
+    """Handle creator's decision on document improvement suggestions"""
     try:
+        # Get the document
+        document = await db.documents.find_one({
+            "id": document_id,
+            "metadata.user_id": current_user.id
+        })
+        
+        if not document:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        suggestion_id = request.get("suggestion_id")
+        decision = request.get("decision")  # "accept" or "reject"
+        creator_agent_id = request.get("creator_agent_id")
+        
+        if not all([suggestion_id, decision, creator_agent_id]):
+            raise HTTPException(status_code=400, detail="Missing required fields")
+        
+        # Get the suggestion
+        suggestion = await db.document_suggestions.find_one({"id": suggestion_id})
+        if not suggestion:
+            raise HTTPException(status_code=404, detail="Suggestion not found")
+        
+        if decision == "accept":
+            # Get the creator agent
+            creator_agent_doc = await db.agents.find_one({"id": creator_agent_id})
+            if not creator_agent_doc:
+                raise HTTPException(status_code=404, detail="Creator agent not found")
+            
+            creator_agent = Agent(**creator_agent_doc)
+            
+            # Generate improved document content
+            improvement_context = f"""Original document content:
+{document['content']}
+
+Accepted improvement suggestion: {suggestion['suggestion']}
+
+Incorporate these improvements into the document while maintaining its overall structure and purpose."""
+            
+            improved_content = await llm_manager.generate_document_content(
+                document['metadata']['category'].lower(),
+                document['metadata']['title'],
+                improvement_context,
+                creator_agent
+            )
+            
+            # Update the document
+            updated_metadata = DocumentMetadata(**document['metadata'])
+            updated_metadata.updated_at = datetime.utcnow()
+            updated_metadata.status = "Updated"
+            
+            await db.documents.update_one(
+                {"id": document_id},
+                {
+                    "$set": {
+                        "content": improved_content,
+                        "metadata": updated_metadata.dict()
+                    }
+                }
+            )
+            
+            # Update suggestion status
+            await db.document_suggestions.update_one(
+                {"id": suggestion_id},
+                {"$set": {"status": "accepted"}}
+            )
+            
+            # Update creator's memory
+            creator_memory = f"I accepted improvement suggestions for '{document['metadata']['title']}' from {suggestion['suggesting_agent_name']} and updated the document accordingly."
+            current_memory = creator_agent.memory_summary or ""
+            updated_memory = f"{current_memory}\n\n[Document Update]: {creator_memory}".strip()
+            
+            await db.agents.update_one(
+                {"id": creator_agent_id},
+                {"$set": {"memory_summary": updated_memory}}
+            )
+            
+            return {
+                "success": True,
+                "message": "Document updated with accepted improvements",
+                "updated_content": improved_content
+            }
+        else:
+            # Reject the suggestion
+            await db.document_suggestions.update_one(
+                {"id": suggestion_id},
+                {"$set": {"status": "rejected"}}
+            )
+            
+            return {
+                "success": True,
+                "message": "Improvement suggestion rejected"
+            }
+    
+    except Exception as e:
+        logging.error(f"Error handling improvement suggestion: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to handle suggestion: {str(e)}")
+
+@api_router.get("/documents/{document_id}/suggestions")
+async def get_document_suggestions(
+    document_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get pending improvement suggestions for a document"""
+    try:
+        # Verify document ownership
+        document = await db.documents.find_one({
+            "id": document_id,
+            "metadata.user_id": current_user.id
+        })
+        
+        if not document:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        # Get suggestions
+        suggestions = await db.document_suggestions.find({
+            "document_id": document_id,
+            "status": "pending"
+        }).to_list(100)
+        
+        return suggestions
+    
+    except Exception as e:
+        logging.error(f"Error getting document suggestions: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get suggestions: {str(e)}")
+
+@api_router.get("/documents/by-scenario")
+async def get_documents_by_scenario(
+    current_user: User = Depends(get_current_user)
+):
+    """Get documents organized by scenario"""
+    try:
+        # Get all user documents
         docs = await db.documents.find({
             "metadata.user_id": current_user.id
-        }).sort("metadata.updated_at", -1).to_list(20)  # Last 20 documents
+        }).sort("metadata.created_at", -1).to_list(1000)
         
-        # Return simplified format for agent consumption
-        simplified_docs = []
+        # Get all scenarios from simulation state history or use document conversation context
+        scenarios = {}
+        
         for doc in docs:
-            simplified_docs.append({
+            # Try to get scenario from simulation state or conversation context
+            scenario_name = "Unknown Scenario"
+            
+            # Try to get scenario from conversation
+            if doc.get("conversation_context"):
+                # This is a simplified approach - in production, you might want to store scenario directly
+                scenario_name = doc.get("metadata", {}).get("simulation_id", "Unknown Scenario")
+            
+            # Try to extract scenario from description or use a default
+            if "scenario" in doc.get("metadata", {}).get("description", "").lower():
+                # Extract scenario information if available in description
+                pass
+            
+            # For now, group by conversation round or use a general scenario
+            conversation_round = doc.get("metadata", {}).get("conversation_round", 0)
+            if conversation_round > 0:
+                scenario_name = f"Simulation Day {(conversation_round // 3) + 1}"
+            else:
+                scenario_name = "General Documents"
+            
+            if scenario_name not in scenarios:
+                scenarios[scenario_name] = []
+            
+            # Create simplified document info
+            doc_info = {
                 "id": doc["id"],
                 "title": doc["metadata"]["title"],
                 "category": doc["metadata"]["category"],
                 "description": doc["metadata"]["description"],
                 "authors": doc["metadata"]["authors"],
-                "keywords": doc["metadata"]["keywords"],
                 "created_at": doc["metadata"]["created_at"],
-                "summary": doc["content"][:300] + "..." if len(doc["content"]) > 300 else doc["content"]
+                "filename": doc["metadata"]["filename"],
+                "preview": doc["content"][:200] + "..." if len(doc["content"]) > 200 else doc["content"]
+            }
+            
+            scenarios[scenario_name].append(doc_info)
+        
+        # Convert to list format for frontend
+        scenario_list = []
+        for scenario_name, documents in scenarios.items():
+            scenario_list.append({
+                "scenario": scenario_name,
+                "document_count": len(documents),
+                "documents": documents
             })
         
-        return simplified_docs
+        # Sort scenarios by document count (most active first)
+        scenario_list.sort(key=lambda x: x["document_count"], reverse=True)
+        
+        return scenario_list
         
     except Exception as e:
-        logging.error(f"Error getting documents for agents: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to get documents: {str(e)}")
+        logging.error(f"Error getting documents by scenario: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get documents by scenario: {str(e)}")
 
 # Include the router in the main app
 app.include_router(api_router)
