@@ -264,9 +264,9 @@ backend:
     implemented: true
     working: true
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -274,6 +274,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Tested the agent voting system for document creation and updates. Created multiple agents with different personalities and tested both approval and rejection scenarios. The system correctly implements the voting mechanism, allowing agents to vote on document creation and updates. In rejection scenarios, documents are not created or updated when agents disagree. The voting results include individual agent votes with reasons and a summary of the voting outcome."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the agent voting system with approval and rejection scenarios. The system correctly rejected document creation in the rejection scenario where agents disagreed. However, the system failed to detect document creation triggers in the approval scenario, even though there was clear consensus among agents. The voting mechanism itself appears to be working, but the trigger detection component is not functioning properly."
 
   - task: "Document Awareness in Conversations"
     implemented: true
