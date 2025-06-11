@@ -512,6 +512,24 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
   const [isSupported, setIsSupported] = useState(false);
   const [speechRecognition, setSpeechRecognition] = useState(null);
   const [voiceError, setVoiceError] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState('en-US');
+  
+  // Available languages for voice recognition
+  const voiceLanguages = [
+    { code: 'en-US', name: 'English (US)' },
+    { code: 'en-GB', name: 'English (UK)' },
+    { code: 'es-ES', name: 'Spanish' },
+    { code: 'fr-FR', name: 'French' },
+    { code: 'de-DE', name: 'German' },
+    { code: 'it-IT', name: 'Italian' },
+    { code: 'pt-BR', name: 'Portuguese' },
+    { code: 'ru-RU', name: 'Russian' },
+    { code: 'ja-JP', name: 'Japanese' },
+    { code: 'ko-KR', name: 'Korean' },
+    { code: 'zh-CN', name: 'Chinese (Simplified)' },
+    { code: 'hi-IN', name: 'Hindi' },
+    { code: 'ar-SA', name: 'Arabic' }
+  ];
 
   // Initialize speech recognition on component mount
   useEffect(() => {
@@ -522,9 +540,10 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
       setIsSupported(true);
       
       const recognition = new SpeechRecognition();
-      recognition.continuous = true;
+      recognition.continuous = false; // Changed to false for better control
       recognition.interimResults = true;
-      recognition.lang = 'en-US'; // Default to English, can be made configurable
+      recognition.maxAlternatives = 1;
+      recognition.lang = selectedLanguage;
       
       recognition.onstart = () => {
         setIsListening(true);
@@ -532,17 +551,22 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
       };
       
       recognition.onresult = (event) => {
-        let transcript = '';
+        let finalTranscript = '';
+        let interimTranscript = '';
+        
         for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
-            transcript += event.results[i][0].transcript + ' ';
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
           }
         }
         
-        if (transcript.trim()) {
+        if (finalTranscript.trim()) {
           // Append to existing scenario text or replace if empty
           setScenario(prev => {
-            const newText = prev ? prev + ' ' + transcript.trim() : transcript.trim();
+            const newText = prev ? prev + ' ' + finalTranscript.trim() : finalTranscript.trim();
             return newText;
           });
         }
@@ -554,16 +578,25 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
         
         switch (event.error) {
           case 'not-allowed':
-            setVoiceError("Microphone access denied. Please allow microphone access and try again.");
+            setVoiceError("Microphone access denied. Please allow microphone access in your browser settings.");
             break;
           case 'no-speech':
-            setVoiceError("No speech detected. Please try speaking again.");
+            setVoiceError("No speech detected. Please speak clearly and try again.");
+            break;
+          case 'audio-capture':
+            setVoiceError("No microphone found. Please check your microphone connection.");
             break;
           case 'network':
-            setVoiceError("Network error. Please check your connection and try again.");
+            setVoiceError("Network error. Please check your internet connection.");
+            break;
+          case 'aborted':
+            setVoiceError("Speech recognition was stopped.");
+            break;
+          case 'language-not-supported':
+            setVoiceError(`Language "${selectedLanguage}" is not supported. Please try a different language.`);
             break;
           default:
-            setVoiceError("Voice recognition error. Please try again.");
+            setVoiceError(`Voice recognition error: ${event.error}. Please try again.`);
         }
       };
       
@@ -575,12 +608,18 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
     } else {
       setIsSupported(false);
     }
-  }, []);
+  }, [selectedLanguage]);
 
   const startListening = () => {
     if (speechRecognition && !isListening) {
       setVoiceError("");
-      speechRecognition.start();
+      try {
+        speechRecognition.lang = selectedLanguage;
+        speechRecognition.start();
+      } catch (error) {
+        setVoiceError("Failed to start voice recognition. Please try again.");
+        console.error('Error starting speech recognition:', error);
+      }
     }
   };
 
