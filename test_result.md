@@ -677,6 +677,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "The voice input transcription and summarization endpoint is implemented correctly. The endpoint accepts audio files, field_type parameter (goal, expertise, background, memory, scenario), and language parameter. The endpoint requires authentication. While we couldn't test with real audio files due to environment limitations (missing ffprobe dependency), the endpoint structure and parameter handling are correct. The endpoint is designed to use OpenAI Whisper for transcription and then apply field-specific AI summarization based on the field_type."
+        -working: false
+        -agent: "testing"
+        -comment: "Retested the voice input transcription and summarization endpoint. The endpoint is correctly implemented and accepts the required parameters (audio file, field_type, language), but it returns a 500 error with the message 'Transcription failed: Decoding failed. ffmpeg returned error code: 1'. This suggests an issue with the ffmpeg configuration or the audio file format handling. While ffmpeg is installed (version 5.1.6-0+deb12u1), there might be issues with how it's being used to process the audio files. The OpenAI API key is correctly configured in the environment variables. The endpoint structure is correct, but the actual transcription functionality is not working properly."
 
   - task: "Croatian Language Support in Voice Input"
     implemented: true
