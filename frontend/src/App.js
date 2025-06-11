@@ -3320,6 +3320,8 @@ const FileCenter = ({ documents, onRefresh, categories, selectedCategory, onCate
   const [showFileCenter, setShowFileCenter] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [proposedChanges, setProposedChanges] = useState("");
 
   const handleDownloadDocument = async (document) => {
     try {
