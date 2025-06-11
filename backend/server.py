@@ -4518,6 +4518,105 @@ async def get_documents_by_scenario(
         logging.error(f"Error getting documents by scenario: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get documents by scenario: {str(e)}")
 
+# Whisper Speech-to-Text API Endpoints
+@api_router.post("/speech/transcribe")
+async def transcribe_speech(
+    audio: UploadFile = File(...),
+    language: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Transcribe audio to text using OpenAI Whisper"""
+    try:
+        # Validate file type
+        if not audio.content_type or not audio.content_type.startswith(('audio/', 'video/')):
+            raise HTTPException(status_code=400, detail="File must be audio or video format")
+        
+        # Read audio file
+        audio_data = await audio.read()
+        
+        if len(audio_data) == 0:
+            raise HTTPException(status_code=400, detail="Audio file is empty")
+        
+        # Transcribe using Whisper
+        result = await whisper_service.transcribe_audio(
+            audio_data, 
+            language=language,
+            filename=audio.filename or "audio.webm"
+        )
+        
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error in speech transcription: {e}")
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
+
+@api_router.get("/speech/languages")
+async def get_supported_languages():
+    """Get list of supported languages for speech recognition"""
+    try:
+        languages = whisper_service.get_supported_languages()
+        return {
+            "languages": languages,
+            "total_count": len(languages),
+            "croatian_supported": any(lang["code"] == "hr" for lang in languages)
+        }
+    except Exception as e:
+        logging.error(f"Error getting supported languages: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get supported languages: {str(e)}")
+
+@api_router.post("/speech/transcribe-scenario")
+async def transcribe_scenario_audio(
+    audio: UploadFile = File(...),
+    language: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Transcribe audio specifically for scenario creation with enhanced processing"""
+    try:
+        # Validate file type
+        if not audio.content_type or not audio.content_type.startswith(('audio/', 'video/')):
+            raise HTTPException(status_code=400, detail="File must be audio or video format")
+        
+        # Read audio file
+        audio_data = await audio.read()
+        
+        if len(audio_data) == 0:
+            raise HTTPException(status_code=400, detail="Audio file is empty")
+        
+        # Transcribe using Whisper
+        result = await whisper_service.transcribe_audio(
+            audio_data, 
+            language=language,
+            filename=audio.filename or "scenario_audio.webm"
+        )
+        
+        # Enhanced response for scenario creation
+        response = {
+            "success": result["success"],
+            "text": result["text"],
+            "language_detected": result.get("language", "unknown"),
+            "duration_seconds": result.get("duration", 0),
+            "word_count": len(result["text"].split()) if result["text"] else 0,
+            "confidence_score": result.get("confidence"),
+            "processing_info": {
+                "model": "whisper-1",
+                "timestamp": datetime.utcnow().isoformat(),
+                "user_id": current_user.id
+            }
+        }
+        
+        # Log successful transcription
+        logging.info(f"Scenario transcribed successfully for user {current_user.id}: {len(result['text'])} characters")
+        
+        return response
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error in scenario transcription: {e}")
+        raise HTTPException(status_code=500, detail=f"Scenario transcription failed: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
