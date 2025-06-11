@@ -3273,13 +3273,24 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
                 
                 <div>
                   <label className="block text-sm font-medium mb-1">Expertise</label>
-                  <input
-                    type="text"
-                    value={formData.expertise}
-                    onChange={(e) => setFormData(prev => ({...prev, expertise: e.target.value}))}
-                    className="w-full p-2 border rounded"
-                    placeholder="e.g., Physics, Electrical Engineering"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.expertise}
+                      onChange={(e) => setFormData(prev => ({...prev, expertise: e.target.value}))}
+                      className="w-full p-2 pr-10 border rounded"
+                      placeholder="e.g., Machine Learning, Psychology (voice input available)"
+                      disabled={loading}
+                    />
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                      <VoiceInput
+                        onTextUpdate={(text) => setFormData(prev => ({...prev, expertise: text}))}
+                        fieldType="expertise"
+                        size="small"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 <div>
