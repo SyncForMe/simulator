@@ -4002,28 +4002,6 @@ function App() {
     }
   };
 
-  // File Center data fetching
-  const fetchDocuments = async () => {
-    if (!token) return; // Only fetch documents if authenticated
-    
-    try {
-      const params = new URLSearchParams();
-      if (selectedDocumentCategory) {
-        params.append('category', selectedDocumentCategory);
-      }
-      if (documentSearchTerm) {
-        params.append('search', documentSearchTerm);
-      }
-      
-      const response = await axios.get(`${API}/documents?${params.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setDocuments(response.data);
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-    }
-  };
-
   const refreshAllData = async () => {
     setLoading(true);
     await Promise.all([
