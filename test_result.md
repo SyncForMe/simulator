@@ -244,11 +244,11 @@ backend:
 
   - task: "Universal Topic Support"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -256,6 +256,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Tested the system with non-medical conversations across various topics including business strategy, software development, education planning, and research. The action trigger analysis endpoint works correctly with all tested topics, confirming that the system supports universal topics beyond medical contexts. The system successfully processes conversations from different domains and correctly analyzes them for potential document creation triggers."
+        -working: false
+        -agent: "testing"
+        -comment: "Retested the universal topic support with business strategy, software development, and education planning conversations. The action trigger analysis endpoint is working but did not detect document creation triggers in any of the tested domains. The system is not demonstrating universal topic support as expected. The analyze-conversation endpoint returns a response but always with should_create_document set to false, even when clear trigger phrases are present in the conversations."
 
   - task: "Agent Voting System"
     implemented: true
