@@ -797,6 +797,292 @@ Previous memory: {agent.memory_summary or 'None'}"""
         except Exception as e:
             logging.error(f"Error updating memory for {agent.name}: {e}")
 
+    async def analyze_conversation_for_action_triggers(self, conversation_text: str, agents: List[Agent]) -> ActionTriggerResult:
+        """Analyze conversation to detect if agents should create documents"""
+        if not await self.can_make_request():
+            return ActionTriggerResult(should_create_document=False)
+        
+        # Action trigger phrases to detect
+        trigger_phrases = [
+            "we need a protocol for",
+            "let's create a checklist",
+            "we should develop training materials",
+            "let's draft a proposal",
+            "we need a reference guide",
+            "someone should research and document",
+            "we should create documentation",
+            "let's develop a procedure",
+            "we need guidelines for",
+            "someone should write up",
+            "we should document this",
+            "let's create a template"
+        ]
+        
+        # Check if any trigger phrases are present
+        conv_lower = conversation_text.lower()
+        found_triggers = [trigger for trigger in trigger_phrases if trigger in conv_lower]
+        
+        if not found_triggers:
+            return ActionTriggerResult(should_create_document=False)
+        
+        # Use LLM to determine if this is a genuine creation trigger
+        system_message = """You are an expert at detecting when medical professionals in a conversation have agreed to create documentation or procedures.
+
+Analyze the conversation and determine:
+1. Is there genuine consensus to CREATE something specific?
+2. What type of document should be created? (protocol/training/research)
+3. What should the document title be?
+4. Which specific phrase triggered this?
+
+Only respond YES if there's clear agreement to create something concrete, not just discussion about what might be needed."""
+
+        try:
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"action_analysis_{datetime.now().timestamp()}",
+                system_message=system_message
+            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(200)
+            
+            prompt = f"""Conversation:\n{conversation_text}\n\n
+Should the agents create a document? If yes:
+- Document type: protocol/training/research
+- Title: [specific title based on conversation]
+- Trigger phrase: [exact phrase that triggered this]
+- Reasoning: [why this needs immediate creation]
+
+Format: YES|protocol|Emergency Cardiac Protocol|we need a protocol for|The team agreed to create..."""
+
+            user_message = UserMessage(text=prompt)
+            response = await chat.send_message(user_message)
+            await self.increment_usage()
+            
+            # Parse response
+            if response.startswith("YES|"):
+                parts = response.split("|")
+                if len(parts) >= 5:
+                    return ActionTriggerResult(
+                        should_create_document=True,
+                        document_type=parts[1].strip(),
+                        document_title=parts[2].strip(),
+                        trigger_phrase=parts[3].strip(),
+                        reasoning=parts[4].strip()
+                    )
+            
+            return ActionTriggerResult(should_create_document=False)
+            
+        except Exception as e:
+            logging.error(f"Error analyzing conversation for action triggers: {e}")
+            return ActionTriggerResult(should_create_document=False)
+
+    async def generate_document_content(self, document_type: str, title: str, conversation_context: str, creating_agent: Agent) -> str:
+        """Generate structured document content based on type and context"""
+        if not await self.can_make_request():
+            return f"# {title}\n\n*Document generation failed - API limit reached*"
+        
+        # Document templates based on type
+        templates = {
+            "protocol": """# {title}
+
+## Purpose
+[Brief description of when and why to use this protocol]
+
+## Scope
+[Specific situations where this protocol applies]
+
+## Equipment Required
+- [List all necessary equipment and supplies]
+- [Include backup alternatives where applicable]
+
+## Procedure
+1. **Initial Assessment** ([timeframe])
+   - [Specific steps with clear criteria]
+   - [Decision points and alternatives]
+
+2. **Primary Intervention** ([timeframe])
+   - [Step-by-step instructions]
+   - [Include safety considerations]
+
+3. **Monitoring & Documentation** ([timeframe])
+   - [What to monitor and how often]
+   - [Required documentation]
+
+## Risk Mitigation
+- **Safety Measures**: [Critical safety protocols]
+- **Common Complications**: [What to watch for]
+- **When to Escalate**: [Clear escalation criteria]
+
+## Quality Assurance
+- [Success criteria and metrics]
+- [Review and update schedule]
+
+---
+*Created by: {agent_name} based on team discussion*
+*Category: Clinical Protocols*""",
+
+            "training": """# {title}
+
+## Learning Objectives
+By the end of this training, participants will be able to:
+- [Specific, measurable learning outcomes]
+- [Skills and knowledge to be acquired]
+
+## Target Audience
+[Who should complete this training]
+
+## Prerequisites
+[Required knowledge or certifications]
+
+## Scenario Description
+{scenario_details}
+
+## Key Teaching Points
+1. **Critical Concepts**
+   - [Core principles participants must understand]
+   - [Why these concepts matter in real situations]
+
+2. **Common Mistakes to Avoid**
+   - [Frequent errors seen in practice]
+   - [How to prevent these mistakes]
+
+3. **Best Practices**
+   - [Evidence-based approaches]
+   - [Tips from experienced practitioners]
+
+## Simulation Setup
+**Equipment Needed:**
+- [Training equipment and supplies]
+- [Technology requirements]
+
+**Environment:**
+- [Physical space requirements]
+- [Setup instructions]
+
+## Assessment Criteria
+**Performance Indicators:**
+- [How to measure competency]
+- [Pass/fail criteria]
+
+**Evaluation Methods:**
+- [Practical assessment]
+- [Knowledge verification]
+
+## Resources for Further Learning
+- [Additional references]
+- [Continuing education opportunities]
+
+---
+*Created by: {agent_name} for professional development*
+*Category: Educational Materials*""",
+
+            "research": """# {title}
+
+## Executive Summary
+[Key findings and recommendations in 2-3 sentences]
+
+## Background
+[Context and rationale for this research]
+
+## Current Evidence
+### Literature Review Findings
+- [Summary of relevant studies and guidelines]
+- [Strength of evidence levels]
+
+### Gap Analysis
+- [What we know vs. what we need to know]
+- [Areas requiring further investigation]
+
+## Recommendations
+### Evidence-Based Conclusions
+1. **Primary Recommendation**
+   - [Main actionable conclusion]
+   - [Supporting evidence]
+
+2. **Secondary Recommendations**
+   - [Additional evidence-based suggestions]
+   - [Implementation considerations]
+
+### Implementation Strategy
+**Immediate Actions (0-30 days):**
+- [Steps that can be taken right away]
+
+**Short-term Goals (1-6 months):**
+- [Medium-term implementation steps]
+
+**Long-term Objectives (6+ months):**
+- [Strategic long-term changes]
+
+## Resource Requirements
+- **Personnel**: [Staffing needs]
+- **Equipment**: [Material requirements]
+- **Training**: [Educational needs]
+- **Budget**: [Financial considerations]
+
+## Quality Metrics
+- [How to measure success]
+- [Key performance indicators]
+
+## References
+[Relevant literature and guidelines cited]
+
+---
+*Created by: {agent_name} based on evidence review*
+*Category: Evidence Reviews*"""
+        }
+        
+        # Get appropriate template
+        template = templates.get(document_type, templates["protocol"])
+        
+        # Generate content using LLM
+        system_message = f"""You are {creating_agent.name}, a {AGENT_ARCHETYPES[creating_agent.archetype]['description']}.
+
+Your expertise: {creating_agent.expertise}
+Your background: {creating_agent.background}
+
+You are creating a {document_type} titled "{title}" based on the team's discussion. 
+
+Create professional, actionable content that can be immediately implemented. Use your medical expertise to ensure accuracy and practicality. Include specific timeframes, measurements, and criteria where appropriate."""
+
+        try:
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"document_creation_{creating_agent.id}_{datetime.now().timestamp()}",
+                system_message=system_message
+            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(800)
+            
+            prompt = f"""Based on this conversation context:
+{conversation_context}
+
+Create the {document_type} content for "{title}". Use this template structure but fill it with specific, actionable content based on the conversation:
+
+{template}
+
+Make it immediately usable for medical professionals. Include specific details, timeframes, and practical guidance."""
+
+            user_message = UserMessage(text=prompt)
+            response = await chat.send_message(user_message)
+            await self.increment_usage()
+            
+            # Format the response using the template
+            formatted_content = template.format(
+                title=title,
+                agent_name=creating_agent.name,
+                scenario_details="[Based on team discussion and expertise]"
+            )
+            
+            # Replace template placeholders with LLM-generated content
+            if response and len(response.strip()) > 100:
+                return response.strip()
+            else:
+                return formatted_content
+                
+        except Exception as e:
+            logging.error(f"Error generating document content: {e}")
+            return template.format(
+                title=title,
+                agent_name=creating_agent.name,
+                scenario_details="[Template - Content generation failed]"
+            )
+
 llm_manager = LLMManager()
 
 # Authentication Functions
