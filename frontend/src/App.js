@@ -35,6 +35,27 @@ const VoiceInput = ({
     large: "w-10 h-10 text-base"
   };
 
+// Enhanced VoiceInput Component for any text field
+const VoiceInput = ({ 
+  onTextUpdate, 
+  fieldType = "general", 
+  language = "hr", 
+  disabled = false,
+  className = "",
+  size = "small" // "small", "medium", "large"
+}) => {
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [error, setError] = useState("");
+  const { token } = useAuth();
+
+  const sizeClasses = {
+    small: "w-6 h-6 text-xs",
+    medium: "w-8 h-8 text-sm", 
+    large: "w-10 h-10 text-base"
+  };
+
 // Animated Observer Logo Component
 const ObserverLogo = () => {
   const pupilControls = useAnimationControls();
