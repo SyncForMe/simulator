@@ -259,11 +259,11 @@ backend:
 
   - task: "Universal Topic Support"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
-    stuck_count: 2
+    stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -277,14 +277,17 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Conducted comprehensive testing of universal topic support with business strategy, software development, and education planning conversations. Created test agents with appropriate expertise in each domain and tested conversations containing clear trigger phrases like 'we need a protocol for', 'let's create documentation', and 'we should develop'. The /api/documents/analyze-conversation endpoint is functioning but consistently returns should_create_document=false for all non-medical domains. The trigger detection logic appears to be biased toward medical contexts and fails to recognize action triggers in other domains."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested universal topic support after the trigger phrase enhancements. The system now correctly detects action triggers in non-medical domains including business strategy, software development, and education planning. Tested with conversations containing phrases like 'we need a protocol for team meetings', 'I'll create documentation for onboarding', and 'let's put together a training manual'. All were correctly identified as document creation triggers, confirming that the system now properly supports universal topics beyond medical contexts."
 
   - task: "Agent Voting System"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
-    stuck_count: 2
+    stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -298,6 +301,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Conducted comprehensive testing of the agent voting system with four agents having different personalities and goals. Created approval and rejection scenarios with clear trigger phrases. The system correctly handles the rejection scenario, but fails to detect triggers in the approval scenario. The voting mechanism appears to be implemented, but the trigger detection logic is not working properly, preventing the system from creating documents even when agents agree. This issue is related to the universal topic support problem, as the system fails to recognize action triggers in non-medical contexts."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the agent voting system after the trigger phrase enhancements. The system now correctly detects action triggers in the approval scenario and proceeds with the voting process. The voting mechanism works as expected, with agents voting based on their personalities and goals. When a majority of agents approve, the document is created; when they reject, no document is created. The enhanced trigger detection has resolved the previous issues with the voting system."
 
   - task: "Document Awareness in Conversations"
     implemented: true
