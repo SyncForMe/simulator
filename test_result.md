@@ -298,11 +298,11 @@ backend:
 
   - task: "Document Update Workflow"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -310,6 +310,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Tested the document update workflow by creating a test document and proposing updates to it. The POST /api/documents/{id}/propose-update endpoint works correctly for rejection scenarios, with agents voting on the proposed changes and rejecting inappropriate updates. However, there is an issue with the approval scenario, which returns a 500 error with the message 'Failed to propose document update: 'category''. This suggests a potential issue with the document category field in the update process. Despite this issue, the basic voting mechanism for document updates is functioning correctly."
+        -working: false
+        -agent: "testing"
+        -comment: "Attempted to test the document update workflow but encountered issues with document creation. The POST /api/documents endpoint returns a 405 Method Not Allowed error, preventing the creation of test documents. Without the ability to create documents, it's not possible to test the update workflow. The document update feature cannot be verified due to this API endpoint issue."
 
   - task: "API Endpoints"
     implemented: true
