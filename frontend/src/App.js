@@ -2044,14 +2044,24 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                 
                 <div>
                   <label className="block text-sm font-medium mb-1">Background</label>
-                  <textarea
-                    value={formData.background}
-                    onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
-                    className="w-full p-2 border rounded"
-                    rows="3"
-                    placeholder="Professional background and experience"
-                    disabled={loading}
-                  />
+                  <div className="relative">
+                    <textarea
+                      value={formData.background}
+                      onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
+                      className="w-full p-2 pr-10 border rounded"
+                      rows="3"
+                      placeholder="Professional background and experience (voice input available)"
+                      disabled={loading}
+                    />
+                    <div className="absolute right-2 top-2">
+                      <VoiceInput
+                        onTextUpdate={(text) => setFormData(prev => ({...prev, background: text}))}
+                        fieldType="background"
+                        size="small"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
