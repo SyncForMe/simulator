@@ -330,7 +330,7 @@ backend:
     implemented: true
     working: false
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: true
     status_history:
@@ -343,6 +343,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Comprehensive testing of all API endpoints revealed significant issues. The document-related endpoints are not functioning properly: GET /api/documents/categories returns a 404 error, POST /api/documents returns a 405 Method Not Allowed error, GET /api/documents/search returns a 404 error, GET /api/documents/category/{category} returns a 404 error, and POST /api/documents/generate returns a 500 error. The only endpoint that returns a 200 response is POST /api/documents/analyze-conversation, but it never detects document creation triggers even with clear trigger phrases in the conversations. These issues prevent the proper functioning of the enhanced Action-Oriented Agent Behavior System."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of all document-related API endpoints. Found that several endpoints are not working as expected: GET /api/documents/categories returns a 404 error, POST /api/documents returns a 405 Method Not Allowed error (the correct endpoint is POST /api/documents/create), GET /api/documents/search returns a 404 error, GET /api/documents/category/{category} returns a 404 error, and POST /api/documents/generate returns a 500 error when used with certain parameters. The POST /api/documents/analyze-conversation endpoint works but never detects document creation triggers even with clear trigger phrases. The GET /api/documents and GET /api/documents/{id} endpoints work correctly, as does POST /api/documents/create. These issues significantly impact the functionality of the document generation and File Center features."
 
 frontend:
   - task: "Animated Observer Logo"
