@@ -700,7 +700,28 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
 
   return (
     <div className="scenario-input bg-white rounded-lg shadow-md p-4 mb-4">
-      <h3 className="text-lg font-bold mb-3">🎭 Custom Scenario</h3>
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-lg font-bold">🎭 Custom Scenario</h3>
+        
+        {/* Language Selector for Voice Input */}
+        {isSupported && (
+          <div className="flex items-center space-x-2">
+            <label className="text-sm text-gray-600">Voice Language:</label>
+            <select
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+              disabled={isListening || loading || justSubmitted}
+              className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              {voiceLanguages.map(lang => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
       
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -709,8 +730,11 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
               value={scenario}
               onChange={(e) => setScenario(e.target.value)}
               placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.') You can type or use voice input!"
-              className={`w-full p-3 border rounded-lg resize-none pr-20 ${justSubmitted ? 'bg-green-50 border-green-300' : ''} ${isListening ? 'bg-blue-50 border-blue-300' : ''}`}
-              rows="3"
+              className={`w-full p-3 border rounded-lg resize-none pr-16 ${
+                justSubmitted ? 'bg-green-50 border-green-300' : 
+                isListening ? 'bg-blue-50 border-blue-300' : ''
+              }`}
+              rows="4"
               disabled={loading || justSubmitted || randomLoading}
             />
             
@@ -723,19 +747,21 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                       type="button"
                       onClick={startListening}
                       disabled={loading || justSubmitted || randomLoading}
-                      className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white p-2 rounded-lg transition-colors text-xs"
-                      title="Start voice input"
+                      className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-2 py-1 rounded-lg transition-colors text-xs flex items-center space-x-1"
+                      title={`Start voice input (${voiceLanguages.find(l => l.code === selectedLanguage)?.name})`}
                     >
-                      🎤
+                      <span>🎤</span>
+                      <span className="text-xs">Speak</span>
                     </button>
                   ) : (
                     <button
                       type="button"
                       onClick={stopListening}
-                      className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors text-xs animate-pulse"
+                      className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded-lg transition-colors text-xs animate-pulse flex items-center space-x-1"
                       title="Stop voice input"
                     >
-                      ⏹️
+                      <span>⏹️</span>
+                      <span>Stop</span>
                     </button>
                   )}
                   
@@ -744,49 +770,82 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                       type="button"
                       onClick={clearScenario}
                       disabled={loading || justSubmitted || randomLoading || isListening}
-                      className="bg-gray-500 hover:bg-gray-600 disabled:opacity-50 text-white p-2 rounded-lg transition-colors text-xs"
+                      className="bg-gray-500 hover:bg-gray-600 disabled:opacity-50 text-white px-2 py-1 rounded-lg transition-colors text-xs"
                       title="Clear text"
                     >
-                      🗑️
+                      <span>🗑️</span>
                     </button>
                   )}
                 </>
               ) : (
-                <div className="text-xs text-gray-400 p-2" title="Voice input not supported in this browser">
-                  🎤❌
+                <div className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded" title="Voice input not supported in this browser">
+                  🎤❌ Not supported
                 </div>
               )}
             </div>
           </div>
           
-          {/* Status Messages */}
+          {/* Enhanced Status Messages */}
           {isListening && (
-            <div className="flex items-center space-x-2 mt-2 text-blue-600 text-sm">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+              <div className="flex items-center space-x-3">
+                <div className="flex space-x-1">
+                  <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
+                  <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                  <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                </div>
+                <div>
+                  <div className="text-blue-700 font-semibold text-sm">🎤 Listening...</div>
+                  <div className="text-blue-600 text-xs">
+                    Speak your scenario in {voiceLanguages.find(l => l.code === selectedLanguage)?.name}
+                  </div>
+                </div>
               </div>
-              <span>Listening... Speak your scenario</span>
             </div>
           )}
           
           {voiceError && (
-            <p className="text-xs text-red-600 mt-1">
-              ⚠️ {voiceError}
-            </p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+              <div className="flex items-start space-x-2">
+                <span className="text-red-600 text-sm">⚠️</span>
+                <div>
+                  <div className="text-red-700 font-semibold text-sm">Voice Input Error</div>
+                  <div className="text-red-600 text-xs">{voiceError}</div>
+                </div>
+              </div>
+            </div>
           )}
           
           {justSubmitted && (
-            <p className="text-xs text-green-600 mt-1">
-              ✅ Scenario applied! Text will clear in a moment...
-            </p>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-2 mt-2">
+              <p className="text-green-700 text-sm flex items-center space-x-2">
+                <span>✅</span>
+                <span>Scenario applied successfully! Text will clear in a moment...</span>
+              </p>
+            </div>
           )}
           
-          {isSupported && !isListening && !voiceError && (
-            <p className="text-xs text-gray-500 mt-1">
-              💡 Tip: Click the microphone button to use voice input, or type your scenario
-            </p>
+          {isSupported && !isListening && !voiceError && !justSubmitted && (
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 mt-2">
+              <p className="text-gray-600 text-xs flex items-center space-x-2">
+                <span>💡</span>
+                <span>
+                  Tip: Click "Speak" to use voice input in {voiceLanguages.find(l => l.code === selectedLanguage)?.name}, 
+                  or type your scenario manually
+                </span>
+              </p>
+            </div>
+          )}
+          
+          {!isSupported && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 mt-2">
+              <p className="text-yellow-700 text-xs flex items-center space-x-2">
+                <span>ℹ️</span>
+                <span>
+                  Voice input is not supported in this browser. Please use Chrome, Edge, or Safari for voice features.
+                </span>
+              </p>
+            </div>
           )}
         </div>
         
@@ -794,7 +853,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
           <button
             type="submit"
             disabled={loading || !scenario.trim() || justSubmitted || randomLoading || isListening}
-            className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+            className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50 transition-colors"
           >
             {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Set New Scenario"}
           </button>
@@ -805,7 +864,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
             disabled={loading || justSubmitted || randomLoading || isListening}
             className="w-full bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 disabled:opacity-50 transition-colors"
           >
-            {randomLoading ? "Generating & Applying..." : "Random Scenario"}
+            {randomLoading ? "Generating & Applying..." : "🎲 Random Scenario"}
           </button>
         </div>
       </form>
