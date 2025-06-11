@@ -4855,7 +4855,7 @@ function App() {
     setEditingAgent(agent);
   };
 
-  const handleSaveAgent = async (agentId, agentData) => {
+  const handleUpdateAgent = async (agentId, agentData) => {
     try {
       await axios.put(`${API}/agents/${agentId}`, agentData);
       await fetchAgents();
