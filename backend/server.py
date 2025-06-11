@@ -4100,6 +4100,20 @@ async def get_documents(
         logging.error(f"Error getting documents: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get documents: {str(e)}")
 
+@api_router.get("/documents/categories")
+async def get_document_categories():
+    """Get available document categories"""
+    return {
+        "categories": [
+            "Protocol",
+            "Training", 
+            "Research",
+            "Equipment",
+            "Budget",
+            "Reference"
+        ]
+    }
+
 @api_router.get("/documents/{document_id}")
 async def get_document(
     document_id: str,
