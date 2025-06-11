@@ -3314,6 +3314,295 @@ const ConversationHistoryViewer = () => {
   );
 };
 
+// File Center Component for Action-Oriented Agent Behavior
+const FileCenter = ({ documents, onRefresh, categories, selectedCategory, onCategoryChange, searchTerm, onSearchChange }) => {
+  const { user, token } = useAuth();
+  const [showFileCenter, setShowFileCenter] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+
+  const handleDownloadDocument = async (document) => {
+    try {
+      // Convert markdown content to downloadable format
+      const blob = new Blob([document.content], { type: 'text/markdown' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = document.metadata.filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading document:', error);
+      alert('Failed to download document');
+    }
+  };
+
+  const handleViewDocument = async (document) => {
+    try {
+      const response = await axios.get(`${API}/documents/${document.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSelectedDocument(response.data);
+      setShowDocumentModal(true);
+    } catch (error) {
+      console.error('Error fetching document:', error);
+      alert('Failed to load document');
+    }
+  };
+
+  const handleDeleteDocument = async (documentId) => {
+    if (!window.confirm('Are you sure you want to delete this document?')) return;
+    
+    try {
+      await axios.delete(`${API}/documents/${documentId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Document deleted successfully!');
+      onRefresh();
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      alert('Failed to delete document');
+    }
+  };
+
+  const getCategoryColor = (category) => {
+    const colors = {
+      'Protocol': 'bg-red-100 text-red-800',
+      'Training': 'bg-blue-100 text-blue-800',
+      'Research': 'bg-green-100 text-green-800',
+      'Equipment': 'bg-yellow-100 text-yellow-800',
+      'Budget': 'bg-purple-100 text-purple-800',
+      'Reference': 'bg-gray-100 text-gray-800'
+    };
+    return colors[category] || 'bg-gray-100 text-gray-800';
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      'Draft': 'bg-yellow-100 text-yellow-800',
+      'Review': 'bg-blue-100 text-blue-800',
+      'Approved': 'bg-green-100 text-green-800',
+      'Implemented': 'bg-purple-100 text-purple-800'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (!user) {
+    return (
+      <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <p className="text-gray-600">Sign in to access the File Center</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="file-center bg-white rounded-lg shadow-md p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-bold flex items-center">
+            📁 File Center
+            <span className="ml-2 text-sm font-normal text-gray-500">
+              ({documents.length} documents)
+            </span>
+          </h3>
+          <div className="flex space-x-2">
+            <button
+              onClick={onRefresh}
+              className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded text-xs transition-colors"
+              title="Refresh documents"
+            >
+              🔄 Refresh
+            </button>
+            <button
+              onClick={() => setShowFileCenter(!showFileCenter)}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs transition-colors"
+            >
+              {showFileCenter ? '▼ Hide' : '▶ Show'}
+            </button>
+          </div>
+        </div>
+
+        {showFileCenter && (
+          <div>
+            {/* Search and Filter Controls */}
+            <div className="mb-4 space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Search documents..."
+                  value={searchTerm}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="flex-1 p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => onCategoryChange(e.target.value)}
+                  className="p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="">All Categories</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Documents List */}
+            <div className="space-y-2 max-h-96 overflow-y-auto">
+              {documents.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <p className="text-lg mb-2">📄</p>
+                  <p>No documents created yet</p>
+                  <p className="text-xs mt-1">Documents are automatically created when agents reach consensus on creating protocols, training materials, or research summaries.</p>
+                </div>
+              ) : (
+                documents.map((doc) => (
+                  <div key={doc.id} className="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 mb-1">{doc.metadata.title}</h4>
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className={`text-xs px-2 py-1 rounded ${getCategoryColor(doc.metadata.category)}`}>
+                            {doc.metadata.category}
+                          </span>
+                          <span className={`text-xs px-2 py-1 rounded ${getStatusColor(doc.metadata.status)}`}>
+                            {doc.metadata.status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{doc.metadata.description}</p>
+                        <div className="text-xs text-gray-500">
+                          <div>By: {doc.metadata.authors.join(', ')}</div>
+                          <div>Created: {formatDate(doc.metadata.created_at)}</div>
+                          <div>File: {doc.metadata.filename}</div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col space-y-1 ml-4">
+                        <button
+                          onClick={() => handleViewDocument(doc)}
+                          className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded text-xs transition-colors"
+                          title="View document"
+                        >
+                          👁 View
+                        </button>
+                        <button
+                          onClick={() => handleDownloadDocument(doc)}
+                          className="bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded text-xs transition-colors"
+                          title="Download document"
+                        >
+                          ⬇ Download
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDocument(doc.id)}
+                          className="bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded text-xs transition-colors"
+                          title="Delete document"
+                        >
+                          🗑 Delete
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Preview */}
+                    <div className="mt-2 p-2 bg-gray-50 rounded text-xs text-gray-600 border-l-2 border-blue-300">
+                      {doc.preview}
+                    </div>
+                    
+                    {/* Keywords */}
+                    {doc.metadata.keywords && doc.metadata.keywords.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {doc.metadata.keywords.map((keyword, index) => (
+                          <span key={index} className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
+                            {keyword}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Document Viewer Modal */}
+      {showDocumentModal && selectedDocument && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h2 className="text-xl font-bold">{selectedDocument.metadata.title}</h2>
+                <div className="flex items-center space-x-2 mt-1">
+                  <span className={`text-xs px-2 py-1 rounded ${getCategoryColor(selectedDocument.metadata.category)}`}>
+                    {selectedDocument.metadata.category}
+                  </span>
+                  <span className={`text-xs px-2 py-1 rounded ${getStatusColor(selectedDocument.metadata.status)}`}>
+                    {selectedDocument.metadata.status}
+                  </span>
+                </div>
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => handleDownloadDocument(selectedDocument)}
+                  className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition-colors"
+                >
+                  ⬇ Download
+                </button>
+                <button
+                  onClick={() => setShowDocumentModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            
+            {/* Document Metadata */}
+            <div className="mb-4 p-3 bg-gray-50 rounded">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <strong>Authors:</strong> {selectedDocument.metadata.authors.join(', ')}
+                </div>
+                <div>
+                  <strong>Created:</strong> {formatDate(selectedDocument.metadata.created_at)}
+                </div>
+                <div>
+                  <strong>Filename:</strong> {selectedDocument.metadata.filename}
+                </div>
+                <div>
+                  <strong>Status:</strong> {selectedDocument.metadata.status}
+                </div>
+              </div>
+              <div className="mt-2">
+                <strong>Description:</strong> {selectedDocument.metadata.description}
+              </div>
+            </div>
+            
+            {/* Document Content */}
+            <div className="border rounded p-4 bg-white max-h-96 overflow-y-auto">
+              <pre className="whitespace-pre-wrap font-mono text-sm">
+                {selectedDocument.content}
+              </pre>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 function App() {
   const { user, logout, isAuthenticated, token } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
