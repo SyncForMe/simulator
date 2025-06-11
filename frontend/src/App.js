@@ -507,125 +507,144 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
   const [randomLoading, setRandomLoading] = useState(false);
   const [justSubmitted, setJustSubmitted] = useState(false);
   
-  // Voice recognition state
-  const [isListening, setIsListening] = useState(false);
-  const [isSupported, setIsSupported] = useState(false);
-  const [speechRecognition, setSpeechRecognition] = useState(null);
+  // Enhanced voice recognition state for Whisper API
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [audioChunks, setAudioChunks] = useState([]);
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const [voiceError, setVoiceError] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState('en-US');
-  
-  // Available languages for voice recognition
-  const voiceLanguages = [
-    { code: 'en-US', name: 'English (US)' },
-    { code: 'en-GB', name: 'English (UK)' },
-    { code: 'es-ES', name: 'Spanish' },
-    { code: 'fr-FR', name: 'French' },
-    { code: 'de-DE', name: 'German' },
-    { code: 'it-IT', name: 'Italian' },
-    { code: 'pt-BR', name: 'Portuguese' },
-    { code: 'ru-RU', name: 'Russian' },
-    { code: 'ja-JP', name: 'Japanese' },
-    { code: 'ko-KR', name: 'Korean' },
-    { code: 'zh-CN', name: 'Chinese (Simplified)' },
-    { code: 'hi-IN', name: 'Hindi' },
-    { code: 'ar-SA', name: 'Arabic' }
-  ];
+  const [selectedLanguage, setSelectedLanguage] = useState('hr'); // Default to Croatian
+  const [supportedLanguages, setSupportedLanguages] = useState([]);
+  const { token } = useAuth();
 
-  // Initialize speech recognition on component mount
+  // Fetch supported languages on component mount
   useEffect(() => {
-    // Check if speech recognition is supported
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-    if (SpeechRecognition) {
-      setIsSupported(true);
-      
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false; // Changed to false for better control
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 1;
-      recognition.lang = selectedLanguage;
-      
-      recognition.onstart = () => {
-        setIsListening(true);
-        setVoiceError("");
-      };
-      
-      recognition.onresult = (event) => {
-        let finalTranscript = '';
-        let interimTranscript = '';
-        
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript;
-          } else {
-            interimTranscript += transcript;
-          }
-        }
-        
-        if (finalTranscript.trim()) {
-          // Append to existing scenario text or replace if empty
-          setScenario(prev => {
-            const newText = prev ? prev + ' ' + finalTranscript.trim() : finalTranscript.trim();
-            return newText;
-          });
-        }
-      };
-      
-      recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        setIsListening(false);
-        
-        switch (event.error) {
-          case 'not-allowed':
-            setVoiceError("Microphone access denied. Please allow microphone access in your browser settings.");
-            break;
-          case 'no-speech':
-            setVoiceError("No speech detected. Please speak clearly and try again.");
-            break;
-          case 'audio-capture':
-            setVoiceError("No microphone found. Please check your microphone connection.");
-            break;
-          case 'network':
-            setVoiceError("Network error. Please check your internet connection.");
-            break;
-          case 'aborted':
-            setVoiceError("Speech recognition was stopped.");
-            break;
-          case 'language-not-supported':
-            setVoiceError(`Language "${selectedLanguage}" is not supported. Please try a different language.`);
-            break;
-          default:
-            setVoiceError(`Voice recognition error: ${event.error}. Please try again.`);
-        }
-      };
-      
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-      
-      setSpeechRecognition(recognition);
-    } else {
-      setIsSupported(false);
-    }
-  }, [selectedLanguage]);
-
-  const startListening = () => {
-    if (speechRecognition && !isListening) {
-      setVoiceError("");
+    const fetchSupportedLanguages = async () => {
       try {
-        speechRecognition.lang = selectedLanguage;
-        speechRecognition.start();
+        const response = await axios.get(`${API}/speech/languages`);
+        setSupportedLanguages(response.data.languages);
       } catch (error) {
-        setVoiceError("Failed to start voice recognition. Please try again.");
-        console.error('Error starting speech recognition:', error);
+        console.error('Error fetching supported languages:', error);
+        // Fallback to common languages
+        setSupportedLanguages([
+          { code: 'hr', name: 'Croatian' },
+          { code: 'en', name: 'English' },
+          { code: 'es', name: 'Spanish' },
+          { code: 'fr', name: 'French' },
+          { code: 'de', name: 'German' }
+        ]);
+      }
+    };
+
+    fetchSupportedLanguages();
+  }, []);
+
+  const startRecording = async () => {
+    try {
+      setVoiceError("");
+      
+      // Request microphone access
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          sampleRate: 16000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true
+        } 
+      });
+
+      // Create MediaRecorder
+      const recorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus'
+      });
+
+      const chunks = [];
+      
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        await transcribeAudio(audioBlob);
+        
+        // Stop all tracks to free up microphone
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+      setAudioChunks(chunks);
+      setIsRecording(true);
+
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      if (error.name === 'NotAllowedError') {
+        setVoiceError("Microphone access denied. Please allow microphone access in your browser settings.");
+      } else if (error.name === 'NotFoundError') {
+        setVoiceError("No microphone found. Please check your microphone connection.");
+      } else {
+        setVoiceError("Failed to start recording. Please try again.");
       }
     }
   };
 
-  const stopListening = () => {
-    if (speechRecognition && isListening) {
-      speechRecognition.stop();
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      setIsRecording(false);
+      setIsTranscribing(true);
+    }
+  };
+
+  const transcribeAudio = async (audioBlob) => {
+    try {
+      setIsTranscribing(true);
+      
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'scenario_audio.webm');
+      if (selectedLanguage) {
+        formData.append('language', selectedLanguage);
+      }
+
+      // Send to Whisper API
+      const response = await axios.post(`${API}/speech/transcribe-scenario`, formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.success && response.data.text) {
+        // Append transcribed text to existing scenario
+        setScenario(prev => {
+          const newText = prev ? prev + ' ' + response.data.text.trim() : response.data.text.trim();
+          return newText;
+        });
+        
+        console.log('Transcription successful:', {
+          language: response.data.language_detected,
+          duration: response.data.duration_seconds,
+          wordCount: response.data.word_count
+        });
+      } else {
+        setVoiceError("No speech detected. Please try speaking again.");
+      }
+
+    } catch (error) {
+      console.error('Error transcribing audio:', error);
+      if (error.response?.status === 401) {
+        setVoiceError("Authentication failed. Please sign in again.");
+      } else if (error.response?.status === 400) {
+        setVoiceError("Invalid audio format. Please try again.");
+      } else {
+        setVoiceError("Transcription failed. Please check your internet connection and try again.");
+      }
+    } finally {
+      setIsTranscribing(false);
     }
   };
 
