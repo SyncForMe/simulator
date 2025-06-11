@@ -2113,6 +2113,26 @@ async def generate_conversation():
     # Get recent conversation history for better context and progression tracking
     recent_conversations = await db.conversations.find().sort("created_at", -1).limit(10).to_list(10)
     
+    # Get existing documents for agent reference (limit to recent/relevant docs)
+    existing_documents = []
+    try:
+        # For now, get the most recent 5 documents - in production, this could be filtered by relevance
+        docs_cursor = await db.documents.find().sort("metadata.updated_at", -1).limit(5).to_list(5)
+        existing_documents = [
+            {
+                "id": doc["id"],
+                "title": doc["metadata"]["title"],
+                "category": doc["metadata"]["category"],
+                "description": doc["metadata"]["description"],
+                "authors": doc["metadata"]["authors"],
+                "keywords": doc["metadata"]["keywords"]
+            }
+            for doc in docs_cursor
+        ]
+    except Exception as e:
+        logging.warning(f"Could not fetch existing documents: {e}")
+        existing_documents = []
+    
     # Analyze recent topics to avoid repetition
     recent_topics = []
     if recent_conversations:
