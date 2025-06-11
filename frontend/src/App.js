@@ -3246,14 +3246,24 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Name *</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
-                    className="w-full p-2 border rounded"
-                    placeholder="e.g., Nikola Tesla"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
+                      className="w-full p-2 pr-10 border rounded"
+                      placeholder="e.g., Nikola Tesla (voice input available)"
+                      required
+                    />
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                      <VoiceInput
+                        onTextUpdate={(text) => setFormData(prev => ({...prev, name: text}))}
+                        fieldType="general"
+                        size="small"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 <div>
