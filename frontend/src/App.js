@@ -791,12 +791,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                   <span>🗑️</span>
                 </button>
               )}
-                </>
-              ) : (
-                <div className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded" title="Voice input not supported in this browser">
-                  🎤❌ Not supported
-                </div>
-              )}
+            </div>
             </div>
           </div>
           
