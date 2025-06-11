@@ -2929,6 +2929,245 @@ async def synthesize_speech(request: TTSRequest):
             "fallback": True
         }
 
+# File Center API Endpoints for Action-Oriented Agent Behavior
+
+@api_router.post("/documents/create")
+async def create_document(
+    document: DocumentCreate,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new document in the File Center"""
+    try:
+        # Generate filename if not provided
+        safe_title = re.sub(r'[^a-zA-Z0-9\s\-_]', '', document.title)
+        safe_title = re.sub(r'\s+', '_', safe_title)
+        filename = f"{safe_title}_{datetime.now().strftime('%Y%m%d')}.md"
+        
+        # Create metadata
+        metadata = DocumentMetadata(
+            title=document.title,
+            filename=filename,
+            authors=document.authors,
+            category=document.category,
+            description=document.description,
+            keywords=document.keywords,
+            user_id=current_user.id
+        )
+        
+        # Create document
+        doc = Document(
+            metadata=metadata,
+            content=document.content
+        )
+        
+        # Save to database
+        await db.documents.insert_one(doc.dict())
+        
+        return {"success": True, "document_id": doc.id, "filename": filename}
+        
+    except Exception as e:
+        logging.error(f"Error creating document: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to create document: {str(e)}")
+
+@api_router.get("/documents")
+async def get_documents(
+    category: Optional[str] = None,
+    search: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Get documents from File Center with optional filtering"""
+    try:
+        # Build query
+        query = {"metadata.user_id": current_user.id}
+        
+        if category:
+            query["metadata.category"] = category
+            
+        if search:
+            query["$or"] = [
+                {"metadata.title": {"$regex": search, "$options": "i"}},
+                {"metadata.description": {"$regex": search, "$options": "i"}},
+                {"metadata.keywords": {"$in": [search]}}
+            ]
+        
+        # Get documents
+        docs = await db.documents.find(query).sort("metadata.created_at", -1).to_list(50)
+        
+        # Convert to response format
+        documents = []
+        for doc in docs:
+            doc_response = DocumentResponse(
+                id=doc["id"],
+                metadata=DocumentMetadata(**doc["metadata"]),
+                content=doc["content"],
+                preview=doc["content"][:200] + "..." if len(doc["content"]) > 200 else doc["content"]
+            )
+            documents.append(doc_response)
+        
+        return documents
+        
+    except Exception as e:
+        logging.error(f"Error getting documents: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get documents: {str(e)}")
+
+@api_router.get("/documents/{document_id}")
+async def get_document(
+    document_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get a specific document by ID"""
+    try:
+        doc = await db.documents.find_one({
+            "id": document_id,
+            "metadata.user_id": current_user.id
+        })
+        
+        if not doc:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        return DocumentResponse(
+            id=doc["id"],
+            metadata=DocumentMetadata(**doc["metadata"]),
+            content=doc["content"]
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error getting document {document_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get document: {str(e)}")
+
+@api_router.delete("/documents/{document_id}")
+async def delete_document(
+    document_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Delete a document from File Center"""
+    try:
+        result = await db.documents.delete_one({
+            "id": document_id,
+            "metadata.user_id": current_user.id
+        })
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        return {"success": True, "message": "Document deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting document {document_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete document: {str(e)}")
+
+@api_router.get("/documents/categories")
+async def get_document_categories():
+    """Get available document categories"""
+    return {
+        "categories": [
+            "Protocol",
+            "Training",
+            "Research",
+            "Equipment",
+            "Budget",
+            "Reference"
+        ]
+    }
+
+@api_router.post("/documents/analyze-conversation")
+async def analyze_conversation_for_documents(
+    request: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Analyze conversation to determine if documents should be created"""
+    try:
+        conversation_text = request.get("conversation_text", "")
+        agent_ids = request.get("agent_ids", [])
+        
+        if not conversation_text:
+            return {"should_create_document": False}
+        
+        # Get agents
+        agents = []
+        for agent_id in agent_ids:
+            agent_doc = await db.agents.find_one({"id": agent_id})
+            if agent_doc:
+                agents.append(Agent(**agent_doc))
+        
+        # Analyze for action triggers
+        result = await llm_manager.analyze_conversation_for_action_triggers(
+            conversation_text, agents
+        )
+        
+        return result.dict()
+        
+    except Exception as e:
+        logging.error(f"Error analyzing conversation: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to analyze conversation: {str(e)}")
+
+@api_router.post("/documents/generate")
+async def generate_document_from_conversation(
+    request: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Generate a document based on conversation analysis"""
+    try:
+        document_type = request.get("document_type", "protocol")
+        title = request.get("title", "Untitled Document")
+        conversation_context = request.get("conversation_context", "")
+        creating_agent_id = request.get("creating_agent_id")
+        authors = request.get("authors", [])
+        
+        # Get creating agent
+        agent_doc = await db.agents.find_one({"id": creating_agent_id})
+        if not agent_doc:
+            raise HTTPException(status_code=404, detail="Creating agent not found")
+        
+        creating_agent = Agent(**agent_doc)
+        
+        # Generate document content
+        content = await llm_manager.generate_document_content(
+            document_type, title, conversation_context, creating_agent
+        )
+        
+        # Create document
+        safe_title = re.sub(r'[^a-zA-Z0-9\s\-_]', '', title)
+        safe_title = re.sub(r'\s+', '_', safe_title)
+        filename = f"{safe_title}_{datetime.now().strftime('%Y%m%d')}.md"
+        
+        metadata = DocumentMetadata(
+            title=title,
+            filename=filename,
+            authors=authors,
+            category=document_type.title(),
+            description=f"Generated from team discussion - {title}",
+            keywords=[document_type, "team-generated", "action-oriented"],
+            user_id=current_user.id
+        )
+        
+        doc = Document(
+            metadata=metadata,
+            content=content,
+            created_by_agents=[creating_agent_id],
+            conversation_context=conversation_context[:500],  # Store first 500 chars
+            action_trigger=request.get("trigger_phrase", "")
+        )
+        
+        # Save to database
+        await db.documents.insert_one(doc.dict())
+        
+        return {
+            "success": True,
+            "document_id": doc.id,
+            "filename": filename,
+            "content": content,
+            "author": creating_agent.name
+        }
+        
+    except Exception as e:
+        logging.error(f"Error generating document: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate document: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
