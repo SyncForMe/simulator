@@ -3353,6 +3353,40 @@ const FileCenter = ({ documents, onRefresh, categories, selectedCategory, onCate
     }
   };
 
+  const handleProposeUpdate = async (documentId, proposedChanges) => {
+    try {
+      // Get current agents for voting
+      const agentsResponse = await axios.get(`${API}/agents`);
+      const agents = agentsResponse.data;
+      
+      if (agents.length === 0) {
+        alert('No agents available for voting');
+        return;
+      }
+      
+      const updateData = {
+        proposed_changes: proposedChanges,
+        proposing_agent_id: agents[0].id, // Use first agent as proposer
+        agent_ids: agents.map(a => a.id)
+      };
+      
+      const response = await axios.post(`${API}/documents/${documentId}/propose-update`, updateData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data.success) {
+        alert(`Document update approved! Vote: ${response.data.voting_results.summary}`);
+        onRefresh(); // Refresh documents list
+        setShowDocumentModal(false);
+      } else {
+        alert(`Document update rejected. Vote: ${response.data.voting_results.summary}`);
+      }
+    } catch (error) {
+      console.error('Error proposing document update:', error);
+      alert('Failed to propose document update');
+    }
+  };
+
   const handleDeleteDocument = async (documentId) => {
     if (!window.confirm('Are you sure you want to delete this document?')) return;
     
