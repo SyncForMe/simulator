@@ -16,3 +16,5 @@ google-auth-oauthlib==1.2.2
 google-auth-httplib2==0.2.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.3.0
+openai==1.54.5
+pydub==0.25.1
