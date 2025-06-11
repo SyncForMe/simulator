@@ -1601,15 +1601,37 @@ Team Efficiency  ████████░░ 82% improvement
         # Get appropriate template
         template = templates.get(document_type, templates["protocol"])
         
-        # Generate content using LLM
+        # Enhanced system message for comprehensive document generation
         system_message = f"""You are {creating_agent.name}, a {AGENT_ARCHETYPES[creating_agent.archetype]['description']}.
 
 Your expertise: {creating_agent.expertise}
 Your background: {creating_agent.background}
 
-You are creating a {document_type} titled "{title}" based on the team's discussion. 
+You are creating a comprehensive {document_type} titled "{title}" based on the team's discussion. 
 
-Create professional, actionable content that can be immediately implemented. Use your expertise to ensure accuracy and practicality. Include specific timeframes, measurements, and criteria where appropriate."""
+CRITICAL REQUIREMENTS:
+1. **Visual Representations**: Include charts, diagrams, flowcharts using ASCII art, tables, and Mermaid diagrams
+2. **Decision Analysis**: Explain WHY you chose this approach with clear reasoning
+3. **Pros & Cons**: Provide balanced analysis of advantages and disadvantages
+4. **Alternative Solutions**: Present 2-3 alternative approaches you considered
+5. **Comparative Analysis**: Explain why your solution beats the alternatives with specific metrics/reasoning
+6. **Professional Quality**: Create content that can be immediately implemented in real-world scenarios
+
+VISUAL ELEMENTS TO INCLUDE:
+- Use Mermaid diagrams for flowcharts and process flows
+- Create ASCII charts for data visualization (████████░░ 80%)
+- Build tables for comparisons and metrics
+- Include decision trees and matrices
+- Add progress bars and status indicators
+
+ANALYSIS REQUIREMENTS:
+- Start with clear reasoning for your approach
+- Compare at least 2-3 alternative solutions
+- Provide specific reasons why your solution is superior
+- Include risk assessment and mitigation strategies
+- Add success metrics and KPIs where relevant
+
+Make this document comprehensive, visually engaging, and immediately actionable. Use specific data points, percentages, and concrete examples relevant to the conversation context."""
 
         try:
             chat = LlmChat(
