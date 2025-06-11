@@ -3438,6 +3438,134 @@ async def generate_document_from_conversation(
         logging.error(f"Error generating document: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to generate document: {str(e)}")
 
+@api_router.post("/documents/{document_id}/propose-update")
+async def propose_document_update(
+    document_id: str,
+    request: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Propose an update to an existing document with agent voting"""
+    try:
+        # Get existing document
+        existing_doc = await db.documents.find_one({
+            "id": document_id,
+            "metadata.user_id": current_user.id
+        })
+        
+        if not existing_doc:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        proposed_changes = request.get("proposed_changes", "")
+        proposing_agent_id = request.get("proposing_agent_id")
+        agent_ids = request.get("agent_ids", [])
+        
+        if not proposed_changes or not proposing_agent_id:
+            raise HTTPException(status_code=400, detail="Missing required fields")
+        
+        # Get agents for voting
+        agents = []
+        for agent_id in agent_ids:
+            agent_doc = await db.agents.find_one({"id": agent_id})
+            if agent_doc:
+                agents.append(Agent(**agent_doc))
+        
+        if not agents:
+            raise HTTPException(status_code=400, detail="No valid agents found for voting")
+        
+        # Create voting proposal
+        proposal = f"Update document '{existing_doc['metadata']['title']}' with the following changes: {proposed_changes}"
+        conversation_context = f"Reviewing document: {existing_doc['metadata']['title']}\nProposed changes: {proposed_changes}"
+        
+        # Get voting results
+        voting_results = await llm_manager.check_agent_voting_consensus(
+            agents, proposal, conversation_context
+        )
+        
+        if voting_results["consensus"]:
+            # Get proposing agent
+            proposing_agent_doc = await db.agents.find_one({"id": proposing_agent_id})
+            if not proposing_agent_doc:
+                raise HTTPException(status_code=404, detail="Proposing agent not found")
+            
+            proposing_agent = Agent(**proposing_agent_doc)
+            
+            # Generate updated document content
+            update_context = f"""Original document content:
+{existing_doc['content']}
+
+Proposed changes: {proposed_changes}
+
+The team has voted to approve these changes. Create an updated version of the document incorporating the proposed improvements."""
+            
+            updated_content = await llm_manager.generate_document_content(
+                existing_doc['metadata']['category'].lower(),
+                existing_doc['metadata']['title'],
+                update_context,
+                proposing_agent
+            )
+            
+            # Update document
+            updated_metadata = DocumentMetadata(**existing_doc['metadata'])
+            updated_metadata.updated_at = datetime.utcnow()
+            updated_metadata.status = "Draft"  # Reset to draft after update
+            
+            await db.documents.update_one(
+                {"id": document_id},
+                {
+                    "$set": {
+                        "content": updated_content,
+                        "metadata": updated_metadata.dict()
+                    }
+                }
+            )
+            
+            return {
+                "success": True,
+                "message": "Document updated successfully",
+                "voting_results": voting_results,
+                "updated_content": updated_content
+            }
+        else:
+            return {
+                "success": False,
+                "message": "Update proposal rejected by team vote",
+                "voting_results": voting_results
+            }
+            
+    except Exception as e:
+        logging.error(f"Error proposing document update: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to propose document update: {str(e)}")
+
+@api_router.get("/documents/for-agents")
+async def get_documents_for_agents(
+    current_user: User = Depends(get_current_user)
+):
+    """Get simplified document list for agents to reference in conversations"""
+    try:
+        docs = await db.documents.find({
+            "metadata.user_id": current_user.id
+        }).sort("metadata.updated_at", -1).to_list(20)  # Last 20 documents
+        
+        # Return simplified format for agent consumption
+        simplified_docs = []
+        for doc in docs:
+            simplified_docs.append({
+                "id": doc["id"],
+                "title": doc["metadata"]["title"],
+                "category": doc["metadata"]["category"],
+                "description": doc["metadata"]["description"],
+                "authors": doc["metadata"]["authors"],
+                "keywords": doc["metadata"]["keywords"],
+                "created_at": doc["metadata"]["created_at"],
+                "summary": doc["content"][:300] + "..." if len(doc["content"]) > 300 else doc["content"]
+            })
+        
+        return simplified_docs
+        
+    except Exception as e:
+        logging.error(f"Error getting documents for agents: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get documents: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
