@@ -4301,7 +4301,7 @@ function App() {
     handleOAuthCallback();
   }, []);
 
-  const { user, logout, isAuthenticated, token } = useAuth();
+  const { user, logout, isAuthenticated, token, setToken, setUser } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [agents, setAgents] = useState([]);
   const [conversations, setConversations] = useState([]);
