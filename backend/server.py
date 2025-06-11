@@ -2026,7 +2026,7 @@ async def resume_simulation():
 
 @api_router.post("/simulation/generate-summary")
 async def generate_weekly_summary():
-    """Generate structured AI summary of conversations with focus on key discoveries"""
+    """Generate structured AI summary of conversations with focus on key discoveries and documents created"""
     # Get all conversations
     conversations = await db.conversations.find().sort("created_at", -1).to_list(100)
     
@@ -2043,6 +2043,17 @@ async def generate_weekly_summary():
     if not recent_conversations:
         return {"summary": "No recent conversations to summarize."}
     
+    # Get documents created during this period
+    try:
+        # Get documents created in the last week
+        one_week_ago = datetime.utcnow() - timedelta(days=7)
+        recent_documents = await db.documents.find({
+            "metadata.created_at": {"$gte": one_week_ago.isoformat()}
+        }).sort("metadata.created_at", -1).to_list(50)
+    except Exception as e:
+        logging.warning(f"Could not fetch recent documents: {e}")
+        recent_documents = []
+    
     # Check API usage
     if not await llm_manager.can_make_request():
         return {"summary": "Cannot generate summary - daily API limit reached"}
@@ -2051,31 +2062,50 @@ async def generate_weekly_summary():
     conv_text = ""
     key_decisions = []
     agent_interactions = []
+    document_summary = ""
     
     for conv in recent_conversations:
         conv_text += f"\n**{conv['time_period']}:**\n"
         for msg in conv.get('messages', []):
             conv_text += f"- **{msg['agent_name']}**: {msg['message']}\n"
             # Track significant statements for key events
-            if any(keyword in msg['message'].lower() for keyword in ['decide', 'discovery', 'found', 'breakthrough', 'crisis', 'solution', 'agreement', 'conflict']):
+            if any(keyword in msg['message'].lower() for keyword in ['decide', 'discovery', 'found', 'breakthrough', 'crisis', 'solution', 'agreement', 'conflict', 'document created', 'protocol', 'training']):
                 key_decisions.append(f"{msg['agent_name']}: {msg['message']}")
+    
+    # Prepare document summary
+    if recent_documents:
+        document_summary = "\n\n**DOCUMENTS CREATED THIS WEEK:**\n"
+        for doc in recent_documents:
+            metadata = doc.get('metadata', {})
+            document_summary += f"- **{metadata.get('title', 'Untitled')}** ({metadata.get('category', 'Unknown')})\n"
+            document_summary += f"  - Created by: {', '.join(metadata.get('authors', ['Unknown']))}\n"
+            document_summary += f"  - Description: {metadata.get('description', 'No description')}\n"
+            # Add document content preview
+            content_preview = doc.get('content', '')[:200]
+            if len(content_preview) > 0:
+                document_summary += f"  - Preview: {content_preview}{'...' if len(doc.get('content', '')) > 200 else ''}\n"
+            document_summary += "\n"
     
     # Generate structured summary using LLM
     chat = LlmChat(
         api_key=llm_manager.api_key,
         session_id=f"weekly_summary_{datetime.now().timestamp()}",
         system_message="""You are analyzing AI agent interactions to create a structured weekly report. 
-        Focus on concrete discoveries, decisions, breakthroughs, and significant developments.
+        Focus on concrete discoveries, decisions, breakthroughs, significant developments, and documents created.
         
-        Create a report with these sections:
-        1. KEY EVENTS & DISCOVERIES (main focus - most important developments, decisions, breakthroughs)
-        2. RELATIONSHIP DEVELOPMENTS (how agent relationships changed)
-        3. EMERGING PERSONALITIES (how each agent's personality manifested)
-        4. SOCIAL DYNAMICS (team cohesion, leadership patterns, conflicts)
-        5. STRATEGIC DECISIONS (important choices made by the team)
-        6. LOOKING AHEAD (predictions for future developments)
+        Create a comprehensive report with these sections:
+        1. EXECUTIVE SUMMARY (2-3 sentences highlighting the most important developments)
+        2. KEY EVENTS & DISCOVERIES (main focus - most important developments, decisions, breakthroughs)
+        3. DOCUMENTS & DELIVERABLES (focus on documents created, their purpose, and impact)
+        4. RELATIONSHIP DEVELOPMENTS (how agent relationships changed)
+        5. EMERGING PERSONALITIES (how each agent's personality manifested)
+        6. SOCIAL DYNAMICS (team cohesion, leadership patterns, conflicts)
+        7. STRATEGIC DECISIONS (important choices made by the team)
+        8. ACTION-ORIENTED OUTCOMES (tangible results and deliverables produced)
+        9. LOOKING AHEAD (predictions for future developments)
         
-        Use **bold** for section headers and important points. Be specific and actionable."""
+        Use **bold** for section headers and important points. Be specific and actionable.
+        Pay special attention to the documents created and their strategic value."""
     ).with_model("gemini", "gemini-2.0-flash")
     
     prompt = f"""Analyze these AI agent conversations from the Research Station simulation:
