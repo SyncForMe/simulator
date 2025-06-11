@@ -860,7 +860,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
         <div className="space-y-2">
           <button
             type="submit"
-            disabled={loading || !scenario.trim() || justSubmitted || randomLoading || isListening}
+            disabled={loading || !scenario.trim() || justSubmitted || randomLoading || isRecording || isTranscribing}
             className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50 transition-colors"
           >
             {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Set New Scenario"}
@@ -869,7 +869,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
           <button
             type="button"
             onClick={handleGenerateRandomScenario}
-            disabled={loading || justSubmitted || randomLoading || isListening}
+            disabled={loading || justSubmitted || randomLoading || isRecording || isTranscribing}
             className="w-full bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 disabled:opacity-50 transition-colors"
           >
             {randomLoading ? "Generating & Applying..." : "🎲 Random Scenario"}
