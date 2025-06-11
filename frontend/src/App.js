@@ -506,6 +506,94 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
   const [loading, setLoading] = useState(false);
   const [randomLoading, setRandomLoading] = useState(false);
   const [justSubmitted, setJustSubmitted] = useState(false);
+  
+  // Voice recognition state
+  const [isListening, setIsListening] = useState(false);
+  const [isSupported, setIsSupported] = useState(false);
+  const [speechRecognition, setSpeechRecognition] = useState(null);
+  const [voiceError, setVoiceError] = useState("");
+
+  // Initialize speech recognition on component mount
+  useEffect(() => {
+    // Check if speech recognition is supported
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (SpeechRecognition) {
+      setIsSupported(true);
+      
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US'; // Default to English, can be made configurable
+      
+      recognition.onstart = () => {
+        setIsListening(true);
+        setVoiceError("");
+      };
+      
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            transcript += event.results[i][0].transcript + ' ';
+          }
+        }
+        
+        if (transcript.trim()) {
+          // Append to existing scenario text or replace if empty
+          setScenario(prev => {
+            const newText = prev ? prev + ' ' + transcript.trim() : transcript.trim();
+            return newText;
+          });
+        }
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        
+        switch (event.error) {
+          case 'not-allowed':
+            setVoiceError("Microphone access denied. Please allow microphone access and try again.");
+            break;
+          case 'no-speech':
+            setVoiceError("No speech detected. Please try speaking again.");
+            break;
+          case 'network':
+            setVoiceError("Network error. Please check your connection and try again.");
+            break;
+          default:
+            setVoiceError("Voice recognition error. Please try again.");
+        }
+      };
+      
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+      
+      setSpeechRecognition(recognition);
+    } else {
+      setIsSupported(false);
+    }
+  }, []);
+
+  const startListening = () => {
+    if (speechRecognition && !isListening) {
+      setVoiceError("");
+      speechRecognition.start();
+    }
+  };
+
+  const stopListening = () => {
+    if (speechRecognition && isListening) {
+      speechRecognition.stop();
+    }
+  };
+
+  const clearScenario = () => {
+    setScenario("");
+    setVoiceError("");
+  };
 
   // Collection of random scenarios
   const randomScenarios = [
