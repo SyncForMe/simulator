@@ -1811,10 +1811,50 @@ class WhisperService:
             
             try:
                 # Convert audio to supported format if needed
-                audio = AudioSegment.from_file(temp_file_path)
-                
-                # Convert to wav for better compatibility
+                # Try to detect and handle different audio formats
                 wav_path = temp_file_path.replace('.webm', '.wav')
+                
+                try:
+                    # First, try to load as WebM/Opus
+                    audio = AudioSegment.from_file(temp_file_path, format="webm")
+                except Exception as webm_error:
+                    logging.warning(f"Failed to load as WebM: {webm_error}")
+                    try:
+                        # Try without format specification
+                        audio = AudioSegment.from_file(temp_file_path)
+                    except Exception as general_error:
+                        logging.warning(f"Failed general audio load: {general_error}")
+                        # Fallback: Use the original file directly if it's valid
+                        # Some browsers send different formats than expected
+                        try:
+                            # Test if the file can be opened by OpenAI directly
+                            with open(temp_file_path, "rb") as test_file:
+                                client = openai.OpenAI(api_key=self.api_key)
+                                # Try direct transcription without conversion
+                                transcript = client.audio.transcriptions.create(
+                                    model="whisper-1",
+                                    file=test_file,
+                                    language=language if language else None,
+                                    response_format="verbose_json"
+                                )
+                                
+                                # Clean up
+                                os.unlink(temp_file_path)
+                                
+                                return {
+                                    "success": True,
+                                    "text": transcript.text,
+                                    "language": transcript.language,
+                                    "duration": getattr(transcript, 'duration', 0),
+                                    "words": getattr(transcript, 'words', []),
+                                    "confidence": getattr(transcript, 'avg_logprob', None)
+                                }
+                        except Exception as direct_error:
+                            logging.error(f"Direct transcription failed: {direct_error}")
+                            raise HTTPException(status_code=400, detail="Invalid audio format. Please try recording again.")
+                
+                # If we got here, audio conversion worked
+                # Convert to wav for better compatibility
                 audio.export(wav_path, format="wav")
                 
                 # Transcribe with OpenAI Whisper
