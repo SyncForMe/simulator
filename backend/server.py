@@ -1253,7 +1253,7 @@ Your background: {creating_agent.background}
 
 You are creating a {document_type} titled "{title}" based on the team's discussion. 
 
-Create professional, actionable content that can be immediately implemented. Use your medical expertise to ensure accuracy and practicality. Include specific timeframes, measurements, and criteria where appropriate."""
+Create professional, actionable content that can be immediately implemented. Use your expertise to ensure accuracy and practicality. Include specific timeframes, measurements, and criteria where appropriate."""
 
         try:
             chat = LlmChat(
