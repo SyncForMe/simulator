@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, status, APIRouter
+from fastapi import FastAPI, HTTPException, Depends, status, APIRouter, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
@@ -18,6 +18,10 @@ from jose import JWTError, jwt
 from google.auth.transport import requests
 from google.oauth2 import id_token
 import httpx
+import tempfile
+import openai
+from pydub import AudioSegment
+import io
 import asyncio
 import re
 import urllib.parse
