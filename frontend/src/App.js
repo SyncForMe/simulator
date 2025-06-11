@@ -2344,13 +2344,22 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
         <div className="memory-input mt-4 pt-4 border-t border-gray-100">
           <form onSubmit={handleAddMemory} className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Add Memory</label>
-            <textarea
-              value={newMemory}
-              onChange={(e) => setNewMemory(e.target.value)}
-              placeholder="What should this agent remember?"
-              className="w-full p-2 border border-gray-300 rounded text-sm"
-              rows="3"
-            />
+            <div className="relative">
+              <textarea
+                value={newMemory}
+                onChange={(e) => setNewMemory(e.target.value)}
+                placeholder="What should this agent remember? (voice input available)"
+                className="w-full p-2 pr-10 border border-gray-300 rounded text-sm"
+                rows="3"
+              />
+              <div className="absolute right-2 top-2">
+                <VoiceInput
+                  onTextUpdate={(text) => setNewMemory(text)}
+                  fieldType="memory"
+                  size="small"
+                />
+              </div>
+            </div>
             <div className="flex gap-2">
               <button
                 type="submit"
