@@ -816,12 +816,12 @@ Previous memory: {agent.memory_summary or 'None'}"""
         if not await self.can_make_request():
             return ActionTriggerResult(should_create_document=False)
         
-        # Action trigger phrases to detect
+        # Action trigger phrases to detect (generic, not medical-specific)
         trigger_phrases = [
             "we need a protocol for",
             "let's create a checklist",
-            "we should develop training materials",
-            "let's draft a proposal",
+            "we should develop",
+            "let's draft",
             "we need a reference guide",
             "someone should research and document",
             "we should create documentation",
@@ -829,7 +829,13 @@ Previous memory: {agent.memory_summary or 'None'}"""
             "we need guidelines for",
             "someone should write up",
             "we should document this",
-            "let's create a template"
+            "let's create a template",
+            "we need a plan for",
+            "let's make a framework",
+            "we should establish",
+            "let's build a system",
+            "we need standards for",
+            "let's create a manual"
         ]
         
         # Check if any trigger phrases are present
@@ -840,15 +846,16 @@ Previous memory: {agent.memory_summary or 'None'}"""
             return ActionTriggerResult(should_create_document=False)
         
         # Use LLM to determine if this is a genuine creation trigger
-        system_message = """You are an expert at detecting when medical professionals in a conversation have agreed to create documentation or procedures.
+        system_message = """You are an expert at detecting when people in a conversation have agreed to create documentation, procedures, or deliverables.
 
 Analyze the conversation and determine:
 1. Is there genuine consensus to CREATE something specific?
-2. What type of document should be created? (protocol/training/research)
+2. What type of document should be created? (protocol/training/research/reference/plan)
 3. What should the document title be?
 4. Which specific phrase triggered this?
 
-Only respond YES if there's clear agreement to create something concrete, not just discussion about what might be needed."""
+Only respond YES if there's clear agreement to create something concrete, not just discussion about what might be needed.
+Work with ANY topic - business, tech, education, research, projects, etc. - not just medical contexts."""
 
         try:
             chat = LlmChat(
@@ -858,8 +865,8 @@ Only respond YES if there's clear agreement to create something concrete, not ju
             ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(200)
             
             prompt = f"""Conversation:\n{conversation_text}\n\n
-Should the agents create a document? If yes:
-- Document type: protocol/training/research
+Should the participants create a document? If yes:
+- Document type: protocol/training/research/reference/plan
 - Title: [specific title based on conversation]
 - Trigger phrase: [exact phrase that triggered this]
 - Reasoning: [why this needs immediate creation]
@@ -887,6 +894,69 @@ Format: YES|protocol|Emergency Cardiac Protocol|we need a protocol for|The team 
         except Exception as e:
             logging.error(f"Error analyzing conversation for action triggers: {e}")
             return ActionTriggerResult(should_create_document=False)
+
+    async def check_agent_voting_consensus(self, agents: List[Agent], proposal: str, conversation_context: str) -> dict:
+        """Check if agents reach voting consensus on a proposal"""
+        if not await self.can_make_request():
+            return {"consensus": False, "votes": {}}
+        
+        voting_results = {}
+        
+        for agent in agents:
+            try:
+                system_message = f"""You are {agent.name}, a {AGENT_ARCHETYPES[agent.archetype]['description']}.
+
+Your expertise: {agent.expertise}
+Your background: {agent.background}
+Your goal: {agent.goal}
+
+Personality traits:
+- Extroversion: {agent.personality.extroversion}/10
+- Optimism: {agent.personality.optimism}/10  
+- Curiosity: {agent.personality.curiosity}/10
+- Cooperativeness: {agent.personality.cooperativeness}/10
+- Energy: {agent.personality.energy}/10
+
+You need to vote on a proposal. Consider your expertise, background, and personality when making this decision.
+Respond with ONLY: YES, NO, or ABSTAIN followed by a brief 1-sentence reason."""
+
+                chat = LlmChat(
+                    api_key=self.api_key,
+                    session_id=f"voting_{agent.id}_{datetime.now().timestamp()}",
+                    system_message=system_message
+                ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(100)
+                
+                prompt = f"""Conversation context:\n{conversation_context}\n\nProposal to vote on: {proposal}\n\nYour vote (YES/NO/ABSTAIN) and brief reason:"""
+                
+                user_message = UserMessage(text=prompt)
+                response = await chat.send_message(user_message)
+                await self.increment_usage()
+                
+                # Parse vote
+                response_upper = response.upper()
+                if response_upper.startswith("YES"):
+                    voting_results[agent.name] = {"vote": "YES", "reason": response}
+                elif response_upper.startswith("NO"):
+                    voting_results[agent.name] = {"vote": "NO", "reason": response}
+                else:
+                    voting_results[agent.name] = {"vote": "ABSTAIN", "reason": response}
+                    
+            except Exception as e:
+                logging.error(f"Error getting vote from {agent.name}: {e}")
+                voting_results[agent.name] = {"vote": "ABSTAIN", "reason": "Unable to vote due to technical issue"}
+        
+        # Determine consensus (simple majority)
+        yes_votes = sum(1 for vote in voting_results.values() if vote["vote"] == "YES")
+        no_votes = sum(1 for vote in voting_results.values() if vote["vote"] == "NO")
+        total_voting = yes_votes + no_votes  # Exclude abstentions from majority calculation
+        
+        consensus = yes_votes > (total_voting / 2) if total_voting > 0 else False
+        
+        return {
+            "consensus": consensus,
+            "votes": voting_results,
+            "summary": f"{yes_votes} YES, {no_votes} NO, {len(voting_results) - yes_votes - no_votes} ABSTAIN"
+        }
 
     async def generate_document_content(self, document_type: str, title: str, conversation_context: str, creating_agent: Agent) -> str:
         """Generate structured document content based on type and context"""
