@@ -1788,6 +1788,179 @@ Be constructive and focus on actionable feedback."""
     except Exception as e:
         logging.error(f"Error in document review process: {e}")
 
+# OpenAI Whisper Speech-to-Text Service
+class WhisperService:
+    def __init__(self):
+        self.api_key = os.environ.get('OPENAI_API_KEY')
+        if not self.api_key:
+            logging.warning("OPENAI_API_KEY not found in environment variables")
+        else:
+            openai.api_key = self.api_key
+            logging.info("OpenAI Whisper service initialized")
+    
+    async def transcribe_audio(self, audio_file: bytes, language: str = None, filename: str = "audio.webm") -> Dict[str, Any]:
+        """Transcribe audio using OpenAI Whisper API"""
+        if not self.api_key:
+            raise HTTPException(status_code=500, detail="OpenAI API key not configured")
+        
+        try:
+            # Create a temporary file for the audio
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as temp_file:
+                temp_file.write(audio_file)
+                temp_file_path = temp_file.name
+            
+            try:
+                # Convert audio to supported format if needed
+                audio = AudioSegment.from_file(temp_file_path)
+                
+                # Convert to wav for better compatibility
+                wav_path = temp_file_path.replace('.webm', '.wav')
+                audio.export(wav_path, format="wav")
+                
+                # Transcribe with OpenAI Whisper
+                client = openai.OpenAI(api_key=self.api_key)
+                
+                with open(wav_path, "rb") as audio_file_obj:
+                    transcript = client.audio.transcriptions.create(
+                        model="whisper-1",
+                        file=audio_file_obj,
+                        language=language if language else None,  # Auto-detect if not specified
+                        response_format="verbose_json",
+                        timestamp_granularities=["word"]
+                    )
+                
+                # Clean up temporary files
+                os.unlink(temp_file_path)
+                os.unlink(wav_path)
+                
+                return {
+                    "success": True,
+                    "text": transcript.text,
+                    "language": transcript.language,
+                    "duration": transcript.duration,
+                    "words": getattr(transcript, 'words', []),
+                    "confidence": getattr(transcript, 'avg_logprob', None)
+                }
+                
+            except Exception as e:
+                # Clean up temp file on error
+                if os.path.exists(temp_file_path):
+                    os.unlink(temp_file_path)
+                if 'wav_path' in locals() and os.path.exists(wav_path):
+                    os.unlink(wav_path)
+                raise e
+                
+        except Exception as e:
+            logging.error(f"Error transcribing audio: {e}")
+            raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
+    
+    def get_supported_languages(self) -> List[Dict[str, str]]:
+        """Get list of supported languages for Whisper"""
+        return [
+            {"code": "af", "name": "Afrikaans"},
+            {"code": "am", "name": "Amharic"},
+            {"code": "ar", "name": "Arabic"},
+            {"code": "as", "name": "Assamese"},
+            {"code": "az", "name": "Azerbaijani"},
+            {"code": "ba", "name": "Bashkir"},
+            {"code": "be", "name": "Belarusian"},
+            {"code": "bg", "name": "Bulgarian"},
+            {"code": "bn", "name": "Bengali"},
+            {"code": "bo", "name": "Tibetan"},
+            {"code": "br", "name": "Breton"},
+            {"code": "bs", "name": "Bosnian"},
+            {"code": "ca", "name": "Catalan"},
+            {"code": "cs", "name": "Czech"},
+            {"code": "cy", "name": "Welsh"},
+            {"code": "da", "name": "Danish"},
+            {"code": "de", "name": "German"},
+            {"code": "el", "name": "Greek"},
+            {"code": "en", "name": "English"},
+            {"code": "es", "name": "Spanish"},
+            {"code": "et", "name": "Estonian"},
+            {"code": "eu", "name": "Basque"},
+            {"code": "fa", "name": "Persian"},
+            {"code": "fi", "name": "Finnish"},
+            {"code": "fo", "name": "Faroese"},
+            {"code": "fr", "name": "French"},
+            {"code": "gl", "name": "Galician"},
+            {"code": "gu", "name": "Gujarati"},
+            {"code": "ha", "name": "Hausa"},
+            {"code": "haw", "name": "Hawaiian"},
+            {"code": "he", "name": "Hebrew"},
+            {"code": "hi", "name": "Hindi"},
+            {"code": "hr", "name": "Croatian"},  # ✅ Croatian support!
+            {"code": "ht", "name": "Haitian Creole"},
+            {"code": "hu", "name": "Hungarian"},
+            {"code": "hy", "name": "Armenian"},
+            {"code": "id", "name": "Indonesian"},
+            {"code": "is", "name": "Icelandic"},
+            {"code": "it", "name": "Italian"},
+            {"code": "ja", "name": "Japanese"},
+            {"code": "jw", "name": "Javanese"},
+            {"code": "ka", "name": "Georgian"},
+            {"code": "kk", "name": "Kazakh"},
+            {"code": "km", "name": "Khmer"},
+            {"code": "kn", "name": "Kannada"},
+            {"code": "ko", "name": "Korean"},
+            {"code": "la", "name": "Latin"},
+            {"code": "lb", "name": "Luxembourgish"},
+            {"code": "ln", "name": "Lingala"},
+            {"code": "lo", "name": "Lao"},
+            {"code": "lt", "name": "Lithuanian"},
+            {"code": "lv", "name": "Latvian"},
+            {"code": "mg", "name": "Malagasy"},
+            {"code": "mi", "name": "Maori"},
+            {"code": "mk", "name": "Macedonian"},
+            {"code": "ml", "name": "Malayalam"},
+            {"code": "mn", "name": "Mongolian"},
+            {"code": "mr", "name": "Marathi"},
+            {"code": "ms", "name": "Malay"},
+            {"code": "mt", "name": "Maltese"},
+            {"code": "my", "name": "Myanmar"},
+            {"code": "ne", "name": "Nepali"},
+            {"code": "nl", "name": "Dutch"},
+            {"code": "nn", "name": "Nynorsk"},
+            {"code": "no", "name": "Norwegian"},
+            {"code": "oc", "name": "Occitan"},
+            {"code": "pa", "name": "Punjabi"},
+            {"code": "pl", "name": "Polish"},
+            {"code": "ps", "name": "Pashto"},
+            {"code": "pt", "name": "Portuguese"},
+            {"code": "ro", "name": "Romanian"},
+            {"code": "ru", "name": "Russian"},
+            {"code": "sa", "name": "Sanskrit"},
+            {"code": "sd", "name": "Sindhi"},
+            {"code": "si", "name": "Sinhala"},
+            {"code": "sk", "name": "Slovak"},
+            {"code": "sl", "name": "Slovenian"},
+            {"code": "sn", "name": "Shona"},
+            {"code": "so", "name": "Somali"},
+            {"code": "sq", "name": "Albanian"},
+            {"code": "sr", "name": "Serbian"},
+            {"code": "su", "name": "Sundanese"},
+            {"code": "sv", "name": "Swedish"},
+            {"code": "sw", "name": "Swahili"},
+            {"code": "ta", "name": "Tamil"},
+            {"code": "te", "name": "Telugu"},
+            {"code": "tg", "name": "Tajik"},
+            {"code": "th", "name": "Thai"},
+            {"code": "tk", "name": "Turkmen"},
+            {"code": "tl", "name": "Tagalog"},
+            {"code": "tr", "name": "Turkish"},
+            {"code": "tt", "name": "Tatar"},
+            {"code": "uk", "name": "Ukrainian"},
+            {"code": "ur", "name": "Urdu"},
+            {"code": "uz", "name": "Uzbek"},
+            {"code": "vi", "name": "Vietnamese"},
+            {"code": "yi", "name": "Yiddish"},
+            {"code": "yo", "name": "Yoruba"},
+            {"code": "zh", "name": "Chinese"}
+        ]
+
+# Initialize Whisper service
+whisper_service = WhisperService()
+
 # Authentication Functions
 def create_access_token(data: dict):
     """Create JWT access token"""
