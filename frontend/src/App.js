@@ -3602,7 +3602,8 @@ function App() {
       fetchSimulationState(),
       fetchApiUsage(),
       fetchSummaries(),
-      fetchArchetypes()
+      fetchArchetypes(),
+      fetchDocuments() // Add document fetching
     ]);
     
     // Check for auto-report generation
