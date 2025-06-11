@@ -2790,5 +2790,49 @@ def test_enhanced_features():
     
     return all_tests_passed
 
+def test_voice_input_system():
+    """Test the voice input system with OpenAI Whisper integration"""
+    print("\n" + "="*80)
+    print("TESTING VOICE INPUT SYSTEM")
+    print("="*80)
+    
+    # Login first to get auth token for authenticated tests
+    test_login()
+    
+    # 1. Test speech languages endpoint
+    languages_success, languages_message = test_speech_languages()
+    
+    # 2. Test speech transcribe and summarize endpoint
+    transcribe_success, transcribe_message = test_speech_transcribe_and_summarize()
+    
+    # Print summary of all tests
+    print_summary()
+    
+    # Print final conclusion
+    print("\n" + "="*80)
+    print("VOICE INPUT SYSTEM ASSESSMENT")
+    print("="*80)
+    
+    all_tests_passed = (
+        languages_success and
+        transcribe_success
+    )
+    
+    if all_tests_passed:
+        print("✅ The Voice Input System is working correctly!")
+        print("✅ Speech Languages: System returns 99 supported languages including Croatian")
+        print("✅ Transcribe and Summarize: Endpoint accepts audio files and parameters")
+        print("✅ Croatian Language Support: Croatian is properly supported in the voice input system")
+        print("✅ Field-Specific AI Summarization: Different field types are properly handled")
+    else:
+        print("❌ The Voice Input System has issues:")
+        if not languages_success:
+            print(f"  - Speech Languages: {languages_message}")
+        if not transcribe_success:
+            print(f"  - Transcribe and Summarize: {transcribe_message}")
+    print("="*80)
+    
+    return all_tests_passed
+
 if __name__ == "__main__":
     test_enhanced_features()
