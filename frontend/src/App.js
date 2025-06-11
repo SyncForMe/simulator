@@ -412,51 +412,22 @@ const LoginModal = ({ isOpen, onClose }) => {
     setLoginLoading(true);
     setError('');
     
-    // Direct OAuth URL approach
+    // Use the proper OAuth flow for production
+    const redirectUri = window.location.origin + '/auth/callback';
     const googleAuthUrl = new URL('https://accounts.google.com/oauth/authorize');
+    
     googleAuthUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
-    googleAuthUrl.searchParams.set('redirect_uri', window.location.origin);
+    googleAuthUrl.searchParams.set('redirect_uri', redirectUri);
     googleAuthUrl.searchParams.set('response_type', 'code');
     googleAuthUrl.searchParams.set('scope', 'openid profile email');
     googleAuthUrl.searchParams.set('access_type', 'offline');
-    googleAuthUrl.searchParams.set('state', 'login');
+    googleAuthUrl.searchParams.set('state', Math.random().toString(36).substring(2, 15));
 
-    // Open Google OAuth in a popup
-    const popup = window.open(
-      googleAuthUrl.toString(),
-      'google-oauth',
-      'width=500,height=600,scrollbars=yes,resizable=yes'
-    );
-
-    // Listen for the popup to close or for a message
-    const checkClosed = setInterval(() => {
-      if (popup.closed) {
-        clearInterval(checkClosed);
-        setLoginLoading(false);
-        setError('Login was cancelled');
-      }
-    }, 1000);
-
-    // Listen for messages from popup
-    const messageListener = (event) => {
-      if (event.origin !== window.location.origin) return;
-      if (!event.data || typeof event.data !== 'object') return;
-      
-      if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-        clearInterval(checkClosed);
-        popup.close();
-        handleAuthSuccess(event.data.code);
-        window.removeEventListener('message', messageListener);
-      } else if (event.data.type === 'GOOGLE_AUTH_ERROR') {
-        clearInterval(checkClosed);
-        popup.close();
-        setError(event.data.error);
-        setLoginLoading(false);
-        window.removeEventListener('message', messageListener);
-      }
-    };
-
-    window.addEventListener('message', messageListener);
+    // Store the state for verification
+    localStorage.setItem('oauth_state', googleAuthUrl.searchParams.get('state'));
+    
+    // Redirect to Google OAuth
+    window.location.href = googleAuthUrl.toString();
   };
 
   const handleAuthSuccess = async (code) => {
