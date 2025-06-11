@@ -265,9 +265,9 @@ backend:
 
   - task: "Agent Voting System"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: true
     status_history:
@@ -280,6 +280,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Retested the agent voting system with approval and rejection scenarios. The system correctly rejected document creation in the rejection scenario where agents disagreed. However, the system failed to detect document creation triggers in the approval scenario, even though there was clear consensus among agents. The voting mechanism itself appears to be working, but the trigger detection component is not functioning properly."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of the agent voting system with four agents having different personalities and goals. Created approval and rejection scenarios with clear trigger phrases. The system correctly handles the rejection scenario, but fails to detect triggers in the approval scenario. The voting mechanism appears to be implemented, but the trigger detection logic is not working properly, preventing the system from creating documents even when agents agree. This issue is related to the universal topic support problem, as the system fails to recognize action triggers in non-medical contexts."
 
   - task: "Document Awareness in Conversations"
     implemented: true
