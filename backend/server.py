@@ -109,6 +109,51 @@ class ConversationHistory(BaseModel):
     title: str = ""  # Auto-generated or user-defined title
     tags: List[str] = []  # User can tag conversations
 
+# File Center Models for Action-Oriented Agent Behavior
+class DocumentMetadata(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    filename: str
+    authors: List[str] = []  # Agent names who contributed
+    category: str  # Protocol/Training/Research/Equipment/Budget
+    status: str = "Draft"  # Draft/Review/Approved/Implemented
+    description: str
+    keywords: List[str] = []
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    simulation_id: str = ""  # Links to the simulation where it was created
+    conversation_round: int = 0  # Which conversation round triggered creation
+    user_id: str = ""  # User who owns this simulation
+
+class Document(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    metadata: DocumentMetadata
+    content: str  # The actual document content in markdown format
+    created_by_agents: List[str] = []  # Agent IDs involved in creation
+    conversation_context: str = ""  # What conversation led to this document
+    action_trigger: str = ""  # The specific phrase that triggered creation
+
+class DocumentCreate(BaseModel):
+    title: str
+    category: str
+    description: str
+    content: str
+    keywords: List[str] = []
+    authors: List[str] = []
+    
+class DocumentResponse(BaseModel):
+    id: str
+    metadata: DocumentMetadata
+    content: str
+    preview: str = ""  # First 200 characters for listings
+
+class ActionTriggerResult(BaseModel):
+    should_create_document: bool
+    document_type: str = ""  # protocol/training/research
+    document_title: str = ""
+    trigger_phrase: str = ""
+    reasoning: str = ""
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
