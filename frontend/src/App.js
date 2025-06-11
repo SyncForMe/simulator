@@ -853,13 +853,11 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
             </div>
           )}
           
-          {!isSupported && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 mt-2">
-              <p className="text-yellow-700 text-xs flex items-center space-x-2">
-                <span>ℹ️</span>
-                <span>
-                  Voice input is not supported in this browser. Please use Chrome, Edge, or Safari for voice features.
-                </span>
+          {isTranscribing && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mt-2">
+              <p className="text-blue-700 text-xs flex items-center space-x-2">
+                <span>🔄</span>
+                <span>Transcribing audio... Please wait.</span>
               </p>
             </div>
           )}
