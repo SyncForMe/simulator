@@ -2000,13 +2000,24 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium mb-1">Goal</label>
-                  <textarea
-                    value={formData.goal}
-                    onChange={(e) => setFormData(prev => ({...prev, goal: e.target.value}))}
-                    className="w-full p-2 border rounded"
-                    rows="2"
-                    disabled={loading}
-                  />
+                  <div className="relative">
+                    <textarea
+                      value={formData.goal}
+                      onChange={(e) => setFormData(prev => ({...prev, goal: e.target.value}))}
+                      className="w-full p-2 pr-10 border rounded"
+                      rows="2"
+                      disabled={loading}
+                      placeholder="Describe the agent's main objective (voice input available)"
+                    />
+                    <div className="absolute right-2 top-2">
+                      <VoiceInput
+                        onTextUpdate={(text) => setFormData(prev => ({...prev, goal: text}))}
+                        fieldType="goal"
+                        size="small"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 <div>
