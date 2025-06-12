@@ -2071,12 +2071,13 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                 (What the agent remembers + real-world URLs for additional context)
               </span>
             </label>
-            <textarea
-              value={formData.memory_summary}
-              onChange={(e) => setFormData(prev => ({...prev, memory_summary: e.target.value}))}
-              className="w-full p-2 border rounded bg-blue-50"
-              rows="4"
-              placeholder="Key memories, insights, relationships, and important developments...
+            <div className="relative">
+              <textarea
+                value={formData.memory_summary}
+                onChange={(e) => setFormData(prev => ({...prev, memory_summary: e.target.value}))}
+                className="w-full p-2 pr-10 border rounded bg-blue-50"
+                rows="4"
+                placeholder="Key memories, insights, relationships, and important developments...
 
 🌐 Include URLs for real-world context:
 • Social media profiles (LinkedIn, Twitter)
@@ -2084,9 +2085,18 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
 • Company websites, personal blogs
 • Any web content that should influence this agent's thinking
 
-URLs will be automatically fetched and summarized!"
-              disabled={loading}
-            />
+URLs will be automatically fetched and summarized! (voice input available)"
+                disabled={loading}
+              />
+              <div className="absolute right-2 top-2">
+                <VoiceInput
+                  onTextUpdate={(text) => setFormData(prev => ({...prev, memory_summary: text}))}
+                  fieldType="memory"
+                  size="small"
+                  disabled={loading}
+                />
+              </div>
+            </div>
             <p className="text-xs text-blue-600 mt-1">
               💡 <strong>Pro tip:</strong> Add URLs to give agents real-world knowledge that will shape their responses
             </p>
