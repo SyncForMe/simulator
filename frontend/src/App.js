@@ -884,26 +884,9 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
   };
 
   return (
-    <div className="scenario-input bg-white rounded-lg shadow-md p-4 mb-4">
+    <div className="scenario-input bg-white rounded-lg shadow-md p-4 mb-6">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg font-bold">🎭 Custom Scenario</h3>
-        
-        {/* Language Selector for Voice Input */}
-        <div className="flex items-center space-x-2">
-          <label className="text-sm text-gray-600">Voice Language:</label>
-          <select
-            value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
-            disabled={isRecording || loading || justSubmitted}
-            className="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            {supportedLanguages.map(lang => (
-              <option key={lang.code} value={lang.code}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -912,8 +895,8 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
             <textarea
               value={scenario}
               onChange={(e) => setScenario(e.target.value)}
-              placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.') You can type or use voice input!"
-              className={`w-full p-3 border rounded-lg resize-none pr-16 ${
+              placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.')"
+              className={`w-full p-3 border rounded-lg resize-none pr-12 ${
                 justSubmitted ? 'bg-green-50 border-green-300' : 
                 isRecording ? 'bg-blue-50 border-blue-300' : ''
               }`}
@@ -921,8 +904,8 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
               disabled={loading || justSubmitted || randomLoading}
             />
             
-            {/* Voice Input Controls */}
-            <div className="absolute right-2 top-2 flex flex-col space-y-1">
+            {/* Voice Input Controls - Fixed positioning */}
+            <div className="absolute right-3 top-3 flex flex-col space-y-1">
               {!isRecording ? (
                 <button
                   type="button"
@@ -965,10 +948,10 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                   type="button"
                   onClick={clearScenario}
                   disabled={loading || justSubmitted || randomLoading || isRecording}
-                  className="bg-gray-500 hover:bg-gray-600 disabled:opacity-50 text-white px-2 py-1 rounded-lg transition-colors text-xs"
+                  className="w-6 h-6 bg-gray-500 hover:bg-gray-600 disabled:opacity-50 text-white rounded transition-colors flex items-center justify-center"
                   title="Clear text"
                 >
-                  <span>🗑️</span>
+                  <span className="text-xs">🗑️</span>
                 </button>
               )}
             </div>
