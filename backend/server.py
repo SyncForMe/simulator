@@ -5071,6 +5071,13 @@ async def delete_documents_bulk(
 ):
     """Delete multiple documents for the authenticated user"""
     try:
+        # Handle empty array case
+        if not document_ids:
+            return {
+                "message": "Successfully deleted 0 documents",
+                "deleted_count": 0
+            }
+            
         # Verify all documents belong to the user
         documents = await db.documents.find({
             "id": {"$in": document_ids},
