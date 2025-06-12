@@ -4,6 +4,8 @@ const AgentLibrary = ({ isOpen, onClose, onSelectAgent }) => {
   const [selectedSector, setSelectedSector] = useState('healthcare');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAgentDetails, setSelectedAgentDetails] = useState(null);
+  const [addedAgents, setAddedAgents] = useState(new Set());
+  const [addingAgent, setAddingAgent] = useState(null);
 
   // Pre-generated avatars for all 30 agents
   const avatarUrls = {
