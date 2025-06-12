@@ -185,14 +185,13 @@ const VoiceInput = ({
 
 // Animated Observer Logo Component
 const ObserverLogo = () => {
-          name: 'Dr. Sarah Chen',
-          title: 'Precision Medicine Specialist',
-          archetype: 'scientist',
-          goal: 'To advance personalized medicine through genomic research and clinical application.',
-          expertise: 'Precision Oncology, Genomic Medicine, Clinical Trials, Biomarkers, Pharmacogenomics',
-          background: 'Harvard-trained physician-scientist with 15 years in oncology research. Led breakthrough studies on BRCA mutations at Dana-Farber Cancer Institute. Currently heads precision medicine initiative at major academic medical center. Published 120+ peer-reviewed papers. Fluent in Mandarin, enabling collaboration with Chinese research institutions.',
-          memory_summary: 'Witnessed the first successful CRISPR gene therapy trial in 2019 that saved a 12-year-old with sickle cell disease. Lost her mentor Dr. Williams to pancreatic cancer in 2020, driving her obsession with early detection biomarkers. Successfully identified a novel mutation pattern in Asian populations that led to breakthrough treatment protocol. Failed initial clinical trial in 2021 taught her importance of patient stratification. Remembers the exact moment seeing microscopic cancer cells respond to personalized therapy for the first time. Knowledge Sources: https://www.cancer.gov/, https://www.genome.gov/, https://clinicaltrials.gov/, https://www.nejm.org/, https://www.nature.com/subjects/cancer',
-          avatar_url: null,
+  // Implementation of the Observer Logo component
+  return (
+    <div className="flex items-center">
+      <span className="text-4xl font-bold tracking-tight">Observer</span>
+    </div>
+  );
+};
           avatar_prompt: 'Professional Asian woman doctor in white lab coat, intelligent and focused expression, medical laboratory background'
         },
         {
