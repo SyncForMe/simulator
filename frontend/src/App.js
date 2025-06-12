@@ -875,16 +875,17 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
     if (e && e.preventDefault) {
       e.preventDefault();
     }
-    if (!scenario.trim()) return;
+    if (!scenario.trim() || !scenarioName.trim()) return;
     
     setLoading(true);
     setJustSubmitted(true);
-    await onSetScenario(scenario);
+    await onSetScenario(scenario, scenarioName);
     setLoading(false);
     
     // Keep the text visible for 3 seconds to show it was applied
     setTimeout(() => {
       setScenario("");
+      setScenarioName("");
       setJustSubmitted(false);
     }, 3000);
   };
@@ -895,18 +896,21 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
     // Select a random scenario
     const randomIndex = Math.floor(Math.random() * randomScenarios.length);
     const selectedScenario = randomScenarios[randomIndex];
+    const selectedScenarioName = randomScenarioNames[randomIndex];
     
-    // Set it in the textarea
+    // Set both scenario and name
     setScenario(selectedScenario);
+    setScenarioName(selectedScenarioName);
     
     // Apply it automatically
     setJustSubmitted(true);
-    await onSetScenario(selectedScenario);
+    await onSetScenario(selectedScenario, selectedScenarioName);
     setRandomLoading(false);
     
     // Keep the text visible for 3 seconds to show it was applied
     setTimeout(() => {
       setScenario("");
+      setScenarioName("");
       setJustSubmitted(false);
     }, 3000);
   };
