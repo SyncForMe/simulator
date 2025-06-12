@@ -4362,6 +4362,7 @@ function App() {
     // Load saved audio preference from localStorage or default to true
     return localStorage.getItem('audioNarrativeEnabled') !== 'false';
   });
+  const [showAgentLibrary, setShowAgentLibrary] = useState(false);
 
   const handleTestBackgrounds = async () => {
     setLoading(true);
