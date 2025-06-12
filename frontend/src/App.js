@@ -2006,7 +2006,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                       className="w-full p-2 pr-10 border rounded"
                       rows="2"
                       disabled={loading}
-                      placeholder="Describe the agent's main objective (voice input available)"
+                      placeholder="Describe the agent's main objective"
                     />
                     <div className="absolute right-2 top-2">
                       <VoiceInput
