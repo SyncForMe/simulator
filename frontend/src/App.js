@@ -150,28 +150,28 @@ const VoiceInput = ({
           type="button"
           onClick={startRecording}
           disabled={disabled}
-          className={`${sizeClasses[size]} bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-full transition-colors flex items-center justify-center`}
+          className={`${sizeClasses[size]} text-gray-600 hover:text-gray-800 disabled:opacity-50 transition-colors flex items-center justify-center`}
           title="Voice input"
         >
-          🎤
+          <MicrophoneIcon className="w-full h-full" />
         </button>
       ) : isRecording ? (
         <button
           type="button"
           onClick={stopRecording}
-          className={`${sizeClasses[size]} bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors animate-pulse flex items-center justify-center`}
+          className={`${sizeClasses[size]} text-red-600 hover:text-red-700 transition-colors animate-pulse flex items-center justify-center`}
           title="Stop recording"
         >
-          🎤
+          <MicrophoneIcon className="w-full h-full" />
         </button>
       ) : (
         <button
           type="button"
           disabled={true}
-          className={`${sizeClasses[size]} bg-gray-400 text-white rounded-full flex items-center justify-center`}
+          className={`${sizeClasses[size]} text-gray-400 flex items-center justify-center`}
           title="Processing..."
         >
-          🎤
+          <MicrophoneIcon className="w-full h-full" />
         </button>
       )}
       
