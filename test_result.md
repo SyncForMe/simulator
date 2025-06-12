@@ -32,6 +32,21 @@ backend:
         -agent: "testing"
         -comment: "Retested the document categories endpoint after the route ordering fix. The endpoint now works correctly and returns all expected categories (Protocol, Training, Research, Equipment, Budget, Reference). The issue with the endpoint being shadowed by /documents/{id} has been resolved."
 
+  - task: "POST /api/conversation/generate - Conversation with Scenario Name"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for conversation generation with scenario name"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the POST /api/conversation/generate endpoint to ensure conversations are tagged with scenario_name. Created test agents and generated a conversation after setting a custom scenario name. The endpoint correctly includes the scenario_name field in the response, and the conversation is properly tagged with the scenario name. This ensures that conversations can be grouped and organized by scenario name."
+
   - task: "POST /api/documents/analyze-conversation - Action Trigger Analysis"
     implemented: true
     working: true
