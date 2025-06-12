@@ -4412,8 +4412,18 @@ const FileCenter = ({ onRefresh }) => {
 
                       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                         {scenario.documents.map((doc) => (
-                          <div key={doc.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
-                            <div className="flex justify-between items-start mb-3">
+                          <div key={doc.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow relative">
+                            {/* Selection Checkbox */}
+                            <label className="absolute top-3 left-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedDocuments.has(doc.id)}
+                                onChange={() => handleSelectDocument(doc.id)}
+                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                              />
+                            </label>
+
+                            <div className="flex justify-between items-start mb-3 ml-8">
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-semibold text-gray-900 mb-2 truncate" title={doc.title}>
                                   {doc.title}
@@ -4424,20 +4434,20 @@ const FileCenter = ({ onRefresh }) => {
                               </div>
                             </div>
 
-                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                            <p className="text-sm text-gray-600 mb-3 line-clamp-2 ml-8">
                               {doc.description}
                             </p>
 
-                            <div className="text-xs text-gray-500 mb-3">
+                            <div className="text-xs text-gray-500 mb-3 ml-8">
                               <div>By: {doc.authors.join(', ')}</div>
                               <div>{formatDate(doc.created_at)}</div>
                             </div>
 
-                            <div className="bg-gray-50 p-2 rounded text-xs text-gray-600 mb-3 h-16 overflow-hidden">
+                            <div className="bg-gray-50 p-2 rounded text-xs text-gray-600 mb-3 h-16 overflow-hidden ml-8">
                               {doc.preview}
                             </div>
 
-                            <div className="flex space-x-2">
+                            <div className="flex space-x-2 ml-8">
                               <button
                                 onClick={() => handleDocumentView(doc)}
                                 className="flex-1 bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 transition-colors"
