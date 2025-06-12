@@ -281,7 +281,7 @@ def test_bulk_delete_functionality():
             "Conversation Bulk Delete",
             "/conversation-history/bulk",
             method="DELETE",
-            data={"conversation_ids": delete_ids},
+            data=delete_ids,  # Pass the list directly, not as a JSON object
             auth=True,
             expected_keys=["message", "deleted_count"]
         )
