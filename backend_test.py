@@ -332,7 +332,7 @@ def test_bulk_delete_functionality():
             "Document Bulk Delete",
             "/documents/bulk",
             method="DELETE",
-            params={"document_ids": delete_ids},  # Pass as query parameters
+            data=delete_ids,  # Pass as request body
             auth=True,
             expected_keys=["message", "deleted_count"]
         )
