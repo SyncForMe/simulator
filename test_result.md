@@ -989,12 +989,16 @@ backend:
 
 test_plan:
   current_focus:
-    - "GET /api/speech/languages - Voice Input Languages Endpoint"
-    - "POST /api/speech/transcribe-and-summarize - Voice Input Transcription and Summarization"
+    - "Custom Scenario Name Input Field"
+    - "Random Scenario with Auto-Generated Names"
+    - "Custom Scenario Creation"
+    - "Conversation Generation with Scenario Names"
+    - "My Conversations - Grouped by Scenario"
+    - "File Center Organization by Scenario"
   stuck_tasks:
-    - "GET /api/speech/languages - Voice Input Languages Endpoint"
-    - "POST /api/speech/transcribe-and-summarize - Voice Input Transcription and Summarization"
-    - "Croatian Language Support in Voice Input"
-    - "Field-Specific AI Summarization"
+    - "My Conversations - Grouped by Scenario"
+    - "File Center Organization by Scenario"
+  test_all: false
+  test_priority: "high_first"
   test_all: false
   test_priority: "high_first"
