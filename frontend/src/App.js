@@ -184,11 +184,7 @@ const VoiceInput = ({
 };
 
 // Agent Library Modal Component
-const AgentLibrary = ({ isOpen, onClose, onSelectAgent }) => {
-  const [selectedSector, setSelectedSector] = useState('healthcare');
-  const [selectedCategory, setSelectedCategory] = useState(null);
-
-  // Healthcare & Life Sciences categories with agents
+// Animated Observer Logo Component
   const healthcareCategories = [
     { 
       id: 'medical', 
