@@ -1,9 +1,9 @@
 backend:
   - task: "DELETE /api/conversation-history/bulk - Bulk Delete Conversations"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
@@ -13,6 +13,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Tested the DELETE /api/conversation-history/bulk endpoint. The endpoint is defined in the server.py file but returns a 404 Not Found error. The endpoint is expected to accept a list of conversation IDs in the request body and delete all conversations that belong to the authenticated user. However, the endpoint is not properly registered with the API router or is not accessible through the API. Created test conversations and attempted to delete them in bulk, but the request failed with a 404 error."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the DELETE /api/conversation-history/bulk endpoint. The endpoint is now working correctly. It accepts a list of conversation IDs in the request body and deletes all conversations that belong to the authenticated user. Authentication is properly enforced, with the endpoint returning a 403 Forbidden error for unauthenticated requests. The endpoint correctly handles empty arrays, returning a success message with deleted_count=0. It also properly handles non-existent conversation IDs, returning a 404 Not Found error with the message 'Some conversations not found or don't belong to user'. The endpoint returns the expected response with message and deleted_count fields."
 
   - task: "DELETE /api/documents/bulk - Bulk Delete Documents"
     implemented: true
