@@ -184,11 +184,7 @@ const VoiceInput = ({
 };
 
 // Animated Observer Logo Component
-    { 
-      id: 'medical', 
-      name: 'Medical', 
-      icon: '🩺', 
-      agents: [
+const ObserverLogo = () => {
         {
           id: 'sarah-chen',
           name: 'Dr. Sarah Chen',
