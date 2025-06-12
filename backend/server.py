@@ -373,6 +373,7 @@ class AgentCreate(BaseModel):
     goal: str
     expertise: str = ""
     background: str = ""
+    memory_summary: str = ""  # Memory and knowledge data
     avatar_prompt: str = ""  # Prompt for avatar generation
     avatar_url: str = ""  # Pre-generated avatar URL (from preview)
 
