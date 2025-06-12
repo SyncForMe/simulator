@@ -3890,6 +3890,50 @@ const ConversationHistoryViewer = () => {
               </button>
             </div>
 
+            {/* Bulk Selection Controls */}
+            {conversationHistory.length > 0 && !loading && (
+              <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      Select All ({conversationHistory.length})
+                    </span>
+                  </label>
+                  {selectedConversations.size > 0 && (
+                    <span className="text-sm text-blue-600 font-medium">
+                      {selectedConversations.size} selected
+                    </span>
+                  )}
+                </div>
+                
+                {selectedConversations.size > 0 && (
+                  <button
+                    onClick={handleDeleteSelected}
+                    disabled={deleting}
+                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50 text-sm flex items-center space-x-2"
+                  >
+                    {deleting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Deleting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>🗑️</span>
+                        <span>Delete Selected ({selectedConversations.size})</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            )}
+
             {loading ? (
               <div className="text-center py-8">Loading conversation history...</div>
             ) : conversationHistory.length === 0 ? (
@@ -3926,31 +3970,42 @@ const ConversationHistoryViewer = () => {
                         <div className="space-y-3 ml-4">
                           {conversations.map(conversation => (
                             <div key={conversation.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow bg-white">
-                              <div className="flex justify-between items-start mb-3">
-                                <div>
-                                  <h4 className="font-bold text-gray-800">
-                                    Round {conversation.round_number} - {conversation.time_period}
-                                  </h4>
-                                  <p className="text-sm text-gray-600">
-                                    Participants: {conversation.messages?.map(m => m.agent_name).filter((name, index, arr) => arr.indexOf(name) === index).join(', ') || 'N/A'}
-                                  </p>
-                                </div>
-                                <div className="text-xs text-gray-400">
-                                  {new Date(conversation.created_at).toLocaleString()}
-                                </div>
-                              </div>
-                              
-                              <div className="bg-gray-50 rounded p-3 max-h-40 overflow-y-auto">
-                                {conversation.messages?.slice(0, 3).map((message, index) => (
-                                  <div key={index} className="text-sm mb-2">
-                                    <strong>{message.agent_name}:</strong> {message.message}
+                              <div className="flex items-start space-x-3">
+                                <label className="flex items-center mt-1 cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedConversations.has(conversation.id)}
+                                    onChange={() => handleSelectConversation(conversation.id)}
+                                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                                  />
+                                </label>
+                                
+                                <div className="flex-1">
+                                  <div className="flex justify-between items-start mb-3">
+                                    <div>
+                                      <h4 className="font-bold text-gray-800">
+                                        Round {conversation.round_number} - {conversation.time_period}
+                                      </h4>
+                                      <p className="text-sm text-gray-600">
+                                        Participants: {conversation.messages?.map(m => m.agent_name).filter((name, index, arr) => arr.indexOf(name) === index).join(', ') || 'N/A'}
+                                      </p>
+                                    </div>
+                                    <div className="text-xs text-gray-400">
+                                      {new Date(conversation.created_at).toLocaleString()}
+                                    </div>
                                   </div>
-                                )) || (
-                                  <div className="text-sm text-gray-500">No messages available</div>
-                                )}
-                                {conversation.messages?.length > 3 && (
-                                  <div className="text-xs text-gray-500 italic">
-                                    ...and {conversation.messages.length - 3} more messages
+                                  
+                                  <div className="bg-gray-50 rounded p-3 max-h-40 overflow-y-auto">
+                                    {conversation.messages?.slice(0, 3).map((message, index) => (
+                                      <div key={index} className="text-sm mb-2">
+                                        <strong>{message.agent_name}:</strong> {message.message}
+                                      </div>
+                                    )) || (
+                                      <div className="text-sm text-gray-500">No messages available</div>
+                                    )}
+                                    {conversation.messages?.length > 3 && (
+                                      <div className="text-xs text-gray-500 italic">
+                                        ...and {conversation.messages.length - 3} more messages
                                   </div>
                                 )}
                               </div>
