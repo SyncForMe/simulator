@@ -4037,6 +4037,9 @@ const FileCenter = ({ onRefresh }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [documentSuggestions, setDocumentSuggestions] = useState([]);
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
+  const [selectedDocuments, setSelectedDocuments] = useState(new Set());
+  const [selectAll, setSelectAll] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   
   const categories = ["Protocol", "Training", "Research", "Equipment", "Budget", "Reference"];
 
@@ -4049,10 +4052,67 @@ const FileCenter = ({ onRefresh }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setScenarioDocuments(response.data);
+      setSelectedDocuments(new Set()); // Clear selections when refreshing
+      setSelectAll(false);
     } catch (error) {
       console.error('Error fetching documents by scenario:', error);
     }
     setLoading(false);
+  };
+
+  const handleSelectDocument = (documentId) => {
+    const newSelected = new Set(selectedDocuments);
+    if (newSelected.has(documentId)) {
+      newSelected.delete(documentId);
+    } else {
+      newSelected.add(documentId);
+    }
+    setSelectedDocuments(newSelected);
+    
+    // Calculate total documents across all scenarios
+    const totalDocuments = scenarioDocuments.reduce((total, scenario) => total + scenario.documents.length, 0);
+    setSelectAll(newSelected.size === totalDocuments);
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedDocuments(new Set());
+      setSelectAll(false);
+    } else {
+      // Select all documents across all scenarios
+      const allDocumentIds = scenarioDocuments.flatMap(scenario => 
+        scenario.documents.map(doc => doc.id)
+      );
+      setSelectedDocuments(new Set(allDocumentIds));
+      setSelectAll(true);
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedDocuments.size === 0) return;
+    
+    const confirmMessage = `Are you sure you want to delete ${selectedDocuments.size} document${selectedDocuments.size > 1 ? 's' : ''}? This action cannot be undone.`;
+    if (!window.confirm(confirmMessage)) return;
+    
+    setDeleting(true);
+    try {
+      const response = await axios.delete(`${API}/documents/bulk`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: Array.from(selectedDocuments)
+      });
+      
+      console.log(`Successfully deleted ${response.data.deleted_count} documents`);
+      
+      // Refresh the document list
+      await fetchScenarioDocuments();
+      
+      alert(`Successfully deleted ${response.data.deleted_count} document${response.data.deleted_count > 1 ? 's' : ''}`);
+      
+    } catch (error) {
+      console.error('Error deleting documents:', error);
+      alert('Failed to delete documents. Please try again.');
+    }
+    setDeleting(false);
   };
 
   const fetchDocumentSuggestions = async (documentId) => {
