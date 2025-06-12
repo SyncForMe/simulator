@@ -4213,6 +4213,80 @@ async def get_document_categories():
         ]
     }
 
+@api_router.get("/documents/by-scenario")
+async def get_documents_by_scenario(
+    current_user: User = Depends(get_current_user)
+):
+    """Get documents organized by scenario"""
+    try:
+        # Get all user documents AND system-generated documents (empty user_id)
+        docs = await db.documents.find({
+            "$or": [
+                {"metadata.user_id": current_user.id},
+                {"metadata.user_id": ""},  # System-generated documents from conversations
+                {"metadata.user_id": {"$exists": False}}  # Documents without user_id field
+            ]
+        }).sort("metadata.created_at", -1).to_list(1000)
+        
+        # Get all scenarios from simulation state history or use document conversation context
+        scenarios = {}
+        
+        for doc in docs:
+            # Try to get scenario from simulation state or conversation context
+            scenario_name = "Unknown Scenario"
+            
+            # Try to get scenario from conversation
+            if doc.get("conversation_context"):
+                # This is a simplified approach - in production, you might want to store scenario directly
+                scenario_name = doc.get("metadata", {}).get("simulation_id", "Unknown Scenario")
+            
+            # Try to extract scenario from description or use a default
+            if "scenario" in doc.get("metadata", {}).get("description", "").lower():
+                # Extract scenario information if available in description
+                pass
+            
+            # For now, group by conversation round or use a general scenario
+            conversation_round = doc.get("metadata", {}).get("conversation_round", 0)
+            if conversation_round > 0:
+                scenario_name = f"Simulation Day {(conversation_round // 3) + 1}"
+            else:
+                scenario_name = "General Documents"
+            
+            if scenario_name not in scenarios:
+                scenarios[scenario_name] = []
+            
+            # Create simplified document info
+            doc_info = {
+                "id": doc["id"],
+                "title": doc["metadata"]["title"],
+                "category": doc["metadata"]["category"],
+                "description": doc["metadata"]["description"],
+                "authors": doc["metadata"]["authors"],
+                "created_at": doc["metadata"]["created_at"],
+                "filename": doc["metadata"]["filename"],
+                "preview": doc["content"][:200] + "..." if len(doc["content"]) > 200 else doc["content"]
+            }
+            
+            scenarios[scenario_name].append(doc_info)
+        
+        # Convert to list format for frontend
+        scenario_list = []
+        for scenario_name, documents in scenarios.items():
+            scenario_list.append({
+                "scenario": scenario_name,
+                "document_count": len(documents),
+                "documents": documents
+            })
+        
+        # Sort scenarios by document count (most active first)
+        scenario_list.sort(key=lambda x: x["document_count"], reverse=True)
+        
+        return scenario_list
+        
+    except Exception as e:
+        logging.error(f"Error getting documents by scenario: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get documents by scenario: {str(e)}")
+
 @api_router.get("/documents/{document_id}")
 async def get_document(
     document_id: str,
