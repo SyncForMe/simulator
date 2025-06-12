@@ -380,11 +380,11 @@ backend:
 frontend:
   - task: "Agent Library Button and Modal"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -392,6 +392,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Tested the Agent Library functionality. Verified that: 1) The purple '📚 Agent Library' button is correctly positioned under the Agent Profiles section, 2) The button has proper styling with purple background and white text, 3) Clicking the button opens a large modal window with a purple gradient header and '📚 Agent Library' title, 4) The modal has a subtitle 'Choose from professionally crafted agent profiles', 5) The close button (×) is visible in the top-right corner, 6) The modal has a left sidebar with 'SECTORS' header and 'Healthcare & Life Sciences' sector with proper purple styling when selected, 7) The main content area shows '🏥 Healthcare & Life Sciences' header and a responsive grid of category cards (2-4 columns depending on screen size), 8) All 10 healthcare categories are displayed with correct icons (Medical, Pharmaceutical, Biotechnology, Veterinary, Public Health, Nutrition & Dietetics, Physical Therapy, Nursing, Medical Research, Epidemiology), 9) Clicking on a category shows 'Agents Coming Soon' message, category name in header, '← Back' button, and explanatory text about future agent availability, 10) Navigation works correctly - back button returns to categories view, close button closes the modal, clicking outside the modal does not close it (as intended). The Agent Library provides a professional interface ready for future agent data population."
+        -working: false
+        -agent: "testing"
+        -comment: "Attempted to test the Agent Library functionality but encountered issues. The '📚 Agent Library' button is visible in the UI with proper styling (purple background, white text), but clicking the button does not open the modal. Multiple approaches were tried including direct clicks, JavaScript execution, and using various selectors, but the modal did not appear. Code review shows that the AgentLibrary component is defined in App.js and should display healthcare categories and agents, but the functionality appears to be partially implemented or not properly connected. No JavaScript errors were detected during testing. The implementation includes the button and the component code, but the click handler may not be properly wired up."
 
   - task: "Microphone Buttons and Custom Scenario Layout"
     implemented: true
