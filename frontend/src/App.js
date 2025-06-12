@@ -288,7 +288,9 @@ const ObserverLogo = () => {
     </div>
   );
 };
-      agents: [
+
+// Auth Context
+const AuthContext = createContext();
         {
           id: 'elena-vasquez',
           name: 'Dr. Elena Vasquez',
