@@ -2298,17 +2298,24 @@ async def root():
 async def set_scenario(request: ScenarioRequest):
     """Set a custom scenario for the simulation"""
     scenario = request.scenario.strip()
+    scenario_name = request.scenario_name.strip()
+    
     if not scenario:
         raise HTTPException(status_code=400, detail="Scenario text required")
+    if not scenario_name:
+        raise HTTPException(status_code=400, detail="Scenario name required")
     
-    # Update simulation state with new scenario
+    # Update simulation state with new scenario and name
     await db.simulation_state.update_one(
         {},
-        {"$set": {"scenario": scenario}},
+        {"$set": {
+            "scenario": scenario,
+            "scenario_name": scenario_name
+        }},
         upsert=True
     )
     
-    return {"message": "Scenario updated", "scenario": scenario}
+    return {"message": "Scenario updated", "scenario": scenario, "scenario_name": scenario_name}
 
 @api_router.post("/simulation/pause")
 async def pause_simulation():
