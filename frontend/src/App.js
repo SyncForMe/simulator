@@ -916,21 +916,19 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                   type="button"
                   onClick={startRecording}
                   disabled={loading || justSubmitted || randomLoading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-2 py-1 rounded-lg transition-colors text-xs flex items-center space-x-1"
-                  title={`Start voice input (${supportedLanguages.find(l => l.code === selectedLanguage)?.name})`}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-2 py-1 rounded-lg transition-colors text-sm flex items-center justify-center"
+                  title="Voice input"
                 >
-                  <span>🎤</span>
-                  <span className="text-xs">Speak</span>
+                  🎤
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={stopRecording}
-                  className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded-lg transition-colors text-xs animate-pulse flex items-center space-x-1"
-                  title="Stop voice input"
+                  className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded-lg transition-colors text-sm animate-pulse flex items-center justify-center"
+                  title="Stop recording"
                 >
-                  <span>⏹️</span>
-                  <span>Stop</span>
+                  🎤
                 </button>
               )}
               
