@@ -498,16 +498,22 @@ const AgentLibrary = ({ isOpen, onClose, onSelectAgent }) => {
       const result = await onSelectAgent(agentWithAvatar);
       
       if (result && result.success) {
+        // Clear any existing timeout for this agent
+        if (timeoutRefs.current[agent.id]) {
+          clearTimeout(timeoutRefs.current[agent.id]);
+        }
+        
         // Mark agent as added
         setAddedAgents(prev => new Set([...prev, agent.id]));
         
         // Remove the "added" status after 3 seconds
-        setTimeout(() => {
+        timeoutRefs.current[agent.id] = setTimeout(() => {
           setAddedAgents(prev => {
             const newSet = new Set(prev);
             newSet.delete(agent.id);
             return newSet;
           });
+          delete timeoutRefs.current[agent.id];
         }, 3000);
       }
     } catch (error) {
