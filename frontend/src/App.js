@@ -138,7 +138,7 @@ const VoiceInput = ({
           onClick={startRecording}
           disabled={disabled}
           className={`${sizeClasses[size]} bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-full transition-colors flex items-center justify-center`}
-          title={`Voice input for ${fieldType}`}
+          title="Voice input"
         >
           🎤
         </button>
@@ -149,12 +149,17 @@ const VoiceInput = ({
           className={`${sizeClasses[size]} bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors animate-pulse flex items-center justify-center`}
           title="Stop recording"
         >
-          ⏹️
+          🎤
         </button>
       ) : (
-        <div className={`${sizeClasses[size]} bg-blue-100 text-blue-600 rounded-full flex items-center justify-center`} title="Processing...">
-          <div className="animate-spin">🔄</div>
-        </div>
+        <button
+          type="button"
+          disabled={true}
+          className={`${sizeClasses[size]} bg-gray-400 text-white rounded-full flex items-center justify-center`}
+          title="Processing..."
+        >
+          🎤
+        </button>
       )}
       
       {error && (
