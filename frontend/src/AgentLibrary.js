@@ -484,14 +484,36 @@ const AgentLibrary = ({ isOpen, onClose, onSelectAgent }) => {
   ];
 
   const handleAddAgent = async (agent) => {
-    // Prepare agent with pre-generated avatar
-    const agentWithAvatar = {
-      ...agent,
-      avatar_url: agent.avatar_url || null
-    };
-    
-    // Call the parent function
-    await onSelectAgent(agentWithAvatar);
+    try {
+      setAddingAgent(agent.id);
+      
+      // Prepare agent with pre-generated avatar
+      const agentWithAvatar = {
+        ...agent,
+        avatar_url: agent.avatar_url || null
+      };
+      
+      // Call the parent function
+      const result = await onSelectAgent(agentWithAvatar);
+      
+      if (result && result.success) {
+        // Mark agent as added
+        setAddedAgents(prev => new Set([...prev, agent.id]));
+        
+        // Remove the "added" status after 3 seconds
+        setTimeout(() => {
+          setAddedAgents(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(agent.id);
+            return newSet;
+          });
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Error adding agent:', error);
+    } finally {
+      setAddingAgent(null);
+    }
   };
 
   // Agent Details Modal Component
