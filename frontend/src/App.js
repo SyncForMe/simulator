@@ -923,6 +923,28 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Scenario Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={scenarioName}
+            onChange={(e) => setScenarioName(e.target.value)}
+            placeholder="Enter a name for this scenario... (e.g., 'Climate Emergency Summit')"
+            className={`w-full p-3 border rounded-lg ${
+              justSubmitted ? 'bg-green-50 border-green-300' : ''
+            }`}
+            disabled={loading || justSubmitted || randomLoading}
+          />
+          {scenarioName.trim() === '' && scenario.trim() !== '' && (
+            <p className="text-red-500 text-xs mt-1">Scenario name is required</p>
+          )}
+        </div>
+        
+        <div className="mb-3">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Scenario Description <span className="text-red-500">*</span>
+          </label>
           <div className="relative">
             <textarea
               value={scenario}
