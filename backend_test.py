@@ -407,7 +407,7 @@ def test_bulk_delete_functionality():
         "Conversation Bulk Delete with Empty Array",
         "/conversation-history/bulk",
         method="DELETE",
-        data={"conversation_ids": []},
+        data=[],  # Pass empty list directly
         auth=True,
         expected_keys=["message", "deleted_count"]
     )
