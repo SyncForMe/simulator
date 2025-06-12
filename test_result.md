@@ -678,6 +678,21 @@ frontend:
         -agent: "testing"
         -comment: "Tested the info icon hover tooltips for the team builder buttons. Based on code review and UI inspection: 1) The 'Create Crypto Team' button has an info icon next to it (not descriptive text below), 2) The '🎲 Generate Random Team' button has an info icon next to it (not descriptive text below), 3) The tooltips are properly styled with dark background (bg-gray-800) and white text (text-white), 4) The info icons have hover effects defined in CSS (.info-icon:hover) that change color and scale when hovered over, 5) The layout is clean with buttons and info icons aligned properly. The tooltip for 'Create Crypto Team' shows: 'Creates 3 crypto experts: Mark (Marketing Veteran), Alex (DeFi Product Leader), Dex (Trend-Spotting Generalist)'. The tooltip for '🎲 Generate Random Team' shows: 'Creates 4 agents with dramatically different professional backgrounds to showcase how background influences thinking'. No descriptive text is shown below the buttons as required."
         
+  - task: "File Center - Display System-Generated Documents"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for File Center to display system-generated documents"
+        -working: false
+        -agent: "testing"
+        -comment: "Tested the File Center functionality to verify if the sample documents are appearing. After logging in and opening the File Center, I found that no documents are displayed. The File Center shows '0 documents' in the stats section and displays the 'No Documents Found' message. I tested all category filters (Protocol, Training, Research, Equipment, Budget, Reference) but no documents were found in any category. The backend code appears to be correctly implemented to include system-generated documents (with empty user_id) in the query, but the sample documents are not appearing in the File Center. This suggests that either the sample documents were not successfully created in the database or there might be an issue with how they're being queried."
+
   - task: "Use Agent Functionality from Saved Agents Library"
     implemented: true
     working: true
