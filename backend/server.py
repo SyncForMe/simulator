@@ -4595,9 +4595,13 @@ async def get_documents_by_scenario(
 ):
     """Get documents organized by scenario"""
     try:
-        # Get all user documents
+        # Get all user documents AND system-generated documents (empty user_id)
         docs = await db.documents.find({
-            "metadata.user_id": current_user.id
+            "$or": [
+                {"metadata.user_id": current_user.id},
+                {"metadata.user_id": ""},  # System-generated documents from conversations
+                {"metadata.user_id": {"$exists": False}}  # Documents without user_id field
+            ]
         }).sort("metadata.created_at", -1).to_list(1000)
         
         # Get all scenarios from simulation state history or use document conversation context
