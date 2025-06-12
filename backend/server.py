@@ -4294,9 +4294,14 @@ async def get_document(
 ):
     """Get a specific document by ID"""
     try:
+        # Get the document - include user's documents AND system-generated documents
         doc = await db.documents.find_one({
             "id": document_id,
-            "metadata.user_id": current_user.id
+            "$or": [
+                {"metadata.user_id": current_user.id},
+                {"metadata.user_id": ""},  # System-generated documents
+                {"metadata.user_id": {"$exists": False}}  # Documents without user_id field
+            ]
         })
         
         if not doc:
