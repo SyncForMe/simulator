@@ -680,7 +680,7 @@ frontend:
         
   - task: "File Center - Display System-Generated Documents"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
@@ -692,6 +692,9 @@ frontend:
         -working: false
         -agent: "testing"
         -comment: "Tested the File Center functionality to verify if the sample documents are appearing. After logging in and opening the File Center, I found that no documents are displayed. The File Center shows '0 documents' in the stats section and displays the 'No Documents Found' message. I tested all category filters (Protocol, Training, Research, Equipment, Budget, Reference) but no documents were found in any category. The backend code appears to be correctly implemented to include system-generated documents (with empty user_id) in the query, but the sample documents are not appearing in the File Center. This suggests that either the sample documents were not successfully created in the database or there might be an issue with how they're being queried."
+        -working: true
+        -agent: "testing"
+        -comment: "Fixed the issue with the File Center not displaying system-generated documents. The problem was in the route ordering in the backend server.py file. The '/documents/{document_id}' route was defined before the '/documents/by-scenario' route, causing the latter to be shadowed. When the server received a request for '/documents/by-scenario', it tried to match it to the '/documents/{document_id}' route with document_id = 'by-scenario'. Fixed this by reordering the routes to put '/documents/by-scenario' before '/documents/{document_id}'. Also updated the document retrieval endpoint to include system-generated documents by using an $or query that includes documents with empty user_id or missing user_id field. Created two sample system-generated documents ('Agent Research Protocol' by Dr. Sarah Chen and 'Emergency Response Plan' by Dr. Marcus Rodriguez) to verify the fix. The File Center now correctly displays these system-generated documents, and they can be filtered by category (Research and Protocol) and searched by title or content. The document details view also works correctly, showing the proper markdown formatting and metadata."
 
   - task: "Use Agent Functionality from Saved Agents Library"
     implemented: true
