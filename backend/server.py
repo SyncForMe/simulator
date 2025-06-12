@@ -3084,6 +3084,7 @@ async def generate_conversation():
         round_number=conversation_count + 1,
         time_period=f"Day {day} - {time_period}",
         scenario=scenario,
+        scenario_name=scenario_name,
         messages=messages
     )
     
