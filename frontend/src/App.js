@@ -182,6 +182,187 @@ const VoiceInput = ({
   );
 };
 
+// Agent Library Modal Component
+const AgentLibrary = ({ isOpen, onClose, onSelectAgent }) => {
+  const [selectedSector, setSelectedSector] = useState('healthcare');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  // Healthcare & Life Sciences categories
+  const healthcareCategories = [
+    { id: 'medical', name: 'Medical', icon: '🩺', agents: [] },
+    { id: 'pharmaceutical', name: 'Pharmaceutical', icon: '💊', agents: [] },
+    { id: 'biotechnology', name: 'Biotechnology', icon: '🧬', agents: [] },
+    { id: 'veterinary', name: 'Veterinary', icon: '🐕‍🦺', agents: [] },
+    { id: 'public-health', name: 'Public Health', icon: '🏥', agents: [] },
+    { id: 'nutrition', name: 'Nutrition & Dietetics', icon: '🥗', agents: [] },
+    { id: 'physical-therapy', name: 'Physical Therapy', icon: '🏃‍♂️', agents: [] },
+    { id: 'nursing', name: 'Nursing', icon: '👩‍⚕️', agents: [] },
+    { id: 'medical-research', name: 'Medical Research', icon: '🔬', agents: [] },
+    { id: 'epidemiology', name: 'Epidemiology', icon: '📊', agents: [] }
+  ];
+
+  const sectors = [
+    { 
+      id: 'healthcare', 
+      name: 'Healthcare & Life Sciences', 
+      icon: '🏥',
+      categories: healthcareCategories
+    }
+  ];
+
+  if (!isOpen) return null;
+
+  const currentSector = sectors.find(s => s.id === selectedSector);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold">📚 Agent Library</h2>
+              <p className="text-purple-100 mt-1">Choose from professionally crafted agent profiles</p>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-white hover:text-gray-200 text-2xl w-8 h-8 flex items-center justify-center"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+
+        <div className="flex h-[70vh]">
+          {/* Left Sidebar - Sectors */}
+          <div className="w-64 bg-gray-50 border-r border-gray-200 p-4">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Sectors</h3>
+            <div className="space-y-2">
+              {sectors.map(sector => (
+                <button
+                  key={sector.id}
+                  onClick={() => {
+                    setSelectedSector(sector.id);
+                    setSelectedCategory(null);
+                  }}
+                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                    selectedSector === sector.id
+                      ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                      : 'hover:bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-lg">{sector.icon}</span>
+                    <span className="font-medium text-sm">{sector.name}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 p-6">
+            {!selectedCategory ? (
+              /* Categories Grid */
+              <div>
+                <div className="flex items-center mb-6">
+                  <span className="text-2xl mr-3">{currentSector?.icon}</span>
+                  <h3 className="text-xl font-bold text-gray-800">{currentSector?.name}</h3>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {currentSector?.categories.map(category => (
+                    <button
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category)}
+                      className="bg-white border border-gray-200 rounded-lg p-4 hover:border-purple-300 hover:shadow-md transition-all duration-200 text-center group"
+                    >
+                      <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                        {category.icon}
+                      </div>
+                      <h4 className="font-semibold text-gray-800 text-sm mb-1">{category.name}</h4>
+                      <p className="text-xs text-gray-500">
+                        {category.agents.length} {category.agents.length === 1 ? 'agent' : 'agents'}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <span className="text-blue-600 text-lg">💡</span>
+                    <div>
+                      <h4 className="font-semibold text-blue-800 mb-1">Coming Soon</h4>
+                      <p className="text-blue-700 text-sm">
+                        We're building a comprehensive library of professional agent profiles. 
+                        Click on any category above to explore available agents in that field.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Agents in Selected Category */
+              <div>
+                <div className="flex items-center mb-6">
+                  <button
+                    onClick={() => setSelectedCategory(null)}
+                    className="text-purple-600 hover:text-purple-800 mr-4 p-1"
+                  >
+                    ← Back
+                  </button>
+                  <span className="text-2xl mr-3">{selectedCategory.icon}</span>
+                  <h3 className="text-xl font-bold text-gray-800">{selectedCategory.name}</h3>
+                </div>
+
+                {selectedCategory.agents.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="text-6xl mb-4 opacity-50">{selectedCategory.icon}</div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">Agents Coming Soon</h4>
+                    <p className="text-gray-600 max-w-md mx-auto">
+                      Professional {selectedCategory.name.toLowerCase()} agents will be available here. 
+                      Each agent will have specialized knowledge, experience, and personality traits 
+                      relevant to this field.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {selectedCategory.agents.map(agent => (
+                      <div
+                        key={agent.id}
+                        className="bg-white border border-gray-200 rounded-lg p-4 hover:border-purple-300 hover:shadow-md transition-all duration-200"
+                      >
+                        <div className="flex items-center space-x-3 mb-3">
+                          <img
+                            src={agent.avatar_url || '/default-avatar.png'}
+                            alt={agent.name}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                          <div>
+                            <h4 className="font-semibold text-gray-800">{agent.name}</h4>
+                            <p className="text-sm text-gray-600">{agent.title}</p>
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-3">{agent.description}</p>
+                        <button
+                          onClick={() => onSelectAgent(agent)}
+                          className="w-full bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700 text-sm"
+                        >
+                          Add to Simulation
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Animated Observer Logo Component
 const ObserverLogo = () => {
   const pupilControls = useAnimationControls();
