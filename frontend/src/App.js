@@ -4713,9 +4713,12 @@ function App() {
   };
 
   // Control functions
-  const handleSetScenario = async (scenario) => {
+  const handleSetScenario = async (scenario, scenarioName) => {
     try {
-      const response = await axios.post(`${API}/simulation/set-scenario`, { scenario: scenario });
+      const response = await axios.post(`${API}/simulation/set-scenario`, { 
+        scenario: scenario,
+        scenario_name: scenarioName 
+      });
       console.log('Scenario set response:', response.data);
       await fetchSimulationState();
     } catch (error) {
