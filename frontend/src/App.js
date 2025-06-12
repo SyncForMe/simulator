@@ -5276,6 +5276,7 @@ function App() {
               onInitResearchStation={handleInitResearchStation}
               onTestBackgrounds={handleTestBackgrounds}
               onCreateAgent={handleCreateAgent}
+              onShowAgentLibrary={() => setShowAgentLibrary(true)}
             />
             
             <div className="agent-grid">
