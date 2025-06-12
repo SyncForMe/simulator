@@ -749,12 +749,23 @@ const AgentLibrary = ({ isOpen, onClose, onSelectAgent }) => {
                             📖 View Full Details
                           </button>
                           
-                          <button
-                            onClick={() => handleAddAgent(agent)}
-                            className="w-full px-4 py-2 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                          >
-                            Add to Simulation
-                          </button>
+                          {addedAgents.has(agent.id) ? (
+                            <div className="w-full px-4 py-2 text-sm bg-green-100 text-green-800 rounded-lg border border-green-200 text-center font-medium">
+                              ✅ Added
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleAddAgent(agent)}
+                              disabled={addingAgent === agent.id}
+                              className={`w-full px-4 py-2 text-sm rounded-lg transition-colors ${
+                                addingAgent === agent.id
+                                  ? 'bg-gray-400 text-white cursor-not-allowed'
+                                  : 'bg-purple-600 text-white hover:bg-purple-700'
+                              }`}
+                            >
+                              {addingAgent === agent.id ? 'Adding...' : 'Add to Simulation'}
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}
