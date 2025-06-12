@@ -4376,6 +4376,53 @@ const FileCenter = ({ onRefresh }) => {
                   </div>
                 ) : null;
               })()}
+
+              {/* Bulk Selection Controls */}
+              {(() => {
+                const totalDocuments = filteredScenarios.reduce((total, scenario) => total + scenario.documents.length, 0);
+                return totalDocuments > 0 && !loading ? (
+                  <div className="mt-4 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                          className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          Select All ({totalDocuments})
+                        </span>
+                      </label>
+                      {selectedDocuments.size > 0 && (
+                        <span className="text-sm text-blue-600 font-medium">
+                          {selectedDocuments.size} selected
+                        </span>
+                      )}
+                    </div>
+                    
+                    {selectedDocuments.size > 0 && (
+                      <button
+                        onClick={handleDeleteSelected}
+                        disabled={deleting}
+                        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50 text-sm flex items-center space-x-2"
+                      >
+                        {deleting ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <span>Deleting...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>🗑️</span>
+                            <span>Delete Selected ({selectedDocuments.size})</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                ) : null;
+              })()}
             </div>
 
             {/* Content */}
