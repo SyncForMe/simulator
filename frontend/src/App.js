@@ -3322,7 +3322,7 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
                       onChange={(e) => setFormData(prev => ({...prev, goal: e.target.value}))}
                       className="w-full p-2 pr-10 border rounded"
                       rows="2"
-                      placeholder="What does this agent want to achieve? (voice input available)"
+                      placeholder="What does this agent want to achieve?"
                       required
                     />
                     <div className="absolute right-2 top-2">
