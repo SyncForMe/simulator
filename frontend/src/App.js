@@ -848,6 +848,29 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
     "Advanced brain-computer interfaces have enabled direct neural communication. Neuroscientists and ethicists discuss the implications for human consciousness and privacy."
   ];
 
+  const randomScenarioNames = [
+    "Tech Data Breach Crisis",
+    "Deep Space Signal Analysis",
+    "AI Revolution Ethics Debate",
+    "Global Pandemic Response",
+    "Climate Emergency Summit",
+    "Crypto Market Collapse",
+    "Pharma Whistleblower Case",
+    "Ancient Artifacts Discovery",
+    "Social Media Manipulation",
+    "Quantum Computing Security",
+    "Volcanic Eruption Protocol",
+    "Gene Editing Ethics",
+    "Marine Ecosystem Crisis",
+    "AGI Lab Breakthrough",
+    "Global Bee Colony Crisis",
+    "Space Debris Management",
+    "Deepfake Diplomatic Crisis",
+    "Autonomous Vehicle Failure",
+    "Global Movement Analysis",
+    "Neural Interface Ethics"
+  ];
+
   const handleSubmit = async (e) => {
     if (e && e.preventDefault) {
       e.preventDefault();
