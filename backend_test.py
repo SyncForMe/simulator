@@ -378,7 +378,7 @@ def test_bulk_delete_functionality():
         "Conversation Bulk Delete with Non-Existent IDs",
         "/conversation-history/bulk",
         method="DELETE",
-        params={"conversation_ids": non_existent_ids},  # Pass as query parameters
+        data=non_existent_ids,  # Pass as request body
         auth=True,
         expected_status=404
     )
