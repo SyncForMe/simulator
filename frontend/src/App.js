@@ -49,44 +49,43 @@ const VoiceInput = ({
   );
 
   const startRecording = async () => {
+    // Check authentication and provide helpful feedback
+    if (!token || isDisabledDueToAuth) {
+      alert('🎤 Voice input requires authentication.\n\nPlease use "Continue as Guest" button in the top navigation to enable voice input for testing.');
+      return;
+    }
+    
     try {
       setError("");
       
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: {
-          sampleRate: 16000,
-          channelCount: 1,
-          echoCancellation: true,
-          noiseSuppression: true
-        } 
+        audio: true 
       });
-
-      const recorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
-      });
-
-      const chunks = [];
       
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data);
-        }
+      const mediaRecorder = new MediaRecorder(stream);
+      setMediaRecorder(mediaRecorder);
+      
+      const audioChunks = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
       };
-
-      recorder.onstop = async () => {
-        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
         await processAudio(audioBlob);
+        
+        // Stop all tracks to release microphone
         stream.getTracks().forEach(track => track.stop());
       };
-
-      recorder.start();
-      setMediaRecorder(recorder);
+      
+      mediaRecorder.start();
       setIsRecording(true);
-
+      
     } catch (error) {
       console.error('Error starting recording:', error);
       if (error.name === 'NotAllowedError') {
-        setError("Microphone access denied");
+        setError("Microphone access denied. Please allow microphone access and try again.");
       } else if (error.name === 'NotFoundError') {
         setError("No microphone found");
       } else {
