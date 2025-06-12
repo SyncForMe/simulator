@@ -183,9 +183,6 @@ const VoiceInput = ({
   );
 };
 
-// Agent Library Modal Component
-// (Now imported from ./AgentLibrary.js)
-
 // Animated Observer Logo Component
     { 
       id: 'medical', 
