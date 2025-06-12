@@ -31,7 +31,7 @@ test_results = {
 auth_token = None
 test_user_id = None
 
-def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None, auth=False, headers=None):
+def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None, auth=False, headers=None, params=None):
     """Run a test against the specified endpoint"""
     url = f"{API_URL}{endpoint}"
     print(f"\n{'='*80}\nTesting: {test_name} ({method} {url})")
@@ -45,13 +45,16 @@ def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, 
     
     try:
         if method == "GET":
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, params=params)
         elif method == "POST":
-            response = requests.post(url, json=data, headers=headers)
+            response = requests.post(url, json=data, headers=headers, params=params)
         elif method == "PUT":
-            response = requests.put(url, json=data, headers=headers)
+            response = requests.put(url, json=data, headers=headers, params=params)
         elif method == "DELETE":
-            response = requests.delete(url, json=data, headers=headers)
+            if params:
+                response = requests.delete(url, headers=headers, params=params)
+            else:
+                response = requests.delete(url, json=data, headers=headers)
         else:
             print(f"Unsupported method: {method}")
             return False, None
@@ -257,12 +260,13 @@ def test_conversation_bulk_delete():
         return False, "Failed to create or find test conversations"
     
     # Test bulk delete with valid conversation IDs
+    # Use query parameters for the conversation_ids
     bulk_delete_test, bulk_delete_response = run_test(
         "Bulk Delete Conversations",
         "/conversation-history/bulk",
         method="DELETE",
-        data={"conversation_ids": conversation_ids},
         auth=True,
+        params={"conversation_ids": ",".join(conversation_ids)},
         expected_keys=["message", "deleted_count"]
     )
     
@@ -283,8 +287,8 @@ def test_conversation_bulk_delete():
         "Bulk Delete Non-existent Conversations",
         "/conversation-history/bulk",
         method="DELETE",
-        data={"conversation_ids": non_existent_ids},
         auth=True,
+        params={"conversation_ids": ",".join(non_existent_ids)},
         expected_status=404
     )
     
@@ -298,8 +302,8 @@ def test_conversation_bulk_delete():
         "Bulk Delete Empty Conversation Array",
         "/conversation-history/bulk",
         method="DELETE",
-        data={"conversation_ids": []},
         auth=True,
+        params={"conversation_ids": ""},
         expected_keys=["message", "deleted_count"]
     )
     
@@ -313,7 +317,7 @@ def test_conversation_bulk_delete():
         "Bulk Delete Conversations Without Auth",
         "/conversation-history/bulk",
         method="DELETE",
-        data={"conversation_ids": [str(uuid.uuid4())]},
+        params={"conversation_ids": str(uuid.uuid4())},
         expected_status=403
     )
     
@@ -388,12 +392,13 @@ def test_document_bulk_delete():
         return False, "Failed to create test documents"
     
     # Test bulk delete with valid document IDs
+    # Use query parameters for the document_ids
     bulk_delete_test, bulk_delete_response = run_test(
         "Bulk Delete Documents",
         "/documents/bulk",
         method="DELETE",
-        data={"document_ids": document_ids},
         auth=True,
+        params={"document_ids": ",".join(document_ids)},
         expected_keys=["message", "deleted_count"]
     )
     
@@ -414,8 +419,8 @@ def test_document_bulk_delete():
         "Bulk Delete Non-existent Documents",
         "/documents/bulk",
         method="DELETE",
-        data={"document_ids": non_existent_ids},
         auth=True,
+        params={"document_ids": ",".join(non_existent_ids)},
         expected_status=404
     )
     
@@ -429,8 +434,8 @@ def test_document_bulk_delete():
         "Bulk Delete Empty Document Array",
         "/documents/bulk",
         method="DELETE",
-        data={"document_ids": []},
         auth=True,
+        params={"document_ids": ""},
         expected_keys=["message", "deleted_count"]
     )
     
@@ -444,7 +449,7 @@ def test_document_bulk_delete():
         "Bulk Delete Documents Without Auth",
         "/documents/bulk",
         method="DELETE",
-        data={"document_ids": [str(uuid.uuid4())]},
+        params={"document_ids": str(uuid.uuid4())},
         expected_status=403
     )
     
@@ -527,8 +532,8 @@ def test_mixed_ownership():
         "Bulk Delete Mixed Ownership Documents",
         "/documents/bulk",
         method="DELETE",
-        data={"document_ids": mixed_ids},
         auth=True,
+        params={"document_ids": ",".join(mixed_ids)},
         expected_status=404
     )
     
@@ -572,7 +577,7 @@ def test_invalid_token():
         "Conversation Bulk Delete with Invalid Token",
         "/conversation-history/bulk",
         method="DELETE",
-        data={"conversation_ids": [str(uuid.uuid4())]},
+        params={"conversation_ids": str(uuid.uuid4())},
         expected_status=401,
         headers=headers
     )
@@ -587,7 +592,7 @@ def test_invalid_token():
         "Document Bulk Delete with Invalid Token",
         "/documents/bulk",
         method="DELETE",
-        data={"document_ids": [str(uuid.uuid4())]},
+        params={"document_ids": str(uuid.uuid4())},
         expected_status=401,
         headers=headers
     )
