@@ -3787,10 +3787,13 @@ const SavedAgentsLibrary = ({ onCreateAgent }) => {
 };
 
 const ConversationHistoryViewer = () => {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
+  const [showHistory, setShowHistory] = useState(false);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
+  const [selectedConversations, setSelectedConversations] = useState(new Set());
+  const [selectAll, setSelectAll] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchConversationHistory = async () => {
     if (!token) return;
@@ -3801,10 +3804,60 @@ const ConversationHistoryViewer = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setConversationHistory(response.data);
+      setSelectedConversations(new Set()); // Clear selections when refreshing
+      setSelectAll(false);
     } catch (error) {
       console.error('Error fetching conversation history:', error);
     }
     setLoading(false);
+  };
+
+  const handleSelectConversation = (conversationId) => {
+    const newSelected = new Set(selectedConversations);
+    if (newSelected.has(conversationId)) {
+      newSelected.delete(conversationId);
+    } else {
+      newSelected.add(conversationId);
+    }
+    setSelectedConversations(newSelected);
+    setSelectAll(newSelected.size === conversationHistory.length);
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedConversations(new Set());
+      setSelectAll(false);
+    } else {
+      setSelectedConversations(new Set(conversationHistory.map(c => c.id)));
+      setSelectAll(true);
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedConversations.size === 0) return;
+    
+    const confirmMessage = `Are you sure you want to delete ${selectedConversations.size} conversation${selectedConversations.size > 1 ? 's' : ''}? This action cannot be undone.`;
+    if (!window.confirm(confirmMessage)) return;
+    
+    setDeleting(true);
+    try {
+      const response = await axios.delete(`${API}/conversation-history/bulk`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: Array.from(selectedConversations)
+      });
+      
+      console.log(`Successfully deleted ${response.data.deleted_count} conversations`);
+      
+      // Refresh the conversation history
+      await fetchConversationHistory();
+      
+      alert(`Successfully deleted ${response.data.deleted_count} conversation${response.data.deleted_count > 1 ? 's' : ''}`);
+      
+    } catch (error) {
+      console.error('Error deleting conversations:', error);
+      alert('Failed to delete conversations. Please try again.');
+    }
+    setDeleting(false);
   };
 
   useEffect(() => {
