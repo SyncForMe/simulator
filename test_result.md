@@ -1,4 +1,34 @@
 backend:
+  - task: "DELETE /api/conversation-history/bulk - Bulk Delete Conversations"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for conversation bulk delete functionality"
+        -working: false
+        -agent: "testing"
+        -comment: "Tested the DELETE /api/conversation-history/bulk endpoint. The endpoint is defined in the server.py file but returns a 404 Not Found error. The endpoint is expected to accept a list of conversation IDs in the request body and delete all conversations that belong to the authenticated user. However, the endpoint is not properly registered with the API router or is not accessible through the API. Created test conversations and attempted to delete them in bulk, but the request failed with a 404 error."
+
+  - task: "DELETE /api/documents/bulk - Bulk Delete Documents"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for document bulk delete functionality"
+        -working: false
+        -agent: "testing"
+        -comment: "Tested the DELETE /api/documents/bulk endpoint. The endpoint is defined in the server.py file but returns a 404 Not Found error with the message 'Document not found'. The endpoint is expected to accept a list of document IDs in the request body and delete all documents that belong to the authenticated user. However, the endpoint is not properly registered with the API router or is not accessible through the API. Created test documents and attempted to delete them in bulk, but the request failed with a 404 error."
+
   - task: "POST /api/simulation/set-scenario - Custom Scenario Name Input"
     implemented: true
     working: true
