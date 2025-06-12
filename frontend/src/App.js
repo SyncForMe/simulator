@@ -3154,6 +3154,17 @@ const AgentProfilesManager = ({
             </div>
           </div>
         </div>
+
+        {/* Agent Library Section */}
+        <div className="border-t border-gray-200 pt-2 mt-3">
+          <button 
+            onClick={() => setShowAgentLibrary(true)}
+            className="w-full bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700 text-sm flex items-center justify-center space-x-2"
+          >
+            <span>📚</span>
+            <span>Agent Library</span>
+          </button>
+        </div>
       </div>
     </div>
   );
