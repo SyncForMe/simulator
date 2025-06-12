@@ -6,6 +6,7 @@ const AgentLibrary = ({ isOpen, onClose, onSelectAgent }) => {
   const [selectedAgentDetails, setSelectedAgentDetails] = useState(null);
   const [addedAgents, setAddedAgents] = useState(new Set());
   const [addingAgent, setAddingAgent] = useState(null);
+  const timeoutRefs = useRef({});
 
   // Pre-generated avatars for all 30 agents
   const avatarUrls = {
