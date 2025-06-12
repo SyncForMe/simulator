@@ -185,25 +185,7 @@ const VoiceInput = ({
 
 // Animated Observer Logo Component
 const ObserverLogo = () => {
-  // Implementation of the Observer Logo component
-  return (
-    <div className="flex items-center">
-      <span className="text-4xl font-bold tracking-tight">Observer</span>
-    </div>
-  );
-};
-        {
-          id: 'katherine-vale',
-          name: 'Dr. Katherine Vale',
-          title: 'Neuroimaging Specialist',
-          archetype: 'introvert',
-          goal: 'To develop breakthrough neuroimaging techniques that reveal the mysteries of consciousness and mental illness.',
-          expertise: 'Neuroimaging, Diagnostic Radiology, Medical AI, Neuroscience, Brain Mapping',
-          background: 'Radiologist-neuroscientist who prefers analyzing brain scans to patient interaction. Discovered novel MRI sequences that detect Alzheimer\'s 15 years before symptom onset. Works primarily nights in hospital basement, meticulously studying thousands of brain images. Pioneered AI-assisted radiology that reduces diagnostic errors by 67%. Quietly revolutionizing understanding of brain-behavior relationships.',
-          memory_summary: 'Discovered microscopic brain changes in MRI that predicted schizophrenia onset 5 years early during late-night scan review in 2020. Failed to detect early-stage brain tumor in colleague\'s wife despite advanced imaging - drove development of ultra-high resolution protocols. Spent 6 months alone analyzing 50,000 brain scans to train AI system now used globally. Witnessed exact moment on scan when experimental treatment restored brain function in comatose patient. Remembers finding hidden pattern in dyslexic children\'s brain connectivity that led to new reading interventions. Knowledge Sources: https://www.rsna.org/, https://www.acr.org/, https://www.ajnr.org/, https://neuroimaging.stanford.edu/, https://www.humanconnectome.org/',
-          avatar_url: null,
-          avatar_prompt: 'Professional Caucasian woman radiologist in white coat, thoughtful and analytical expression, brain scan monitors in background'
-        }
+  const pupilControls = useAnimationControls();
       ]
     },
     { 
