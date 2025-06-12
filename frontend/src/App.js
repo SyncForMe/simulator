@@ -929,19 +929,35 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                   type="button"
                   onClick={startRecording}
                   disabled={loading || justSubmitted || randomLoading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-2 py-1 rounded-lg transition-colors text-sm flex items-center justify-center"
+                  className="w-6 h-6 text-gray-600 hover:text-gray-800 disabled:opacity-50 transition-colors flex items-center justify-center"
                   title="Voice input"
                 >
-                  🎤
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-full h-full"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                  </svg>
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={stopRecording}
-                  className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded-lg transition-colors text-sm animate-pulse flex items-center justify-center"
+                  className="w-6 h-6 text-red-600 hover:text-red-700 transition-colors animate-pulse flex items-center justify-center"
                   title="Stop recording"
                 >
-                  🎤
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-full h-full"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                  </svg>
                 </button>
               )}
               
