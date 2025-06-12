@@ -192,20 +192,6 @@ const ObserverLogo = () => {
     </div>
   );
 };
-          avatar_prompt: 'Professional Asian woman doctor in white lab coat, intelligent and focused expression, medical laboratory background'
-        },
-        {
-          id: 'marcus-rodriguez',
-          name: 'Dr. Marcus Rodriguez',
-          title: 'Emergency Medicine Innovator',
-          archetype: 'optimist',
-          goal: 'To revolutionize emergency medicine through AI-powered diagnostic tools and telemedicine.',
-          expertise: 'Emergency Medicine, Trauma Surgery, Telemedicine, Medical AI, Crisis Management',
-          background: 'Former Army medic turned ER physician with deployment experience in Afghanistan. Witnessed healthcare disparities firsthand, driving passion for accessible medicine. Founded startup combining emergency medicine with technology. Known for maintaining hope in critical situations and inspiring medical teams during crises.',
-          memory_summary: 'Performed emergency surgery on fellow soldier during IED explosion in Kandahar, 2018 - operation lasted 14 hours in field conditions. Developed rapid triage protocol during Hurricane Maria in Puerto Rico that reduced mortality by 23%. Lost his first patient at age 28 to preventable sepsis, driving his telemedicine advocacy. Successfully implemented AI diagnostic tool that caught 47 missed heart attacks in first month. Remembers staying awake 72 hours straight during COVID surge, maintaining hope when colleagues despaired. Knowledge Sources: https://www.acep.org/, https://www.who.int/emergencies/, https://www.cdc.gov/injury/, https://www.healthit.gov/, https://emedicine.medscape.com/',
-          avatar_url: null,
-          avatar_prompt: 'Professional Hispanic male doctor in scrubs, confident and optimistic expression, emergency room background'
-        },
         {
           id: 'katherine-vale',
           name: 'Dr. Katherine Vale',
