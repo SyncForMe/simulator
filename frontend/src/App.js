@@ -5400,6 +5400,16 @@ function App() {
         onSave={handleUpdateAgent}
         archetypes={archetypes}
       />
+
+      <AgentLibrary
+        isOpen={showAgentLibrary}
+        onClose={() => setShowAgentLibrary(false)}
+        onSelectAgent={(agent) => {
+          // TODO: Implement agent selection logic
+          console.log('Selected agent:', agent);
+          setShowAgentLibrary(false);
+        }}
+      />
     </div>
   );
 }
