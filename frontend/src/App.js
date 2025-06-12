@@ -904,8 +904,8 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
               disabled={loading || justSubmitted || randomLoading}
             />
             
-            {/* Voice Input Controls - Fixed positioning */}
-            <div className="absolute right-3 top-3 flex flex-col space-y-1">
+            {/* Voice Input Controls - Fixed positioning with more spacing */}
+            <div className="absolute right-6 top-3 flex flex-col space-y-1">
               {!isRecording ? (
                 <button
                   type="button"
