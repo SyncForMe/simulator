@@ -1064,7 +1064,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
         <div className="space-y-2">
           <button
             type="submit"
-            disabled={loading || !scenario.trim() || justSubmitted || randomLoading || isRecording || isTranscribing}
+            disabled={loading || !scenario.trim() || !scenarioName.trim() || justSubmitted || randomLoading || isRecording || isTranscribing}
             className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50 transition-colors"
           >
             {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Set New Scenario"}
