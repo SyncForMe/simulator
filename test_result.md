@@ -644,6 +644,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Tested the voice input functionality across the application. The VoiceInput component is properly implemented and integrated in key areas: 1) Agent Edit Modal - Voice input buttons (🎤) are present and working for all required fields: Agent Name, Goal, Expertise, Background, and Memory & Knowledge. 2) Agent Memory Addition - Voice input button is present and working in the Add Memory textarea. 3) Scenario Input - Voice input button is present and working in the scenario description textarea. All voice input buttons show proper visual feedback when clicked (turning red and animating during recording). The buttons are correctly positioned next to their respective text fields and are clearly visible. The voice input system uses Croatian (hr) as the default language as specified. All voice input buttons provide proper visual feedback during recording state."
+        -working: true
+        -agent: "testing"
+        -comment: "Verified the updated voice input functionality. All voice input buttons now show ONLY the microphone icon (🎤) without any text like 'Speak' or 'Stop'. The tooltip on hover shows 'Voice input' as required. The buttons maintain consistent states: blue microphone icon in default state, red microphone icon with animation in recording state, and gray microphone icon in processing state. Tested in all required locations: Agent Edit Modal (all fields), Agent Memory Addition, and Scenario Input. The buttons are clean with just the microphone icon, properly sized, and provide appropriate visual feedback during different states."
 
 agent_communication:
     -agent: "testing"
