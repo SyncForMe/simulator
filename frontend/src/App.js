@@ -2046,7 +2046,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                       value={formData.expertise}
                       onChange={(e) => setFormData(prev => ({...prev, expertise: e.target.value}))}
                       className="w-full p-2 pr-10 border rounded"
-                      placeholder="e.g., Machine Learning, Psychology (voice input available)"
+                      placeholder="e.g., Machine Learning, Psychology"
                       disabled={loading}
                     />
                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
@@ -2068,7 +2068,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
                       onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
                       className="w-full p-2 pr-10 border rounded"
                       rows="3"
-                      placeholder="Professional background and experience (voice input available)"
+                      placeholder="Professional background and experience"
                       disabled={loading}
                     />
                     <div className="absolute right-2 top-2">
@@ -2107,7 +2107,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
 • Company websites, personal blogs
 • Any web content that should influence this agent's thinking
 
-URLs will be automatically fetched and summarized! (voice input available)"
+URLs will be automatically fetched and summarized!"
                 disabled={loading}
               />
               <div className="absolute right-2 top-2">
@@ -2384,7 +2384,7 @@ const AgentCard = ({ agent, relationships, onEdit, onClearMemory, onAddMemory, o
               <textarea
                 value={newMemory}
                 onChange={(e) => setNewMemory(e.target.value)}
-                placeholder="What should this agent remember? (voice input available)"
+                placeholder="What should this agent remember?"
                 className="w-full p-2 pr-10 border border-gray-300 rounded text-sm"
                 rows="3"
               />
@@ -3344,7 +3344,7 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
                       value={formData.expertise}
                       onChange={(e) => setFormData(prev => ({...prev, expertise: e.target.value}))}
                       className="w-full p-2 pr-10 border rounded"
-                      placeholder="e.g., Machine Learning, Psychology (voice input available)"
+                      placeholder="e.g., Machine Learning, Psychology"
                       disabled={loading}
                     />
                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
@@ -3366,7 +3366,7 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
                       onChange={(e) => setFormData(prev => ({...prev, background: e.target.value}))}
                       className="w-full p-2 pr-10 border rounded"
                       rows="3"
-                      placeholder="Professional background and experience (voice input available)"
+                      placeholder="Professional background and experience"
                       disabled={loading}
                     />
                     <div className="absolute right-2 top-2">
