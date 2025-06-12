@@ -394,7 +394,7 @@ def test_bulk_delete_functionality():
         "Document Bulk Delete with Non-Existent IDs",
         "/documents/bulk",
         method="DELETE",
-        data=non_existent_ids,  # Pass the list directly
+        params={"document_ids": non_existent_ids},  # Pass as query parameters
         auth=True,
         expected_status=404
     )
