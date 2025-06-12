@@ -4006,10 +4006,11 @@ const ConversationHistoryViewer = () => {
                                     {conversation.messages?.length > 3 && (
                                       <div className="text-xs text-gray-500 italic">
                                         ...and {conversation.messages.length - 3} more messages
+                                      </div>
+                                    )}
                                   </div>
-                                )}
+                                </div>
                               </div>
-                            </div>
                           ))}
                         </div>
                       </div>
