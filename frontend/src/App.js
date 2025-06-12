@@ -969,7 +969,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                 <div>
                   <div className="text-blue-700 font-semibold text-sm">🎤 Recording...</div>
                   <div className="text-blue-600 text-xs">
-                    Speak your scenario in {supportedLanguages.find(l => l.code === selectedLanguage)?.name}
+                    Speak your scenario clearly
                   </div>
                 </div>
               </div>
@@ -993,18 +993,6 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
               <p className="text-green-700 text-sm flex items-center space-x-2">
                 <span>✅</span>
                 <span>Scenario applied successfully! Text will clear in a moment...</span>
-              </p>
-            </div>
-          )}
-          
-          {!isRecording && !voiceError && !justSubmitted && (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 mt-2">
-              <p className="text-gray-600 text-xs flex items-center space-x-2">
-                <span>💡</span>
-                <span>
-                  Tip: Click "Speak" to use voice input in {supportedLanguages.find(l => l.code === selectedLanguage)?.name}, 
-                  or type your scenario manually
-                </span>
               </p>
             </div>
           )}
