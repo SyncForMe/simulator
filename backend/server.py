@@ -5085,7 +5085,7 @@ async def delete_documents_bulk(
         }).to_list(None)
         
         if len(documents) != len(document_ids):
-            raise HTTPException(status_code=404, detail="Some documents not found or don't belong to user")
+            raise HTTPException(status_code=404, detail="Document not found")
         
         # Delete the documents
         result = await db.documents.delete_many({
