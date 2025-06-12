@@ -896,7 +896,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
               value={scenario}
               onChange={(e) => setScenario(e.target.value)}
               placeholder="Describe a new scenario for your agents... (e.g., 'A mysterious signal has been detected. The team must decide how to respond.')"
-              className={`w-full p-3 border rounded-lg resize-none pr-12 ${
+              className={`w-full p-3 border rounded-lg resize-none pr-16 ${
                 justSubmitted ? 'bg-green-50 border-green-300' : 
                 isRecording ? 'bg-blue-50 border-blue-300' : ''
               }`}
