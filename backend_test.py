@@ -425,7 +425,7 @@ def test_bulk_delete_functionality():
         "Document Bulk Delete with Empty Array",
         "/documents/bulk",
         method="DELETE",
-        data={"document_ids": []},
+        data=[],  # Pass empty list directly
         auth=True,
         expected_keys=["message", "deleted_count"]
     )
