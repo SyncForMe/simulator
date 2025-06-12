@@ -2624,6 +2624,7 @@ async def create_agent(agent_data: AgentCreate):
         goal=agent_data.goal,
         expertise=agent_data.expertise,
         background=agent_data.background,
+        memory_summary=agent_data.memory_summary,
         avatar_url=avatar_url,
         avatar_prompt=agent_data.avatar_prompt
     )
