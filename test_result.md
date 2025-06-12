@@ -1049,16 +1049,11 @@ backend:
 
 test_plan:
   current_focus:
-    - "Custom Scenario Name Input Field"
-    - "Random Scenario with Auto-Generated Names"
-    - "Custom Scenario Creation"
-    - "Conversation Generation with Scenario Names"
-    - "My Conversations - Grouped by Scenario"
-    - "File Center Organization by Scenario"
+    - "POST /api/simulation/set-scenario - Custom Scenario Name Input"
+    - "POST /api/conversation/generate - Conversation with Scenario Name"
+    - "GET /api/conversation-history - Conversation History with Scenario Name"
+    - "GET /api/documents/by-scenario - Documents Organized by Scenario"
   stuck_tasks:
-    - "My Conversations - Grouped by Scenario"
-    - "File Center Organization by Scenario"
-  test_all: false
-  test_priority: "high_first"
+    - ""
   test_all: false
   test_priority: "high_first"
