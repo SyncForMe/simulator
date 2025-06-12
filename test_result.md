@@ -647,6 +647,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Verified the updated voice input functionality. All voice input buttons now show ONLY the microphone icon (🎤) without any text like 'Speak' or 'Stop'. The tooltip on hover shows 'Voice input' as required. The buttons maintain consistent states: blue microphone icon in default state, red microphone icon with animation in recording state, and gray microphone icon in processing state. Tested in all required locations: Agent Edit Modal (all fields), Agent Memory Addition, and Scenario Input. The buttons are clean with just the microphone icon, properly sized, and provide appropriate visual feedback during different states."
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the updated microphone icon implementation. Verified that: 1) All voice input buttons now use proper SVG microphone icons instead of the 🎤 emoji, 2) The microphone icons no longer have blue/red/gray backgrounds - they're just the icon with appropriate colors, 3) Icons are properly positioned in text areas/input fields, 4) Name fields do NOT have microphone icons as required, 5) Placeholders no longer contain '(voice input available)' text. Specifically checked: Agent Edit Modal (Goal, Expertise, Background, Memory & Knowledge all have microphone icons, Name field does not), Agent Creation Form (Goal, Expertise, Background, Avatar Description all have microphone icons, Name field does not), Agent Memory Addition (Add Memory textarea has microphone icon), and Scenario Input (scenario textarea has microphone icon). All microphone icons have the 'Voice input' tooltip on hover. The implementation meets all the requirements."
 
 agent_communication:
     -agent: "testing"
