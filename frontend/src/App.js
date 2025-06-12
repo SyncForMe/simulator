@@ -148,9 +148,9 @@ const VoiceInput = ({
         <button
           type="button"
           onClick={startRecording}
-          disabled={disabled}
+          disabled={disabled || isDisabledDueToAuth}
           className={`${sizeClasses[size]} text-gray-600 hover:text-gray-800 disabled:opacity-50 transition-colors flex items-center justify-center`}
-          title="Voice input"
+          title={isDisabledDueToAuth ? "Sign in to use voice input" : "Voice input"}
         >
           <MicrophoneIcon className="w-full h-full" />
         </button>
