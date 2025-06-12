@@ -1080,11 +1080,10 @@ backend:
 
 test_plan:
   current_focus:
-    - "POST /api/simulation/set-scenario - Custom Scenario Name Input"
-    - "POST /api/conversation/generate - Conversation with Scenario Name"
-    - "GET /api/conversation-history - Conversation History with Scenario Name"
-    - "GET /api/documents/by-scenario - Documents Organized by Scenario"
+    - "DELETE /api/conversation-history/bulk - Bulk Delete Conversations"
+    - "DELETE /api/documents/bulk - Bulk Delete Documents"
   stuck_tasks:
-    - ""
+    - "DELETE /api/conversation-history/bulk - Bulk Delete Conversations"
+    - "DELETE /api/documents/bulk - Bulk Delete Documents"
   test_all: false
   test_priority: "high_first"
