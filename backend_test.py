@@ -42,7 +42,7 @@ test_results = {
 auth_token = None
 test_user_id = None
 
-def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None, auth=False, headers=None):
+def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None, auth=False, headers=None, params=None):
     """Run a test against the specified endpoint"""
     url = f"{API_URL}{endpoint}"
     print(f"\n{'='*80}\nTesting: {test_name} ({method} {url})")
@@ -56,13 +56,16 @@ def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, 
     
     try:
         if method == "GET":
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, params=params)
         elif method == "POST":
-            response = requests.post(url, json=data, headers=headers)
+            response = requests.post(url, json=data, headers=headers, params=params)
         elif method == "PUT":
-            response = requests.put(url, json=data, headers=headers)
+            response = requests.put(url, json=data, headers=headers, params=params)
         elif method == "DELETE":
-            response = requests.delete(url, json=data, headers=headers)
+            if data is not None:
+                response = requests.delete(url, json=data, headers=headers, params=params)
+            else:
+                response = requests.delete(url, headers=headers, params=params)
         else:
             print(f"Unsupported method: {method}")
             return False, None
