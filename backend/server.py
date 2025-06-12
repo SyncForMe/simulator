@@ -429,6 +429,7 @@ class ApiUsageTracker(BaseModel):
 
 class ScenarioRequest(BaseModel):
     scenario: str
+    scenario_name: str = ""
 
 class AutoModeRequest(BaseModel):
     auto_conversations: bool = False
