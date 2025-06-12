@@ -5261,11 +5261,11 @@ function App() {
             });
 
             await refreshAllData();
-            setShowAgentLibrary(false);
-            alert(`✅ ${agent.name} has been added to your simulation!`);
+            // Don't close the library and don't show alert
+            return { success: true, message: `${agent.name} has been added to your simulation!` };
           } catch (error) {
             console.error('Error adding agent:', error);
-            alert('Failed to add agent. Please try again.');
+            return { success: false, message: 'Failed to add agent. Please try again.' };
           }
         }}
       />
