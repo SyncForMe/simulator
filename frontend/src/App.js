@@ -185,8 +185,6 @@ const VoiceInput = ({
 
 // Animated Observer Logo Component
 const ObserverLogo = () => {
-        {
-          id: 'sarah-chen',
           name: 'Dr. Sarah Chen',
           title: 'Precision Medicine Specialist',
           archetype: 'scientist',
