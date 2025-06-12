@@ -185,40 +185,76 @@ def test_conversation_bulk_delete():
             print("❌ Cannot test conversation bulk delete without authentication")
             return False, "Authentication failed"
     
-    # Create test conversations
+    # Get existing conversations
+    get_conversations_test, get_conversations_response = run_test(
+        "Get Conversation History",
+        "/conversation-history",
+        method="GET",
+        auth=True
+    )
+    
+    existing_conversation_ids = []
+    if get_conversations_test and isinstance(get_conversations_response, list):
+        for conversation in get_conversations_response:
+            if "id" in conversation:
+                existing_conversation_ids.append(conversation["id"])
+        
+        print(f"✅ Found {len(existing_conversation_ids)} existing conversations")
+    
+    # Create test conversations if needed
     conversation_ids = []
-    for i in range(3):
-        conversation_data = {
-            "simulation_id": f"test-simulation-{uuid.uuid4()}",
-            "participants": [f"Test Agent {j+1}" for j in range(3)],
-            "messages": [
-                {
-                    "agent_name": f"Test Agent {j+1}",
-                    "message": f"This is test message {j+1} in conversation {i+1}"
-                } for j in range(3)
-            ],
-            "title": f"Test Conversation {i+1}",
-            "tags": ["test", "bulk-delete"]
-        }
-        
-        create_test, create_response = run_test(
-            f"Create Test Conversation {i+1}",
-            "/conversation-history",
-            method="POST",
-            data=conversation_data,
-            auth=True,
-            expected_keys=["id", "message"]
-        )
-        
-        if create_test and create_response:
-            conversation_id = create_response.get("id")
-            if conversation_id:
-                conversation_ids.append(conversation_id)
-                print(f"✅ Created conversation with ID: {conversation_id}")
+    if len(existing_conversation_ids) >= 3:
+        # Use existing conversations
+        conversation_ids = existing_conversation_ids[:3]
+        print(f"✅ Using {len(conversation_ids)} existing conversations for testing")
+    else:
+        # Create new conversations
+        for i in range(3):
+            conversation_data = {
+                "simulation_id": f"test-simulation-{uuid.uuid4()}",
+                "participants": [f"Test Agent {j+1}" for j in range(3)],
+                "messages": [
+                    {
+                        "agent_id": f"agent-{j+1}",
+                        "agent_name": f"Test Agent {j+1}",
+                        "message": f"This is test message {j+1} in conversation {i+1}",
+                        "mood": "neutral"
+                    } for j in range(3)
+                ],
+                "title": f"Test Conversation {i+1}",
+                "tags": ["test", "bulk-delete"]
+            }
+            
+            create_test, create_response = run_test(
+                f"Create Test Conversation {i+1}",
+                "/conversation-history",
+                method="POST",
+                data=conversation_data,
+                auth=True,
+                expected_keys=["message"]
+            )
+            
+            if create_test:
+                # Get the conversation history again to find our new conversation
+                time.sleep(1)  # Wait a moment for the database to update
+                get_updated_test, get_updated_response = run_test(
+                    f"Get Updated Conversation History {i+1}",
+                    "/conversation-history",
+                    method="GET",
+                    auth=True
+                )
+                
+                if get_updated_test and isinstance(get_updated_response, list):
+                    # Find the conversation with our title
+                    for conversation in get_updated_response:
+                        if conversation.get("title") == f"Test Conversation {i+1}":
+                            conversation_ids.append(conversation["id"])
+                            print(f"✅ Created conversation with ID: {conversation['id']}")
+                            break
     
     if len(conversation_ids) < 2:
-        print("❌ Failed to create enough test conversations")
-        return False, "Failed to create test conversations"
+        print("❌ Failed to create or find enough test conversations")
+        return False, "Failed to create or find test conversations"
     
     # Test bulk delete with valid conversation IDs
     bulk_delete_test, bulk_delete_response = run_test(
