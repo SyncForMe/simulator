@@ -5826,10 +5826,42 @@ function App() {
       <AgentLibrary
         isOpen={showAgentLibrary}
         onClose={() => setShowAgentLibrary(false)}
-        onSelectAgent={(agent) => {
-          // TODO: Implement agent selection logic
-          console.log('Selected agent:', agent);
-          setShowAgentLibrary(false);
+        onSelectAgent={async (agent) => {
+          try {
+            // Generate avatar if not already generated
+            if (!agent.avatar_url) {
+              const avatarResponse = await axios.post(`${API}/agents/generate-avatar`, {
+                name: agent.name,
+                description: agent.avatar_prompt
+              }, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              agent.avatar_url = avatarResponse.data.avatar_url;
+            }
+
+            // Create the agent in the simulation
+            const agentData = {
+              name: agent.name,
+              archetype: agent.archetype,
+              goal: agent.goal,
+              expertise: agent.expertise,
+              background: agent.background,
+              memory_summary: agent.memory_summary,
+              avatar_url: agent.avatar_url,
+              avatar_prompt: agent.avatar_prompt
+            };
+
+            await axios.post(`${API}/agents`, agentData, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+
+            await refreshAllData();
+            setShowAgentLibrary(false);
+            alert(`✅ ${agent.name} has been added to your simulation!`);
+          } catch (error) {
+            console.error('Error adding agent:', error);
+            alert('Failed to add agent. Please try again.');
+          }
         }}
       />
     </div>
