@@ -186,8 +186,8 @@ const VoiceInput = ({
 // Animated Observer Logo Component
 const ObserverLogo = () => {
   const pupilControls = useAnimationControls();
-      ]
-    },
+
+  useEffect(() => {
     { 
       id: 'pharmaceutical', 
       name: 'Pharmaceutical', 
