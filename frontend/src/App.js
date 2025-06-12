@@ -3787,7 +3787,7 @@ const SavedAgentsLibrary = ({ onCreateAgent }) => {
 };
 
 const ConversationHistoryViewer = () => {
-  const { token } = useAuth();
+  const { user, token } = useAuth();
   const [showHistory, setShowHistory] = useState(false);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [loading, setLoading] = useState(false);
