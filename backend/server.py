@@ -5102,12 +5102,6 @@ async def delete_documents_bulk(
     except Exception as e:
         logging.error(f"Error deleting documents: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logging.error(f"Error deleting documents: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
 
 # Include the router in the main app
 app.include_router(api_router)
