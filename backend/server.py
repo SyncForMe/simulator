@@ -3157,6 +3157,7 @@ async def generate_conversation():
                     keywords=[trigger_result.document_type, "team-generated", "action-oriented", "voted-approved"],
                     simulation_id=str(conversation_round.id),
                     conversation_round=conversation_round.round_number,
+                    scenario_name=scenario_name,  # Add scenario name for organization
                     user_id=""  # Will be set by frontend when user is available
                 )
                 
