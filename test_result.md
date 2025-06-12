@@ -378,6 +378,96 @@ backend:
         -comment: "Retested all document-related API endpoints after the route ordering fix and trigger phrase enhancements. All endpoints are now working correctly: GET /api/documents/categories returns the expected categories, POST /api/documents/create successfully creates documents, GET /api/documents and GET /api/documents/{id} retrieve documents as expected, GET /api/documents/search and GET /api/documents/category/{category} correctly filter documents, and POST /api/documents/analyze-conversation now properly detects action triggers with the enhanced trigger phrases. The POST /api/documents/generate endpoint successfully generates well-structured documents based on conversation context. These improvements have resolved all the previous issues with the document-related API endpoints."
 
 frontend:
+  - task: "Custom Scenario Name Input Field"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for Custom Scenario Name Input Field"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the Custom Scenario Name Input Field functionality. Verified that: 1) The 'Scenario Name' input field is present in the Custom Scenario card, 2) The field is marked with a red * indicating it's required, 3) The 'Set New Scenario' button is disabled when only the scenario description is filled but the name is empty, 4) The 'Set New Scenario' button is also disabled when only the name is filled but the description is empty, 5) The 'Set New Scenario' button is enabled only when both name and description are filled. The validation works correctly, ensuring users must provide both a scenario name and description before setting a new scenario."
+
+  - task: "Random Scenario with Auto-Generated Names"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for Random Scenario with Auto-Generated Names"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the Random Scenario with Auto-Generated Names functionality. Verified that: 1) Clicking the '🎲 Random Scenario' button automatically fills both the scenario name and description fields, 2) The scenario name matches the theme of the generated scenario (e.g., 'Crypto Market Collapse' for a scenario about cryptocurrency exchange collapse), 3) The scenario is automatically applied without needing to click 'Set New Scenario', 4) The console logs show a successful scenario update with both scenario name and description. The random scenario generation works correctly and provides appropriate names that match the scenario content."
+
+  - task: "Custom Scenario Creation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for Custom Scenario Creation"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the Custom Scenario Creation functionality. Verified that: 1) Both scenario name and description fields can be filled manually, 2) The 'Set New Scenario' button is enabled when both fields are filled, 3) Clicking the button successfully applies the scenario, 4) The console logs show a successful scenario update with both the custom name and description, 5) The scenario name is displayed in the Simulation Control section. The custom scenario creation works correctly, allowing users to create scenarios with their own names and descriptions."
+
+  - task: "Conversation Generation with Scenario Names"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for Conversation Generation with Scenario Names"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the Conversation Generation with Scenario Names functionality. Verified that: 1) After setting a scenario with a specific name, conversations can be generated, 2) The Simulation Control section shows the current scenario name, 3) The scenario name is properly associated with the conversation in the backend. The conversation generation with scenario names works correctly, ensuring conversations are properly tagged with their associated scenario."
+
+  - task: "My Conversations - Grouped by Scenario"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for My Conversations - Grouped by Scenario"
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Could not fully test the My Conversations functionality as the button was not visible in the UI during testing. The code shows implementation of conversation grouping by scenario name, but we were unable to verify this functionality in the UI. This feature needs retesting after ensuring the My Conversations button is properly displayed in the header."
+
+  - task: "File Center Organization by Scenario"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for File Center Organization by Scenario"
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Could not fully test the File Center Organization by Scenario functionality as the File Center button was not visible in the UI during testing. The code shows implementation of document organization by scenario name, but we were unable to verify this functionality in the UI. This feature needs retesting after ensuring the File Center button is properly displayed in the header."
+
   - task: "Agent Library Button and Modal"
     implemented: true
     working: true
