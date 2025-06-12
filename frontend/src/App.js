@@ -3846,48 +3846,69 @@ const ConversationHistoryViewer = () => {
                 <p className="text-sm mt-2">Your conversations will be automatically saved here!</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {conversationHistory.map(conversation => (
-                  <div key={conversation.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h3 className="font-bold text-gray-800">
-                          {conversation.title || `Conversation from ${new Date(conversation.created_at).toLocaleDateString()}`}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          Participants: {conversation.participants.join(', ')}
-                        </p>
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {new Date(conversation.created_at).toLocaleString()}
-                      </div>
-                    </div>
-                    
-                    <div className="bg-gray-50 rounded p-3 max-h-40 overflow-y-auto">
-                      {conversation.messages.slice(0, 3).map((message, index) => (
-                        <div key={index} className="text-sm mb-2">
-                          <strong>{message.agent_name}:</strong> {message.message}
-                        </div>
-                      ))}
-                      {conversation.messages.length > 3 && (
-                        <div className="text-xs text-gray-500">
-                          ... and {conversation.messages.length - 3} more messages
-                        </div>
-                      )}
-                    </div>
-                    
-                    {conversation.tags.length > 0 && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {conversation.tags.map(tag => (
-                          <span key={tag} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                            {tag}
+              // Group conversations by scenario name
+              (() => {
+                const groupedConversations = conversationHistory.reduce((groups, conversation) => {
+                  const scenarioName = conversation.scenario_name || 'Unnamed Scenario';
+                  if (!groups[scenarioName]) {
+                    groups[scenarioName] = [];
+                  }
+                  groups[scenarioName].push(conversation);
+                  return groups;
+                }, {});
+
+                return (
+                  <div className="space-y-6">
+                    {Object.entries(groupedConversations).map(([scenarioName, conversations]) => (
+                      <div key={scenarioName} className="border-2 border-gray-200 rounded-lg p-4">
+                        <div className="flex items-center mb-4">
+                          <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium mr-3">
+                            📋 {scenarioName}
+                          </div>
+                          <span className="text-gray-500 text-sm">
+                            {conversations.length} conversation{conversations.length > 1 ? 's' : ''}
                           </span>
-                        ))}
+                        </div>
+                        
+                        <div className="space-y-3 ml-4">
+                          {conversations.map(conversation => (
+                            <div key={conversation.id} className="border rounded-lg p-4 hover:shadow-lg transition-shadow bg-white">
+                              <div className="flex justify-between items-start mb-3">
+                                <div>
+                                  <h4 className="font-bold text-gray-800">
+                                    Round {conversation.round_number} - {conversation.time_period}
+                                  </h4>
+                                  <p className="text-sm text-gray-600">
+                                    Participants: {conversation.messages?.map(m => m.agent_name).filter((name, index, arr) => arr.indexOf(name) === index).join(', ') || 'N/A'}
+                                  </p>
+                                </div>
+                                <div className="text-xs text-gray-400">
+                                  {new Date(conversation.created_at).toLocaleString()}
+                                </div>
+                              </div>
+                              
+                              <div className="bg-gray-50 rounded p-3 max-h-40 overflow-y-auto">
+                                {conversation.messages?.slice(0, 3).map((message, index) => (
+                                  <div key={index} className="text-sm mb-2">
+                                    <strong>{message.agent_name}:</strong> {message.message}
+                                  </div>
+                                )) || (
+                                  <div className="text-sm text-gray-500">No messages available</div>
+                                )}
+                                {conversation.messages?.length > 3 && (
+                                  <div className="text-xs text-gray-500 italic">
+                                    ...and {conversation.messages.length - 3} more messages
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
+                );
+              })()
             )}
           </div>
         </div>
