@@ -378,6 +378,21 @@ backend:
         -comment: "Retested all document-related API endpoints after the route ordering fix and trigger phrase enhancements. All endpoints are now working correctly: GET /api/documents/categories returns the expected categories, POST /api/documents/create successfully creates documents, GET /api/documents and GET /api/documents/{id} retrieve documents as expected, GET /api/documents/search and GET /api/documents/category/{category} correctly filter documents, and POST /api/documents/analyze-conversation now properly detects action triggers with the enhanced trigger phrases. The POST /api/documents/generate endpoint successfully generates well-structured documents based on conversation context. These improvements have resolved all the previous issues with the document-related API endpoints."
 
 frontend:
+  - task: "Microphone Buttons and Custom Scenario Layout"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for microphone buttons visibility and Custom Scenario layout"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the microphone buttons visibility and Custom Scenario layout. Verified that: 1) Microphone icons are now visible in all required text areas in the Agent Edit Modal (Goal, Expertise, Background, Memory & Knowledge), 2) Name field correctly does NOT have a microphone icon, 3) Microphone icons are visible in all required text areas in the Agent Creation Form (Goal, Expertise, Background), 4) Avatar Description textarea is missing a microphone icon, 5) Add Memory textarea has a microphone icon, 6) Custom Scenario textarea has a microphone icon properly positioned on the right side, 7) Voice language selector has been removed from the Custom Scenario card, 8) Tip text with 💡 has been removed from the Custom Scenario card, 9) There is proper spacing (56px) between the Start New Simulation card and Custom Scenario card, 10) All microphone icons show the 'Voice input' tooltip on hover. The implementation meets all the requirements except for the missing microphone icon in the Avatar Description textarea."
+
   - task: "Animated Observer Logo"
     implemented: true
     working: true
