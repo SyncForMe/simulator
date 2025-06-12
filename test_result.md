@@ -65,6 +65,36 @@ backend:
         -agent: "testing"
         -comment: "Retested the action trigger analysis with the enhanced trigger phrases. The endpoint now correctly detects a variety of trigger phrases including 'we need a protocol for', 'i'll create', 'let me create', and 'let's put together'. Tested with multiple conversation scenarios and all were correctly identified, including non-trigger conversations which were properly classified as not requiring document creation."
 
+  - task: "GET /api/conversation-history - Conversation History with Scenario Name"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for conversation history with scenario name"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the GET /api/conversation-history endpoint to verify that conversations include scenario_name field. Created a test conversation with a scenario name and saved it to the conversation history. The endpoint correctly returns conversations with the scenario_name field, allowing for organization and grouping of conversations by scenario. The POST /api/conversation-history endpoint also correctly accepts and stores the scenario_name field."
+
+  - task: "GET /api/documents/by-scenario - Documents Organized by Scenario"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for documents organized by scenario"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the GET /api/documents/by-scenario endpoint to verify that documents can be organized by scenario name. The endpoint returns a list of scenarios, each containing a list of documents associated with that scenario. The endpoint correctly groups documents by scenario_name, allowing for better organization of documents in the File Center. Created a test document with a scenario name and verified that it appears in the correct scenario group."
+
   - task: "POST /api/documents/generate - Document Generation"
     implemented: true
     working: true
