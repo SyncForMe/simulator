@@ -2944,6 +2944,7 @@ async def generate_conversation():
     time_period = state["current_time_period"]
     day = state["current_day"]
     scenario = state["scenario"]
+    scenario_name = state.get("scenario_name", "")  # Default to empty if not set
     language = state.get("language", "en")  # Default to English if not set
     
     # Language settings for conversation generation
