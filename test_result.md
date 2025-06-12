@@ -19,11 +19,11 @@ backend:
 
   - task: "DELETE /api/documents/bulk - Bulk Delete Documents"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -34,6 +34,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Retested the DELETE /api/documents/bulk endpoint. The endpoint is now working correctly for authentication and non-existent document IDs. Authentication is properly enforced, with the endpoint returning a 403 Forbidden error for unauthenticated requests. The endpoint correctly handles non-existent document IDs, returning a 404 Not Found error with the message 'Document not found'. However, there is still an issue with empty arrays, which return a 404 Not Found error instead of a success message with deleted_count=0. This is a minor issue as the core functionality of bulk deleting documents is working correctly."
+        -working: false
+        -agent: "testing"
+        -comment: "Retested the document bulk delete endpoint after fixing the code to handle empty arrays correctly. The endpoint still returns a 404 Not Found error with the message 'Document not found' when an empty array is provided. The fix was not successful. The endpoint should return a 200 OK response with a message of 'Successfully deleted 0 documents' and a deleted_count of 0 when an empty array is provided. This issue needs to be addressed to ensure consistent behavior between the conversation and document bulk delete endpoints."
 
   - task: "POST /api/simulation/set-scenario - Custom Scenario Name Input"
     implemented: true
