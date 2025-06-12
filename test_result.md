@@ -1089,8 +1089,8 @@ backend:
 
 test_plan:
   current_focus:
-    - "DELETE /api/conversation-history/bulk - Bulk Delete Conversations"
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
-  stuck_tasks: []
+  stuck_tasks: 
+    - "DELETE /api/documents/bulk - Bulk Delete Documents"
   test_all: false
   test_priority: "high_first"
