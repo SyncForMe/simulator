@@ -5830,13 +5830,14 @@ function App() {
           try {
             // Generate avatar if not already generated
             if (!agent.avatar_url) {
-              const avatarResponse = await axios.post(`${API}/agents/generate-avatar`, {
-                name: agent.name,
-                description: agent.avatar_prompt
+              const avatarResponse = await axios.post(`${API}/avatars/generate`, {
+                prompt: agent.avatar_prompt
               }, {
                 headers: { Authorization: `Bearer ${token}` }
               });
-              agent.avatar_url = avatarResponse.data.avatar_url;
+              if (avatarResponse.data.success) {
+                agent.avatar_url = avatarResponse.data.image_url;
+              }
             }
 
             // Create the agent in the simulation
