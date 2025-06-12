@@ -5030,6 +5030,73 @@ async def create_field_appropriate_text(raw_text: str, field_type: str) -> str:
         logging.error(f"Error in AI summarization for {field_type}: {e}")
         return raw_text.strip()  # Fallback to raw text
 
+# Bulk delete endpoints
+@api_router.delete("/conversation-history/bulk")
+async def delete_conversations_bulk(
+    conversation_ids: List[str],
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete multiple conversations for the authenticated user"""
+    try:
+        # Verify all conversations belong to the user
+        conversations = await db.conversation_history.find({
+            "id": {"$in": conversation_ids},
+            "user_id": current_user.id
+        }).to_list(None)
+        
+        if len(conversations) != len(conversation_ids):
+            raise HTTPException(status_code=404, detail="Some conversations not found or don't belong to user")
+        
+        # Delete the conversations
+        result = await db.conversation_history.delete_many({
+            "id": {"$in": conversation_ids},
+            "user_id": current_user.id
+        })
+        
+        return {
+            "message": f"Successfully deleted {result.deleted_count} conversations",
+            "deleted_count": result.deleted_count
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting conversations: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete conversations: {str(e)}")
+
+@api_router.delete("/documents/bulk")
+async def delete_documents_bulk(
+    document_ids: List[str],
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete multiple documents for the authenticated user"""
+    try:
+        # Verify all documents belong to the user
+        documents = await db.documents.find({
+            "id": {"$in": document_ids},
+            "metadata.user_id": current_user.id
+        }).to_list(None)
+        
+        if len(documents) != len(document_ids):
+            raise HTTPException(status_code=404, detail="Some documents not found or don't belong to user")
+        
+        # Delete the documents
+        result = await db.documents.delete_many({
+            "id": {"$in": document_ids},
+            "metadata.user_id": current_user.id
+        })
+        
+        return {
+            "message": f"Successfully deleted {result.deleted_count} documents",
+            "deleted_count": result.deleted_count
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting documents: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
