@@ -5097,6 +5097,11 @@ async def delete_documents_bulk(
             "message": f"Successfully deleted {result.deleted_count} documents",
             "deleted_count": result.deleted_count
         }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting documents: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
         
     except HTTPException:
         raise
