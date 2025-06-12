@@ -1,4 +1,19 @@
 backend:
+  - task: "POST /api/simulation/set-scenario - Custom Scenario Name Input"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for custom scenario name input functionality"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the POST /api/simulation/set-scenario endpoint with both scenario description and scenario_name fields. The endpoint correctly requires both fields and returns a 400 Bad Request error if either field is missing. When both fields are provided, the endpoint successfully updates the simulation state with the new scenario and scenario name. The endpoint returns the expected response with message, scenario, and scenario_name fields."
+
   - task: "GET /api/documents/categories - Document Categories Endpoint"
     implemented: true
     working: true
