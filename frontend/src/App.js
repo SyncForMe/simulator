@@ -2067,7 +2067,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
               <textarea
                 value={formData.memory_summary}
                 onChange={(e) => setFormData(prev => ({...prev, memory_summary: e.target.value}))}
-                className="w-full p-2 pr-10 border rounded bg-blue-50"
+                className="w-full p-2 pr-12 border rounded bg-blue-50"
                 rows="4"
                 placeholder="Key memories, insights, relationships, and important developments...
 
@@ -2080,7 +2080,7 @@ const EditAgentModal = ({ agent, isOpen, onClose, onSave, archetypes }) => {
 URLs will be automatically fetched and summarized!"
                 disabled={loading}
               />
-              <div className="absolute right-2 top-2">
+              <div className="absolute right-3 top-2">
                 <VoiceInput
                   onTextUpdate={(text) => setFormData(prev => ({...prev, memory_summary: text}))}
                   fieldType="memory"
