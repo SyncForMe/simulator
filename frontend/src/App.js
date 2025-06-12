@@ -3237,7 +3237,8 @@ const AgentProfilesManager = ({
   onDeleteAll, 
   onCreateAgent, 
   onInitResearchStation, 
-  onTestBackgrounds 
+  onTestBackgrounds,
+  onShowAgentLibrary 
 }) => {
   const handleDeleteAll = () => {
     if (agents.length === 0) return;
