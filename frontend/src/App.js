@@ -673,6 +673,7 @@ const AGENT_ARCHETYPES = {
 
 const ScenarioInput = ({ onSetScenario, currentScenario }) => {
   const [scenario, setScenario] = useState("");
+  const [scenarioName, setScenarioName] = useState("");
   const [loading, setLoading] = useState(false);
   const [randomLoading, setRandomLoading] = useState(false);
   const [justSubmitted, setJustSubmitted] = useState(false);
