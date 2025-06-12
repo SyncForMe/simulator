@@ -291,6 +291,14 @@ const ObserverLogo = () => {
 
 // Auth Context
 const AuthContext = createContext();
+
+// Healthcare Categories for Agent Library
+const healthcareCategories = [
+  { 
+    id: 'medical', 
+    name: 'Medical', 
+    icon: '🩺', 
+    agents: [
         {
           id: 'elena-vasquez',
           name: 'Dr. Elena Vasquez',
