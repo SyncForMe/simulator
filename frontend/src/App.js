@@ -184,8 +184,9 @@ const VoiceInput = ({
 };
 
 // Agent Library Modal Component
+// (Now imported from ./AgentLibrary.js)
+
 // Animated Observer Logo Component
-  const healthcareCategories = [
     { 
       id: 'medical', 
       name: 'Medical', 
