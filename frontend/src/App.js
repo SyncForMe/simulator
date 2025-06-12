@@ -3356,17 +3356,27 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
                     <span className="text-xs text-gray-500 ml-2">(Describe how the agent should look)</span>
                   </label>
                   <div className="flex space-x-2">
-                    <textarea
-                      value={formData.avatar_prompt}
-                      onChange={(e) => setFormData(prev => ({...prev, avatar_prompt: e.target.value}))}
-                      className="flex-1 p-2 border rounded"
-                      rows="2"
-                      placeholder="Examples:
+                    <div className="flex-1 relative">
+                      <textarea
+                        value={formData.avatar_prompt}
+                        onChange={(e) => setFormData(prev => ({...prev, avatar_prompt: e.target.value}))}
+                        className="w-full p-2 pr-10 border rounded"
+                        rows="2"
+                        placeholder="Examples:
 • Nikola Tesla
 • an old grandma with white hair and blue eyes
 • a young scientist with glasses and a lab coat
 • a confident business leader in a suit"
-                    />
+                      />
+                      <div className="absolute right-2 top-2">
+                        <VoiceInput
+                          onTextUpdate={(text) => setFormData(prev => ({...prev, avatar_prompt: text}))}
+                          fieldType="avatar_prompt"
+                          size="small"
+                          disabled={loading}
+                        />
+                      </div>
+                    </div>
                     <button
                       type="button"
                       onClick={handlePreviewAvatar}
