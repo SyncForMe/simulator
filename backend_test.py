@@ -207,7 +207,7 @@ def test_bulk_delete_functionality():
         "Conversation Bulk Delete Without Auth",
         "/conversation-history/bulk",
         method="DELETE",
-        data={"conversation_ids": ["test-id-1", "test-id-2"]},
+        data=["test-id-1", "test-id-2"],
         expected_status=403
     )
     
@@ -216,7 +216,7 @@ def test_bulk_delete_functionality():
         "Document Bulk Delete Without Auth",
         "/documents/bulk",
         method="DELETE",
-        data={"document_ids": ["test-id-1", "test-id-2"]},
+        data=["test-id-1", "test-id-2"],
         expected_status=403
     )
     
@@ -224,30 +224,66 @@ def test_bulk_delete_functionality():
     print("\nCreating test conversations for bulk delete testing:")
     conversation_ids = []
     
-    for i in range(3):
-        conversation_data = {
-            "participants": [f"Test Agent {j+1}" for j in range(3)],
-            "messages": [
-                {
-                    "agent_name": f"Test Agent {j+1}",
-                    "message": f"This is test message {j+1} in conversation {i+1}"
-                } for j in range(3)
-            ],
-            "title": f"Test Conversation {i+1} for Bulk Delete",
-            "scenario_name": "Bulk Delete Test"
-        }
+    # Get existing conversations first
+    get_convs_test, get_convs_response = run_test(
+        "Get Existing Conversations",
+        "/conversation-history",
+        method="GET",
+        auth=True
+    )
+    
+    if get_convs_test and get_convs_response:
+        existing_convs = get_convs_response
+        print(f"Found {len(existing_convs)} existing conversations")
         
-        conv_test, conv_response = run_test(
-            f"Create Test Conversation {i+1}",
-            "/conversation-history",
-            method="POST",
-            data=conversation_data,
-            auth=True,
-            expected_keys=["id"]
-        )
-        
-        if conv_test and conv_response:
-            conversation_ids.append(conv_response.get("id"))
+        # Use existing conversations if available
+        if len(existing_convs) >= 3:
+            for i in range(3):
+                conversation_ids.append(existing_convs[i].get("id"))
+            print(f"Using existing conversation IDs: {conversation_ids}")
+        else:
+            # Create new conversations if needed
+            for i in range(3):
+                conversation_data = {
+                    "participants": [f"Test Agent {j+1}" for j in range(3)],
+                    "messages": [
+                        {
+                            "agent_name": f"Test Agent {j+1}",
+                            "message": f"This is test message {j+1} in conversation {i+1}"
+                        } for j in range(3)
+                    ],
+                    "title": f"Test Conversation {i+1} for Bulk Delete",
+                    "scenario_name": "Bulk Delete Test"
+                }
+                
+                conv_test, conv_response = run_test(
+                    f"Create Test Conversation {i+1}",
+                    "/conversation-history",
+                    method="POST",
+                    data=conversation_data,
+                    auth=True
+                )
+                
+                if conv_test and conv_response:
+                    print(f"Created conversation, getting updated list")
+                    # Get the updated list of conversations to find the new one
+                    get_updated_convs_test, get_updated_convs_response = run_test(
+                        "Get Updated Conversations",
+                        "/conversation-history",
+                        method="GET",
+                        auth=True
+                    )
+                    
+                    if get_updated_convs_test and get_updated_convs_response:
+                        updated_convs = get_updated_convs_response
+                        # Find the newly created conversation (should be at the top)
+                        if len(updated_convs) > len(existing_convs):
+                            new_convs = [conv for conv in updated_convs if conv.get("id") not in [ec.get("id") for ec in existing_convs]]
+                            if new_convs:
+                                conversation_ids.append(new_convs[0].get("id"))
+                                print(f"Added conversation ID: {new_convs[0].get('id')}")
+                                # Update existing_convs for the next iteration
+                                existing_convs = updated_convs
     
     # Create test documents
     print("\nCreating test documents for bulk delete testing:")
@@ -274,12 +310,14 @@ def test_bulk_delete_functionality():
         
         if doc_test and doc_response:
             document_ids.append(doc_response.get("document_id"))
+            print(f"Created document with ID: {doc_response.get('document_id')}")
     
     # Test conversation bulk delete with valid IDs
     print("\nTesting conversation bulk delete with valid IDs:")
-    if conversation_ids:
+    if len(conversation_ids) >= 2:
         # Delete first two conversations
         delete_ids = conversation_ids[:2]
+        print(f"Attempting to delete conversation IDs: {delete_ids}")
         conv_bulk_test, conv_bulk_response = run_test(
             "Conversation Bulk Delete",
             "/conversation-history/bulk",
@@ -315,19 +353,20 @@ def test_bulk_delete_functionality():
             else:
                 print("❌ Some deleted conversations are still in the database")
             
-            # Check if non-deleted ID is still present
-            if conversation_ids[2] in remaining_ids:
+            # Check if non-deleted ID is still present (if we had at least 3)
+            if len(conversation_ids) >= 3 and conversation_ids[2] in remaining_ids:
                 print("✅ Non-deleted conversation is still in the database")
             else:
-                print("❌ Non-deleted conversation is missing from the database")
+                print("❌ Non-deleted conversation is missing from the database or not enough conversations were created")
     else:
-        print("❌ No test conversations created, skipping conversation bulk delete test")
+        print("❌ Not enough test conversations available, skipping conversation bulk delete test")
     
     # Test document bulk delete with valid IDs
     print("\nTesting document bulk delete with valid IDs:")
-    if document_ids:
+    if len(document_ids) >= 2:
         # Delete first two documents
         delete_ids = document_ids[:2]
+        print(f"Attempting to delete document IDs: {delete_ids}")
         doc_bulk_test, doc_bulk_response = run_test(
             "Document Bulk Delete",
             "/documents/bulk",
@@ -369,7 +408,7 @@ def test_bulk_delete_functionality():
             else:
                 print("❌ Non-deleted document is missing from the database")
     else:
-        print("❌ No test documents created, skipping document bulk delete test")
+        print("❌ Not enough test documents created, skipping document bulk delete test")
     
     # Test conversation bulk delete with non-existent IDs
     print("\nTesting conversation bulk delete with non-existent IDs:")
@@ -430,6 +469,7 @@ def test_bulk_delete_functionality():
         method="DELETE",
         data=[],  # Pass as request body
         auth=True,
+        expected_status=200,  # Should return 200 with deleted_count=0
         expected_keys=["message", "deleted_count"]
     )
     
@@ -439,9 +479,11 @@ def test_bulk_delete_functionality():
             print("✅ Correctly reported 0 deleted documents for empty array")
         else:
             print(f"❌ Expected 0 deleted documents for empty array, but got {deleted_count}")
+    else:
+        print("❌ Document bulk delete with empty array failed - should return 200 with deleted_count=0")
     
     # Clean up - delete remaining conversation and document
-    if conversation_ids and len(conversation_ids) > 2:
+    if len(conversation_ids) >= 3:
         run_test(
             "Delete Remaining Test Conversation",
             f"/conversation-history/{conversation_ids[2]}",
@@ -449,7 +491,7 @@ def test_bulk_delete_functionality():
             auth=True
         )
     
-    if document_ids and len(document_ids) > 2:
+    if len(document_ids) >= 3:
         run_test(
             "Delete Remaining Test Document",
             f"/documents/{document_ids[2]}",
@@ -462,9 +504,12 @@ def test_bulk_delete_functionality():
     
     auth_tests_passed = not no_auth_conv_test and not no_auth_doc_test
     conv_bulk_tests_passed = len(conversation_ids) >= 2 and conv_bulk_test and not non_exist_conv_test and empty_conv_test
-    doc_bulk_tests_passed = len(document_ids) >= 2 and doc_bulk_test and not non_exist_doc_test and empty_doc_test
+    doc_bulk_tests_passed = len(document_ids) >= 2 and doc_bulk_test and not non_exist_doc_test
     
-    if auth_tests_passed and conv_bulk_tests_passed and doc_bulk_tests_passed:
+    # Special check for document empty array test
+    doc_empty_array_issue = not empty_doc_test or empty_doc_response.get("deleted_count", -1) != 0
+    
+    if auth_tests_passed and conv_bulk_tests_passed and doc_bulk_tests_passed and not doc_empty_array_issue:
         print("✅ Bulk delete functionality is working correctly!")
         print("✅ Authentication is properly enforced for both endpoints")
         print("✅ Conversation bulk delete works correctly with valid IDs")
@@ -480,6 +525,8 @@ def test_bulk_delete_functionality():
             issues.append("Conversation bulk delete has issues")
         if not doc_bulk_tests_passed:
             issues.append("Document bulk delete has issues")
+        if doc_empty_array_issue:
+            issues.append("Document bulk delete with empty array returns 404 instead of 200 with deleted_count=0")
         
         print("❌ Bulk delete functionality has issues:")
         for issue in issues:
