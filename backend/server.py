@@ -398,6 +398,7 @@ class ConversationRound(BaseModel):
     round_number: int
     time_period: str  # morning, afternoon, evening
     scenario: str
+    scenario_name: str = ""  # Name/title of the scenario
     messages: List[ConversationMessage]
     created_at: datetime = Field(default_factory=datetime.utcnow)
     language: str = "en"
