@@ -127,6 +127,7 @@ class DocumentMetadata(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     simulation_id: str = ""  # Links to the simulation where it was created
     conversation_round: int = 0  # Which conversation round triggered creation
+    scenario_name: str = ""  # Name of the scenario for organization
     user_id: str = ""  # User who owns this simulation
 
 class Document(BaseModel):
