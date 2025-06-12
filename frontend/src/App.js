@@ -139,9 +139,8 @@ const VoiceInput = ({
     }
   };
 
-  if (!token) {
-    return null; // Don't show voice input if not authenticated
-  }
+  // Show the microphone button always, but disable it if not authenticated
+  const isDisabledDueToAuth = !token;
 
   return (
     <div className={`relative ${className}`}>
