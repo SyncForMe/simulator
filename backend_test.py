@@ -271,9 +271,14 @@ def test_document_loading_performance():
     
     # Run multiple requests to get average response time
     response_times = []
+    response_sizes = []
+    document_counts = []
+    
     for i in range(5):
         print(f"\nRequest {i+1}/5:")
-        _, _ = run_test(
+        start_time = time.time()
+        
+        get_docs_test, get_docs_response = run_test(
             f"Document Loading Performance - Request {i+1}",
             "/documents",
             method="GET",
@@ -284,6 +289,14 @@ def test_document_loading_performance():
         # Get the response time from the last test
         if test_results["tests"][-1].get("response_time"):
             response_times.append(test_results["tests"][-1]["response_time"])
+            
+            # Calculate response size
+            if get_docs_response:
+                response_size = len(json.dumps(get_docs_response))
+                response_sizes.append(response_size)
+                document_counts.append(len(get_docs_response))
+                print(f"Response size: {response_size} bytes")
+                print(f"Document count: {len(get_docs_response)}")
     
     # Calculate statistics
     if response_times:
@@ -299,24 +312,24 @@ def test_document_loading_performance():
         print(f"Max: {max_time:.4f} seconds")
         
         # Evaluate performance
-        if avg_time < 0.5:
-            print("✅ Document loading performance is excellent (< 0.5 seconds)")
+        if avg_time < 0.1:
+            print("✅ Document loading performance is excellent (< 0.1 seconds)")
             performance_rating = "Excellent"
-        elif avg_time < 1.0:
-            print("✅ Document loading performance is good (< 1.0 seconds)")
+        elif avg_time < 0.5:
+            print("✅ Document loading performance is good (< 0.5 seconds)")
             performance_rating = "Good"
-        elif avg_time < 2.0:
-            print("⚠️ Document loading performance is acceptable but could be improved (< 2.0 seconds)")
+        elif avg_time < 1.0:
+            print("⚠️ Document loading performance is acceptable but could be improved (< 1.0 seconds)")
             performance_rating = "Acceptable"
         else:
-            print("❌ Document loading performance is poor (> 2.0 seconds)")
+            print("❌ Document loading performance is poor (> 1.0 seconds)")
             performance_rating = "Poor"
     else:
         print("❌ No valid response times recorded")
         performance_rating = "Unknown"
     
-    # Test 2: Check if there are any optimization issues
-    print("\nTest 2: Checking for optimization issues")
+    # Test 2: Check response data structure
+    print("\nTest 2: Checking response data structure")
     
     # Get documents with timing
     get_docs_test, get_docs_response = run_test(
@@ -327,61 +340,90 @@ def test_document_loading_performance():
         measure_time=True
     )
     
-    optimization_issues = []
+    data_structure_issues = []
     
     if get_docs_test and get_docs_response:
         # Check document count
         doc_count = len(get_docs_response)
         print(f"Total documents: {doc_count}")
         
-        # Check if response contains unnecessary data
+        # Check if response contains the expected data structure
         if doc_count > 0:
             sample_doc = get_docs_response[0]
-            content_length = len(sample_doc.get("content", ""))
-            preview_length = len(sample_doc.get("preview", ""))
+            print("\nSample document structure:")
+            for key in sample_doc.keys():
+                print(f"- {key}")
             
-            print(f"Sample document content length: {content_length} characters")
-            print(f"Sample document preview length: {preview_length} characters")
+            # Check for required fields
+            required_fields = ["id", "metadata", "content", "preview"]
+            missing_fields = [field for field in required_fields if field not in sample_doc]
+            if missing_fields:
+                data_structure_issues.append(f"Missing required fields: {', '.join(missing_fields)}")
             
-            if content_length > 1000 and "preview" not in sample_doc:
-                optimization_issues.append("Large document content is returned without using preview field")
-            
-            # Check if metadata is properly structured
+            # Check metadata structure
             if "metadata" in sample_doc:
-                metadata_keys = sample_doc["metadata"].keys()
-                print(f"Metadata fields: {', '.join(metadata_keys)}")
+                metadata = sample_doc["metadata"]
+                print("\nMetadata structure:")
+                for key in metadata.keys():
+                    print(f"- {key}")
                 
-                # Check for unnecessary metadata fields
-                unnecessary_fields = []
-                for key in metadata_keys:
-                    if key not in ["id", "title", "category", "description", "created_at", "updated_at", "authors", "status"]:
-                        unnecessary_fields.append(key)
+                # Check for required metadata fields
+                required_metadata = ["id", "title", "category", "description", "created_at", "updated_at"]
+                missing_metadata = [field for field in required_metadata if field not in metadata]
+                if missing_metadata:
+                    data_structure_issues.append(f"Missing required metadata fields: {', '.join(missing_metadata)}")
+            else:
+                data_structure_issues.append("Missing metadata field")
+            
+            # Check preview field
+            if "preview" in sample_doc:
+                preview_length = len(sample_doc["preview"])
+                content_length = len(sample_doc.get("content", ""))
+                print(f"\nPreview length: {preview_length} characters")
+                print(f"Content length: {content_length} characters")
                 
-                if unnecessary_fields:
-                    optimization_issues.append(f"Metadata contains potentially unnecessary fields: {', '.join(unnecessary_fields)}")
+                if preview_length >= content_length and content_length > 200:
+                    data_structure_issues.append("Preview is not shorter than content for large documents")
+                
+                if preview_length == 0:
+                    data_structure_issues.append("Preview field is empty")
+            else:
+                data_structure_issues.append("Missing preview field")
     
-    # Print optimization issues
-    if optimization_issues:
-        print("\nOptimization Issues Found:")
-        for issue in optimization_issues:
+    # Print data structure issues
+    if data_structure_issues:
+        print("\nData Structure Issues Found:")
+        for issue in data_structure_issues:
             print(f"⚠️ {issue}")
     else:
-        print("✅ No obvious optimization issues found")
+        print("\n✅ No data structure issues found")
+        print("✅ Response includes all required fields: id, metadata, content, preview")
+        print("✅ Metadata includes all required fields: id, title, category, description, created_at, updated_at")
+        print("✅ Preview field is properly implemented for efficient rendering")
+    
+    # Test 3: Check response consistency across multiple requests
+    print("\nTest 3: Checking response consistency across multiple requests")
+    
+    if document_counts and len(set(document_counts)) == 1:
+        print(f"✅ Document count is consistent across all requests: {document_counts[0]} documents")
+    elif document_counts:
+        print(f"⚠️ Document count varies across requests: {document_counts}")
+        data_structure_issues.append("Inconsistent document count across requests")
     
     # Print summary
     print("\nDOCUMENT LOADING PERFORMANCE SUMMARY:")
     if performance_rating in ["Excellent", "Good"]:
         print(f"✅ Document loading performance is {performance_rating.lower()} with average response time of {avg_time:.4f} seconds")
-        if not optimization_issues:
-            print("✅ No optimization issues detected")
+        if not data_structure_issues:
+            print("✅ No data structure issues detected")
         else:
-            print(f"⚠️ {len(optimization_issues)} optimization issues detected")
-        return True, {"performance": performance_rating, "avg_time": avg_time, "issues": optimization_issues}
+            print(f"⚠️ {len(data_structure_issues)} data structure issues detected")
+        return True, {"performance": performance_rating, "avg_time": avg_time, "issues": data_structure_issues}
     else:
         print(f"❌ Document loading performance is {performance_rating.lower()} with average response time of {avg_time:.4f} seconds")
-        if optimization_issues:
-            print(f"❌ {len(optimization_issues)} optimization issues detected")
-        return False, {"performance": performance_rating, "avg_time": avg_time, "issues": optimization_issues}
+        if data_structure_issues:
+            print(f"❌ {len(data_structure_issues)} data structure issues detected")
+        return False, {"performance": performance_rating, "avg_time": avg_time, "issues": data_structure_issues}
 
 def test_document_bulk_delete():
     """Test the document bulk delete functionality"""
