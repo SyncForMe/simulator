@@ -948,6 +948,11 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
       setScenario("");
       setScenarioName("");
       setJustSubmitted(false);
+      // Collapse the custom scenario section and expand current scenario
+      setIsCollapsed(true);
+      if (onScenarioCollapse) {
+        onScenarioCollapse(true);
+      }
     }, 3000);
   };
 
@@ -973,6 +978,11 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
       setScenario("");
       setScenarioName("");
       setJustSubmitted(false);
+      // Collapse the custom scenario section and expand current scenario
+      setIsCollapsed(true);
+      if (onScenarioCollapse) {
+        onScenarioCollapse(true);
+      }
     }, 3000);
   };
 
