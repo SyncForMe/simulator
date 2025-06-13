@@ -304,7 +304,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                               />
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-semibold text-gray-900 text-sm">{agent.name}</h4>
-                                <p className="text-xs text-gray-600 mt-1">{agent.archetype}</p>
+                                <p className="text-xs text-gray-600 mt-1">{agent.archetypeDisplay || agent.archetype}</p>
                               </div>
                             </div>
                             
