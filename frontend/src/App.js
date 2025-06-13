@@ -4598,13 +4598,20 @@ const FileCenter = ({ onRefresh }) => {
           </div>
           <div className="bg-green-50 p-2 rounded text-center">
             <div className="font-semibold text-green-700">
-              {scenarioDocuments.reduce((total, scenario) => total + scenario.document_count, 0)}
+              {scenarioDocuments.reduce((total, scenario) => {
+                // Handle both document_count field and documents array length
+                return total + (scenario.document_count || scenario.documents?.length || 0);
+              }, 0)}
             </div>
             <div className="text-green-600">Documents</div>
           </div>
           <div className="bg-purple-50 p-2 rounded text-center">
             <div className="font-semibold text-purple-700">
-              {new Set(scenarioDocuments.flatMap(s => s.documents.map(d => d.category))).size}
+              {new Set(
+                scenarioDocuments.flatMap(s => 
+                  (s.documents || []).map(d => d.category).filter(Boolean)
+                )
+              ).size}
             </div>
             <div className="text-purple-600">Categories</div>
           </div>
