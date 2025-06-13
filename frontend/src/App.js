@@ -1127,6 +1127,52 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
             </div>
           )}
           
+          {uploadError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+              <div className="flex items-start space-x-2">
+                <span className="text-red-600 text-sm">⚠️</span>
+                <div>
+                  <div className="text-red-700 font-semibold text-sm">Upload Error</div>
+                  <div className="text-red-600 text-xs">{uploadError}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Uploaded Files Display */}
+          {showUploadedFiles && uploadedFiles.length > 0 && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-blue-700 font-semibold text-sm">📎 Uploaded Context Files ({uploadedFiles.length})</h4>
+                <button
+                  onClick={() => setShowUploadedFiles(false)}
+                  className="text-blue-600 hover:text-blue-800 text-xs"
+                >
+                  Hide
+                </button>
+              </div>
+              <div className="space-y-1 max-h-32 overflow-y-auto">
+                {uploadedFiles.map((file) => (
+                  <div key={file.id} className="flex items-center justify-between bg-white rounded px-2 py-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs">
+                        {file.file_type === 'image' ? '🖼️' : 
+                         file.file_type === 'pdf' ? '📄' : 
+                         file.file_type === 'excel' ? '📊' : 
+                         file.file_type === 'text' ? '📝' : '📄'}
+                      </span>
+                      <span className="text-xs text-gray-700 truncate">{file.filename}</span>
+                    </div>
+                    <span className="text-xs text-gray-500">{Math.round(file.size / 1024)}KB</span>
+                  </div>
+                ))}
+              </div>
+              <div className="text-xs text-blue-600 mt-2">
+                💡 Agents will use these files for context and reference during conversations.
+              </div>
+            </div>
+          )}
+          
           {voiceError && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
               <div className="flex items-start space-x-2">
