@@ -1474,57 +1474,84 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
   const [addedAgents, setAddedAgents] = useState(new Set());
   const timeoutRefs = useRef(new Map());
   const [loadedImages, setLoadedImages] = useState(new Set());
+  const [imageLoadingStates, setImageLoadingStates] = useState(new Map());
 
-  // Preload all agent avatars when component opens
+  // Aggressive preloading of all avatars on app startup
   useEffect(() => {
-    if (isOpen) {
-      // Register service worker for avatar caching
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-          .catch((error) => {
-            console.warn('SW registration failed:', error);
-          });
-      }
+    // Register service worker immediately on app load
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .catch((error) => {
+          console.warn('SW registration failed:', error);
+        });
+    }
 
-      const preloadImages = () => {
-        const allAvatars = [];
-        
-        // Collect all avatar URLs from all sectors
-        Object.values(sectors).forEach(sector => {
-          Object.values(sector.categories).forEach(category => {
-            category.agents.forEach(agent => {
-              if (agent.avatar && !loadedImages.has(agent.avatar)) {
-                allAvatars.push(agent.avatar);
-              }
-            });
+    // Preload ALL avatars immediately when component mounts
+    const preloadAllAvatars = () => {
+      const allAvatars = [];
+      
+      // Collect ALL avatar URLs from all sectors
+      Object.values(sectors).forEach(sector => {
+        Object.values(sector.categories).forEach(category => {
+          category.agents.forEach(agent => {
+            if (agent.avatar) {
+              allAvatars.push(agent.avatar);
+            }
           });
         });
+      });
 
-        // Preload images in chunks to avoid overwhelming the browser
-        const chunkSize = 10;
-        for (let i = 0; i < allAvatars.length; i += chunkSize) {
-          const chunk = allAvatars.slice(i, i + chunkSize);
-          
-          setTimeout(() => {
-            chunk.forEach(avatarUrl => {
-              const img = new Image();
-              img.onload = () => {
-                setLoadedImages(prev => new Set(prev).add(avatarUrl));
-              };
-              img.onerror = () => {
-                console.warn(`Failed to preload image: ${avatarUrl}`);
-              };
-              img.src = avatarUrl;
-            });
-          }, i / chunkSize * 100); // Stagger loading
-        }
+      console.log(`Preloading ${allAvatars.length} agent avatars...`);
+
+      // Preload all images immediately with high priority
+      allAvatars.forEach((avatarUrl, index) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        
+        // Set loading state
+        setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'loading'));
+        
+        img.onload = () => {
+          setLoadedImages(prev => new Set(prev).add(avatarUrl));
+          setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'loaded'));
+          if (index < 10) console.log(`✅ Preloaded avatar ${index + 1}:`, avatarUrl);
+        };
+        
+        img.onerror = () => {
+          console.warn(`❌ Failed to preload avatar ${index + 1}:`, avatarUrl);
+          setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'error'));
+        };
+        
+        // Start loading immediately
+        img.src = avatarUrl;
+      });
+    };
+
+    // Start preloading immediately
+    preloadAllAvatars();
+  }, []); // Run once on mount
+
+  // Additional preloading when library opens
+  useEffect(() => {
+    if (isOpen) {
+      // Force reload any failed images
+      const retryFailedImages = () => {
+        imageLoadingStates.forEach((state, url) => {
+          if (state === 'error' && !loadedImages.has(url)) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+              setLoadedImages(prev => new Set(prev).add(url));
+              setImageLoadingStates(prev => new Map(prev).set(url, 'loaded'));
+            };
+            img.src = url;
+          }
+        });
       };
 
-      // Small delay to allow modal to open first
-      const timeoutId = setTimeout(preloadImages, 100);
-      return () => clearTimeout(timeoutId);
+      setTimeout(retryFailedImages, 100);
     }
-  }, [isOpen]);
+  }, [isOpen, imageLoadingStates, loadedImages]);
 
   // Don't render if not open
   if (!isOpen) return null;
