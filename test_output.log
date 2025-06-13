@@ -1,0 +1,246 @@
+Using API URL: https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api
+
+================================================================================
+RUNNING BACKEND API TESTS
+================================================================================
+
+================================================================================
+Testing: Test Login Endpoint (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/auth/test-login)
+Status Code: 200
+Response: {
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LXVzZXItMTIzIiwiZXhwIjoxNzQ5OTEyNjg5fQ.X01DdXV1LnlcxyxHK3OL2Zq73Zr5q2nxyXj9OIhjPGg",
+  "token_type": "bearer",
+  "user": {
+    "id": "test-user-123",
+    "email": "test@example.com",
+    "name": "Test User",
+    "picture": "https://via.placeholder.com/40",
+    "created_at": "2025-06-13T11:07:10.480000",
+    "last_login": "2025-06-13T14:49:22.323000"
+  }
+}
+Test Result: PASSED
+Test login successful. User ID: test-user-123
+JWT Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LXVzZXItMTIzIiwiZXhwIjoxNzQ5OTEyNjg5fQ.X01DdXV1LnlcxyxHK3OL2Zq73Zr5q2nxyXj9OIhjPGg
+
+================================================================================
+TESTING AVATAR SYSTEM FUNCTIONALITY
+================================================================================
+
+Test 1: Retrieving agents to check for avatar URLs
+
+================================================================================
+Testing: Get Agents with Avatar URLs (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Status Code: 200
+Response: [
+  {
+    "id": "215279d0-26e8-4383-af3b-b85ed7e8500c",
+    "name": "Marcus \"Mark\" Castellano",
+    "archetype": "skeptic",
+    "personality": {
+      "extroversion": 6,
+      "optimism": 7,
+      "curiosity": 8,
+      "cooperativeness": 8,
+      "energy": 5
+    },
+    "goal": "Develop data-driven marketing strategies that navigate volatile crypto markets",
+    "expertise": "Multi-cycle crypto marketing, Brand positioning, Community building, Regulatory compliance",
+    "background": "A seasoned marketing veteran with 17 years of experience spanning traditional finance and digital marketing. Mark cut his teeth at Goldman Sachs' marketing division before transitioning to crypto in 2018. He's witnessed three major crypto cycles and has developed an intuitive understanding of market psychology. Known for his data-driven approach and ability to craft narratives that resonate with both retail and institutional investors.",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "I've survived the 2018 crypto winter, the 2020 DeFi summer, and the 2022 Luna/FTX collapse. Each cycle taught me that sustainable growth beats hype every time. My most successful campaign was during the bear market when everyone else went quiet - we gained 40% market share by staying consistent and honest about our product's limitations.",
+    "avatar_url": "https://v3.fal.media/files/kangaroo/sRpO1H4E1EaGBldZ-u2Ld.png",
+    "avatar_prompt": "",
+    "created_at": "2025-06-13T14:50:03.806000"
+  },
+  {
+    "id": "9f81d795-beb9-4055-9e59-2cb0f60c04e4",
+    "name": "Alexandra \"Alex\" Chen",
+    "archetype": "leader",
+    "personality": {
+      "extroversion": 9,
+      "optimism": 9,
+      "curiosity": 7,
+      "cooperativeness": 6,
+      "energy": 9
+    },
+    "goal": "Build and ship revolutionary DeFi products that reshape how people interact with money",
+    "expertise": "DeFi protocol architecture, Tokenomics design, User experience optimization, Go-to-market strategy",
+    "background": "A charismatic product visionary who led the development of three major DeFi protocols that collectively manage over $2B in TVL. Former Head of Product at a unicorn crypto exchange, Alex has the rare combination of technical depth and executive presence. She's known for her ability to rally teams around ambitious visions and has been featured on major crypto podcasts as a thought leader.",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "My first protocol launched during the 2020 DeFi explosion and hit $500M TVL in two weeks - then lost 90% during the crash. That failure taught me the importance of sustainable tokenomics over viral growth. My latest protocol has maintained steady growth for 18 months through multiple market cycles by focusing on real user needs.",
+    "avatar_url": "https://v3.fal.media/files/zebra/ygpfChn5HzuyHMGBnUCPt.png",
+    "avatar_prompt": "",
+    "created_at": "2025-06-13T14:50:03.807000"
+  },
+  {
+    "id": "152cc150-1553-41ab-a7f4-dcfbbebdd1b5",
+    "name": "Diego \"Dex\" Rodriguez",
+    "archetype": "optimist",
+    "personality": {
+      "extroversion": 4,
+      "optimism": 8,
+      "curiosity": 10,
+      "cooperativeness": 5,
+      "energy": 7
+    },
+    "goal": "Discover and capitalize on emerging crypto trends before they become mainstream",
+    "expertise": "Emerging crypto ecosystems, Yield optimization, DAO governance, MEV strategies, On-chain analysis",
+    "background": "A crypto polymath who's worn almost every hat imaginable in the space. Started as a Bitcoin miner in 2017, became a DeFi yield farmer, tried his hand at NFT curation, worked as a DAO contributor, and even spent six months as a crypto journalist. Dex has an uncanny ability to spot emerging trends before they become mainstream, though his hit rate on 'crazy' ideas is about 30% - which in crypto, makes him a visionary.",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "I called the Solana ecosystem explosion 6 months early and made 50x on SOL. I also lost 80% of my portfolio on Terra Luna because I was too bullish on algorithmic stablecoins. My biggest win was discovering a yield farm on Arbitrum that nobody was talking about - turned $5K into $200K in three months. Currently obsessing over some obscure Layer 2 that might be the next big thing.",
+    "avatar_url": "https://v3.fal.media/files/rabbit/1bML6jO0fQmL7BDrhUAC6.png",
+    "avatar_prompt": "",
+    "created_at": "2025-06-13T14:50:03.808000"
+  },
+  {
+    "id": "971cfc4f-6b38-45f2-931e-cb9da7998534",
+    "name": "Marcus Goldman",
+    "archetype": "leader",
+    "personality": {
+      "extroversion": 9,
+      "optimism": 8,
+      "curiosity": 6,
+      "cooperativeness": 8,
+      "energy": 8
+    },
+    "goal": "To lead complex mergers and acquisitions that create substantial value for clients and stakeholders.",
+    "expertise": "Mergers & Acquisitions, Corporate Finance, Deal Structuring, Due Diligence, Client Relationship Management",
+    "background": "Managing Director with 20+ years in investment banking. Led $500B+ in M&A transactions including landmark deals in tech and healthcare. Former Goldman Sachs VP who built top-performing M&A team.",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "Led $50B mega-merger between two Fortune 500 companies. Closed impossible deal during 2008 financial crisis saving client from bankruptcy. Built relationships with 100+ C-suite executives. Failed IPO in 2020 taught importance of market timing. Knowledge Sources: https://www.sec.gov/, https://www.federalreserve.gov/, https://www.bloomberg.com/, https://www.wsj.com/",
+    "avatar_url": "https://v3.fal.media/files/zebra/jaob551emeN1UGNivcsat.png",
+    "avatar_prompt": "",
+    "created_at": "2025-06-13T14:50:22.106000"
+  },
+  {
+    "id": "9057710a-e02e-43ef-8f38-3532bc2799ca",
+    "name": "Sarah Chen",
+    "archetype": "scientist",
+    "personality": {
+      "extroversion": 4,
+      "optimism": 6,
+      "curiosity": 9,
+      "cooperativeness": 7,
+      "energy": 6
+    },
+    "goal": "To provide data-driven investment insights through rigorous financial analysis and market research.",
+    "expertise": "Equity Research, Financial Modeling, Sector Analysis, Valuation Models, Market Research",
+    "background": "PhD in Finance from Wharton. Director of Equity Research covering healthcare and biotech sectors. Published 500+ research reports with 85% accuracy in stock recommendations.",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "Correctly predicted biotech bubble burst in 2021 saving clients $2B. Built DCF model that became industry standard. Identified undervalued pharma stock that returned 300%. Missed Tesla's rise due to overemphasis on traditional metrics. Knowledge Sources: https://www.sec.gov/, https://finance.yahoo.com/, https://www.morningstar.com/, https://www.factset.com/",
+    "avatar_url": "https://v3.fal.media/files/zebra/njHGzkv7LnKuffv8spO3L.png",
+    "avatar_prompt": "",
+    "created_at": "2025-06-13T14:50:23.072000"
+  },
+  {
+    "id": "83b2c72d-5f1c-4420-8652-80d6578dc073",
+    "name": "David Park",
+    "archetype": "adventurer",
+    "personality": {
+      "extroversion": 8,
+      "optimism": 8,
+      "curiosity": 9,
+      "cooperativeness": 6,
+      "energy": 9
+    },
+    "goal": "To pioneer innovative financing solutions and push the boundaries of capital market products.",
+    "expertise": "Capital Markets, Structured Products, Derivatives, IPOs, Debt Capital Markets",
+    "background": "Capital markets expert specializing in structured products and derivatives. Risk-taker who created first cryptocurrency-backed securities. Known for innovative deal structures.",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "Structured first green bond for renewable energy project raising $1B. Created innovative SPAC structure that became industry template. Led IPO roadshow during market volatility. Failed derivative product taught importance of regulatory compliance. Knowledge Sources: https://www.nasdaq.com/, https://www.nyse.com/, https://www.finra.org/, https://www.dtcc.com/",
+    "avatar_url": "https://v3.fal.media/files/rabbit/2d9BwVAQrswSDxM-DpVT-.png",
+    "avatar_prompt": "",
+    "created_at": "2025-06-13T14:50:23.780000"
+  }
+]
+Test Result: PASSED
+✅ Agent 'Marcus "Mark" Castellano' has avatar URL: https://v3.fal.media/files/kangaroo/sRpO1H4E1EaGBldZ-u2Ld.png
+✅ Agent 'Alexandra "Alex" Chen' has avatar URL: https://v3.fal.media/files/zebra/ygpfChn5HzuyHMGBnUCPt.png
+✅ Agent 'Diego "Dex" Rodriguez' has avatar URL: https://v3.fal.media/files/rabbit/1bML6jO0fQmL7BDrhUAC6.png
+✅ Agent 'Marcus Goldman' has avatar URL: https://v3.fal.media/files/zebra/jaob551emeN1UGNivcsat.png
+✅ Agent 'Sarah Chen' has avatar URL: https://v3.fal.media/files/zebra/njHGzkv7LnKuffv8spO3L.png
+✅ Agent 'David Park' has avatar URL: https://v3.fal.media/files/rabbit/2d9BwVAQrswSDxM-DpVT-.png
+✅ 6 out of 6 agents have avatar URLs
+
+Test 2: Testing avatar generation endpoint
+
+================================================================================
+Testing: Generate Avatar (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/avatars/generate)
+Status Code: 200
+Response: {
+  "success": true,
+  "image_url": "https://v3.fal.media/files/elephant/5enGswa-DgD2fjVYd_SLt.png",
+  "error": ""
+}
+Test Result: PASSED
+✅ Successfully generated avatar: https://v3.fal.media/files/elephant/5enGswa-DgD2fjVYd_SLt.png
+
+Test 3: Creating an agent with a pre-existing avatar URL
+
+================================================================================
+Testing: Create Agent with Pre-existing Avatar (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Status Code: 200
+Response: {
+  "id": "cd0d113f-e291-402f-8f79-a89800eb1193",
+  "name": "Dr. Test Avatar",
+  "archetype": "scientist",
+  "personality": {
+    "extroversion": 4,
+    "optimism": 6,
+    "curiosity": 9,
+    "cooperativeness": 7,
+    "energy": 6
+  },
+  "goal": "To test the avatar system",
+  "expertise": "Avatar testing and validation",
+  "background": "Experienced in testing avatar systems",
+  "current_mood": "neutral",
+  "current_activity": "idle",
+  "memory_summary": "Created for testing the avatar system",
+  "avatar_url": "https://v3.fal.media/files/elephant/5enGswa-DgD2fjVYd_SLt.png",
+  "avatar_prompt": "",
+  "created_at": "2025-06-13T14:51:38.803368"
+}
+Test Result: PASSED
+✅ Agent created with the pre-existing avatar URL: https://v3.fal.media/files/elephant/5enGswa-DgD2fjVYd_SLt.png
+
+Test 4: Creating an agent with an avatar prompt
+
+================================================================================
+Testing: Create Agent with Avatar Prompt (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Status Code: 200
+Response: {
+  "id": "cbb045c0-81a4-4b34-98d2-d42f61746bc7",
+  "name": "Dr. Prompt Avatar",
+  "archetype": "scientist",
+  "personality": {
+    "extroversion": 4,
+    "optimism": 6,
+    "curiosity": 9,
+    "cooperativeness": 7,
+    "energy": 6
+  },
+  "goal": "To test avatar generation from prompts",
+  "expertise": "Avatar prompt testing",
+  "background": "Experienced in testing avatar generation",
+  "current_mood": "neutral",
+  "current_activity": "idle",
+  "memory_summary": "Created for testing avatar prompts",
+  "avatar_url": "https://v3.fal.media/files/elephant/5JYt4ALp1g8rEr9asGCnK.png",
+  "avatar_prompt": "Professional female scientist with lab coat and glasses",
+  "created_at": "2025-06-13T14:51:49.866338"
+}
+Test Result: PASSED
+✅ Agent created with generated avatar from prompt: https://v3.fal.media/files/elephant/5JYt4ALp1g8rEr9asGCnK.png
+
+Test 5: Testing library avatar generation endpoint
+
+================================================================================
+Testing: Generate Library Avatars (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/avatars/generate-library)
