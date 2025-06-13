@@ -4315,15 +4315,24 @@ const FileCenter = ({ onRefresh }) => {
   
   const categories = ["Protocol", "Training", "Research", "Equipment", "Budget", "Reference"];
 
-  const fetchScenarioDocuments = async () => {
+  const fetchScenarioDocuments = async (forceRefresh = false) => {
     if (!token) return;
     
     setLoading(true);
     try {
+      // Add cache-busting parameter if force refresh is requested
+      const cacheParam = forceRefresh ? `?_t=${Date.now()}` : '';
+      
       // Use the faster direct documents endpoint instead of by-scenario
-      const response = await axios.get(`${API}/documents`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const response = await axios.get(`${API}/documents${cacheParam}`, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
       });
+      
+      console.log('Fetched documents from server:', response.data?.length || 0);
       
       // Group documents by scenario for display
       const documentsByScenario = response.data.reduce((acc, doc) => {
@@ -4342,6 +4351,7 @@ const FileCenter = ({ onRefresh }) => {
       
       // Convert to array format expected by the component
       const scenarioArray = Object.values(documentsByScenario);
+      console.log('Grouped into scenarios:', scenarioArray.length);
       setScenarioDocuments(scenarioArray);
       setSelectedDocuments(new Set()); // Clear selections when refreshing
       setSelectAll(false);
@@ -4351,8 +4361,13 @@ const FileCenter = ({ onRefresh }) => {
       // Fallback to the by-scenario endpoint if direct approach fails
       try {
         const response = await axios.get(`${API}/documents/by-scenario`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
         });
+        console.log('Fallback fetch successful:', response.data?.length || 0);
         setScenarioDocuments(response.data);
       } catch (fallbackError) {
         console.error('Error with fallback endpoint:', fallbackError);
