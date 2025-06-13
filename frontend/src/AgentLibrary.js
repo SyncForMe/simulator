@@ -831,6 +831,75 @@ const financeCategories = {
   }
 };
 
+// Technology & Engineering Categories - Structure ready for agent upload
+const technologyCategories = {
+  softwareEngineering: {
+    name: "Software Engineering",
+    icon: "💻",
+    agents: []
+  },
+  dataScience: {
+    name: "Data Science",
+    icon: "📊",
+    agents: []
+  },
+  cybersecurity: {
+    name: "Cybersecurity",
+    icon: "🔒",
+    agents: []
+  },
+  aiMachineLearning: {
+    name: "AI/Machine Learning",
+    icon: "🤖",
+    agents: []
+  },
+  devOps: {
+    name: "DevOps",
+    icon: "⚙️",
+    agents: []
+  },
+  cloudArchitecture: {
+    name: "Cloud Architecture",
+    icon: "☁️",
+    agents: []
+  },
+  blockchain: {
+    name: "Blockchain",
+    icon: "⛓️",
+    agents: []
+  },
+  civilEngineering: {
+    name: "Civil Engineering",
+    icon: "🏗️",
+    agents: []
+  },
+  mechanicalEngineering: {
+    name: "Mechanical Engineering",
+    icon: "⚙️",
+    agents: []
+  },
+  electricalEngineering: {
+    name: "Electrical Engineering",
+    icon: "⚡",
+    agents: []
+  },
+  chemicalEngineering: {
+    name: "Chemical Engineering",
+    icon: "🧪",
+    agents: []
+  },
+  aerospaceEngineering: {
+    name: "Aerospace Engineering",
+    icon: "🚀",
+    agents: []
+  },
+  biomedicalEngineering: {
+    name: "Biomedical Engineering",
+    icon: "🔬",
+    agents: []
+  }
+};
+
 // Sectors configuration
 const sectors = {
   healthcare: {
@@ -842,6 +911,11 @@ const sectors = {
     name: "Finance & Business",
     icon: "💰",
     categories: financeCategories
+  },
+  technology: {
+    name: "Technology & Engineering",
+    icon: "🔧",
+    categories: technologyCategories
   }
 };
 
