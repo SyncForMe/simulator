@@ -4397,8 +4397,12 @@ const FileCenter = ({ onRefresh }) => {
     
     setDeleting(true);
     try {
+      // Convert Set to Array for the API call
+      const documentIds = Array.from(selectedDocuments);
+      
+      // Use the POST endpoint with proper request format
       const response = await axios.post(`${API}/documents/bulk-delete`, 
-        Array.from(selectedDocuments),
+        documentIds, // Send array directly in body
         {
           headers: { 
             Authorization: `Bearer ${token}`,
@@ -4416,7 +4420,26 @@ const FileCenter = ({ onRefresh }) => {
       
     } catch (error) {
       console.error('Error deleting documents:', error);
-      alert('Failed to delete documents. Please try again.');
+      
+      // Try alternative DELETE endpoint if POST fails
+      try {
+        const documentIds = Array.from(selectedDocuments);
+        const deleteResponse = await axios.delete(`${API}/documents/bulk`, {
+          data: documentIds, // Send data in the delete request body
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        console.log(`Successfully deleted ${deleteResponse.data.deleted_count} documents`);
+        await fetchScenarioDocuments();
+        alert(`Successfully deleted ${deleteResponse.data.deleted_count} document${deleteResponse.data.deleted_count > 1 ? 's' : ''}`);
+        
+      } catch (deleteError) {
+        console.error('Error with DELETE endpoint:', deleteError);
+        alert('Failed to delete documents. Please try again or contact support.');
+      }
     }
     setDeleting(false);
   };
