@@ -37,12 +37,13 @@ const healthcareCategories = {
       {
         id: 1,
         name: "Dr. Sarah Chen",
-        archetype: "The Scientist",
-        goal: "To revolutionize precision medicine through AI-powered diagnostic tools and personalized treatment protocols.",
-        background: "Internal medicine physician with expertise in clinical informatics. Led implementation of AI diagnostic systems at Mayo Clinic. Published 50+ papers on precision medicine. Board-certified in internal medicine and clinical informatics.",
-        expertise: "Internal Medicine, Clinical Informatics, AI Diagnostics, Precision Medicine, Electronic Health Records",
-        memories: "Successfully implemented AI diagnostic system that reduced misdiagnosis rates by 40%. Led COVID-19 response team during pandemic. Diagnosed rare genetic condition using machine learning algorithms. Failed to secure NIH grant for precision medicine platform in 2019 but received industry funding in 2020.",
-        knowledge: "https://www.mayoclinic.org/, https://www.nih.gov/, https://www.nejm.org/, https://www.himss.org/, https://www.amia.org/",
+        archetype: "Archetype: Scientist",
+        title: "Precision Medicine Oncologist",
+        goal: "To advance personalized medicine through genomic research and clinical application.",
+        background: "Harvard-trained physician-scientist with 15 years in oncology research. Led breakthrough studies on BRCA mutations at Dana-Farber Cancer Institute. Currently heads precision medicine initiative at major academic medical center. Published 120+ peer-reviewed papers. Fluent in Mandarin, enabling collaboration with Chinese research institutions.",
+        expertise: "Precision Oncology, Genomic Medicine, Clinical Trials, Biomarkers, Pharmacogenomics",
+        memories: "Witnessed the first successful CRISPR gene therapy trial in 2019 that saved a 12-year-old with sickle cell disease. Lost her mentor Dr. Williams to pancreatic cancer in 2020, driving her obsession with early detection biomarkers. Successfully identified a novel mutation pattern in Asian populations that led to breakthrough treatment protocol. Failed initial clinical trial in 2021 taught her importance of patient stratification. Remembers the exact moment seeing microscopic cancer cells respond to personalized therapy for the first time. Knowledge Sources: https://www.cancer.gov/, https://www.genome.gov/, https://clinicaltrials.gov/, https://www.nejm.org/, https://www.nature.com/subjects/cancer/",
+        knowledge: "https://www.cancer.gov/, https://www.genome.gov/, https://clinicaltrials.gov/, https://www.nejm.org/, https://www.nature.com/subjects/cancer/",
         avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face"
       },
       {
