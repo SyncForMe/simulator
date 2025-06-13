@@ -337,7 +337,15 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
       {/* Agent Details Modal */}
       {selectedAgentDetails && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedAgentDetails(null)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors z-10"
+            >
+              ×
+            </button>
+
             {/* Agent Avatar Header */}
             <div className="text-center p-6 bg-gradient-to-b from-purple-50 to-white">
               <img
@@ -351,13 +359,6 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
 
             {/* Agent Details */}
             <div className="p-6 space-y-6">
-              <button
-                onClick={() => setSelectedAgentDetails(null)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-              >
-                ×
-              </button>
-
               <div>
                 <h4 className="font-bold text-gray-800 mb-2">🎯 Goal</h4>
                 <p className="text-gray-600">{selectedAgentDetails.goal}</p>
@@ -378,7 +379,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                 <p className="text-gray-600">{selectedAgentDetails.memories}</p>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">Knowledge Sources:</p>
-                  <p className="text-sm text-blue-600">{selectedAgentDetails.knowledge}</p>
+                  <p className="text-sm text-blue-600 break-words">{selectedAgentDetails.knowledge}</p>
                 </div>
               </div>
 
