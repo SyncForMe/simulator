@@ -1776,11 +1776,23 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                         <div key={agent.id} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                           <div className="p-4">
                             <div className="flex items-start space-x-3">
-                              <OptimizedAvatar
+                              <img
                                 src={agent.avatar}
                                 alt={agent.name}
-                                className="w-12 h-12 rounded-full object-cover avatar-optimized agent-avatar"
-                                size={48}
+                                className="w-12 h-12 rounded-full object-cover"
+                                loading="eager"
+                                style={{
+                                  imageRendering: 'crisp-edges',
+                                }}
+                                onError={(e) => {
+                                  e.target.src = `data:image/svg+xml,${encodeURIComponent(`
+                                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <circle cx="24" cy="24" r="24" fill="#E5E7EB"/>
+                                      <circle cx="24" cy="20" r="8" fill="#9CA3AF"/>
+                                      <path d="M8 42c0-8.837 7.163-16 16-16s16 7.163 16 16" fill="#9CA3AF"/>
+                                    </svg>
+                                  `)}`;
+                                }}
                               />
                               <div className="flex-1 min-w-0">
                                 <h4 className="font-semibold text-gray-900 text-sm">{agent.name}</h4>
