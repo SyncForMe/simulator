@@ -1476,6 +1476,19 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
   const [addedAgents, setAddedAgents] = useState(new Set());
   const timeoutRefs = useRef(new Map());
 
+  // Simple service worker registration for caching
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .catch((error) => {
+          console.warn('SW registration failed:', error);
+        });
+    }
+  }, []);
+
+  // Don't render if not open
+  if (!isOpen) return null;
+
   // Aggressive preloading of all avatars on app startup
   useEffect(() => {
     // Register service worker immediately on app load
