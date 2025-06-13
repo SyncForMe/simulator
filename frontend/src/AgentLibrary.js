@@ -1553,8 +1553,67 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
     }
   }, [isOpen, imageLoadingStates, loadedImages]);
 
-  // Don't render if not open
-  if (!isOpen) return null;
+  // Optimized Avatar Component with instant loading
+  const OptimizedAvatar = ({ src, alt, className, size = 48 }) => {
+    const [imageLoaded, setImageLoaded] = useState(loadedImages.has(src));
+    const [imageError, setImageError] = useState(false);
+    
+    useEffect(() => {
+      setImageLoaded(loadedImages.has(src));
+    }, [src, loadedImages]);
+
+    const loadingState = imageLoadingStates.get(src) || 'loading';
+    
+    // Create optimized image URL for faster loading
+    const optimizedSrc = src + (src.includes('?') ? '&' : '?') + 'w=' + size + '&h=' + size + '&fit=crop&auto=format,compress';
+    
+    // Base64 placeholder for instant display
+    const placeholder = `data:image/svg+xml;base64,${btoa(`
+      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="${size/2}" cy="${size/2}" r="${size/2}" fill="#F3F4F6"/>
+        <circle cx="${size/2}" cy="${size/2*0.8}" r="${size/4}" fill="#D1D5DB"/>
+        <path d="M${size*0.2} ${size*0.9}c0-${size*0.3} ${size*0.15}-${size*0.4} ${size*0.3}-${size*0.4}s${size*0.3} ${size*0.1} ${size*0.3} ${size*0.4}" fill="#D1D5DB"/>
+      </svg>
+    `)}`;
+
+    return (
+      <div className={`relative ${className.includes('w-') ? '' : 'w-12 h-12'} flex-shrink-0`}>
+        {!imageLoaded && !imageError && (
+          <img
+            src={placeholder}
+            alt={alt}
+            className={`${className} absolute inset-0 opacity-50`}
+            style={{ filter: 'blur(1px)' }}
+          />
+        )}
+        <img
+          src={imageError ? placeholder : optimizedSrc}
+          alt={alt}
+          className={`${className} ${imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          style={{
+            imageRendering: 'crisp-edges',
+            transform: 'translateZ(0)',
+          }}
+          onLoad={() => {
+            setImageLoaded(true);
+            setLoadedImages(prev => new Set(prev).add(src));
+          }}
+          onError={() => {
+            setImageError(true);
+            console.warn(`Failed to load avatar: ${src}`);
+          }}
+        />
+        {loadingState === 'loading' && !imageLoaded && !imageError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-full">
+            <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const handleAddAgent = async (agent) => {
     if (!onAddAgent) return;
