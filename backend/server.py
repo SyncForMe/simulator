@@ -5518,11 +5518,23 @@ async def delete_documents_bulk_post(
 
 @api_router.delete("/documents/bulk")
 async def delete_documents_bulk(
-    document_ids: List[str],
+    request: Request,
     current_user: dict = Depends(get_current_user)
 ):
     """Delete multiple documents for the authenticated user"""
     try:
+        # Get document IDs from request body
+        body = await request.body()
+        if body:
+            import json
+            document_ids = json.loads(body)
+        else:
+            document_ids = []
+            
+        # Ensure document_ids is a list
+        if not isinstance(document_ids, list):
+            raise HTTPException(status_code=400, detail="Request body must be a list of document IDs")
+            
         # Handle empty array case
         if not document_ids:
             return {
