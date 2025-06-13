@@ -4431,8 +4431,11 @@ const FileCenter = ({ onRefresh }) => {
       console.log('Delete response:', response.data);
       console.log(`Successfully deleted ${response.data.deleted_count} documents`);
       
-      // Refresh the document list
-      await fetchScenarioDocuments();
+      // Add a small delay to ensure database operation is complete
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Force refresh the document list with cache busting
+      await fetchScenarioDocuments(true);
       
       alert(`Successfully deleted ${response.data.deleted_count} document${response.data.deleted_count > 1 ? 's' : ''}`);
       
