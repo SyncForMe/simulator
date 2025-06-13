@@ -4684,8 +4684,11 @@ const FileCenter = ({ onRefresh }) => {
 
               {/* Bulk Selection Controls */}
               {(() => {
-                const totalDocuments = filteredScenarios.reduce((total, scenario) => total + scenario.documents.length, 0);
-                return totalDocuments > 0 && !loading ? (
+                try {
+                  const totalDocuments = filteredScenarios?.reduce((total, scenario) => {
+                    return total + (scenario?.documents?.length || 0);
+                  }, 0) || 0;
+                  return totalDocuments > 0 && !loading ? (
                   <div className="mt-4 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <label className="flex items-center space-x-2 cursor-pointer">
