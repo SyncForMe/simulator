@@ -82,6 +82,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Conducted additional testing of the document bulk delete functionality. The DELETE /api/documents/bulk endpoint consistently returns a 404 error with 'Document not found' message for both empty arrays and valid document IDs. The POST /api/documents/bulk-delete endpoint returns a 422 error with 'Input should be a valid list' message, indicating a validation issue with the request body. Tried various request formats including query parameters and different JSON structures, but none were successful. The issue appears to be with how FastAPI is handling the request body for these endpoints. This is a critical issue that prevents users from deleting multiple documents at once, which is an important feature for managing the File Center."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of the document bulk delete functionality. The DELETE /api/documents/bulk endpoint consistently returns a 404 error with 'Document not found' message for both empty arrays and valid document IDs, regardless of the request format used. However, the POST /api/documents/bulk-delete endpoint is now working correctly for all test cases: it handles empty arrays, valid document IDs, and non-existent document IDs as expected. The POST endpoint correctly returns a 200 OK response with a message of 'Successfully deleted X documents' and a deleted_count field. This provides a functional alternative to the DELETE endpoint, allowing users to delete multiple documents at once. While the DELETE endpoint still has issues, the POST endpoint provides the necessary functionality for bulk document deletion."
 
   - task: "POST /api/simulation/set-scenario - Custom Scenario Name Input"
     implemented: true
