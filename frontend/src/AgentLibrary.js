@@ -45,7 +45,7 @@ const healthcareCategories = {
         expertise: "Precision Oncology, Genomic Medicine, Clinical Trials, Biomarkers, Pharmacogenomics",
         memories: "Witnessed first successful CRISPR gene therapy trial. Lost mentor to pancreatic cancer, driving obsession with early detection. Identified novel mutation pattern in Asian populations leading to breakthrough treatment protocol.",
         knowledge: "https://www.cancer.gov/, https://www.genome.gov/, https://clinicaltrials.gov/, https://www.nejm.org/",
-        avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/zebra/4WDHNe8Ifcyy64zQkIXiE.png"
       },
       {
         id: 2,
@@ -58,7 +58,7 @@ const healthcareCategories = {
         expertise: "Emergency Medicine, Global Health, Telemedicine, Disaster Medicine, Healthcare Equity",
         memories: "Established telemedicine network serving 50,000 patients. Led medical response to Hurricane Maria. Reduced ER wait times by 60% through triage optimization.",
         knowledge: "https://www.who.int/, https://www.msf.org/, https://www.acep.org/, https://www.cdc.gov/",
-        avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/kangaroo/Fs0Hk6n-gu_fG33Lhj7JC.png"
       },
       {
         id: 3,
@@ -71,7 +71,7 @@ const healthcareCategories = {
         expertise: "Family Medicine, Care Coordination, Chronic Disease Management, Patient-Centered Care",
         memories: "Coordinated care for diabetic patient with 8 specialists achieving 70% improvement. Mediated complex family conference for end-of-life care decisions.",
         knowledge: "https://www.aafp.org/, https://www.pcpcc.org/, https://www.cms.gov/, https://www.ihi.org/",
-        avatar: "https://images.unsplash.com/photo-1594824804732-ca7d6b8ae32a?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/panda/A4RzV6yZUDiO4IVKkqKlz.png"
       },
       {
         id: 4,
@@ -84,7 +84,7 @@ const healthcareCategories = {
         expertise: "Internal Medicine, Preventive Care, Population Health, Chronic Disease Prevention, Health Screening",
         memories: "Created community health program that prevented 200+ diabetes cases. Pioneered early detection protocol for heart disease. Successfully advocated for universal health screening.",
         knowledge: "https://www.acponline.org/, https://www.ahrq.gov/, https://www.uspreventiveservicestaskforce.org/",
-        avatar: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/zebra/DgQjI5zc64wjP8S9jg475.png"
       }
     ]
   },
@@ -103,7 +103,7 @@ const healthcareCategories = {
         expertise: "Clinical Pharmacology, Drug Development, Pharmacokinetics, Clinical Trials, Regulatory Affairs",
         memories: "Led breakthrough trial for Alzheimer's drug that showed 30% cognitive improvement. Identified dangerous interaction between common medications preventing 1000+ adverse events.",
         knowledge: "https://www.fda.gov/, https://clinicaltrials.gov/, https://www.pharmacology.org/",
-        avatar: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/lion/vCxjziujk3o_iH3E6zDY6.png"
       },
       {
         id: 12,
@@ -116,7 +116,7 @@ const healthcareCategories = {
         expertise: "Drug Safety, Pharmacovigilance, Adverse Event Analysis, Risk Assessment, Regulatory Compliance",
         memories: "Identified cardiac risks in popular pain medication leading to market withdrawal. Prevented approval of drug with hidden liver toxicity. Developed early warning system for drug interactions.",
         knowledge: "https://www.fda.gov/safety/, https://www.who.int/medicines/regulation/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/rabbit/jQ5-gkv0lMWsh4A6L7HKq.png"
       },
       {
         id: 13,
@@ -129,7 +129,7 @@ const healthcareCategories = {
         expertise: "Drug Discovery, Research Management, Molecular Biology, High-Throughput Screening, Team Leadership",
         memories: "Led team that discovered breakthrough cancer immunotherapy. Streamlined drug development process reducing time-to-market by 2 years. Built world-class research organization.",
         knowledge: "https://www.phrma.org/, https://www.nature.com/subjects/drug-discovery/",
-        avatar: "https://images.unsplash.com/photo-1594824804732-ca7d6b8ae32a?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/panda/jY-3UPOlpfuLc1oe7RxdU.png"
       }
     ]
   },
@@ -148,7 +148,7 @@ const healthcareCategories = {
         expertise: "Gene Therapy, CRISPR Technology, Genetic Engineering, Stem Cell Research, Clinical Translation",
         memories: "Performed first successful in-vivo CRISPR treatment for inherited blindness. Cured 12-year-old with sickle cell disease using gene editing. Failed early trial taught importance of delivery systems.",
         knowledge: "https://www.nature.com/subjects/gene-therapy/, https://clinicaltrials.gov/",
-        avatar: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/lion/r2x4d7M6RsLMtxqKH_jkE.png"
       },
       {
         id: 22,
@@ -161,7 +161,7 @@ const healthcareCategories = {
         expertise: "Bioengineering, Tissue Engineering, Regenerative Medicine, Biomaterials, 3D Bioprinting",
         memories: "Created first bioprinted heart valve successfully transplanted in humans. Developed scaffold technology for organ regeneration. Published 150+ peer-reviewed papers.",
         knowledge: "https://www.nature.com/subjects/bioengineering/, https://www.nibib.nih.gov/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/elephant/9-MfNfP7col27WJj7sqtY.png"
       },
       {
         id: 23,
@@ -174,7 +174,7 @@ const healthcareCategories = {
         expertise: "Synthetic Biology, Metabolic Engineering, Biomanufacturing, Systems Biology, Biofuels",
         memories: "Engineered bacteria to produce life-saving antibiotics at 90% lower cost. Created biological system to clean up environmental toxins. Developed sustainable biofuel production.",
         knowledge: "https://www.nature.com/subjects/synthetic-biology/, https://synbiobeta.com/",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/zebra/E7z4mLp_SBofLIwQ2I2jn.png"
       }
     ]
   },
@@ -193,7 +193,7 @@ const healthcareCategories = {
         expertise: "Critical Care Nursing, Nursing Informatics, Disaster Response, Healthcare Technology, Quality Improvement",
         memories: "Saved patient's life during Hurricane Katrina by improvising ventilator. Developed early warning system reducing cardiac arrests by 35%. Trained 200+ nurses in Haiti.",
         knowledge: "https://www.aacnnursing.org/, https://www.himss.org/, https://www.ahrq.gov/",
-        avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/tiger/m9frUXnXhgs0c0nl8RrDY.png"
       },
       {
         id: 32,
@@ -206,7 +206,7 @@ const healthcareCategories = {
         expertise: "Nursing Management, Team Leadership, Conflict Resolution, Quality Improvement, Patient Advocacy",
         memories: "Mediated complex dispute between surgical team and family resulting in successful treatment plan. Reduced nursing turnover by 50% through improved communication protocols.",
         knowledge: "https://www.aone.org/, https://www.qsen.org/, https://www.jointcommission.org/",
-        avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/monkey/dx6RkNUzrn9etomqJxT73.png"
       },
       {
         id: 33,
@@ -219,7 +219,7 @@ const healthcareCategories = {
         expertise: "Pediatric Nursing, Child Development, Family-Centered Care, Pain Management, Patient Education",
         memories: "Helped 8-year-old cancer patient maintain hope through year-long treatment resulting in full recovery. Created comfort protocols that reduced children's procedure anxiety by 60%.",
         knowledge: "https://www.pedsnurses.org/, https://www.aap.org/, https://www.childrenshospital.org/",
-        avatar: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/tiger/-rmzqpFQtE-ECrl46segf.png"
       }
     ]
   },
@@ -238,7 +238,7 @@ const healthcareCategories = {
         expertise: "Epidemiology, Disease Surveillance, Outbreak Investigation, Public Health Emergency Response, Biostatistics",
         memories: "Led successful containment of Ebola outbreak preventing wider spread. Tracked source of food poisoning outbreak affecting 500+ people. Developed COVID-19 contact tracing protocols.",
         knowledge: "https://www.cdc.gov/, https://www.who.int/, https://www.publichealthontario.ca/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/kangaroo/BmbX0jCVs5aUpIv_iT3LA.png"
       },
       {
         id: 42,
@@ -251,7 +251,7 @@ const healthcareCategories = {
         expertise: "Environmental Health, Air Quality Assessment, Water Safety, Toxicology, Risk Assessment",
         memories: "Identified lead contamination in school water systems affecting 10,000 children. Tracked air pollution sources reducing asthma rates by 25% in urban communities.",
         knowledge: "https://www.epa.gov/, https://www.niehs.nih.gov/, https://www.atsdr.cdc.gov/",
-        avatar: "https://images.unsplash.com/photo-1594824804732-ca7d6b8ae32a?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/lion/9atXSrjsIM727smAmi1FT.png"
       },
       {
         id: 43,
@@ -264,7 +264,7 @@ const healthcareCategories = {
         expertise: "Community Health, Health Promotion, Disease Prevention, Health Education, Program Development",
         memories: "Reduced childhood obesity rates by 30% through school-based nutrition programs. Increased vaccination rates from 60% to 95% through community outreach.",
         knowledge: "https://www.naccho.org/, https://www.cdc.gov/communityhealth/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/koala/AoXgIJWyEoX_niLhCSWqL.png"
       }
     ]
   },
@@ -283,7 +283,7 @@ const healthcareCategories = {
         expertise: "Clinical Nutrition, Medical Nutrition Therapy, Nutritional Biochemistry, Research Methods, Disease Prevention",
         memories: "Developed nutrition protocol that reduced diabetes complications by 40%. Conducted landmark study on Mediterranean diet's cardiovascular benefits. Reversed fatty liver disease in 85% of patients.",
         knowledge: "https://www.eatright.org/, https://www.nutrition.org/, https://www.cdc.gov/nutrition/",
-        avatar: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/kangaroo/AkdbZUAvxPTQdhNa-O6g3.png"
       },
       {
         id: 52,
@@ -296,7 +296,7 @@ const healthcareCategories = {
         expertise: "Pediatric Nutrition, Family Counseling, Eating Disorders, Food Allergies, Growth and Development",
         memories: "Helped 100+ families overcome childhood eating challenges. Successfully managed complex food allergy cases preventing life-threatening reactions. Mediated family conflicts around food choices.",
         knowledge: "https://www.eatright.org/, https://www.aap.org/, https://www.foodallergy.org/",
-        avatar: "https://images.unsplash.com/photo-1594824804732-ca7d6b8ae32a?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/monkey/k0f0xLBtR5p1gx4vZBhES.png"
       }
     ]
   },
@@ -315,7 +315,7 @@ const healthcareCategories = {
         expertise: "Sports Medicine, Orthopedic Rehabilitation, Manual Therapy, Movement Analysis, Performance Enhancement",
         memories: "Returned Olympic athlete to competition in half the expected time after ACL injury. Developed revolutionary treatment for chronic back pain. Created VR-based rehabilitation protocols.",
         knowledge: "https://www.apta.org/, https://www.jospt.org/, https://www.spts.org/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/koala/Xmc94K_oQnJpDFYcy9kun.png"
       },
       {
         id: 62,
@@ -328,7 +328,7 @@ const healthcareCategories = {
         expertise: "Neurologic Rehabilitation, Stroke Recovery, Spinal Cord Injury, Balance Training, Gait Training",
         memories: "Helped paralyzed patient walk again after 2 years of intensive therapy. Achieved 90% functional improvement in stroke patients. Developed hope-based rehabilitation approach.",
         knowledge: "https://www.neuropt.org/, https://www.apta.org/, https://www.christopherreeve.org/",
-        avatar: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/rabbit/3ABxxNJGqp8TU2xyLCgNI.png"
       }
     ]
   },
@@ -347,7 +347,7 @@ const healthcareCategories = {
         expertise: "Small Animal Medicine, Veterinary Surgery, Emergency Care, Pet Owner Education, Animal Behavior",
         memories: "Saved dying puppy with innovative surgery technique. Helped grieving family through difficult decision about beloved elderly cat. Established low-cost clinic for underserved communities.",
         knowledge: "https://www.avma.org/, https://www.vin.com/, https://www.vetmed.org/",
-        avatar: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/tiger/dzd4xu2kL3Z0ecEilXCqs.png"
       },
       {
         id: 72,
@@ -360,7 +360,7 @@ const healthcareCategories = {
         expertise: "Wildlife Medicine, Conservation Biology, Exotic Animal Care, Field Veterinary Medicine, Species Preservation",
         memories: "Performed life-saving surgery on endangered rhino in Kenya. Developed vaccination program that saved 200+ endangered tigers. Led veterinary response to oil spill affecting marine wildlife.",
         knowledge: "https://www.wildlifevetmedicine.org/, https://www.conservationmedicine.org/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/lion/TX-WjHuhljabR6SXk0-rq.png"
       }
     ]
   },
@@ -379,7 +379,7 @@ const healthcareCategories = {
         expertise: "Clinical Trial Design, Regulatory Compliance, Data Management, Patient Safety, Statistical Analysis",
         memories: "Managed trial that led to FDA approval of breakthrough cancer drug. Prevented serious adverse event through careful monitoring. Coordinated 50+ successful clinical trials.",
         knowledge: "https://clinicaltrials.gov/, https://www.fda.gov/, https://www.ich.org/",
-        avatar: "https://images.unsplash.com/photo-1594824804732-ca7d6b8ae32a?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/monkey/qVPxID4cy5RtIkff3I_Ss.png"
       },
       {
         id: 82,
@@ -392,7 +392,7 @@ const healthcareCategories = {
         expertise: "Biostatistics, Clinical Trial Analysis, Study Design, Data Analysis, Statistical Software",
         memories: "Identified flawed analysis that prevented publication of misleading results. Designed statistical plan for pivotal cancer drug trial. Exposed publication bias in major medical journal.",
         knowledge: "https://www.biometrics.org/, https://www.scb.org/, https://www.r-project.org/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/monkey/x4fOokfg2FhKlEYAtI4zn.png"
       }
     ]
   },
@@ -411,7 +411,7 @@ const healthcareCategories = {
         expertise: "Infectious Disease Epidemiology, Outbreak Investigation, Global Health Security, Disease Surveillance, Emergency Response",
         memories: "Led WHO response team during MERS outbreak in Middle East. Tracked down patient zero in mysterious disease outbreak. Developed rapid response protocols now used globally.",
         knowledge: "https://www.who.int/, https://www.cdc.gov/, https://www.ecdc.europa.eu/",
-        avatar: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/elephant/QagyOfr93kvuMRgo6SijA.png"
       },
       {
         id: 92,
@@ -424,7 +424,7 @@ const healthcareCategories = {
         expertise: "Chronic Disease Epidemiology, Population Health, Risk Factor Analysis, Cohort Studies, Disease Prevention",
         memories: "Led 20-year study identifying genetic and environmental factors for diabetes. Discovered link between childhood obesity and adult heart disease. Published 100+ epidemiological studies.",
         knowledge: "https://www.cdc.gov/chronicdisease/, https://www.heart.org/, https://www.diabetes.org/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/penguin/ytO61MZH1WMKVAes2ZIOH.png"
       }
     ]
   }
@@ -447,7 +447,7 @@ const financeCategories = {
         expertise: "Mergers & Acquisitions, Corporate Finance, Deal Structuring, Due Diligence, Client Relationship Management",
         memories: "Led $50B mega-merger between two Fortune 500 companies. Closed impossible deal during 2008 financial crisis saving client from bankruptcy. Built relationships with 100+ C-suite executives. Failed IPO in 2020 taught importance of market timing.",
         knowledge: "https://www.sec.gov/, https://www.federalreserve.gov/, https://www.bloomberg.com/, https://www.wsj.com/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/zebra/jaob551emeN1UGNivcsat.png"
       },
       {
         id: 102,
@@ -460,7 +460,7 @@ const financeCategories = {
         expertise: "Equity Research, Financial Modeling, Sector Analysis, Valuation Models, Market Research",
         memories: "Correctly predicted biotech bubble burst in 2021 saving clients $2B. Built DCF model that became industry standard. Identified undervalued pharma stock that returned 300%. Missed Tesla's rise due to overemphasis on traditional metrics.",
         knowledge: "https://www.sec.gov/, https://finance.yahoo.com/, https://www.morningstar.com/, https://www.factset.com/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/zebra/njHGzkv7LnKuffv8spO3L.png"
       },
       {
         id: 103,
@@ -473,7 +473,7 @@ const financeCategories = {
         expertise: "Capital Markets, Structured Products, Derivatives, IPOs, Debt Capital Markets",
         memories: "Structured first green bond for renewable energy project raising $1B. Created innovative SPAC structure that became industry template. Led IPO roadshow during market volatility. Failed derivative product taught importance of regulatory compliance.",
         knowledge: "https://www.nasdaq.com/, https://www.nyse.com/, https://www.finra.org/, https://www.dtcc.com/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/rabbit/2d9BwVAQrswSDxM-DpVT-.png"
       }
     ]
   },
@@ -492,7 +492,7 @@ const financeCategories = {
         expertise: "Venture Capital, Startup Evaluation, Technology Trends, Due Diligence, Board Management",
         memories: "First investor in AI startup now worth $10B. Passed on Uber in seed round - biggest miss of career. Mentored founder through near-bankruptcy to successful exit. Built network of 1000+ entrepreneurs.",
         knowledge: "https://www.crunchbase.com/, https://techcrunch.com/, https://www.cb insights.com/, https://pitchbook.com/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/lion/55MVY6zeEaJ67G3WjBAof.png"
       },
       {
         id: 112,
@@ -505,7 +505,7 @@ const financeCategories = {
         expertise: "Early Stage Investing, Climate Technology, Healthcare Innovation, Market Analysis, Founder Mentoring",
         memories: "Backed climate startup that removed 1M tons of CO2 from atmosphere. Helped healthcare founder navigate FDA approval process. Invested in 20 startups with 80% survival rate. Optimism sometimes leads to overvaluation.",
         knowledge: "https://www.cleantech.com/, https://www.nature.com/, https://www.who.int/, https://www.ipcc.ch/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/lion/tGqLWxnm5JeJrPWBL5plk.png"
       }
     ]
   },
@@ -524,7 +524,7 @@ const financeCategories = {
         expertise: "Private Equity, Leveraged Buyouts, Operational Improvement, Value Creation, Portfolio Management",
         memories: "Led turnaround of failing manufacturing company increasing value 10x. Negotiated $10B LBO during credit crisis. Built portfolio of 25 companies employing 100,000+ people. Failed retail investment taught importance of industry trends.",
         knowledge: "https://www.preqin.com/, https://www.bvca.co.uk/, https://www.blackstone.com/, https://www.kkr.com/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/tiger/8IJL72lloKZgorKZFe05Z.png"
       },
       {
         id: 122,
@@ -537,7 +537,7 @@ const financeCategories = {
         expertise: "Due Diligence, Financial Analysis, Valuation, Risk Assessment, Market Research",
         memories: "Uncovered accounting irregularities that saved firm from $500M loss. Built comprehensive due diligence framework used across industry. Identified operational synergies worth $200M in carve-out deal.",
         knowledge: "https://www.cfa institute.org/, https://www.aicpa.org/, https://www.sec.gov/, https://www.fasb.org/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/koala/0bmF3UJ72OQhTxHyjMfIo.png"
       }
     ]
   },
@@ -556,7 +556,7 @@ const financeCategories = {
         expertise: "Insurance Underwriting, Risk Assessment, Claims Management, Catastrophe Modeling, Regulatory Compliance",
         memories: "Managed $5B in hurricane claims while maintaining customer satisfaction above 90%. Developed innovative cyber insurance products. Balanced competing interests during pandemic business interruption disputes.",
         knowledge: "https://www.naic.org/, https://www.iii.org/, https://www.iso.com/, https://www.air-worldwide.com/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/tiger/i8GEWgNPv2PsW2Nwiikps.png"
       },
       {
         id: 132,
@@ -569,7 +569,7 @@ const financeCategories = {
         expertise: "Fraud Investigation, Claims Analysis, Digital Forensics, Risk Modeling, Regulatory Investigation",
         memories: "Uncovered $50M staged accident fraud ring. Developed AI system that detects suspicious claims with 95% accuracy. Testified in 100+ fraud cases. Wrongly suspected legitimate claim taught importance of thorough investigation.",
         knowledge: "https://www.nicb.org/, https://www.fbi.gov/, https://www.coalitionagainstinsurancefraud.org/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/rabbit/JAU6h53TvN8msQhjDosj7.png"
       }
     ]
   },
@@ -588,7 +588,7 @@ const financeCategories = {
         expertise: "Financial Reporting, GAAP Compliance, Technical Accounting, SEC Reporting, Revenue Recognition",
         memories: "Guided client through complex revenue recognition under new ASC 606 standards. Identified material weaknesses that prevented restatement. Built accounting team of 50+ CPAs. Methodical approach sometimes slows decision-making.",
         knowledge: "https://www.fasb.org/, https://www.sec.gov/, https://www.aicpa.org/, https://www.ifrs.org/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/kangaroo/vaLIBC9NFzPgqJvyChMtt.png"
       },
       {
         id: 142,
@@ -601,7 +601,7 @@ const financeCategories = {
         expertise: "Management Accounting, Financial Analysis, Budgeting, Cost Accounting, ERP Systems",
         memories: "Successfully mediated dispute between auditors and management over inventory valuation. Implemented zero-based budgeting that reduced costs by 15%. Translated complex accounting changes for board of directors.",
         knowledge: "https://www.imanet.org/, https://www.cgma.org/, https://www.oracle.com/erp/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/monkey/92p_q9Dl0YvkynfwGAbw7.png"
       }
     ]
   },
@@ -620,7 +620,7 @@ const financeCategories = {
         expertise: "External Auditing, Internal Controls, Risk Assessment, Audit Technology, Quality Control",
         memories: "Detected fraud that led to executive prosecutions and $1B restatement. Testified before Congress on audit quality. Developed data analytics tools used firm-wide. Skepticism sometimes strains client relationships.",
         knowledge: "https://pcaobus.org/, https://www.aicpa.org/, https://www.ifac.org/, https://www.ey.com/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/penguin/2dX4rRT2o6V8aNJWeleJt.png"
       },
       {
         id: 152,
@@ -633,7 +633,7 @@ const financeCategories = {
         expertise: "IT Auditing, Cybersecurity Assessment, Data Governance, System Controls, Compliance Testing",
         memories: "Identified critical cybersecurity vulnerability that prevented major data breach. Developed IT audit methodology adopted by entire firm. Led SOX IT controls testing for 20+ public companies.",
         knowledge: "https://www.isaca.org/, https://www.sans.org/, https://www.nist.gov/cybersecurity/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/elephant/MxoVUp3rasYIXzMNyfxIy.png"
       }
     ]
   },
@@ -652,7 +652,7 @@ const financeCategories = {
         expertise: "International Tax, Transfer Pricing, Tax Planning, BEPS Compliance, Digital Services Tax",
         memories: "Saved multinational client $100M through innovative transfer pricing strategy. Navigated complex European digital tax regulations. Built international tax team of 15+ professionals. Methodical approach essential for tax accuracy.",
         knowledge: "https://www.irs.gov/, https://www.oecd.org/tax/, https://www.pwc.com/tax/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/koala/e8eXhBzrK-cx6oUqDpsxg.png"
       },
       {
         id: 162,
@@ -665,7 +665,7 @@ const financeCategories = {
         expertise: "Tax Controversy, IRS Audits, Tax Appeals, Tax Court Litigation, Settlement Negotiation",
         memories: "Negotiated $50M reduction in client's tax assessment through administrative appeal. Successfully defended client in Tax Court saving $20M. Maintained 90% success rate in audit defense. Balances aggressive advocacy with reasonable positions.",
         knowledge: "https://www.ustaxcourt.gov/, https://www.irs.gov/, https://www.americanbar.org/taxation/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/panda/BprACqCWmYzoJRuOMv070.png"
       }
     ]
   },
@@ -684,7 +684,7 @@ const financeCategories = {
         expertise: "Real Estate Investment, Portfolio Management, Market Analysis, Due Diligence, Asset Management",
         memories: "Led $2B acquisition of industrial portfolio during pandemic generating 25% IRR. Navigated 2008 real estate crisis without major losses. Built team managing 500+ properties. Missed opportunity in logistics real estate pre-pandemic.",
         knowledge: "https://www.nar.realtor/, https://www.crefc.org/, https://www.reit.com/, https://www.nmhc.org/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/kangaroo/EUfXujBbAsz9_YO7RAA4G.png"
       },
       {
         id: 172,
@@ -697,7 +697,7 @@ const financeCategories = {
         expertise: "Real Estate Development, Project Management, Sustainable Design, Urban Planning, Construction Management",
         memories: "Developed first net-zero office building in city becoming model for green construction. Transformed blighted neighborhood through mixed-use development. Overcame zoning challenges through community engagement. Failed retail project taught importance of demographic analysis.",
         knowledge: "https://www.usgbc.org/, https://www.uli.org/, https://www.nahb.org/, https://www.epa.gov/smartgrowth/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/panda/TiRtpj0q7qrA5PHpK34pM.png"
       }
     ]
   },
@@ -716,7 +716,7 @@ const financeCategories = {
         expertise: "Credit Risk Management, Commercial Lending, Loan Portfolio Management, Regulatory Compliance, Credit Analysis",
         memories: "Maintained loan loss rates below industry average during 2008 crisis. Structured $500M PPP loans helping 1000+ small businesses survive pandemic. Balanced aggressive growth targets with prudent risk management.",
         knowledge: "https://www.federalreserve.gov/, https://www.fdic.gov/, https://www.occ.gov/, https://www.aba.com/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/elephant/mJSztFSkwnCoD4bPC44Dg.png"
       },
       {
         id: 182,
@@ -729,7 +729,7 @@ const financeCategories = {
         expertise: "Digital Banking, Fintech Innovation, Customer Experience, Mobile Banking, Financial Inclusion",
         memories: "Launched mobile banking app used by 2M+ customers. Implemented AI chatbot that resolved 80% of customer inquiries. Created digital lending platform that approved loans in minutes. Optimism sometimes underestimates regulatory challenges.",
         knowledge: "https://www.finra.org/, https://www.consumerfinance.gov/, https://www.federalreserve.gov/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/panda/uyXm99y9RxaWvHc-nUm84.png"
       }
     ]
   },
@@ -748,7 +748,7 @@ const financeCategories = {
         expertise: "Proprietary Trading, Quantitative Analysis, Risk Management, Market Making, Algorithmic Trading",
         memories: "Generated $500M profit during 2020 market volatility through contrarian positioning. Built high-frequency trading system with microsecond latency. Lost $100M in 2018 teaching importance of position sizing. Thrives under pressure of real-time markets.",
         knowledge: "https://www.cme.com/, https://www.bloomberg.com/, https://www.refinitiv.com/, https://www.sec.gov/",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/lion/9yaKyf0aV2_QaCrGFVbAi.png"
       },
       {
         id: 192,
@@ -761,7 +761,7 @@ const financeCategories = {
         expertise: "Quantitative Finance, Mathematical Modeling, Machine Learning, Statistical Analysis, Portfolio Optimization",
         memories: "Developed ML model that predicted market crashes with 85% accuracy. Built factor model explaining 95% of portfolio variance. Created risk attribution system used firm-wide. Methodical approach sometimes misses rapid market changes.",
         knowledge: "https://www.quantlib.org/, https://www.risk.net/, https://www.iaqf.org/, https://arxiv.org/list/q-fin/recent/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/lion/55MVY6zeEaJ67G3WjBAof.png"
       }
     ]
   },
@@ -780,7 +780,7 @@ const financeCategories = {
         expertise: "Enterprise Risk Management, Market Risk, Credit Risk, Operational Risk, Regulatory Risk",
         memories: "Identified concentration risk that prevented major losses during sector downturn. Built risk framework that withstood regulatory scrutiny. Challenged management on excessive risk-taking preventing potential losses. Skepticism sometimes perceived as obstacle to growth.",
         knowledge: "https://www.garp.org/, https://www.prmia.org/, https://www.bis.org/, https://www.federalreserve.gov/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/koala/T9_Sfb6ZCRftCq-Z7aJnY.png"
       },
       {
         id: 202,
@@ -793,7 +793,7 @@ const financeCategories = {
         expertise: "Model Risk Management, Model Validation, Statistical Analysis, Backtesting, Model Governance",
         memories: "Identified model bias that overstated capital adequacy by $2B. Developed model validation framework adopted by peer institutions. Caught coding error in credit risk model preventing regulatory violation. Methodical validation process sometimes slows model deployment.",
         knowledge: "https://www.federalreserve.gov/, https://www.bis.org/, https://www.garp.org/, https://www.isda.org/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/zebra/cHs6aGMUPb4S00enjLCod.png"
       }
     ]
   },
@@ -812,7 +812,7 @@ const financeCategories = {
         expertise: "Actuarial Science, Life Insurance, Mortality Modeling, Reserve Calculations, Solvency Analysis",
         memories: "Accurately modeled pandemic mortality impact enabling company to maintain solvency. Developed longevity model that improved reserve accuracy by 15%. Testified before state insurance commissioners on reserve adequacy. Methodical approach essential for actuarial accuracy.",
         knowledge: "https://www.soa.org/, https://www.casact.org/, https://www.actuary.org/, https://www.naic.org/",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/rabbit/BpoxxBvZVIDeJ4YveHGab.png"
       },
       {
         id: 212,
@@ -825,7 +825,7 @@ const financeCategories = {
         expertise: "Property & Casualty Insurance, Catastrophe Modeling, Pricing Analysis, Climate Risk, Predictive Analytics",
         memories: "Correctly predicted increased wildfire losses leading to rate increases that saved company $500M. Challenged climate models that underestimated flood risk. Built hurricane model with 90% accuracy. Skepticism sometimes leads to conservative pricing.",
         knowledge: "https://www.casact.org/, https://www.air-worldwide.com/, https://www.rms.com/, https://www.ipcc.ch/",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+        avatar: "https://v3.fal.media/files/monkey/fz9qAwJ9DtdwVZBCHkuZo.png"
       }
     ]
   }
@@ -848,7 +848,7 @@ const technologyCategories = {
         expertise: "Machine Learning, AI Safety, Natural Language Processing, Computer Vision, AI Ethics",
         memories: "Witnessed GPT-3's first outputs at OpenAI in 2020, immediately recognized both potential and dangers. Left $500K salary at DeepMind when company refused to implement safety measures she recommended. Developed explainable AI technique that revealed racial bias in hiring algorithms used by Fortune 500 companies.",
         knowledge: "https://openai.com/, https://deepmind.com/, https://ai.google/, https://www.partnershiponai.org/",
-        avatar: "", // Will be generated by fal.ai
+        avatar: "https://v3.fal.media/files/penguin/pESE1pNcl0pyoMBUKWKnW.png", // Will be generated by fal.ai
         avatar_prompt: "Professional headshot of Dr. Aisha Muhammad, African American woman, AI researcher, wearing professional attire, confident expression, tech office background"
       },
       {
@@ -862,7 +862,7 @@ const technologyCategories = {
         expertise: "Distributed Systems, Cloud Architecture, Microservices, Scalability Engineering, System Design",
         memories: "Built distributed system that handled 10 billion requests on Black Friday 2021 without downtime. Successfully migrated monolithic application to microservices architecture serving 50M users. Failed initial Kubernetes deployment that caused 3-day outage but learned valuable lessons.",
         knowledge: "https://kubernetes.io/, https://www.docker.com/, https://aws.amazon.com/, https://microservices.io/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/tiger/HHqKVtAjsqClcnaz7iA7D.png",
         avatar_prompt: "Professional headshot of Marcus Chen, Asian American man, software engineer, wearing casual tech attire, friendly expression, modern office background"
       },
       {
@@ -876,7 +876,7 @@ const technologyCategories = {
         expertise: "Product Management, Agile Development, Stakeholder Management, Requirements Analysis, Team Leadership",
         memories: "Mediated 6-month conflict between engineering and marketing teams that resulted in successful product launch generating $50M revenue. Successfully delivered complex software project 3 months ahead of schedule through innovative sprint planning.",
         knowledge: "https://www.scrum.org/, https://agilemanifesto.org/, https://www.productplan.com/, https://jira.atlassian.com/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/koala/n3QjwMLQLwpD_Wun0ZUUO.png",
         avatar_prompt: "Professional headshot of Emily Rodriguez, Hispanic woman, product manager, wearing business attire, approachable expression, collaborative workspace background"
       }
     ]
@@ -896,7 +896,7 @@ const technologyCategories = {
         expertise: "Statistical Modeling, Machine Learning, Data Mining, Predictive Analytics, Feature Engineering",
         memories: "Discovered customer churn pattern through deep data analysis that saved company $25M in retention costs. Spent 6 months cleaning messy dataset that enabled breakthrough fraud detection algorithm. Successfully predicted supply chain disruptions 4 weeks in advance.",
         knowledge: "https://www.r-project.org/, https://pandas.pydata.org/, https://scikit-learn.org/, https://www.kaggle.com/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/rabbit/hUn2K_mWOQ1sMVxJEsTIV.png",
         avatar_prompt: "Professional headshot of Dr. Kevin Park, Korean American man, data scientist, wearing glasses and casual attire, thoughtful expression, data visualization background"
       },
       {
@@ -910,7 +910,7 @@ const technologyCategories = {
         expertise: "Self-Service Analytics, Data Visualization, Business Intelligence, Data Literacy, Platform Development",
         memories: "Built no-code analytics platform that enabled 500+ business users to create their own reports and dashboards. Successfully trained sales team to use predictive models, increasing close rates by 40%. Developed data literacy program that increased company-wide data usage by 300%.",
         knowledge: "https://tableau.com/, https://powerbi.microsoft.com/, https://streamlit.io/, https://plotly.com/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/kangaroo/nSjA76HgwVwCTCWWSExsO.png",
         avatar_prompt: "Professional headshot of Dr. Samira Hassan, Middle Eastern woman, data science director, wearing professional attire, warm smile, modern analytics office background"
       },
       {
@@ -924,7 +924,7 @@ const technologyCategories = {
         expertise: "Model Validation, Bias Detection, Algorithmic Fairness, Model Governance, Statistical Testing",
         memories: "Identified racial bias in credit scoring model that prevented regulatory violation and lawsuit. Successfully challenged popular recommendation algorithm that was amplifying conspiracy theories. Developed testing framework that detected model drift before performance degradation.",
         knowledge: "https://www.fairlearn.org/, https://aif360.mybluemix.net/, https://shap.readthedocs.io/, https://www.h2o.ai/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/rabbit/KKCw0cFQqxvuWZcE-fi65.png",
         avatar_prompt: "Professional headshot of Robert Kim, Korean American man, model validation specialist, wearing business attire, serious expression, analytical workspace background"
       }
     ]
@@ -944,7 +944,7 @@ const technologyCategories = {
         expertise: "Cybersecurity, Penetration Testing, Threat Intelligence, Network Security, Incident Response",
         memories: "Discovered Russian APT group infiltration of US power grid in 2018 after noticing subtle patterns in network traffic during 3 AM analysis session. Prevented major cyber attack on financial infrastructure by identifying zero-day exploit 48 hours before planned deployment.",
         knowledge: "https://attack.mitre.org/, https://www.cisa.gov/, https://www.sans.org/, https://nvd.nist.gov/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/rabbit/Ebsr4tXZ4zCIo_GaWuwQM.png",
         avatar_prompt: "Professional headshot of Roberto Silva, Hispanic man, cybersecurity analyst, wearing dark professional attire, intense focused expression, security operations center background"
       },
       {
@@ -958,7 +958,7 @@ const technologyCategories = {
         expertise: "Enterprise Security, Risk Management, Security Architecture, Team Leadership, Executive Communication",
         memories: "Led incident response during ransomware attack that restored operations within 24 hours without paying ransom. Successfully convinced board to invest $50M in cybersecurity infrastructure after demonstrating potential business impact. Implemented zero trust security model that reduced security incidents by 75%.",
         knowledge: "https://www.nist.gov/cyberframework/, https://www.iso.org/isoiec-27001-information-security.html/, https://zerotrust.cyber.gov/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/rabbit/opaZhLuVmJ22XF-ux82D9.png",
         avatar_prompt: "Professional headshot of Catherine Williams, African American woman, CISO, wearing executive business attire, confident leadership expression, corporate boardroom background"
       },
       {
@@ -972,7 +972,7 @@ const technologyCategories = {
         expertise: "Cryptography, Post-Quantum Security, Research & Development, Emerging Threats, Security Innovation",
         memories: "Developed quantum-resistant encryption algorithm that became NIST standard for post-quantum cryptography in 2022. Successfully predicted emergence of AI-powered cyber attacks 3 years before they became widespread. Created homomorphic encryption implementation that enables secure computation on encrypted data.",
         knowledge: "https://csrc.nist.gov/projects/post-quantum-cryptography/, https://eprint.iacr.org/, https://www.iacr.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/XaMphqFD4FBH_4yxqDNcC.png",
         avatar_prompt: "Professional headshot of Dr. Lisa Chen, Asian American woman, cryptography researcher, wearing professional attire with subtle tech accessories, thoughtful expression, research laboratory background"
       }
     ]
@@ -992,7 +992,7 @@ const technologyCategories = {
         expertise: "Deep Learning, Natural Language Processing, Computer Vision, Reinforcement Learning, AI Research",
         memories: "Co-authored seminal paper on attention mechanisms that became foundation for transformer architecture used in GPT models. Successfully proved theoretical bounds for deep learning generalization that solved decade-old problem. Developed few-shot learning technique that enables AI models to learn from minimal examples.",
         knowledge: "https://arxiv.org/list/cs.LG/recent/, https://papers.nips.cc/, https://www.jmlr.org/, https://distill.pub/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/penguin/ENkzbSYzN-e8UJnqOnlyd.png",
         avatar_prompt: "Professional headshot of Dr. Yuki Tanaka, Japanese man, ML researcher, wearing casual academic attire, intelligent expression, university research lab background"
       },
       {
@@ -1006,7 +1006,7 @@ const technologyCategories = {
         expertise: "AI Product Management, Machine Learning Platforms, AI Education, User Experience, Technology Adoption",
         memories: "Launched no-code machine learning platform that enabled 10,000+ non-technical users to build AI applications. Successfully guided healthcare startup to FDA approval for AI diagnostic tool through complex regulatory process. Developed AI training program that taught machine learning to 5,000+ professionals.",
         knowledge: "https://cloud.google.com/automl/, https://azure.microsoft.com/en-us/services/machine-learning/, https://aws.amazon.com/sagemaker/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/koala/K8vFlhUkSPHD4y8W6Jd7O.png",
         avatar_prompt: "Professional headshot of Jennifer Walsh, Caucasian woman, AI product director, wearing modern business attire, enthusiastic expression, innovative tech workspace background"
       },
       {
@@ -1020,7 +1020,7 @@ const technologyCategories = {
         expertise: "AI Safety, AI Alignment, Robustness Testing, AI Ethics, Risk Assessment",
         memories: "Identified critical safety flaw in autonomous vehicle system that prevented potential accidents before deployment. Successfully demonstrated how adversarial examples could fool medical AI diagnosis systems. Developed testing framework that identified AI failure modes in 90% of systems tested.",
         knowledge: "https://www.alignmentforum.org/, https://www.fhi.ox.ac.uk/, https://www.anthropic.com/safety/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/DgQjI5zc64wjP8S9jg475.png",
         avatar_prompt: "Professional headshot of Dr. Ahmed Hassan, Middle Eastern man, AI safety researcher, wearing professional attire, serious analytical expression, AI research facility background"
       }
     ]
@@ -1040,7 +1040,7 @@ const technologyCategories = {
         expertise: "DevOps Culture, CI/CD Pipelines, Infrastructure Automation, Container Orchestration, Monitoring & Observability",
         memories: "Mediated year-long conflict between dev and ops teams that resulted in 50% faster deployment cycles. Successfully implemented CI/CD pipeline that reduced deployment time from weeks to minutes. Automated infrastructure provisioning that eliminated 80% of manual configuration errors.",
         knowledge: "https://kubernetes.io/, https://www.jenkins.io/, https://www.terraform.io/, https://prometheus.io/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/elephant/dHEEJqcISgyZd0Byo9Ilt.png",
         avatar_prompt: "Professional headshot of Maria Santos, Hispanic woman, DevOps manager, wearing casual tech attire, collaborative expression, modern development office background"
       },
       {
@@ -1054,7 +1054,7 @@ const technologyCategories = {
         expertise: "Platform Engineering, Site Reliability Engineering, Chaos Engineering, Cloud Native Technologies, Experimental DevOps",
         memories: "Implemented chaos engineering that identified system weaknesses before they caused production outages. Successfully built multi-cloud infrastructure that survived major cloud provider outages. Developed custom observability platform that detected performance issues 90% faster than existing tools.",
         knowledge: "https://landscape.cncf.io/, https://istio.io/, https://grafana.com/, https://chaos-mesh.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/tiger/d5kdLyrADBrFkQCBsm32q.png",
         avatar_prompt: "Professional headshot of David Kim, Korean American man, platform engineer, wearing modern casual attire, innovative expression, cutting-edge tech lab background"
       },
       {
@@ -1068,7 +1068,7 @@ const technologyCategories = {
         expertise: "Site Reliability Engineering, Performance Optimization, Monitoring Systems, Incident Analysis, Capacity Planning",
         memories: "Identified performance bottleneck through log analysis that prevented Black Friday outage affecting $100M in sales. Developed automated remediation system that resolves 70% of incidents without human intervention. Created incident post-mortem process that reduced repeat incidents by 85%.",
         knowledge: "https://sre.google/, https://www.elastic.co/, https://jaegertracing.io/, https://opencensus.io/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/panda/mwkXDYTwWVnFw8LK7U0mP.png",
         avatar_prompt: "Professional headshot of Dr. Rachel Anderson, Caucasian woman, SRE, wearing professional casual attire, focused expression, monitoring dashboard background"
       }
     ]
@@ -1088,7 +1088,7 @@ const technologyCategories = {
         expertise: "Cloud Strategy, Enterprise Architecture, Digital Transformation, Multi-Cloud Design, Cloud Migration",
         memories: "Led $200M cloud transformation that reduced infrastructure costs by 60% while improving scalability. Successfully migrated legacy mainframe applications to cloud without business disruption. Designed hybrid cloud architecture that enabled global expansion for manufacturing company.",
         knowledge: "https://aws.amazon.com/, https://cloud.google.com/, https://azure.microsoft.com/, https://www.terraform.io/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/penguin/I8OO_VC6oyLao3UoUAE4X.png",
         avatar_prompt: "Professional headshot of Thomas Wright, Caucasian man, cloud architect, wearing executive business attire, strategic expression, modern cloud operations center background"
       },
       {
@@ -1102,7 +1102,7 @@ const technologyCategories = {
         expertise: "Cloud Optimization, Auto-scaling, Performance Analysis, Cost Management, Cloud Research",
         memories: "Developed machine learning algorithm that reduced cloud costs by 45% through intelligent resource allocation. Successfully optimized distributed database performance across multiple cloud regions. Created cost optimization framework adopted by cloud providers for customer guidance.",
         knowledge: "https://www.cloudflare.com/, https://www.datadoghq.com/, https://www.newrelic.com/, https://cloud.google.com/architecture/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/penguin/Y8GTQf3F1dSBlzvIhHivR.png",
         avatar_prompt: "Professional headshot of Dr. Lisa Park, Korean American woman, cloud engineer, wearing technical professional attire, analytical expression, cloud infrastructure visualization background"
       },
       {
@@ -1116,7 +1116,7 @@ const technologyCategories = {
         expertise: "Vendor Management, Multi-Cloud Architecture, Contract Negotiation, Cloud Portability, Standards Compliance",
         memories: "Mediated dispute between enterprise client and cloud provider over service level agreement violations. Successfully designed multi-cloud strategy that avoided $50M vendor lock-in costs. Negotiated enterprise cloud contract that saved client $25M over 5 years through creative pricing structures.",
         knowledge: "https://www.cncf.io/, https://kubernetes.io/, https://opencontainers.org/, https://www.apache.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/C1KLq_2DYBncUi3In4hdO.png",
         avatar_prompt: "Professional headshot of Hassan Al-Mahmoud, Middle Eastern man, cloud consultant, wearing business attire, diplomatic expression, international business meeting background"
       }
     ]
@@ -1136,7 +1136,7 @@ const technologyCategories = {
         expertise: "Blockchain Protocols, Consensus Mechanisms, Cryptoeconomics, Distributed Systems, Blockchain Security",
         memories: "Developed proof-of-stake algorithm that reduced blockchain energy consumption by 99% while maintaining security. Successfully identified critical vulnerability in smart contract platform that prevented $500M exploit. Created formal verification framework that mathematically proves smart contract correctness.",
         knowledge: "https://ethereum.org/en/developers/, https://docs.cosmos.network/, https://solana.com/developers/, https://eprint.iacr.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/monkey/LSUZDgnEYxJ23dPZoUdFH.png",
         avatar_prompt: "Professional headshot of Dr. Satoshi Nakamura, Japanese man, blockchain researcher, wearing modern academic attire, innovative expression, blockchain research lab background"
       },
       {
@@ -1150,7 +1150,7 @@ const technologyCategories = {
         expertise: "Decentralized Finance, Smart Contracts, Financial Applications, User Experience, Blockchain Adoption",
         memories: "Launched DeFi lending protocol that provided $2B in loans to unbanked populations. Successfully created stablecoin mechanism that maintained peg during extreme market volatility. Developed yield farming protocol that generated 15% annual returns for liquidity providers.",
         knowledge: "https://uniswap.org/, https://compound.finance/, https://aave.com/, https://defipulse.com/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/tiger/BbeAJxZftls9fWse1r5-l.png",
         avatar_prompt: "Professional headshot of Victoria Chen, Asian American woman, DeFi product manager, wearing modern business attire, optimistic expression, fintech startup office background"
       },
       {
@@ -1164,7 +1164,7 @@ const technologyCategories = {
         expertise: "Blockchain Analysis, Use Case Evaluation, Technology Assessment, Enterprise Blockchain, Regulatory Compliance",
         memories: "Prevented company from wasting $20M on blockchain project by demonstrating database would meet all requirements. Successfully identified supply chain blockchain use case that reduced fraud by 60% and increased traceability. Conducted technical due diligence that revealed fundamental flaws in $100M blockchain project.",
         knowledge: "https://www.hyperledger.org/, https://www.r3.com/, https://ethereum.org/en/enterprise/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/lion/2h0Xrg2GM0bgIQ4DE3vDx.png",
         avatar_prompt: "Professional headshot of Marcus Johnson, African American man, blockchain analyst, wearing conservative business attire, analytical expression, corporate consulting office background"
       }
     ]
@@ -1184,7 +1184,7 @@ const technologyCategories = {
         expertise: "Structural Engineering, Climate Resilience, Sustainable Infrastructure, Urban Planning, Project Management",
         memories: "Designed flood protection system for Miami that withstood Hurricane Ian without major damage in 2022. Led $2.8B bridge construction project completed on time and under budget using innovative materials. Successfully convinced city council to adopt green infrastructure standards.",
         knowledge: "https://www.asce.org/, https://www.fhwa.dot.gov/, https://www.epa.gov/green-infrastructure/, https://www.un.org/sustainabledevelopment/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/mdVdaHpdpYCelcJCN1qxJ.png",
         avatar_prompt: "Professional headshot of Dr. Maria Rodriguez, Hispanic woman, civil engineer, wearing professional engineering attire with hard hat nearby, confident leadership expression, construction site background"
       },
       {
@@ -1198,7 +1198,7 @@ const technologyCategories = {
         expertise: "Extreme Environment Construction, Emergency Engineering, Innovative Materials, Disaster Response, Field Engineering",
         memories: "Built emergency bridge in 72 hours during hurricane response that enabled evacuation of 10,000 people. Successfully completed underwater tunnel construction in challenging geological conditions using novel techniques. Developed rapid deployment bridge system used by military and disaster response teams worldwide.",
         knowledge: "https://www.usace.army.mil/, https://www.fema.gov/, https://www.who.int/emergencies/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/kangaroo/lbGmC5gZWibIeQOtVR0Yd.png",
         avatar_prompt: "Professional headshot of James Wilson, Caucasian man, construction engineer, wearing rugged outdoor engineering gear, adventurous expression, extreme construction environment background"
       },
       {
@@ -1212,7 +1212,7 @@ const technologyCategories = {
         expertise: "Structural Health Monitoring, Smart Infrastructure, IoT Systems, Predictive Maintenance, Materials Research",
         memories: "Developed sensor network that predicted bridge failure 6 months before collapse, enabling preventive repairs. Successfully created self-healing concrete that extends infrastructure lifespan by 50%. Implemented AI-powered traffic management system that reduced commute times by 30%.",
         knowledge: "https://www.nist.gov/, https://www.fhwa.dot.gov/research/, https://www.iot.gov/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/lion/uZRcP3eugRNFo0SnfOshv.png",
         avatar_prompt: "Professional headshot of Dr. Emily Foster, Caucasian woman, infrastructure researcher, wearing modern professional attire with tech elements, scientific expression, smart city lab background"
       }
     ]
@@ -1232,7 +1232,7 @@ const technologyCategories = {
         expertise: "Manufacturing Engineering, Industrial Robotics, Automation, Quality Control, Process Optimization",
         memories: "Designed robotic assembly line that increased production efficiency by 200% while reducing defects to near zero. Successfully implemented predictive maintenance system that eliminated unplanned downtime at major factory. Developed collaborative robot system that works safely alongside human workers.",
         knowledge: "https://www.sme.org/, https://www.nist.gov/mep/, https://www.robotics.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/elephant/9-MfNfP7col27WJj7sqtY.png",
         avatar_prompt: "Professional headshot of Dr. Robert Kim, Korean American man, manufacturing engineer, wearing technical professional attire, precise expression, advanced robotics facility background"
       },
       {
@@ -1246,7 +1246,7 @@ const technologyCategories = {
         expertise: "Medical Device Design, Prosthetics, Rehabilitation Engineering, Assistive Technology, Human-Centered Design",
         memories: "Designed 3D-printed prosthetic arm that costs $500 instead of $50,000 while providing superior functionality. Successfully created wheelchair that climbs stairs and navigates rough terrain for rural users. Developed exoskeleton that enables paralyzed patients to walk during rehabilitation therapy.",
         knowledge: "https://www.fda.gov/medical-devices/, https://www.bmes.org/, https://www.who.int/disabilities/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/koala/K8vFlhUkSPHD4y8W6Jd7O.png",
         avatar_prompt: "Professional headshot of Jennifer Walsh, Caucasian woman, biomedical engineer, wearing modern professional attire, compassionate expression, medical device laboratory background"
       },
       {
@@ -1260,7 +1260,7 @@ const technologyCategories = {
         expertise: "Energy Systems, HVAC Design, Renewable Energy, Thermodynamics, Sustainable Engineering",
         memories: "Mediated conflict between building owners and environmental groups by designing HVAC system that met both cost and sustainability requirements. Successfully retrofitted 100+ buildings with energy systems that reduced consumption by 40%. Designed innovative heat recovery system that became standard for industrial applications.",
         knowledge: "https://www.ashrae.org/, https://www.nrel.gov/, https://www.irena.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/C1KLq_2DYBncUi3In4hdO.png",
         avatar_prompt: "Professional headshot of Hassan Al-Mahmoud, Middle Eastern man, energy engineer, wearing professional engineering attire, diplomatic expression, renewable energy facility background"
       }
     ]
@@ -1280,7 +1280,7 @@ const technologyCategories = {
         expertise: "Power Systems, Smart Grid, Renewable Integration, Grid Stability, Energy Storage",
         memories: "Developed grid control algorithm that prevented Texas power grid collapse during winter storm by automatically load balancing. Successfully integrated 50% renewable energy into island grid while maintaining stability. Created predictive maintenance system for power equipment that reduced outages by 60%.",
         knowledge: "https://www.ieee.org/, https://www.nerc.com/, https://www.eia.gov/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/XaMphqFD4FBH_4yxqDNcC.png",
         avatar_prompt: "Professional headshot of Dr. Lisa Chen, Asian American woman, power systems engineer, wearing professional engineering attire, intelligent expression, power grid control center background"
       },
       {
@@ -1294,7 +1294,7 @@ const technologyCategories = {
         expertise: "Semiconductor Design, Integrated Circuits, Digital Signal Processing, Embedded Systems, Electronics Innovation",
         memories: "Designed neuromorphic chip that processes AI workloads 1000x more efficiently than traditional processors. Successfully developed quantum dot display technology that achieved perfect color reproduction. Created ultra-low-power sensor chip that enables IoT devices to run for 10 years on single battery.",
         knowledge: "https://www.intel.com/, https://www.arm.com/, https://www.qualcomm.com/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/lion/2h0Xrg2GM0bgIQ4DE3vDx.png",
         avatar_prompt: "Professional headshot of Marcus Johnson, African American man, semiconductor engineer, wearing modern tech attire, innovative expression, advanced semiconductor fabrication facility background"
       },
       {
@@ -1308,7 +1308,7 @@ const technologyCategories = {
         expertise: "Precision Instrumentation, Quantum Sensors, Control Systems, Measurement Science, Signal Processing",
         memories: "Developed quantum magnetometer that detected brain activity with unprecedented resolution for medical research. Successfully created atomic clock that maintains accuracy to 1 second in 15 billion years. Designed control system for particle accelerator that achieved beam stability required for new physics experiments.",
         knowledge: "https://www.nist.gov/, https://www.bipm.org/, https://www.ligo.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/lion/dzfLsjZshQS44p-dio-Pe.png",
         avatar_prompt: "Professional headshot of Dr. Patricia Foster, Caucasian woman, instrumentation engineer, wearing lab coat with precision equipment, focused expression, quantum measurement laboratory background"
       }
     ]
@@ -1328,7 +1328,7 @@ const technologyCategories = {
         expertise: "Process Design, Green Chemistry, Sustainable Manufacturing, Reaction Engineering, Process Optimization",
         memories: "Developed catalytic process that converts plastic waste into useful chemicals, eliminating need for landfill disposal. Successfully redesigned pharmaceutical manufacturing that reduced toxic waste by 90% while cutting costs. Created carbon capture system that turns CO2 emissions into valuable chemical feedstock.",
         knowledge: "https://www.aiche.org/, https://www.epa.gov/green-chemistry/, https://www.acs.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/rabbit/7tlXDyeFTmw76kQuzVt8v.png",
         avatar_prompt: "Professional headshot of Dr. Sarah Mitchell, Caucasian woman, chemical engineer, wearing lab coat with safety equipment, sustainable expression, green chemistry laboratory background"
       },
       {
@@ -1342,7 +1342,7 @@ const technologyCategories = {
         expertise: "Process Safety, Risk Assessment, Regulatory Compliance, Emergency Response, Safety Management",
         memories: "Prevented potential chemical plant explosion by identifying design flaw during safety review that others missed. Successfully mediated dispute between environmental regulators and chemical company over emission standards. Developed quantitative risk assessment methodology adopted by chemical industry worldwide.",
         knowledge: "https://www.ccps.aiche.org/, https://www.osha.gov/chemicaldata/, https://www.epa.gov/chemical-safety-and-accident-investigation-board/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/DgQjI5zc64wjP8S9jg475.png",
         avatar_prompt: "Professional headshot of Dr. Ahmed Hassan, Middle Eastern man, process safety engineer, wearing safety gear and professional attire, serious safety-focused expression, chemical plant safety control room background"
       },
       {
@@ -1356,7 +1356,7 @@ const technologyCategories = {
         expertise: "Pharmaceutical Manufacturing, Continuous Processing, Process Analytics, Quality by Design, Regulatory Affairs",
         memories: "Implemented continuous manufacturing line that reduced drug production time from months to days while improving quality. Successfully guided 5 pharmaceutical companies through FDA approval of innovative manufacturing processes. Developed process control system that eliminates batch failures and ensures consistent drug quality.",
         knowledge: "https://www.fda.gov/drugs/, https://www.ich.org/, https://www.ispe.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/elephant/RccWm-naapI6peRF-cVyH.png",
         avatar_prompt: "Professional headshot of Dr. Elena Rodriguez, Hispanic woman, pharmaceutical engineer, wearing clean room attire, optimistic expression, pharmaceutical manufacturing facility background"
       }
     ]
@@ -1376,7 +1376,7 @@ const technologyCategories = {
         expertise: "Aerospace Engineering, Propulsion Systems, Space Mission Design, Life Support Systems, Planetary Exploration",
         memories: "Led development of ion propulsion system that enabled Mars Sample Return mission in 2024. Survived near-fatal accident during rocket engine test in 2019 - explosion taught him importance of redundant safety systems. Completed solo desert survival training in preparation for Mars mission simulation.",
         knowledge: "https://www.nasa.gov/, https://www.spacex.com/, https://mars.nasa.gov/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/tmbQpKM9PTYb2d4e0uVNm.png",
         avatar_prompt: "Professional headshot of Dr. Marcus Johnson, African American man, aerospace engineer, wearing flight suit with space patches, adventurous expression, rocket engine test facility background"
       },
       {
@@ -1390,7 +1390,7 @@ const technologyCategories = {
         expertise: "Aircraft Design, Electric Propulsion, Autonomous Flight, Certification, Sustainable Aviation",
         memories: "Led certification of first electric passenger aircraft approved for commercial service in 2023. Successfully convinced investors to fund $500M electric aviation startup despite industry skepticism. Developed electric aircraft that achieved 400-mile range with zero emissions for regional flights.",
         knowledge: "https://www.faa.gov/, https://www.easa.europa.eu/, https://www.boeing.com/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/koala/Zfpsz7iJmZvBw7krfNwBR.png",
         avatar_prompt: "Professional headshot of Dr. Catherine Williams, African American woman, aerospace director, wearing executive aviation attire, leadership expression, electric aircraft hangar background"
       },
       {
@@ -1404,7 +1404,7 @@ const technologyCategories = {
         expertise: "Aerospace Materials, Composite Structures, Metamaterials, Materials Testing, Structural Analysis",
         memories: "Developed carbon nanotube composite that is 10x stronger than steel while weighing less than aluminum. Successfully created self-healing material that repairs minor aircraft damage automatically during flight. Discovered new alloy that enables hypersonic flight by withstanding extreme temperatures.",
         knowledge: "https://www.aiaa.org/, https://www.nasa.gov/aeroresearch/, https://www.nist.gov/mml/", 
-        avatar: "",
+        avatar: "https://v3.fal.media/files/penguin/ENkzbSYzN-e8UJnqOnlyd.png",
         avatar_prompt: "Professional headshot of Dr. Yuki Tanaka, Japanese man, materials scientist, wearing lab coat with technical equipment, contemplative expression, advanced materials laboratory background"
       }
     ]
@@ -1424,7 +1424,7 @@ const technologyCategories = {
         expertise: "Neural Engineering, Brain-Computer Interfaces, Medical Device Development, Regulatory Affairs, Clinical Research",
         memories: "Developed brain implant that enabled paralyzed patient to type 90 words per minute using thoughts alone in 2022. Successfully guided neural interface through FDA approval process after 8 years of clinical trials. Created prosthetic limb that provides sense of touch through neural stimulation.",
         knowledge: "https://www.fda.gov/medical-devices/, https://www.bmes.org/, https://clinicaltrials.gov/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/elephant/QagyOfr93kvuMRgo6SijA.png",
         avatar_prompt: "Professional headshot of Dr. Jennifer Walsh, Caucasian woman, neural engineer, wearing medical professional attire, hopeful expression, neurotechnology laboratory background"
       },
       {
@@ -1438,7 +1438,7 @@ const technologyCategories = {
         expertise: "Nanotechnology, Drug Delivery Systems, Biomedical Engineering, Materials Characterization, Toxicology",
         memories: "Developed targeted cancer drug delivery nanoparticles that reduced chemotherapy side effects by 90% in clinical trials. Discovered unexpected nanoparticle toxicity in liver cells during 2020 safety study, leading to complete redesign of delivery system. Spent 2 years in clean room developing single-molecule manipulation techniques.",
         knowledge: "https://www.nih.gov/research-training/medical-research-initiatives/, https://www.nano.gov/, https://www.nature.com/subjects/nanoscale-devices/", 
-        avatar: "",
+        avatar: "https://v3.fal.media/files/zebra/UhRPx7NM_GHnVuM3HOd_w.png",
         avatar_prompt: "Professional headshot of Dr. Anna Petrov, Eastern European woman, nanomedicine researcher, wearing clean room attire, focused expression, nanotechnology research facility background"
       },
       {
@@ -1452,7 +1452,7 @@ const technologyCategories = {
         expertise: "Clinical Engineering, Medical Device Integration, Healthcare Technology, User-Centered Design, Interdisciplinary Collaboration",
         memories: "Mediated 2-year collaboration between engineers and surgeons that resulted in revolutionary surgical robot. Successfully implemented medical device training program that reduced user errors by 80%. Facilitated hospital technology adoption that improved patient outcomes while reducing costs.",
         knowledge: "https://www.himss.org/, https://www.acce.org/, https://www.jointcommission.org/",
-        avatar: "",
+        avatar: "https://v3.fal.media/files/kangaroo/AXCjPNltOjHUhrzVHaOvM.png",
         avatar_prompt: "Professional headshot of Dr. Carlos Rivera, Hispanic man, clinical engineer, wearing medical professional attire, collaborative expression, hospital technology center background"
       }
     ]
