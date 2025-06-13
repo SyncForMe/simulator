@@ -57,7 +57,7 @@ backend:
     implemented: true
     working: false
     file: "/app/backend/server.py"
-    stuck_count: 3
+    stuck_count: 4
     priority: "high"
     needs_retesting: false
     status_history:
@@ -79,6 +79,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Conducted comprehensive testing of the document bulk delete endpoint with multiple approaches. Created a new endpoint that uses a Pydantic model for the request body, a new endpoint that uses query parameters instead of a request body, and a new endpoint that just returns a success message for empty arrays. All of these approaches still resulted in a 404 error with 'Document not found' when an empty array is provided. The issue appears to be with how FastAPI is handling DELETE requests with request bodies for this specific endpoint. The conversation bulk delete endpoint works correctly with empty arrays, suggesting there might be some middleware or routing issue specific to the document endpoint. This issue needs to be addressed to ensure consistent behavior between the conversation and document bulk delete endpoints."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted additional testing of the document bulk delete functionality. The DELETE /api/documents/bulk endpoint consistently returns a 404 error with 'Document not found' message for both empty arrays and valid document IDs. The POST /api/documents/bulk-delete endpoint returns a 422 error with 'Input should be a valid list' message, indicating a validation issue with the request body. Tried various request formats including query parameters and different JSON structures, but none were successful. The issue appears to be with how FastAPI is handling the request body for these endpoints. This is a critical issue that prevents users from deleting multiple documents at once, which is an important feature for managing the File Center."
 
   - task: "POST /api/simulation/set-scenario - Custom Scenario Name Input"
     implemented: true
