@@ -4846,7 +4846,7 @@ const FileCenter = ({ onRefresh }) => {
                       {selectedDocument.metadata.category}
                     </span>
                     <span className="text-xs text-gray-500">
-                      by {selectedDocument.metadata.authors.join(', ')}
+                                      by {selectedDocument.metadata.authors?.join(', ') || 'Unknown Author'}
                     </span>
                     <span className="text-xs text-gray-500">
                       {formatDate(selectedDocument.metadata.created_at)}
