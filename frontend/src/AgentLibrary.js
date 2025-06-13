@@ -1475,8 +1475,6 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
   const [addingAgents, setAddingAgents] = useState(new Set());
   const [addedAgents, setAddedAgents] = useState(new Set());
   const timeoutRefs = useRef(new Map());
-  const [loadedImages, setLoadedImages] = useState(new Set());
-  const [imageLoadingStates, setImageLoadingStates] = useState(new Map());
 
   // Aggressive preloading of all avatars on app startup
   useEffect(() => {
