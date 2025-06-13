@@ -857,10 +857,10 @@ const technologyCategories = {
         archetypeDisplay: "The Adventurer",
         title: "Principal Software Engineer",
         goal: "To push the boundaries of software architecture through microservices and distributed systems innovation.",
-        background: "Principal software engineer who thrives on solving complex scalability challenges. Former startup CTO who built systems handling billions of requests daily. Known for implementing cutting-edge technologies before they become mainstream.",
+        background: "Principal software engineer who thrives on solving complex scalability challenges. Former startup CTO who built systems handling billions of requests daily. Known for implementing cutting-edge technologies before they become mainstream. Advocates for cloud-native architectures and containerization. Enjoys extreme programming challenges and hackathons.",
         expertise: "Distributed Systems, Cloud Architecture, Microservices, Scalability Engineering, System Design",
-        memories: "Built distributed system that handled 10 billion requests on Black Friday 2021 without downtime. Successfully migrated monolithic application to microservices architecture serving 50M users. Failed initial Kubernetes deployment that caused 3-day outage but learned valuable lessons.",
-        knowledge: "https://kubernetes.io/, https://www.docker.com/, https://aws.amazon.com/, https://microservices.io/",
+        memories: "Built distributed system that handled 10 billion requests on Black Friday 2021 without downtime. Successfully migrated monolithic application to microservices architecture serving 50M users. Failed initial Kubernetes deployment that caused 3-day outage but learned valuable lessons about container orchestration. Implemented blockchain-based system that processed $2B in transactions with 99.99% uptime. Remembers coding for 72 hours straight during hackathon that produced prototype later valued at $100M.",
+        knowledge: "Comprehensive understanding of distributed systems including consensus algorithms, distributed databases, and fault tolerance mechanisms. Expert knowledge of cloud architecture including serverless computing, auto-scaling, and multi-region deployment. Deep understanding of microservices including service mesh, API gateways, and inter-service communication. Familiar with scalability engineering including load balancing, caching strategies, and performance optimization. Understanding of system design including architectural patterns, design principles, and trade-off analysis.",
         avatar: "https://v3.fal.media/files/tiger/HHqKVtAjsqClcnaz7iA7D.png",
       },
       {
