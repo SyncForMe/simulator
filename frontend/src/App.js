@@ -5734,5 +5734,3 @@ const AppWithAuth = () => {
 };
 
 export default AppWithAuth;
-export { useAuth };
-export { useAuth };
