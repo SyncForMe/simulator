@@ -5064,13 +5064,18 @@ async def delete_conversations_bulk(
         logging.error(f"Error deleting conversations: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete conversations: {str(e)}")
 
+class DocumentIdsRequest(BaseModel):
+    document_ids: List[str]
+
 @api_router.delete("/documents/bulk")
 async def delete_documents_bulk(
-    document_ids: List[str],
+    request: DocumentIdsRequest,
     current_user: dict = Depends(get_current_user)
 ):
     """Delete multiple documents for the authenticated user"""
     try:
+        document_ids = request.document_ids
+        
         # Handle empty array case
         if not document_ids:
             return {
