@@ -588,7 +588,7 @@ class LLMManager:
         # No hardcoded limit since we're on paid tier now
         return usage < self.max_daily_requests
 
-    async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None, language_instruction: str = "Respond in English.", existing_documents: List = None):
+    async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None, language_instruction: str = "Respond in English.", existing_documents: List = None, simulation_state: dict = None):
         """Generate a single agent response with better context and progression"""
         if not await self.can_make_request():
             return f"{agent.name} is taking a moment to think... (daily API limit reached)"
@@ -596,6 +596,32 @@ class LLMManager:
         # Build a simple, direct prompt for better LLM performance
         other_agent_names = [a.name for a in other_agents if a.id != agent.id]
         others_text = f"Others present: {', '.join(other_agent_names)}" if other_agent_names else "You are alone"
+        
+        # Build time limit context
+        time_pressure_context = ""
+        if simulation_state and simulation_state.get('time_limit_hours'):
+            # Calculate remaining time
+            start_time = simulation_state.get('simulation_start_time')
+            if start_time:
+                if isinstance(start_time, str):
+                    start_time = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
+                elif isinstance(start_time, dict):
+                    start_time = datetime.fromisoformat(start_time.get('$date', str(datetime.utcnow())))
+                
+                elapsed_hours = (datetime.utcnow() - start_time).total_seconds() / 3600
+                remaining_hours = simulation_state['time_limit_hours'] - elapsed_hours
+                
+                if remaining_hours > 0:
+                    time_display = simulation_state.get('time_limit_display', f"{remaining_hours:.1f} hours")
+                    time_pressure_context = f"\n\n⏰ CRITICAL TIME CONSTRAINT:\n"
+                    time_pressure_context += f"- You have {time_display} remaining to reach conclusions and solutions\n"
+                    time_pressure_context += f"- PRIORITY: Work towards concrete conclusions, decisions, and actionable outcomes\n"
+                    time_pressure_context += f"- Time pressure is HIGH - focus on solutions, not endless discussion\n"
+                    time_pressure_context += f"- Push for consensus, decisions, and documented results\n"
+                else:
+                    time_pressure_context = f"\n\n🚨 TIME IS UP! The {simulation_state.get('time_limit_display', 'deadline')} has passed.\n"
+                    time_pressure_context += f"- You must now summarize conclusions and present final recommendations\n"
+                    time_pressure_context += f"- Focus on what was accomplished and key decisions made\n"
         
         # Build document context if available
         document_context = ""
@@ -618,6 +644,8 @@ Personality traits:
 - Curiosity: {agent.personality.curiosity}/10
 - Cooperativeness: {agent.personality.cooperativeness}/10
 - Energy: {agent.personality.energy}/10
+
+{time_pressure_context}
 
 NATURAL CONVERSATION RULES:
 1. Respond like a real person - sometimes answer directly, sometimes challenge ideas, sometimes offer alternatives
