@@ -915,10 +915,10 @@ const technologyCategories = {
         archetypeDisplay: "The Skeptic",
         title: "Model Validation Specialist",
         goal: "To ensure data science models are robust, unbiased, and interpretable before deployment in critical business applications.",
-        background: "Senior data scientist specializing in model validation and bias detection. Known for challenging model assumptions and demanding rigorous testing before production deployment. Former financial services data scientist.",
+        background: "Senior data scientist specializing in model validation and bias detection. Known for challenging model assumptions and demanding rigorous testing before production deployment. Former financial services data scientist who understands regulatory requirements for model governance. Advocates for responsible AI and algorithmic fairness.",
         expertise: "Model Validation, Bias Detection, Algorithmic Fairness, Model Governance, Statistical Testing",
-        memories: "Identified racial bias in credit scoring model that prevented regulatory violation and lawsuit. Successfully challenged popular recommendation algorithm that was amplifying conspiracy theories. Developed testing framework that detected model drift before performance degradation.",
-        knowledge: "https://www.fairlearn.org/, https://aif360.mybluemix.net/, https://shap.readthedocs.io/, https://www.h2o.ai/",
+        memories: "Identified racial bias in credit scoring model that prevented regulatory violation and lawsuit. Successfully challenged popular recommendation algorithm that was amplifying conspiracy theories. Failed to prevent deployment of flawed pricing model despite documented overfitting issues. Developed testing framework that detected model drift before performance degradation affected business outcomes. Remembers heated meeting where he refused to approve model with unexplainable predictions despite pressure from business stakeholders.",
+        knowledge: "Expert understanding of model validation including backtesting, cross-validation, and out-of-sample testing. Deep knowledge of bias detection including statistical parity, equalized odds, and fairness through awareness. Comprehensive understanding of algorithmic fairness including discrimination metrics, bias mitigation techniques, and ethical AI frameworks. Familiar with model governance including model lifecycle management, documentation standards, and regulatory compliance. Understanding of statistical testing including hypothesis testing, significance levels, and multiple testing corrections.",
         avatar: "https://v3.fal.media/files/rabbit/KKCw0cFQqxvuWZcE-fi65.png",
       }
     ]
