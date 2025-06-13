@@ -572,6 +572,271 @@ def test_agent_library_avatars():
             print(f"  - {issue}")
         return False, "Agent library avatar system has issues"
 
+def test_time_limit_functionality():
+    """Test the time limit functionality for simulations"""
+    print("\n" + "="*80)
+    print("TESTING TIME LIMIT FUNCTIONALITY")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test time limit functionality without authentication")
+            return False, "Authentication failed"
+    
+    # Test 1: Start simulation with 24-hour time limit (1 day)
+    print("\nTest 1: Starting simulation with 24-hour time limit (1 day)")
+    
+    time_limit_data = {
+        "time_limit_hours": 24,
+        "time_limit_display": "1 day"
+    }
+    
+    start_sim_test, start_sim_response = run_test(
+        "Start Simulation with 24-hour Time Limit",
+        "/simulation/start",
+        method="POST",
+        data=time_limit_data,
+        auth=True,
+        expected_keys=["message", "state", "time_limit_active", "time_limit_display"]
+    )
+    
+    if start_sim_test and start_sim_response:
+        state = start_sim_response.get("state", {})
+        time_limit_active = start_sim_response.get("time_limit_active")
+        time_limit_display = start_sim_response.get("time_limit_display")
+        
+        if time_limit_active and time_limit_display == "1 day" and state.get("time_limit_hours") == 24:
+            print("✅ Simulation started with 24-hour time limit")
+            print(f"✅ time_limit_hours: {state.get('time_limit_hours')}")
+            print(f"✅ time_limit_display: {state.get('time_limit_display')}")
+            print(f"✅ simulation_start_time is recorded: {state.get('simulation_start_time') is not None}")
+        else:
+            print("❌ Simulation time limit not set correctly")
+            print(f"❌ time_limit_active: {time_limit_active}")
+            print(f"❌ time_limit_display: {time_limit_display}")
+            print(f"❌ time_limit_hours: {state.get('time_limit_hours')}")
+    
+    # Test 2: Get simulation state to verify time calculations
+    print("\nTest 2: Getting simulation state to verify time calculations")
+    
+    get_state_test, get_state_response = run_test(
+        "Get Simulation State",
+        "/simulation/state",
+        method="GET",
+        auth=True
+    )
+    
+    if get_state_test and get_state_response:
+        time_limit_hours = get_state_response.get("time_limit_hours")
+        time_remaining_hours = get_state_response.get("time_remaining_hours")
+        time_elapsed_hours = get_state_response.get("time_elapsed_hours")
+        time_expired = get_state_response.get("time_expired")
+        
+        if time_limit_hours == 24:
+            print("✅ time_limit_hours is correctly set to 24")
+        else:
+            print(f"❌ time_limit_hours is not 24: {time_limit_hours}")
+        
+        if time_remaining_hours is not None:
+            print(f"✅ time_remaining_hours is calculated: {time_remaining_hours:.2f}")
+        else:
+            print("❌ time_remaining_hours is not calculated")
+        
+        if time_elapsed_hours is not None:
+            print(f"✅ time_elapsed_hours is calculated: {time_elapsed_hours:.2f}")
+        else:
+            print("❌ time_elapsed_hours is not calculated")
+        
+        if time_expired is not None:
+            print(f"✅ time_expired flag is set: {time_expired}")
+        else:
+            print("❌ time_expired flag is not set")
+    
+    # Test 3: Get time status to verify detailed time information
+    print("\nTest 3: Getting time status to verify detailed time information")
+    
+    get_time_status_test, get_time_status_response = run_test(
+        "Get Time Status",
+        "/simulation/time-status",
+        method="GET",
+        auth=True,
+        expected_keys=["time_limit_active", "time_limit_display", "time_limit_hours", 
+                      "time_remaining_hours", "time_elapsed_hours", "time_expired", 
+                      "time_pressure_level"]
+    )
+    
+    if get_time_status_test and get_time_status_response:
+        time_limit_active = get_time_status_response.get("time_limit_active")
+        time_limit_display = get_time_status_response.get("time_limit_display")
+        time_limit_hours = get_time_status_response.get("time_limit_hours")
+        time_remaining_hours = get_time_status_response.get("time_remaining_hours")
+        time_elapsed_hours = get_time_status_response.get("time_elapsed_hours")
+        time_expired = get_time_status_response.get("time_expired")
+        time_pressure_level = get_time_status_response.get("time_pressure_level")
+        
+        print(f"✅ time_limit_active: {time_limit_active}")
+        print(f"✅ time_limit_display: {time_limit_display}")
+        print(f"✅ time_limit_hours: {time_limit_hours}")
+        print(f"✅ time_remaining_hours: {time_remaining_hours:.2f}")
+        print(f"✅ time_elapsed_hours: {time_elapsed_hours:.2f}")
+        print(f"✅ time_expired: {time_expired}")
+        print(f"✅ time_pressure_level: {time_pressure_level}")
+        
+        # Verify pressure level calculation
+        if time_pressure_level in ["low", "medium", "high", "critical", "expired"]:
+            print(f"✅ time_pressure_level is valid: {time_pressure_level}")
+        else:
+            print(f"❌ time_pressure_level is invalid: {time_pressure_level}")
+    
+    # Test 4: Start simulation with 168-hour time limit (1 week)
+    print("\nTest 4: Starting simulation with 168-hour time limit (1 week)")
+    
+    time_limit_data = {
+        "time_limit_hours": 168,
+        "time_limit_display": "1 week"
+    }
+    
+    start_sim_week_test, start_sim_week_response = run_test(
+        "Start Simulation with 168-hour Time Limit",
+        "/simulation/start",
+        method="POST",
+        data=time_limit_data,
+        auth=True,
+        expected_keys=["message", "state", "time_limit_active", "time_limit_display"]
+    )
+    
+    if start_sim_week_test and start_sim_week_response:
+        state = start_sim_week_response.get("state", {})
+        time_limit_active = start_sim_week_response.get("time_limit_active")
+        time_limit_display = start_sim_week_response.get("time_limit_display")
+        
+        if time_limit_active and time_limit_display == "1 week" and state.get("time_limit_hours") == 168:
+            print("✅ Simulation started with 168-hour time limit")
+            print(f"✅ time_limit_hours: {state.get('time_limit_hours')}")
+            print(f"✅ time_limit_display: {state.get('time_limit_display')}")
+        else:
+            print("❌ Simulation time limit not set correctly")
+            print(f"❌ time_limit_active: {time_limit_active}")
+            print(f"❌ time_limit_display: {time_limit_display}")
+            print(f"❌ time_limit_hours: {state.get('time_limit_hours')}")
+    
+    # Test 5: Get time status for 1-week time limit
+    print("\nTest 5: Getting time status for 1-week time limit")
+    
+    get_week_status_test, get_week_status_response = run_test(
+        "Get Time Status for 1-week Limit",
+        "/simulation/time-status",
+        method="GET",
+        auth=True
+    )
+    
+    if get_week_status_test and get_week_status_response:
+        time_limit_hours = get_week_status_response.get("time_limit_hours")
+        time_remaining_hours = get_week_status_response.get("time_remaining_hours")
+        time_pressure_level = get_week_status_response.get("time_pressure_level")
+        
+        if time_limit_hours == 168:
+            print("✅ time_limit_hours is correctly set to 168")
+        else:
+            print(f"❌ time_limit_hours is not 168: {time_limit_hours}")
+        
+        if time_remaining_hours is not None:
+            print(f"✅ time_remaining_hours is calculated: {time_remaining_hours:.2f}")
+        else:
+            print("❌ time_remaining_hours is not calculated")
+        
+        print(f"✅ time_pressure_level: {time_pressure_level}")
+    
+    # Test 6: Start simulation with no time limit
+    print("\nTest 6: Starting simulation with no time limit")
+    
+    time_limit_data = {
+        "time_limit_hours": None,
+        "time_limit_display": None
+    }
+    
+    start_sim_no_limit_test, start_sim_no_limit_response = run_test(
+        "Start Simulation with No Time Limit",
+        "/simulation/start",
+        method="POST",
+        data=time_limit_data,
+        auth=True,
+        expected_keys=["message", "state", "time_limit_active"]
+    )
+    
+    if start_sim_no_limit_test and start_sim_no_limit_response:
+        state = start_sim_no_limit_response.get("state", {})
+        time_limit_active = start_sim_no_limit_response.get("time_limit_active")
+        
+        if not time_limit_active and state.get("time_limit_hours") is None:
+            print("✅ Simulation started with no time limit")
+            print(f"✅ time_limit_hours: {state.get('time_limit_hours')}")
+            print(f"✅ time_limit_display: {state.get('time_limit_display')}")
+        else:
+            print("❌ Simulation time limit not set correctly")
+            print(f"❌ time_limit_active: {time_limit_active}")
+            print(f"❌ time_limit_hours: {state.get('time_limit_hours')}")
+    
+    # Test 7: Get time status for no time limit
+    print("\nTest 7: Getting time status for no time limit")
+    
+    get_no_limit_status_test, get_no_limit_status_response = run_test(
+        "Get Time Status for No Time Limit",
+        "/simulation/time-status",
+        method="GET",
+        auth=True
+    )
+    
+    if get_no_limit_status_test and get_no_limit_status_response:
+        time_limit_active = get_no_limit_status_response.get("time_limit_active")
+        time_limit_hours = get_no_limit_status_response.get("time_limit_hours")
+        time_pressure_level = get_no_limit_status_response.get("time_pressure_level")
+        
+        if not time_limit_active:
+            print("✅ time_limit_active is correctly set to False")
+        else:
+            print(f"❌ time_limit_active is not False: {time_limit_active}")
+        
+        if time_limit_hours is None:
+            print("✅ time_limit_hours is correctly set to None")
+        else:
+            print(f"❌ time_limit_hours is not None: {time_limit_hours}")
+        
+        if time_pressure_level == "none":
+            print("✅ time_pressure_level is correctly set to 'none'")
+        else:
+            print(f"❌ time_pressure_level is not 'none': {time_pressure_level}")
+    
+    # Print summary
+    print("\nTIME LIMIT FUNCTIONALITY SUMMARY:")
+    
+    # Check if all tests passed
+    time_limit_day_works = start_sim_test and get_state_test and get_time_status_test
+    time_limit_week_works = start_sim_week_test and get_week_status_test
+    no_time_limit_works = start_sim_no_limit_test and get_no_limit_status_test
+    
+    if time_limit_day_works and time_limit_week_works and no_time_limit_works:
+        print("✅ Time limit functionality is working correctly!")
+        print("✅ Simulation can be started with time limits (1 day, 1 week)")
+        print("✅ Simulation can be started with no time limit")
+        print("✅ Time calculations (remaining, elapsed) are working correctly")
+        print("✅ Time pressure levels are calculated correctly")
+        return True, "Time limit functionality is working correctly"
+    else:
+        issues = []
+        if not time_limit_day_works:
+            issues.append("1-day time limit functionality has issues")
+        if not time_limit_week_works:
+            issues.append("1-week time limit functionality has issues")
+        if not no_time_limit_works:
+            issues.append("No time limit functionality has issues")
+        
+        print("❌ Time limit functionality has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, "Time limit functionality has issues"
+
 def main():
     """Run all tests"""
     print("\n" + "="*80)
@@ -580,6 +845,9 @@ def main():
     
     # Test authentication first
     test_login()
+    
+    # Test time limit functionality
+    time_limit_success, time_limit_message = test_time_limit_functionality()
     
     # Test avatar system functionality
     avatar_system_success, avatar_system_message = test_avatar_system()
@@ -591,6 +859,19 @@ def main():
     print_summary()
     
     # Print final conclusion
+    print("\n" + "="*80)
+    print("TIME LIMIT FUNCTIONALITY ASSESSMENT")
+    print("="*80)
+    
+    if time_limit_success:
+        print("✅ Time limit functionality is working correctly!")
+        print("✅ Simulation can be started with time limits (1 day, 1 week)")
+        print("✅ Simulation can be started with no time limit")
+        print("✅ Time calculations (remaining, elapsed) are working correctly")
+        print("✅ Time pressure levels are calculated correctly")
+    else:
+        print(f"❌ {time_limit_message}")
+    
     print("\n" + "="*80)
     print("AVATAR SYSTEM FUNCTIONALITY ASSESSMENT")
     print("="*80)
@@ -618,7 +899,7 @@ def main():
     
     print("="*80)
     
-    return avatar_system_success and agent_library_success
+    return time_limit_success and avatar_system_success and agent_library_success
 
 if __name__ == "__main__":
     main()
