@@ -4761,8 +4761,8 @@ const FileCenter = ({ onRefresh }) => {
                     <div key={index} className="bg-gray-50 rounded-lg p-6">
                       <div className="flex items-center justify-between mb-6">
                         <div>
-                          <h3 className="text-xl font-bold text-gray-900">{scenario.scenario}</h3>
-                          <p className="text-gray-600">{scenario.documents.length} documents</p>
+                          <h3 className="text-xl font-bold text-gray-900">{scenario?.scenario_name || scenario?.scenario || 'Unknown Scenario'}</h3>
+                          <p className="text-gray-600">{(scenario?.documents || []).length} documents</p>
                         </div>
                         <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
                           Active Scenario
