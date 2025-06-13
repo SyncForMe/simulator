@@ -117,12 +117,15 @@ const technologyAgents = [
   }
 ];
 
-const AgentLibrary = ({ onAddAgent, onClose }) => {
+const AgentLibrary = ({ onAddAgent, onClose, isOpen }) => {
   const { token } = useAuth();
   const [loading, setLoading] = useState(false);
   const [addingAgents, setAddingAgents] = useState(new Set());
   const [addedAgents, setAddedAgents] = useState(new Set());
   const [generatingAvatars, setGeneratingAvatars] = useState(false);
+
+  // Don't render if not open
+  if (!isOpen) return null;
 
   // Generate avatars for all agents on component mount
   useEffect(() => {
