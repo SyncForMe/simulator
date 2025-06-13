@@ -1503,7 +1503,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                 });
               });
 
-              console.log(`🚀 Preloading ${allAvatars.length} optimized agent avatars...`);
+              console.log(`🚀 Preloading ${allAvatars.length} agent avatars...`);
 
               // Send URLs to service worker for aggressive caching
               if (swRegistration.active) {
