@@ -694,7 +694,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
   const [uploadError, setUploadError] = useState("");
   const [showUploadedFiles, setShowUploadedFiles] = useState(false);
 
-  // Fetch supported languages on component mount
+  // Fetch supported languages and uploaded files on component mount
   useEffect(() => {
     const fetchSupportedLanguages = async () => {
       try {
@@ -713,8 +713,62 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
       }
     };
 
+    const fetchUploadedFiles = async () => {
+      if (!token) return;
+      try {
+        const response = await axios.get(`${API}/scenario/uploads`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUploadedFiles(response.data);
+      } catch (error) {
+        console.error('Error fetching uploaded files:', error);
+      }
+    };
+
     fetchSupportedLanguages();
-  }, []);
+    fetchUploadedFiles();
+  }, [token]);
+
+  const handleFileUpload = async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    setUploadError("");
+
+    try {
+      const formData = new FormData();
+      files.forEach(file => {
+        formData.append('files', file);
+      });
+
+      const response = await axios.post(`${API}/scenario/upload-content`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data.success) {
+        // Refresh uploaded files list
+        const updatedResponse = await axios.get(`${API}/scenario/uploads`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUploadedFiles(updatedResponse.data);
+        
+        // Clear file input
+        event.target.value = '';
+        
+        // Show success message
+        alert(`Successfully uploaded ${response.data.files.length} file(s)`);
+      }
+    } catch (error) {
+      console.error('Error uploading files:', error);
+      setUploadError('Failed to upload files. Please try again.');
+    }
+    
+    setUploading(false);
+  };
 
   const startRecording = async () => {
     try {
