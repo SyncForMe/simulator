@@ -115,7 +115,7 @@ const healthcareCategories = {
         background: "Former FDA reviewer with 20 years in drug safety. Uncovered safety issues that led to recall of dangerous medications. Known for meticulous analysis of adverse events.",
         expertise: "Drug Safety, Pharmacovigilance, Adverse Event Analysis, Risk Assessment, Regulatory Compliance",
         memories: "Identified cardiac risks in popular pain medication leading to market withdrawal. Prevented approval of drug with hidden liver toxicity. Developed early warning system for drug interactions.",
-        knowledge: "https://www.fda.gov/safety/, https://www.who.int/medicines/regulation/", 
+        knowledge: "https://www.fda.gov/safety/, https://www.who.int/medicines/regulation/",
         avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
       },
       {
@@ -263,7 +263,7 @@ const healthcareCategories = {
         background: "Community health leader focused on prevention and health promotion. Believes in the power of community engagement to create lasting health improvements.",
         expertise: "Community Health, Health Promotion, Disease Prevention, Health Education, Program Development",
         memories: "Reduced childhood obesity rates by 30% through school-based nutrition programs. Increased vaccination rates from 60% to 95% through community outreach.",
-        knowledge: "https://www.naccho.org/, https://www.cdc.gov/communityhealth/", 
+        knowledge: "https://www.naccho.org/, https://www.cdc.gov/communityhealth/",
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
       }
     ]
@@ -600,7 +600,7 @@ const financeCategories = {
         background: "Corporate controller at mid-size manufacturing company. Skilled at explaining complex accounting to non-financial stakeholders. Led implementation of new ERP system.",
         expertise: "Management Accounting, Financial Analysis, Budgeting, Cost Accounting, ERP Systems",
         memories: "Successfully mediated dispute between auditors and management over inventory valuation. Implemented zero-based budgeting that reduced costs by 15%. Translated complex accounting changes for board of directors.",
-        knowledge: "https://www.imanet.org/, https://www.cgma.org/, https://www.oracle.com/erp/", 
+        knowledge: "https://www.imanet.org/, https://www.cgma.org/, https://www.oracle.com/erp/",
         avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
       }
     ]
@@ -651,7 +651,7 @@ const financeCategories = {
         background: "International tax director with expertise in transfer pricing and cross-border transactions. JD/LLM in taxation. Helped multinational companies navigate BEPS and digital tax changes.",
         expertise: "International Tax, Transfer Pricing, Tax Planning, BEPS Compliance, Digital Services Tax",
         memories: "Saved multinational client $100M through innovative transfer pricing strategy. Navigated complex European digital tax regulations. Built international tax team of 15+ professionals. Methodical approach essential for tax accuracy.",
-        knowledge: "https://www.irs.gov/, https://www.oecd.org/tax/, https://www.pwc.com/tax/", 
+        knowledge: "https://www.irs.gov/, https://www.oecd.org/tax/, https://www.pwc.com/tax/",
         avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b547?w=200&h=200&fit=crop&crop=face"
       },
       {
@@ -728,7 +728,7 @@ const financeCategories = {
         background: "Digital banking leader focused on fintech innovation and customer experience. Former tech executive who joined traditional bank to drive digital transformation. Believes technology can democratize financial services.",
         expertise: "Digital Banking, Fintech Innovation, Customer Experience, Mobile Banking, Financial Inclusion",
         memories: "Launched mobile banking app used by 2M+ customers. Implemented AI chatbot that resolved 80% of customer inquiries. Created digital lending platform that approved loans in minutes. Optimism sometimes underestimates regulatory challenges.",
-        knowledge: "https://www.finra.org/, https://www.consumerfinance.gov/, https://www.federalreserve.gov/", 
+        knowledge: "https://www.finra.org/, https://www.consumerfinance.gov/, https://www.federalreserve.gov/",
         avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
       }
     ]
@@ -1019,7 +1019,7 @@ const technologyCategories = {
         background: "AI safety researcher who investigates failure modes and risks of artificial intelligence systems. Former autonomous vehicle engineer who witnessed AI accidents firsthand. Known for rigorous testing of AI systems and identifying edge cases others miss.",
         expertise: "AI Safety, AI Alignment, Robustness Testing, AI Ethics, Risk Assessment",
         memories: "Identified critical safety flaw in autonomous vehicle system that prevented potential accidents before deployment. Successfully demonstrated how adversarial examples could fool medical AI diagnosis systems. Developed testing framework that identified AI failure modes in 90% of systems tested.",
-        knowledge: "https://www.alignmentforum.org/, https://www.fhi.ox.ac.uk/, https://www.anthropic.com/safety/", 
+        knowledge: "https://www.alignmentforum.org/, https://www.fhi.ox.ac.uk/, https://www.anthropic.com/safety/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Ahmed Hassan, Middle Eastern man, AI safety researcher, wearing professional attire, serious analytical expression, AI research facility background"
       }
@@ -1163,7 +1163,7 @@ const technologyCategories = {
         background: "Blockchain consultant who separates useful applications from speculative bubbles. Former enterprise architect who witnessed multiple blockchain projects fail due to poor fit. Known for rigorous analysis of blockchain use cases.",
         expertise: "Blockchain Analysis, Use Case Evaluation, Technology Assessment, Enterprise Blockchain, Regulatory Compliance",
         memories: "Prevented company from wasting $20M on blockchain project by demonstrating database would meet all requirements. Successfully identified supply chain blockchain use case that reduced fraud by 60% and increased traceability. Conducted technical due diligence that revealed fundamental flaws in $100M blockchain project.",
-        knowledge: "https://www.hyperledger.org/, https://www.r3.com/, https://ethereum.org/en/enterprise/", 
+        knowledge: "https://www.hyperledger.org/, https://www.r3.com/, https://ethereum.org/en/enterprise/",
         avatar: "",
         avatar_prompt: "Professional headshot of Marcus Johnson, African American man, blockchain analyst, wearing conservative business attire, analytical expression, corporate consulting office background"
       }
@@ -1197,7 +1197,7 @@ const technologyCategories = {
         background: "Construction engineer who specializes in extreme environment projects. Built infrastructure in Arctic conditions, underwater installations, and disaster zones. Known for creative problem-solving when conventional methods won't work.",
         expertise: "Extreme Environment Construction, Emergency Engineering, Innovative Materials, Disaster Response, Field Engineering",
         memories: "Built emergency bridge in 72 hours during hurricane response that enabled evacuation of 10,000 people. Successfully completed underwater tunnel construction in challenging geological conditions using novel techniques. Developed rapid deployment bridge system used by military and disaster response teams worldwide.",
-        knowledge: "https://www.usace.army.mil/, https://www.fema.gov/, https://www.who.int/emergencies/", 
+        knowledge: "https://www.usace.army.mil/, https://www.fema.gov/, https://www.who.int/emergencies/",
         avatar: "",
         avatar_prompt: "Professional headshot of James Wilson, Caucasian man, construction engineer, wearing rugged outdoor engineering gear, adventurous expression, extreme construction environment background"
       },
@@ -1211,7 +1211,7 @@ const technologyCategories = {
         background: "Research engineer developing next-generation infrastructure monitoring and maintenance systems. PhD in Civil Engineering with expertise in structural health monitoring. Known for integrating IoT sensors and AI into infrastructure systems.",
         expertise: "Structural Health Monitoring, Smart Infrastructure, IoT Systems, Predictive Maintenance, Materials Research",
         memories: "Developed sensor network that predicted bridge failure 6 months before collapse, enabling preventive repairs. Successfully created self-healing concrete that extends infrastructure lifespan by 50%. Implemented AI-powered traffic management system that reduced commute times by 30%.",
-        knowledge: "https://www.nist.gov/, https://www.fhwa.dot.gov/research/, https://www.iot.gov/", 
+        knowledge: "https://www.nist.gov/, https://www.fhwa.dot.gov/research/, https://www.iot.gov/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Emily Foster, Caucasian woman, infrastructure researcher, wearing modern professional attire with tech elements, scientific expression, smart city lab background"
       }
@@ -1231,7 +1231,7 @@ const technologyCategories = {
         background: "Manufacturing engineer with PhD in Robotics who designs automated production systems. Former Tesla manufacturing engineer who optimized assembly line efficiency. Known for integrating AI and robotics into manufacturing processes.",
         expertise: "Manufacturing Engineering, Industrial Robotics, Automation, Quality Control, Process Optimization",
         memories: "Designed robotic assembly line that increased production efficiency by 200% while reducing defects to near zero. Successfully implemented predictive maintenance system that eliminated unplanned downtime at major factory. Developed collaborative robot system that works safely alongside human workers.",
-        knowledge: "https://www.sme.org/, https://www.nist.gov/mep/, https://www.robotics.org/", 
+        knowledge: "https://www.sme.org/, https://www.nist.gov/mep/, https://www.robotics.org/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Robert Kim, Korean American man, manufacturing engineer, wearing technical professional attire, precise expression, advanced robotics facility background"
       },
@@ -1245,7 +1245,7 @@ const technologyCategories = {
         background: "Biomedical mechanical engineer who designs prosthetics and rehabilitation devices. Passionate about using engineering to solve human problems. Known for low-cost solutions that work in resource-limited settings.",
         expertise: "Medical Device Design, Prosthetics, Rehabilitation Engineering, Assistive Technology, Human-Centered Design",
         memories: "Designed 3D-printed prosthetic arm that costs $500 instead of $50,000 while providing superior functionality. Successfully created wheelchair that climbs stairs and navigates rough terrain for rural users. Developed exoskeleton that enables paralyzed patients to walk during rehabilitation therapy.",
-        knowledge: "https://www.fda.gov/medical-devices/, https://www.bmes.org/, https://www.who.int/disabilities/", 
+        knowledge: "https://www.fda.gov/medical-devices/, https://www.bmes.org/, https://www.who.int/disabilities/",
         avatar: "",
         avatar_prompt: "Professional headshot of Jennifer Walsh, Caucasian woman, biomedical engineer, wearing modern professional attire, compassionate expression, medical device laboratory background"
       },
@@ -1259,7 +1259,7 @@ const technologyCategories = {
         background: "Energy systems engineer who designs efficient HVAC and renewable energy systems. Former oil industry engineer who transitioned to clean energy. Known for finding compromises between performance, cost, and environmental impact.",
         expertise: "Energy Systems, HVAC Design, Renewable Energy, Thermodynamics, Sustainable Engineering",
         memories: "Mediated conflict between building owners and environmental groups by designing HVAC system that met both cost and sustainability requirements. Successfully retrofitted 100+ buildings with energy systems that reduced consumption by 40%. Designed innovative heat recovery system that became standard for industrial applications.",
-        knowledge: "https://www.ashrae.org/, https://www.nrel.gov/, https://www.irena.org/", 
+        knowledge: "https://www.ashrae.org/, https://www.nrel.gov/, https://www.irena.org/",
         avatar: "",
         avatar_prompt: "Professional headshot of Hassan Al-Mahmoud, Middle Eastern man, energy engineer, wearing professional engineering attire, diplomatic expression, renewable energy facility background"
       }
@@ -1279,7 +1279,7 @@ const technologyCategories = {
         background: "Power systems engineer with PhD in Electrical Engineering specializing in grid stability and renewable integration. Led smart grid development projects for major utilities. Known for solving complex power quality and stability issues.",
         expertise: "Power Systems, Smart Grid, Renewable Integration, Grid Stability, Energy Storage",
         memories: "Developed grid control algorithm that prevented Texas power grid collapse during winter storm by automatically load balancing. Successfully integrated 50% renewable energy into island grid while maintaining stability. Created predictive maintenance system for power equipment that reduced outages by 60%.",
-        knowledge: "https://www.ieee.org/, https://www.nerc.com/, https://www.eia.gov/", 
+        knowledge: "https://www.ieee.org/, https://www.nerc.com/, https://www.eia.gov/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Lisa Chen, Asian American woman, power systems engineer, wearing professional engineering attire, intelligent expression, power grid control center background"
       },
@@ -1307,7 +1307,7 @@ const technologyCategories = {
         background: "Instrumentation engineer who designs high-precision measurement systems for research and industry. Prefers working with sensitive equipment to managing teams. Known for achieving measurement accuracies others consider impossible.",
         expertise: "Precision Instrumentation, Quantum Sensors, Control Systems, Measurement Science, Signal Processing",
         memories: "Developed quantum magnetometer that detected brain activity with unprecedented resolution for medical research. Successfully created atomic clock that maintains accuracy to 1 second in 15 billion years. Designed control system for particle accelerator that achieved beam stability required for new physics experiments.",
-        knowledge: "https://www.nist.gov/, https://www.bipm.org/, https://www.ligo.org/", 
+        knowledge: "https://www.nist.gov/, https://www.bipm.org/, https://www.ligo.org/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Patricia Foster, Caucasian woman, instrumentation engineer, wearing lab coat with precision equipment, focused expression, quantum measurement laboratory background"
       }
@@ -1327,7 +1327,7 @@ const technologyCategories = {
         background: "Process engineer with PhD in Chemical Engineering specializing in green chemistry and sustainable manufacturing. Led development of environmentally friendly chemical processes for major corporations. Known for innovative reactor designs and process optimization.",
         expertise: "Process Design, Green Chemistry, Sustainable Manufacturing, Reaction Engineering, Process Optimization",
         memories: "Developed catalytic process that converts plastic waste into useful chemicals, eliminating need for landfill disposal. Successfully redesigned pharmaceutical manufacturing that reduced toxic waste by 90% while cutting costs. Created carbon capture system that turns CO2 emissions into valuable chemical feedstock.",
-        knowledge: "https://www.aiche.org/, https://www.epa.gov/green-chemistry/, https://www.acs.org/", 
+        knowledge: "https://www.aiche.org/, https://www.epa.gov/green-chemistry/, https://www.acs.org/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Sarah Mitchell, Caucasian woman, chemical engineer, wearing lab coat with safety equipment, sustainable expression, green chemistry laboratory background"
       },
@@ -1341,7 +1341,7 @@ const technologyCategories = {
         background: "Process safety engineer who prevents chemical accidents and ensures regulatory compliance. Former DuPont safety engineer who witnessed industrial accidents firsthand. Known for developing comprehensive safety management systems.",
         expertise: "Process Safety, Risk Assessment, Regulatory Compliance, Emergency Response, Safety Management",
         memories: "Prevented potential chemical plant explosion by identifying design flaw during safety review that others missed. Successfully mediated dispute between environmental regulators and chemical company over emission standards. Developed quantitative risk assessment methodology adopted by chemical industry worldwide.",
-        knowledge: "https://www.ccps.aiche.org/, https://www.osha.gov/chemicaldata/, https://www.epa.gov/chemical-safety-and-accident-investigation-board/", 
+        knowledge: "https://www.ccps.aiche.org/, https://www.osha.gov/chemicaldata/, https://www.epa.gov/chemical-safety-and-accident-investigation-board/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Ahmed Hassan, Middle Eastern man, process safety engineer, wearing safety gear and professional attire, serious safety-focused expression, chemical plant safety control room background"
       },
@@ -1375,7 +1375,7 @@ const technologyCategories = {
         background: "Aerospace engineer with experience at NASA JPL and SpaceX. Led development of advanced propulsion systems for Mars missions. Known for taking on seemingly impossible engineering challenges. Rock climber and pilot who brings risk-taking mentality to space technology development.",
         expertise: "Aerospace Engineering, Propulsion Systems, Space Mission Design, Life Support Systems, Planetary Exploration",
         memories: "Led development of ion propulsion system that enabled Mars Sample Return mission in 2024. Survived near-fatal accident during rocket engine test in 2019 - explosion taught him importance of redundant safety systems. Completed solo desert survival training in preparation for Mars mission simulation.",
-        knowledge: "https://www.nasa.gov/, https://www.spacex.com/, https://mars.nasa.gov/", 
+        knowledge: "https://www.nasa.gov/, https://www.spacex.com/, https://mars.nasa.gov/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Marcus Johnson, African American man, aerospace engineer, wearing flight suit with space patches, adventurous expression, rocket engine test facility background"
       },
@@ -1451,7 +1451,7 @@ const technologyCategories = {
         background: "Clinical engineer who works at interface between technology development and medical practice. Former practicing physician who transitioned to engineering. Known for translating clinical needs into engineering requirements.",
         expertise: "Clinical Engineering, Medical Device Integration, Healthcare Technology, User-Centered Design, Interdisciplinary Collaboration",
         memories: "Mediated 2-year collaboration between engineers and surgeons that resulted in revolutionary surgical robot. Successfully implemented medical device training program that reduced user errors by 80%. Facilitated hospital technology adoption that improved patient outcomes while reducing costs.",
-        knowledge: "https://www.himss.org/, https://www.acce.org/, https://www.jointcommission.org/", 
+        knowledge: "https://www.himss.org/, https://www.acce.org/, https://www.jointcommission.org/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Carlos Rivera, Hispanic man, clinical engineer, wearing medical professional attire, collaborative expression, hospital technology center background"
       }
