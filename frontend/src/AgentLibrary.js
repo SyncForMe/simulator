@@ -254,42 +254,60 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                   </div>
 
                   {currentCategory.agents.length > 0 ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                       {currentCategory.agents.map((agent) => (
-                        <div key={agent.id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                          <div className="flex items-start space-x-4">
-                            <img
-                              src={agent.avatar}
-                              alt={agent.name}
-                              className="w-16 h-16 rounded-full object-cover"
-                            />
-                            <div className="flex-1">
-                              <h4 className="font-bold text-gray-800">{agent.name}</h4>
-                              <p className="text-sm text-purple-600 font-medium">{agent.archetype}</p>
-                              <p className="text-sm text-gray-600 mt-2 line-clamp-3">{agent.goal}</p>
+                        <div key={agent.id} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                          <div className="p-4">
+                            <div className="flex items-start space-x-3">
+                              <img
+                                src={agent.avatar}
+                                alt={agent.name}
+                                className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-gray-900 text-sm">{agent.name}</h4>
+                                <p className="text-xs text-gray-600 mt-1">{agent.archetype}</p>
+                              </div>
+                            </div>
+                            
+                            <div className="mt-3">
+                              <div className="mb-2">
+                                <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">ARCHETYPE</span>
+                                <p className="text-xs text-gray-600 mt-1">{agent.archetype}</p>
+                              </div>
+                              
+                              <div className="mb-2">
+                                <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">GOAL</span>
+                                <p className="text-xs text-gray-600 mt-1 line-clamp-2">{agent.goal}</p>
+                              </div>
+                              
+                              <div className="mb-3">
+                                <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">EXPERTISE</span>
+                                <p className="text-xs text-gray-600 mt-1 line-clamp-2">{agent.expertise}</p>
+                              </div>
                             </div>
                           </div>
                           
-                          <div className="mt-4 flex space-x-2">
+                          <div className="px-4 pb-4 space-y-2">
                             <button
                               onClick={() => setSelectedAgentDetails(agent)}
-                              className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded text-sm font-medium hover:bg-gray-200 transition-colors"
+                              className="w-full border border-blue-500 text-blue-600 py-2 px-3 rounded text-xs font-medium hover:bg-blue-50 transition-colors"
                             >
-                              View Full Details
+                              🔍 View Full Details
                             </button>
                             <button
                               onClick={() => handleAddAgent(agent)}
                               disabled={addingAgents.has(agent.id)}
-                              className={`flex-1 py-2 px-3 rounded text-sm font-medium transition-colors ${
+                              className={`w-full py-2 px-3 rounded text-xs font-medium transition-colors ${
                                 addedAgents.has(agent.id)
-                                  ? 'bg-green-100 text-green-800'
+                                  ? 'bg-green-100 text-green-800 border border-green-200'
                                   : addingAgents.has(agent.id)
                                   ? 'bg-gray-300 text-gray-500'
                                   : 'bg-purple-600 text-white hover:bg-purple-700'
                               }`}
                             >
                               {addedAgents.has(agent.id) 
-                                ? '✅ Added' 
+                                ? '✅ Added to Simulation' 
                                 : addingAgents.has(agent.id) 
                                 ? 'Adding...' 
                                 : 'Add to Simulation'
