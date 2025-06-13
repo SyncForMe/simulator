@@ -362,71 +362,91 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
       {selectedAgentDetails && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedAgentDetails(null)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors z-10"
-            >
-              ×
-            </button>
-
-            {/* Agent Avatar Header */}
-            <div className="text-center p-6 bg-gradient-to-b from-purple-50 to-white">
-              <img
-                src={selectedAgentDetails.avatar}
-                alt={selectedAgentDetails.name}
-                className="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-white shadow-lg"
-              />
-              <h3 className="text-2xl font-bold text-gray-800">{selectedAgentDetails.name}</h3>
-              <p className="text-purple-600 font-medium">{selectedAgentDetails.archetype}</p>
-            </div>
-
-            {/* Agent Details */}
-            <div className="p-6 space-y-6">
-              <div>
-                <h4 className="font-bold text-gray-800 mb-2">🎯 Goal</h4>
-                <p className="text-gray-600">{selectedAgentDetails.goal}</p>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-gray-800 mb-2">🎓 Expertise</h4>
-                <p className="text-gray-600">{selectedAgentDetails.expertise}</p>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-gray-800 mb-2">📋 Background</h4>
-                <p className="text-gray-600">{selectedAgentDetails.background}</p>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-gray-800 mb-2">🧠 Key Memories & Knowledge</h4>
-                <p className="text-gray-600">{selectedAgentDetails.memories}</p>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">Knowledge Sources:</p>
-                  <p className="text-sm text-blue-600 break-words">{selectedAgentDetails.knowledge}</p>
+            {/* Blue Header with Agent Info */}
+            <div className="bg-blue-500 text-white p-6 rounded-t-lg relative">
+              <button
+                onClick={() => setSelectedAgentDetails(null)}
+                className="absolute top-4 right-4 text-white hover:text-gray-200 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-blue-600 transition-colors"
+              >
+                ×
+              </button>
+              
+              <div className="flex items-center space-x-4">
+                <img
+                  src={selectedAgentDetails.avatar}
+                  alt={selectedAgentDetails.name}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-white"
+                />
+                <div>
+                  <h3 className="text-xl font-bold">{selectedAgentDetails.name}</h3>
+                  <p className="text-blue-100">Precision Medicine Oncologist</p>
+                  <p className="text-blue-200 text-sm mt-1">{selectedAgentDetails.archetype}</p>
                 </div>
               </div>
+            </div>
 
-              <div className="pt-4 border-t">
-                <button
-                  onClick={() => handleAddAgent(selectedAgentDetails)}
-                  disabled={addingAgents.has(selectedAgentDetails.id)}
-                  className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
-                    addedAgents.has(selectedAgentDetails.id)
-                      ? 'bg-green-100 text-green-800'
-                      : addingAgents.has(selectedAgentDetails.id)
-                      ? 'bg-gray-300 text-gray-500'
-                      : 'bg-purple-600 text-white hover:bg-purple-700'
-                  }`}
-                >
-                  {addedAgents.has(selectedAgentDetails.id) 
-                    ? '✅ Added to Simulation' 
-                    : addingAgents.has(selectedAgentDetails.id) 
-                    ? 'Adding...' 
-                    : 'Add to Simulation'
-                  }
-                </button>
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              <div>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="mr-2">🎯</span>
+                  Goal
+                </h4>
+                <p className="text-gray-700 leading-relaxed">{selectedAgentDetails.goal}</p>
               </div>
+
+              <div>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="mr-2">🧠</span>
+                  Expertise
+                </h4>
+                <p className="text-gray-700 leading-relaxed">{selectedAgentDetails.expertise}</p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="mr-2">📋</span>
+                  Background
+                </h4>
+                <p className="text-gray-700 leading-relaxed">{selectedAgentDetails.background}</p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="mr-2">🧠</span>
+                  Key Memories & Knowledge
+                </h4>
+                <p className="text-gray-700 leading-relaxed mb-3">{selectedAgentDetails.memories}</p>
+                <p className="text-sm text-blue-600 break-words">{selectedAgentDetails.knowledge}</p>
+              </div>
+            </div>
+
+            {/* Bottom Buttons */}
+            <div className="px-6 pb-6 flex space-x-3">
+              <button
+                onClick={() => setSelectedAgentDetails(null)}
+                className="flex-1 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => handleAddAgent(selectedAgentDetails)}
+                disabled={addingAgents.has(selectedAgentDetails.id)}
+                className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
+                  addedAgents.has(selectedAgentDetails.id)
+                    ? 'bg-green-100 text-green-800'
+                    : addingAgents.has(selectedAgentDetails.id)
+                    ? 'bg-gray-300 text-gray-500'
+                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                }`}
+              >
+                {addedAgents.has(selectedAgentDetails.id) 
+                  ? '✅ Added to Simulation' 
+                  : addingAgents.has(selectedAgentDetails.id) 
+                  ? 'Adding...' 
+                  : 'Add to Simulation'
+                }
+              </button>
             </div>
           </div>
         </div>
