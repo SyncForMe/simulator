@@ -5085,6 +5085,7 @@ async def delete_documents_bulk(
                 "deleted_count": 0
             }
             
+        # Only verify documents if the array is not empty
         # Verify all documents belong to the user
         documents = await db.documents.find({
             "id": {"$in": document_ids},
