@@ -5251,6 +5251,16 @@ function App() {
     }
   };
 
+  const handleScenarioCollapse = (shouldExpand) => {
+    setAutoExpandCurrentScenario(shouldExpand);
+    // Reset the auto-expand after a short delay so it can be triggered again
+    if (shouldExpand) {
+      setTimeout(() => {
+        setAutoExpandCurrentScenario(false);
+      }, 1000);
+    }
+  };
+
   const handlePauseSimulation = async () => {
     try {
       await axios.post(`${API}/simulation/pause`);
