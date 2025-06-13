@@ -4776,8 +4776,8 @@ const FileCenter = ({ onRefresh }) => {
                             <label className="absolute top-3 left-3 cursor-pointer">
                               <input
                                 type="checkbox"
-                                checked={selectedDocuments.has(doc.id)}
-                                onChange={() => handleSelectDocument(doc.id)}
+                                checked={selectedDocuments.has(doc?.id)}
+                                onChange={() => handleSelectDocument(doc?.id)}
                                 className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                               />
                             </label>
