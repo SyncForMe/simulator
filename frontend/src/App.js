@@ -4098,10 +4098,15 @@ const FileCenter = ({ onRefresh }) => {
     
     setDeleting(true);
     try {
-      const response = await axios.delete(`${API}/documents/bulk`, {
-        headers: { Authorization: `Bearer ${token}` },
-        data: Array.from(selectedDocuments)
-      });
+      const response = await axios.post(`${API}/documents/bulk-delete`, 
+        Array.from(selectedDocuments),
+        {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
       
       console.log(`Successfully deleted ${response.data.deleted_count} documents`);
       
