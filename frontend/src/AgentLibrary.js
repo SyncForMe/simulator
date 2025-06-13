@@ -1355,7 +1355,7 @@ const technologyCategories = {
         background: "Pharmaceutical engineer who modernizes drug manufacturing using Industry 4.0 technologies. Former FDA process engineer who understands regulatory requirements. Known for implementing continuous manufacturing that improves quality and reduces costs.",
         expertise: "Pharmaceutical Manufacturing, Continuous Processing, Process Analytics, Quality by Design, Regulatory Affairs",
         memories: "Implemented continuous manufacturing line that reduced drug production time from months to days while improving quality. Successfully guided 5 pharmaceutical companies through FDA approval of innovative manufacturing processes. Developed process control system that eliminates batch failures and ensures consistent drug quality.",
-        knowledge: "https://www.fda.gov/drugs/, https://www.ich.org/, https://www.ispe.org/", 
+        knowledge: "https://www.fda.gov/drugs/, https://www.ich.org/, https://www.ispe.org/",
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Elena Rodriguez, Hispanic woman, pharmaceutical engineer, wearing clean room attire, optimistic expression, pharmaceutical manufacturing facility background"
       }
