@@ -1478,6 +1478,14 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
   // Preload all agent avatars when component opens
   useEffect(() => {
     if (isOpen) {
+      // Register service worker for avatar caching
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .catch((error) => {
+            console.warn('SW registration failed:', error);
+          });
+      }
+
       const preloadImages = () => {
         const allAvatars = [];
         
@@ -1492,17 +1500,24 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
           });
         });
 
-        // Preload images
-        allAvatars.forEach(avatarUrl => {
-          const img = new Image();
-          img.onload = () => {
-            setLoadedImages(prev => new Set(prev).add(avatarUrl));
-          };
-          img.onerror = () => {
-            console.warn(`Failed to preload image: ${avatarUrl}`);
-          };
-          img.src = avatarUrl;
-        });
+        // Preload images in chunks to avoid overwhelming the browser
+        const chunkSize = 10;
+        for (let i = 0; i < allAvatars.length; i += chunkSize) {
+          const chunk = allAvatars.slice(i, i + chunkSize);
+          
+          setTimeout(() => {
+            chunk.forEach(avatarUrl => {
+              const img = new Image();
+              img.onload = () => {
+                setLoadedImages(prev => new Set(prev).add(avatarUrl));
+              };
+              img.onerror = () => {
+                console.warn(`Failed to preload image: ${avatarUrl}`);
+              };
+              img.src = avatarUrl;
+            });
+          }, i / chunkSize * 100); // Stagger loading
+        }
       };
 
       // Small delay to allow modal to open first
