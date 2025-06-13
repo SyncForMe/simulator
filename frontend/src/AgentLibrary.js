@@ -1341,7 +1341,7 @@ const technologyCategories = {
         background: "Process safety engineer who prevents chemical accidents and ensures regulatory compliance. Former DuPont safety engineer who witnessed industrial accidents firsthand. Known for developing comprehensive safety management systems.",
         expertise: "Process Safety, Risk Assessment, Regulatory Compliance, Emergency Response, Safety Management",
         memories: "Prevented potential chemical plant explosion by identifying design flaw during safety review that others missed. Successfully mediated dispute between environmental regulators and chemical company over emission standards. Developed quantitative risk assessment methodology adopted by chemical industry worldwide.",
-        knowledge: "https://www.ccps.aiche.org/, https://www.osha.gov/chemicaldata/", https://www.epa.gov/chemical-safety-and-accident-investigation-board/", 
+        knowledge: "https://www.ccps.aiche.org/, https://www.osha.gov/chemicaldata/, https://www.epa.gov/chemical-safety-and-accident-investigation-board/", 
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Ahmed Hassan, Middle Eastern man, process safety engineer, wearing safety gear and professional attire, serious safety-focused expression, chemical plant safety control room background"
       },
