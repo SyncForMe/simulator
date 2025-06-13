@@ -5031,13 +5031,25 @@ async def create_field_appropriate_text(raw_text: str, field_type: str) -> str:
         return raw_text.strip()  # Fallback to raw text
 
 # Bulk delete endpoints
+class ConversationIdsRequest(BaseModel):
+    conversation_ids: List[str]
+
 @api_router.delete("/conversation-history/bulk")
 async def delete_conversations_bulk(
-    conversation_ids: List[str],
+    request: ConversationIdsRequest,
     current_user: dict = Depends(get_current_user)
 ):
     """Delete multiple conversations for the authenticated user"""
     try:
+        conversation_ids = request.conversation_ids
+        
+        # Handle empty array case
+        if not conversation_ids:
+            return {
+                "message": "Successfully deleted 0 conversations",
+                "deleted_count": 0
+            }
+        
         # Verify all conversations belong to the user
         conversations = await db.conversation_history.find({
             "id": {"$in": conversation_ids},
