@@ -463,6 +463,7 @@ def test_bulk_delete_functionality():
     
     # Test document bulk delete with empty array
     print("\nTesting document bulk delete with empty array:")
+    print(f"Sending empty array to /documents/bulk endpoint: {[]}")
     empty_doc_test, empty_doc_response = run_test(
         "Document Bulk Delete with Empty Array",
         "/documents/bulk",
@@ -481,6 +482,8 @@ def test_bulk_delete_functionality():
             print(f"❌ Expected 0 deleted documents for empty array, but got {deleted_count}")
     else:
         print("❌ Document bulk delete with empty array failed - should return 200 with deleted_count=0")
+        print(f"Response: {empty_doc_response}")
+        print(f"Status code: {empty_doc_test}")
     
     # Clean up - delete remaining conversation and document
     if len(conversation_ids) >= 3:
