@@ -5031,18 +5031,13 @@ async def create_field_appropriate_text(raw_text: str, field_type: str) -> str:
         return raw_text.strip()  # Fallback to raw text
 
 # Bulk delete endpoints
-class ConversationIdsRequest(BaseModel):
-    conversation_ids: List[str]
-
 @api_router.delete("/conversation-history/bulk")
 async def delete_conversations_bulk(
-    request: ConversationIdsRequest,
+    conversation_ids: List[str],
     current_user: dict = Depends(get_current_user)
 ):
     """Delete multiple conversations for the authenticated user"""
     try:
-        conversation_ids = request.conversation_ids
-        
         # Handle empty array case
         if not conversation_ids:
             return {
@@ -5076,28 +5071,13 @@ async def delete_conversations_bulk(
         logging.error(f"Error deleting conversations: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete conversations: {str(e)}")
 
-@api_router.delete("/documents/bulk-empty-test")
-async def delete_documents_bulk_empty_test(
-    current_user: dict = Depends(get_current_user)
-):
-    """Test endpoint for deleting documents with empty array"""
-    return {
-        "message": "Successfully deleted 0 documents",
-        "deleted_count": 0
-    }
-
-class DocumentIdsRequest(BaseModel):
-    document_ids: List[str]
-
 @api_router.delete("/documents/bulk")
 async def delete_documents_bulk(
-    request: DocumentIdsRequest,
+    document_ids: List[str],
     current_user: dict = Depends(get_current_user)
 ):
     """Delete multiple documents for the authenticated user"""
     try:
-        document_ids = request.document_ids
-        
         # Handle empty array case
         if not document_ids:
             return {
@@ -5112,7 +5092,7 @@ async def delete_documents_bulk(
         }).to_list(None)
         
         if len(documents) != len(document_ids):
-            raise HTTPException(status_code=404, detail="Document not found")
+            raise HTTPException(status_code=404, detail="Some documents not found or don't belong to user")
         
         # Delete the documents
         result = await db.documents.delete_many({
@@ -5124,6 +5104,7 @@ async def delete_documents_bulk(
             "message": f"Successfully deleted {result.deleted_count} documents",
             "deleted_count": result.deleted_count
         }
+        
     except HTTPException:
         raise
     except Exception as e:
