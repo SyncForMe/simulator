@@ -595,6 +595,242 @@ def test_document_by_scenario():
         print("❌ Documents by scenario endpoint failed")
         return False, "Documents by scenario endpoint failed"
 
+def test_agent_library_creation():
+    """Test the agent creation functionality from the Agent Library component"""
+    print("\n" + "="*80)
+    print("TESTING AGENT LIBRARY CREATION FUNCTIONALITY")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test agent creation without authentication")
+            return False, "Authentication failed"
+    
+    # Test authentication requirement for agent creation
+    print("\nTesting authentication requirement for agent creation:")
+    
+    # Test agent creation without auth
+    test_agent_data = {
+        "name": "Test Agent",
+        "archetype": "scientist",
+        "goal": "To test the agent creation functionality",
+        "background": "Experienced in testing APIs",
+        "expertise": "API testing and validation",
+        "memory_summary": "Created for testing the Agent Library component",
+        "avatar_prompt": "Professional scientist in a lab coat"
+    }
+    
+    no_auth_test, _ = run_test(
+        "Agent Creation Without Auth",
+        "/agents",
+        method="POST",
+        data=test_agent_data,
+        expected_status=403
+    )
+    
+    # Test agent creation with auth
+    print("\nTesting agent creation with authentication:")
+    
+    # Test with valid data
+    valid_agent_data = {
+        "name": "Dr. Jane Smith",
+        "archetype": "scientist",  # Using lowercase key as required
+        "goal": "To advance medical research through innovative approaches",
+        "background": "PhD in Molecular Biology with 15 years of research experience",
+        "expertise": "Gene therapy, clinical trials, and research methodology",
+        "memory_summary": "Leading expert in CRISPR technology with multiple published papers",
+        "avatar_prompt": "Professional female scientist with glasses and lab coat"
+    }
+    
+    valid_test, valid_response = run_test(
+        "Agent Creation With Valid Data",
+        "/agents",
+        method="POST",
+        data=valid_agent_data,
+        auth=True,
+        expected_keys=["id", "name", "archetype", "personality", "goal", "expertise", "background", "memory_summary", "avatar_url", "avatar_prompt"]
+    )
+    
+    if valid_test and valid_response:
+        agent_id = valid_response.get("id")
+        print(f"✅ Successfully created agent with ID: {agent_id}")
+        print(f"✅ Agent name: {valid_response.get('name')}")
+        print(f"✅ Agent archetype: {valid_response.get('archetype')}")
+        print(f"✅ Personality was auto-generated: {valid_response.get('personality')}")
+        
+        # Check if avatar was generated (if avatar_prompt was provided)
+        if valid_response.get("avatar_url"):
+            print(f"✅ Avatar was generated: {valid_response.get('avatar_url')}")
+        
+        # Verify the agent was created by getting all agents
+        get_agents_test, get_agents_response = run_test(
+            "Get All Agents",
+            "/agents",
+            method="GET",
+            auth=True
+        )
+        
+        if get_agents_test and get_agents_response:
+            # Check if our newly created agent is in the list
+            agent_found = False
+            for agent in get_agents_response:
+                if agent.get("id") == agent_id:
+                    agent_found = True
+                    break
+            
+            if agent_found:
+                print("✅ Newly created agent found in the agents list")
+            else:
+                print("❌ Newly created agent not found in the agents list")
+    
+    # Test with invalid archetype
+    invalid_agent_data = {
+        "name": "Invalid Agent",
+        "archetype": "invalid_archetype",  # This should fail
+        "goal": "To test invalid archetype handling",
+        "background": "Testing background",
+        "expertise": "Testing expertise",
+        "memory_summary": "Testing memory",
+        "avatar_prompt": "Test avatar"
+    }
+    
+    invalid_test, _ = run_test(
+        "Agent Creation With Invalid Archetype",
+        "/agents",
+        method="POST",
+        data=invalid_agent_data,
+        auth=True,
+        expected_status=400
+    )
+    
+    if not invalid_test:
+        print("✅ Correctly rejected invalid archetype")
+    else:
+        print("❌ Failed to reject invalid archetype")
+    
+    # Test with pre-generated avatar URL
+    avatar_url_agent_data = {
+        "name": "Dr. John Doe",
+        "archetype": "leader",
+        "goal": "To lead the research team effectively",
+        "background": "Former department head with management experience",
+        "expertise": "Team leadership and project management",
+        "memory_summary": "Experienced in leading cross-functional teams",
+        "avatar_url": "https://example.com/avatar.jpg",  # Pre-generated URL
+        "avatar_prompt": ""  # Empty prompt since we're using a URL
+    }
+    
+    avatar_url_test, avatar_url_response = run_test(
+        "Agent Creation With Pre-generated Avatar URL",
+        "/agents",
+        method="POST",
+        data=avatar_url_agent_data,
+        auth=True,
+        expected_keys=["id", "name", "archetype", "personality", "goal", "expertise", "background", "memory_summary", "avatar_url"]
+    )
+    
+    if avatar_url_test and avatar_url_response:
+        if avatar_url_response.get("avatar_url") == "https://example.com/avatar.jpg":
+            print("✅ Successfully used pre-generated avatar URL")
+        else:
+            print("❌ Failed to use pre-generated avatar URL")
+    
+    # Test saving agent to library
+    print("\nTesting saving agent to library:")
+    
+    saved_agent_data = {
+        "name": "Dr. Sarah Chen",
+        "archetype": "mediator",
+        "goal": "To facilitate collaboration between research teams",
+        "background": "Mediator with experience in conflict resolution",
+        "expertise": "Negotiation and team building",
+        "avatar_prompt": "Professional female mediator in business attire"
+    }
+    
+    saved_agent_test, saved_agent_response = run_test(
+        "Save Agent to Library",
+        "/saved-agents",
+        method="POST",
+        data=saved_agent_data,
+        auth=True,
+        expected_keys=["id", "user_id", "name", "archetype", "personality", "goal", "expertise", "background", "avatar_url", "avatar_prompt"]
+    )
+    
+    if saved_agent_test and saved_agent_response:
+        saved_agent_id = saved_agent_response.get("id")
+        print(f"✅ Successfully saved agent to library with ID: {saved_agent_id}")
+        print(f"✅ User ID: {saved_agent_response.get('user_id')}")
+        
+        # Verify the agent was saved by getting all saved agents
+        get_saved_agents_test, get_saved_agents_response = run_test(
+            "Get Saved Agents",
+            "/saved-agents",
+            method="GET",
+            auth=True
+        )
+        
+        if get_saved_agents_test and get_saved_agents_response:
+            # Check if our newly saved agent is in the list
+            agent_found = False
+            for agent in get_saved_agents_response:
+                if agent.get("id") == saved_agent_id:
+                    agent_found = True
+                    break
+            
+            if agent_found:
+                print("✅ Newly saved agent found in the saved agents list")
+            else:
+                print("❌ Newly saved agent not found in the saved agents list")
+            
+            # Clean up - delete the saved agent
+            delete_saved_agent_test, _ = run_test(
+                "Delete Saved Agent",
+                f"/saved-agents/{saved_agent_id}",
+                method="DELETE",
+                auth=True
+            )
+            
+            if delete_saved_agent_test:
+                print("✅ Successfully deleted saved agent")
+            else:
+                print("❌ Failed to delete saved agent")
+    
+    # Print summary
+    print("\nAGENT LIBRARY CREATION FUNCTIONALITY SUMMARY:")
+    
+    auth_test_passed = not no_auth_test
+    valid_creation_passed = valid_test
+    invalid_archetype_passed = not invalid_test
+    avatar_url_passed = avatar_url_test
+    saved_agent_passed = saved_agent_test
+    
+    if auth_test_passed and valid_creation_passed and invalid_archetype_passed and avatar_url_passed and saved_agent_passed:
+        print("✅ Agent Library creation functionality is working correctly!")
+        print("✅ Authentication is properly enforced")
+        print("✅ Agent creation works with valid data")
+        print("✅ Invalid archetypes are properly rejected")
+        print("✅ Pre-generated avatar URLs are properly used")
+        print("✅ Agents can be saved to the library")
+        return True, "Agent Library creation functionality is working correctly"
+    else:
+        issues = []
+        if not auth_test_passed:
+            issues.append("Authentication is not properly enforced for agent creation")
+        if not valid_creation_passed:
+            issues.append("Agent creation with valid data failed")
+        if not invalid_archetype_passed:
+            issues.append("Invalid archetypes are not properly rejected")
+        if not avatar_url_passed:
+            issues.append("Pre-generated avatar URLs are not properly used")
+        if not saved_agent_passed:
+            issues.append("Agents cannot be saved to the library")
+        
+        print("❌ Agent Library creation functionality has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, "Agent Library creation functionality has issues"
+
 def main():
     """Run all tests"""
     print("\n" + "="*80)
@@ -604,6 +840,9 @@ def main():
     # Test authentication first
     test_login()
     test_auth_me()
+    
+    # Test agent library creation functionality
+    agent_library_success, agent_library_message = test_agent_library_creation()
     
     # Test documents by scenario endpoint
     docs_by_scenario_success, docs_by_scenario_message = test_document_by_scenario()
@@ -615,6 +854,20 @@ def main():
     print_summary()
     
     # Print final conclusion
+    print("\n" + "="*80)
+    print("AGENT LIBRARY CREATION FUNCTIONALITY ASSESSMENT")
+    print("="*80)
+    
+    if agent_library_success:
+        print("✅ Agent Library creation functionality is working correctly!")
+        print("✅ Authentication is properly enforced")
+        print("✅ Agent creation works with valid data")
+        print("✅ Invalid archetypes are properly rejected")
+        print("✅ Pre-generated avatar URLs are properly used")
+        print("✅ Agents can be saved to the library")
+    else:
+        print(f"❌ {agent_library_message}")
+    
     print("\n" + "="*80)
     print("BULK DELETE FUNCTIONALITY ASSESSMENT")
     print("="*80)
@@ -640,7 +893,7 @@ def main():
     
     print("="*80)
     
-    return bulk_delete_success
+    return agent_library_success and bulk_delete_success
 
 if __name__ == "__main__":
     main()
