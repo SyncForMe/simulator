@@ -144,7 +144,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
     setAddingAgents(prev => new Set(prev).add(agent.id));
     
     try {
-      // Transform agent data to match backend expectations
+      // Transform agent data to match backend expectations exactly as App.js expects
       const agentData = {
         name: agent.name,
         archetype: agent.archetype,
@@ -152,28 +152,36 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
         background: agent.background,
         expertise: agent.expertise,
         memory_summary: `${agent.memories} Knowledge Sources: ${agent.knowledge}`,
-        avatar_url: agent.avatar
+        avatar_url: agent.avatar, // Use avatar_url field that App.js expects
+        avatar_prompt: `Professional headshot of ${agent.name}, ${agent.title || 'medical professional'}, professional lighting, business attire`
       };
       
-      await onAddAgent(agentData);
-      setAddedAgents(prev => new Set(prev).add(agent.id));
+      const result = await onAddAgent(agentData);
       
-      // Clear any existing timeout for this agent
-      if (timeoutRefs.current.has(agent.id)) {
-        clearTimeout(timeoutRefs.current.get(agent.id));
+      if (result && result.success) {
+        setAddedAgents(prev => new Set(prev).add(agent.id));
+        
+        // Clear any existing timeout for this agent
+        if (timeoutRefs.current.has(agent.id)) {
+          clearTimeout(timeoutRefs.current.get(agent.id));
+        }
+        
+        // Set timeout to remove the "Added" status after 3 seconds
+        const timeoutId = setTimeout(() => {
+          setAddedAgents(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(agent.id);
+            return newSet;
+          });
+          timeoutRefs.current.delete(agent.id);
+        }, 3000);
+        
+        timeoutRefs.current.set(agent.id, timeoutId);
+        
+        console.log('Agent added successfully:', result.message);
+      } else {
+        console.error('Failed to add agent:', result?.message || 'Unknown error');
       }
-      
-      // Set timeout to remove the "Added" status after 3 seconds
-      const timeoutId = setTimeout(() => {
-        setAddedAgents(prev => {
-          const newSet = new Set(prev);
-          newSet.delete(agent.id);
-          return newSet;
-        });
-        timeoutRefs.current.delete(agent.id);
-      }, 3000);
-      
-      timeoutRefs.current.set(agent.id, timeoutId);
       
     } catch (error) {
       console.error('Failed to add agent:', error);
