@@ -450,10 +450,10 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                 }`}
               >
                 {addedAgents.has(selectedAgentDetails.id) 
-                  ? '✅ Added to Simulation' 
+                  ? '✅ Added' 
                   : addingAgents.has(selectedAgentDetails.id) 
                   ? 'Adding...' 
-                  : 'Add to Simulation'
+                  : 'Add Agent'
                 }
               </button>
             </div>
