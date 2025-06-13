@@ -2959,7 +2959,75 @@ async def get_simulation_state():
     if '_id' in state:
         state['_id'] = str(state['_id'])
     
+    # Calculate remaining time if time limit is set
+    if state.get('time_limit_hours') and state.get('simulation_start_time'):
+        start_time = state['simulation_start_time']
+        if isinstance(start_time, str):
+            start_time = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
+        elif isinstance(start_time, dict):
+            start_time = datetime.fromisoformat(start_time.get('$date', str(datetime.utcnow())))
+        
+        elapsed_hours = (datetime.utcnow() - start_time).total_seconds() / 3600
+        remaining_hours = max(0, state['time_limit_hours'] - elapsed_hours)
+        state['time_remaining_hours'] = remaining_hours
+        state['time_elapsed_hours'] = elapsed_hours
+        state['time_expired'] = remaining_hours <= 0
+        
+        # Update the database with calculated time
+        await db.simulation_state.update_one(
+            {"id": state["id"]},
+            {"$set": {"time_remaining_hours": remaining_hours}}
+        )
+    
     return state
+
+@api_router.get("/simulation/time-status")
+async def get_time_status():
+    """Get detailed time status for the current simulation"""
+    state = await db.simulation_state.find_one()
+    if not state:
+        raise HTTPException(status_code=404, detail="Simulation not started")
+    
+    time_status = {
+        "time_limit_active": bool(state.get('time_limit_hours')),
+        "time_limit_display": state.get('time_limit_display'),
+        "time_limit_hours": state.get('time_limit_hours'),
+        "simulation_start_time": state.get('simulation_start_time'),
+        "time_remaining_hours": None,
+        "time_elapsed_hours": None,
+        "time_expired": False,
+        "time_pressure_level": "none"  # none, low, medium, high, critical
+    }
+    
+    if state.get('time_limit_hours') and state.get('simulation_start_time'):
+        start_time = state['simulation_start_time']
+        if isinstance(start_time, str):
+            start_time = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
+        elif isinstance(start_time, dict):
+            start_time = datetime.fromisoformat(start_time.get('$date', str(datetime.utcnow())))
+        
+        elapsed_hours = (datetime.utcnow() - start_time).total_seconds() / 3600
+        remaining_hours = max(0, state['time_limit_hours'] - elapsed_hours)
+        
+        time_status.update({
+            "time_remaining_hours": remaining_hours,
+            "time_elapsed_hours": elapsed_hours,
+            "time_expired": remaining_hours <= 0
+        })
+        
+        # Determine pressure level
+        if remaining_hours <= 0:
+            time_status["time_pressure_level"] = "expired"
+        elif remaining_hours <= state['time_limit_hours'] * 0.1:  # Last 10%
+            time_status["time_pressure_level"] = "critical"
+        elif remaining_hours <= state['time_limit_hours'] * 0.25:  # Last 25%
+            time_status["time_pressure_level"] = "high"
+        elif remaining_hours <= state['time_limit_hours'] * 0.5:   # Last 50%
+            time_status["time_pressure_level"] = "medium"
+        else:
+            time_status["time_pressure_level"] = "low"
+    
+    return time_status
 
 @api_router.post("/simulation/next-period")
 async def advance_time_period():
