@@ -4784,26 +4784,26 @@ const FileCenter = ({ onRefresh }) => {
 
                             <div className="flex justify-between items-start mb-3 ml-8">
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-gray-900 mb-2 truncate" title={doc.title}>
-                                  {doc.title}
+                                <h4 className="font-semibold text-gray-900 mb-2 truncate" title={doc?.title || 'Untitled'}>
+                                  {doc?.title || 'Untitled Document'}
                                 </h4>
-                                <div className={`inline-block text-xs px-2 py-1 rounded border ${getCategoryColor(doc.category)}`}>
-                                  {doc.category}
+                                <div className={`inline-block text-xs px-2 py-1 rounded border ${getCategoryColor(doc?.category || 'Reference')}`}>
+                                  {doc?.category || 'Reference'}
                                 </div>
                               </div>
                             </div>
 
                             <p className="text-sm text-gray-600 mb-3 line-clamp-2 ml-8">
-                              {doc.description}
+                              {doc?.description || 'No description available'}
                             </p>
 
                             <div className="text-xs text-gray-500 mb-3 ml-8">
-                              <div>By: {doc.authors?.join(', ') || 'Unknown'}</div>
-                              <div>{formatDate(doc.created_at)}</div>
+                              <div>By: {doc?.authors?.join(', ') || 'Unknown'}</div>
+                              <div>{formatDate(doc?.created_at || new Date().toISOString())}</div>
                             </div>
 
                             <div className="bg-gray-50 p-2 rounded text-xs text-gray-600 mb-3 h-16 overflow-hidden ml-8">
-                              {doc.preview}
+                              {doc?.preview || 'No preview available'}
                             </div>
 
                             <div className="flex space-x-2 ml-8">
