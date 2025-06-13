@@ -4399,6 +4399,8 @@ const FileCenter = ({ onRefresh }) => {
     try {
       // Convert Set to Array for the API call
       const documentIds = Array.from(selectedDocuments);
+      console.log('Attempting to delete documents:', documentIds);
+      console.log('API URL:', `${API}/documents/bulk-delete`);
       
       // Use the POST endpoint with proper request format
       const response = await axios.post(`${API}/documents/bulk-delete`, 
@@ -4411,6 +4413,7 @@ const FileCenter = ({ onRefresh }) => {
         }
       );
       
+      console.log('Delete response:', response.data);
       console.log(`Successfully deleted ${response.data.deleted_count} documents`);
       
       // Refresh the document list
@@ -4420,10 +4423,14 @@ const FileCenter = ({ onRefresh }) => {
       
     } catch (error) {
       console.error('Error deleting documents:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
       
       // Try alternative DELETE endpoint if POST fails
       try {
         const documentIds = Array.from(selectedDocuments);
+        console.log('Trying DELETE endpoint with documents:', documentIds);
+        
         const deleteResponse = await axios.delete(`${API}/documents/bulk`, {
           data: documentIds, // Send data in the delete request body
           headers: { 
@@ -4432,12 +4439,15 @@ const FileCenter = ({ onRefresh }) => {
           }
         });
         
+        console.log('DELETE response:', deleteResponse.data);
         console.log(`Successfully deleted ${deleteResponse.data.deleted_count} documents`);
         await fetchScenarioDocuments();
         alert(`Successfully deleted ${deleteResponse.data.deleted_count} document${deleteResponse.data.deleted_count > 1 ? 's' : ''}`);
         
       } catch (deleteError) {
         console.error('Error with DELETE endpoint:', deleteError);
+        console.error('DELETE error response:', deleteError.response?.data);
+        console.error('DELETE error status:', deleteError.response?.status);
         alert('Failed to delete documents. Please try again or contact support.');
       }
     }
