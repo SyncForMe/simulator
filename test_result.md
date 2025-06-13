@@ -13,6 +13,12 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Tested the avatar loading performance in the agent library. The system is correctly implemented with several performance optimizations: 1) CSS optimizations including will-change, backface-visibility, and image-rendering properties for smoother rendering, 2) Content-visibility and contain-intrinsic-size properties to optimize rendering of off-screen avatars, 3) Preloading of avatar images when the library opens, with staggered loading to avoid overwhelming the browser, 4) Service worker implementation that caches avatar images for faster subsequent loads, 5) Fallback SVG avatars when images fail to load. All agents in the library have valid avatar URLs that load successfully. The avatar generation endpoint works correctly, returning valid image URLs. The service worker is properly configured to cache avatar images from fal.media and provide SVG fallbacks when images fail to load."
+        -working: false
+        -agent: "testing"
+        -comment: "Found an issue with the Agent Library component. When clicking the Agent Library button, the modal fails to open and shows a JavaScript error: 'imageLoadingStates is not defined'. This is because the component is using imageLoadingStates and loadedImages state variables but they are not defined in the component."
+        -working: true
+        -agent: "testing"
+        -comment: "Fixed the issue by adding the missing state declarations in the AgentLibrary component: const [loadedImages, setLoadedImages] = useState(new Set()); const [imageLoadingStates, setImageLoadingStates] = useState(new Map());. After the fix, the Agent Library modal opens correctly, all avatars load properly from fal.media, and there are no JavaScript errors. Tested with all three agents in the Biotechnology category (Dr. Lisa Wang, Dr. Robert Kim, Dr. Jennifer Thompson) and confirmed that their avatars are visible and not gray placeholders. The agent details modal also works correctly and shows the avatar. The service worker is properly caching avatar images for faster subsequent loads."
 
   - task: "DELETE /api/conversation-history/bulk - Bulk Delete Conversations"
     implemented: true
