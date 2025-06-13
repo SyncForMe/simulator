@@ -4770,7 +4770,7 @@ const FileCenter = ({ onRefresh }) => {
                       </div>
 
                       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {scenario.documents.map((doc) => (
+                        {(scenario?.documents || []).map((doc) => (
                           <div key={doc.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow relative">
                             {/* Selection Checkbox */}
                             <label className="absolute top-3 left-3 cursor-pointer">
