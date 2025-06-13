@@ -1468,3 +1468,519 @@ const sectors = {
 const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
   // Don't render if not open
   if (!isOpen) return null;
+  const { token } = useAuth();
+  const [selectedSector, setSelectedSector] = useState('healthcare');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedAgentDetails, setSelectedAgentDetails] = useState(null);
+  const [addingAgents, setAddingAgents] = useState(new Set());
+  const [addedAgents, setAddedAgents] = useState(new Set());
+  const timeoutRefs = useRef(new Map());
+
+  // Simple service worker registration for caching
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .catch((error) => {
+          console.warn('SW registration failed:', error);
+        });
+    }
+  }, []);
+
+  // Don't render if not open
+  if (!isOpen) return null;
+
+  const handleAddAgent = async (agent) => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('Service Worker registered successfully');
+          
+          // Wait for service worker to be ready, then preload
+          navigator.serviceWorker.ready.then((swRegistration) => {
+            // Preload ALL avatars immediately when component mounts
+            const preloadAllAvatars = () => {
+              const allAvatars = [];
+              
+              // Collect ALL avatar URLs from all sectors
+              Object.values(sectors).forEach(sector => {
+                Object.values(sector.categories).forEach(category => {
+                  category.agents.forEach(agent => {
+                    if (agent.avatar) {
+                      allAvatars.push(agent.avatar);
+                    }
+                  });
+                });
+              });
+
+              console.log(`🚀 Preloading ${allAvatars.length} agent avatars...`);
+
+              // Send URLs to service worker for aggressive caching
+              if (swRegistration.active) {
+                swRegistration.active.postMessage({
+                  type: 'PRELOAD_AVATARS',
+                  urls: allAvatars
+                });
+              }
+
+              // Also preload in main thread for immediate display
+              allAvatars.forEach((avatarUrl, index) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                // Set loading state
+                setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'loading'));
+                
+                img.onload = () => {
+                  setLoadedImages(prev => new Set(prev).add(avatarUrl));
+                  setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'loaded'));
+                  if (index < 5) console.log(`✅ Preloaded avatar ${index + 1}`);
+                };
+                
+                img.onerror = () => {
+                  setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'error'));
+                };
+                
+                // Start loading immediately with high priority
+                img.fetchPriority = 'high';
+                img.src = avatarUrl;
+              });
+            };
+
+            // Start preloading immediately
+            preloadAllAvatars();
+          });
+        })
+        .catch((error) => {
+          console.warn('SW registration failed:', error);
+        });
+    }
+  }, []); // Run once on mount
+
+  // Additional preloading when library opens
+  useEffect(() => {
+    if (isOpen) {
+      // Force reload any failed images
+      const retryFailedImages = () => {
+        imageLoadingStates.forEach((state, url) => {
+          if (state === 'error' && !loadedImages.has(url)) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+              setLoadedImages(prev => new Set(prev).add(url));
+              setImageLoadingStates(prev => new Map(prev).set(url, 'loaded'));
+            };
+            img.src = url;
+          }
+        });
+      };
+
+      setTimeout(retryFailedImages, 100);
+    }
+  }, [isOpen, imageLoadingStates, loadedImages]);
+
+  // Optimized Avatar Component with instant loading
+  const OptimizedAvatar = ({ src, alt, className, size = 48 }) => {
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [imageError, setImageError] = useState(false);
+    
+    // Check if this image is already loaded from preloading
+    useEffect(() => {
+      if (loadedImages.has(src)) {
+        setImageLoaded(true);
+      }
+    }, [src, loadedImages]);
+
+    // Base64 placeholder for instant display
+    const placeholder = `data:image/svg+xml;base64,${btoa(`
+      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="${size/2}" cy="${size/2}" r="${size/2}" fill="#F3F4F6"/>
+        <circle cx="${size/2}" cy="${size/2*0.8}" r="${size/4}" fill="#D1D5DB"/>
+        <path d="M${size*0.2} ${size*0.9}c0-${size*0.3} ${size*0.15}-${size*0.4} ${size*0.3}-${size*0.4}s${size*0.3} ${size*0.1} ${size*0.3} ${size*0.4}" fill="#D1D5DB"/>
+      </svg>
+    `)}`;
+
+    return (
+      <div className={`relative flex-shrink-0`} style={{ width: size, height: size }}>
+        {/* Always show placeholder first */}
+        <img
+          src={placeholder}
+          alt=""
+          className={`${className} absolute inset-0 ${imageLoaded && !imageError ? 'opacity-30' : 'opacity-100'} transition-opacity duration-200`}
+        />
+        
+        {/* Real image */}
+        <img
+          src={src}
+          alt={alt}
+          className={`${className} absolute inset-0 ${imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+          loading="eager"
+          decoding="async"
+          style={{
+            imageRendering: 'crisp-edges',
+            transform: 'translateZ(0)',
+          }}
+          onLoad={() => {
+            setImageLoaded(true);
+            setLoadedImages(prev => new Set(prev).add(src));
+          }}
+          onError={() => {
+            setImageError(true);
+            console.warn(`Failed to load avatar: ${src}`);
+          }}
+        />
+      </div>
+    );
+  };
+
+  const handleAddAgent = async (agent) => {
+    if (!onAddAgent) return;
+    
+    setAddingAgents(prev => new Set(prev).add(agent.id));
+    
+    try {
+      // Transform agent data to match backend expectations exactly as App.js expects
+      const agentData = {
+        name: agent.name,
+        archetype: agent.archetype,
+        goal: agent.goal,
+        background: agent.background,
+        expertise: agent.expertise,
+        memory_summary: `${agent.memories} Knowledge Sources: ${agent.knowledge}`,
+        avatar_url: agent.avatar, // Use existing avatar from library
+      };
+      
+      const result = await onAddAgent(agentData);
+      
+      if (result && result.success) {
+        setAddedAgents(prev => new Set(prev).add(agent.id));
+        
+        // Clear any existing timeout for this agent
+        if (timeoutRefs.current.has(agent.id)) {
+          clearTimeout(timeoutRefs.current.get(agent.id));
+        }
+        
+        // Set timeout to remove the "Added" status after 3 seconds
+        const timeoutId = setTimeout(() => {
+          setAddedAgents(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(agent.id);
+            return newSet;
+          });
+          timeoutRefs.current.delete(agent.id);
+        }, 3000);
+        
+        timeoutRefs.current.set(agent.id, timeoutId);
+        
+        console.log('Agent added successfully:', result.message);
+      } else {
+        console.error('Failed to add agent:', result?.message || 'Unknown error');
+      }
+      
+    } catch (error) {
+      console.error('Failed to add agent:', error);
+    }
+    
+    setAddingAgents(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(agent.id);
+      return newSet;
+    });
+  };
+
+  const currentSector = sectors[selectedSector];
+  const currentCategory = selectedCategory ? currentSector.categories[selectedCategory] : null;
+
+  return (
+    <>
+      {/* Main Agent Library Modal */}
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden shadow-2xl">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">📚 Agent Library</h2>
+                <p className="text-purple-100 mt-1">Choose from professionally crafted agent profiles</p>
+              </div>
+              <button
+                onClick={onClose}
+                className="text-white hover:text-purple-200 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-700 transition-colors"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+
+          <div className="flex h-[600px]">
+            {/* Sidebar */}
+            <div className="w-64 bg-gray-50 border-r p-4">
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">SECTORS</h3>
+              <div className="space-y-2">
+                {Object.entries(sectors).map(([key, sector]) => (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      setSelectedSector(key);
+                      setSelectedCategory(null);
+                    }}
+                    className={`w-full text-left p-3 rounded-lg transition-colors ${
+                      selectedSector === key
+                        ? 'bg-purple-100 text-purple-800 border-l-4 border-purple-600'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <span className="text-lg mr-2">{sector.icon}</span>
+                    {sector.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 p-6 overflow-y-auto">
+              {!selectedCategory ? (
+                // Categories View
+                <div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-6">
+                    {currentSector.icon} {currentSector.name}
+                  </h3>
+                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {Object.entries(currentSector.categories).map(([key, category]) => (
+                      <button
+                        key={key}
+                        onClick={() => setSelectedCategory(key)}
+                        className="bg-white border-2 border-gray-200 rounded-lg p-4 hover:border-purple-300 hover:shadow-md transition-all text-center group"
+                      >
+                        <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                          {category.icon}
+                        </div>
+                        <div className="text-sm font-medium text-gray-800">
+                          {category.name}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {category.agents.length} agents
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                // Agents View
+                <div>
+                  <div className="flex items-center mb-6">
+                    <button
+                      onClick={() => setSelectedCategory(null)}
+                      className="text-purple-600 hover:text-purple-800 font-medium mr-4 flex items-center"
+                    >
+                      ← Back
+                    </button>
+                    <h3 className="text-xl font-bold text-gray-800">
+                      {currentCategory.icon} {currentCategory.name}
+                    </h3>
+                  </div>
+
+                  {currentCategory.agents.length > 0 ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 agent-grid">
+                      {currentCategory.agents.map((agent) => (
+                        <div key={agent.id} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                          <div className="p-4">
+                            <div className="flex items-start space-x-3">
+                              <img
+                                src={agent.avatar}
+                                alt={agent.name}
+                                className="w-12 h-12 rounded-full object-cover"
+                                loading="eager"
+                                style={{
+                                  imageRendering: 'crisp-edges',
+                                }}
+                                onError={(e) => {
+                                  e.target.src = `data:image/svg+xml,${encodeURIComponent(`
+                                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <circle cx="24" cy="24" r="24" fill="#E5E7EB"/>
+                                      <circle cx="24" cy="20" r="8" fill="#9CA3AF"/>
+                                      <path d="M8 42c0-8.837 7.163-16 16-16s16 7.163 16 16" fill="#9CA3AF"/>
+                                    </svg>
+                                  `)}`;
+                                }}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-gray-900 text-sm">{agent.name}</h4>
+                                <p className="text-xs text-gray-600 mt-1">{agent.archetypeDisplay || agent.archetype}</p>
+                              </div>
+                            </div>
+                            
+                            <div className="mt-3">
+                              <div className="mb-2">
+                                <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">ARCHETYPE</span>
+                                <p className="text-xs text-gray-600 mt-1">{agent.archetypeDisplay || agent.archetype}</p>
+                              </div>
+                              
+                              <div className="mb-2">
+                                <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">GOAL</span>
+                                <p className="text-xs text-gray-600 mt-1 line-clamp-2">{agent.goal}</p>
+                              </div>
+                              
+                              <div className="mb-3">
+                                <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">EXPERTISE</span>
+                                <p className="text-xs text-gray-600 mt-1 line-clamp-2">{agent.expertise}</p>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="px-4 pb-4 space-y-2">
+                            <button
+                              onClick={() => setSelectedAgentDetails(agent)}
+                              className="w-full border border-blue-500 text-blue-600 py-2 px-3 rounded text-xs font-medium hover:bg-blue-50 transition-colors"
+                            >
+                              🔍 View Full Details
+                            </button>
+                            <button
+                              onClick={() => handleAddAgent(agent)}
+                              disabled={addingAgents.has(agent.id)}
+                              className={`w-full py-2 px-3 rounded text-xs font-medium transition-colors ${
+                                addedAgents.has(agent.id)
+                                  ? 'bg-green-100 text-green-800 border border-green-200'
+                                  : addingAgents.has(agent.id)
+                                  ? 'bg-gray-300 text-gray-500'
+                                  : 'bg-purple-600 text-white hover:bg-purple-700'
+                              }`}
+                            >
+                              {addedAgents.has(agent.id) 
+                                ? '✅ Added' 
+                                : addingAgents.has(agent.id) 
+                                ? 'Adding...' 
+                                : 'Add Agent'
+                              }
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="text-6xl mb-4">{currentCategory.icon}</div>
+                      <h4 className="text-xl font-bold text-gray-800 mb-2">Agents Coming Soon</h4>
+                      <p className="text-gray-600 max-w-md mx-auto">
+                        We're working on adding professional agents for {currentCategory.name}. 
+                        Check back soon for expertly crafted profiles in this category.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Agent Details Modal */}
+      {selectedAgentDetails && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            {/* Blue Header with Agent Info */}
+            <div className="bg-blue-500 text-white p-6 rounded-t-lg relative">
+              <button
+                onClick={() => setSelectedAgentDetails(null)}
+                className="absolute top-4 right-4 text-white hover:text-gray-200 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-blue-600 transition-colors"
+              >
+                ×
+              </button>
+              
+              <div className="flex items-center space-x-4">
+                <img
+                  src={selectedAgentDetails.avatar}
+                  alt={selectedAgentDetails.name}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-white"
+                  loading="eager"
+                  style={{
+                    imageRendering: 'crisp-edges',
+                  }}
+                  onError={(e) => {
+                    e.target.src = `data:image/svg+xml,${encodeURIComponent(`
+                      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="32" r="32" fill="#E5E7EB"/>
+                        <circle cx="32" cy="26" r="10" fill="#9CA3AF"/>
+                        <path d="M10 56c0-12.15 9.85-22 22-22s22 9.85 22 22" fill="#9CA3AF"/>
+                      </svg>
+                    `)}`;
+                  }}
+                />
+                <div>
+                  <h3 className="text-xl font-bold">{selectedAgentDetails.name}</h3>
+                  <p className="text-blue-100">{selectedAgentDetails.title || "Medical Professional"}</p>
+                  <p className="text-blue-200 text-sm mt-1">{selectedAgentDetails.archetypeDisplay || selectedAgentDetails.archetype}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              <div>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="mr-2">🎯</span>
+                  Goal
+                </h4>
+                <p className="text-gray-700 leading-relaxed">{selectedAgentDetails.goal}</p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="mr-2">🧠</span>
+                  Expertise
+                </h4>
+                <p className="text-gray-700 leading-relaxed">{selectedAgentDetails.expertise}</p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="mr-2">📋</span>
+                  Background
+                </h4>
+                <p className="text-gray-700 leading-relaxed">{selectedAgentDetails.background}</p>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="mr-2">🧠</span>
+                  Key Memories & Knowledge
+                </h4>
+                <p className="text-gray-700 leading-relaxed mb-3">{selectedAgentDetails.memories}</p>
+                <p className="text-sm text-blue-600 break-words">{selectedAgentDetails.knowledge}</p>
+              </div>
+            </div>
+
+            {/* Bottom Buttons */}
+            <div className="px-6 pb-6 flex space-x-3">
+              <button
+                onClick={() => setSelectedAgentDetails(null)}
+                className="flex-1 bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => handleAddAgent(selectedAgentDetails)}
+                disabled={addingAgents.has(selectedAgentDetails.id)}
+                className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
+                  addedAgents.has(selectedAgentDetails.id)
+                    ? 'bg-green-100 text-green-800'
+                    : addingAgents.has(selectedAgentDetails.id)
+                    ? 'bg-gray-300 text-gray-500'
+                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                }`}
+              >
+                {addedAgents.has(selectedAgentDetails.id) 
+                  ? '✅ Added' 
+                  : addingAgents.has(selectedAgentDetails.id) 
+                  ? 'Adding...' 
+                  : 'Add Agent'
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default AgentLibrary;
