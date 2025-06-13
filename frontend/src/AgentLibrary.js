@@ -395,6 +395,13 @@ const AgentLibrary = ({ onAddAgent, onClose, isOpen }) => {
 
         <div className="space-y-6">
           <CategorySection
+            title="🏥 Healthcare & Medicine"
+            agents={healthcareAgents}
+            isCollapsed={collapsedSections.healthcare}
+            onToggle={() => toggleSection('healthcare')}
+          />
+
+          <CategorySection
             title="💼 Finance & Business"
             agents={financeAgents}
             isCollapsed={collapsedSections.finance}
