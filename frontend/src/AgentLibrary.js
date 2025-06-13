@@ -418,8 +418,8 @@ const AgentLibrary = ({ onAddAgent, onClose, isOpen }) => {
 
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <p className="text-sm text-blue-800">
-            <strong>📋 Library Status:</strong> {financeAgents.length + technologyAgents.length} professional agents available. 
-            More categories coming soon including Healthcare, Education, Legal, and more!
+            <strong>📋 Library Status:</strong> {healthcareAgents.length + financeAgents.length + technologyAgents.length} professional agents available. 
+            Categories: Healthcare & Medicine, Finance & Business, Technology & Engineering. More coming soon!
           </p>
         </div>
       </div>
