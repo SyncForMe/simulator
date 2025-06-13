@@ -1403,7 +1403,7 @@ const technologyCategories = {
         background: "Materials scientist specializing in aerospace applications of advanced composites and metamaterials. Prefers laboratory research to project management. Known for developing materials with unprecedented strength-to-weight ratios.",
         expertise: "Aerospace Materials, Composite Structures, Metamaterials, Materials Testing, Structural Analysis",
         memories: "Developed carbon nanotube composite that is 10x stronger than steel while weighing less than aluminum. Successfully created self-healing material that repairs minor aircraft damage automatically during flight. Discovered new alloy that enables hypersonic flight by withstanding extreme temperatures.",
-        knowledge: "https://www.aiaa.org/, https://www.nasa.gov/aeroresearch/", https://www.nist.gov/mml/", 
+        knowledge: "https://www.aiaa.org/, https://www.nasa.gov/aeroresearch/, https://www.nist.gov/mml/", 
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Yuki Tanaka, Japanese man, materials scientist, wearing lab coat with technical equipment, contemplative expression, advanced materials laboratory background"
       }
