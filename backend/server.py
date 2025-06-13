@@ -5085,12 +5085,6 @@ async def delete_documents_bulk(
         }).to_list(None)
         
         if len(documents) != len(document_ids):
-            # Special case for empty arrays
-            if len(document_ids) == 0:
-                return {
-                    "message": "Successfully deleted 0 documents",
-                    "deleted_count": 0
-                }
             raise HTTPException(status_code=404, detail="Document not found")
         
         # Delete the documents
