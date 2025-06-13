@@ -748,6 +748,21 @@ frontend:
         -comment: "Initial testing needed for agent profile section button improvements"
         -working: true
         -agent: "testing"
+        
+  - task: "Persistent Avatar System"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for persistent avatar system"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the persistent avatar system functionality. Verified that: 1) Existing agents in the system have avatar URLs stored in their data, 2) The avatar generation endpoint (/api/avatars/generate) works correctly and returns valid image URLs, 3) Creating agents with pre-existing avatar URLs works correctly - the system uses the provided URL instead of generating a new one, 4) Creating agents with avatar prompts successfully generates and stores avatar URLs, 5) The library avatar generation endpoint (/api/avatars/generate-library) works correctly and can generate avatars for all library agents. However, when initializing the research station with the default crypto team agents, they do not have avatars. This suggests that the init-research-station endpoint is not using the avatar generation functionality. Overall, the persistent avatar system is working correctly for most use cases, ensuring agents have consistent avatars across the application."
         -comment: "Tested the agent profile section button improvements. Verified that: 1) The 'Clear All' button has a very light red color (bg-red-50 with text-red-600) giving it an almost transparent appearance, 2) The 'Clear All' button has no icon present, showing only the text 'Clear All', 3) Both 'Create Crypto Team' and 'Generate Random Team' buttons have blue coloring (bg-blue-600 class), 4) Neither team builder button has any icons, showing only text, 5) The section header now simply says 'Quick Team Builders' without any rocket icon. All buttons are properly styled and positioned, creating a clean and organized interface."
         
   - task: "Button Positioning Improvements"
