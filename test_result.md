@@ -33,7 +33,7 @@ backend:
     implemented: true
     working: false
     file: "/app/backend/server.py"
-    stuck_count: 4
+    stuck_count: 5
     priority: "high"
     needs_retesting: false
     status_history:
@@ -61,6 +61,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Conducted comprehensive testing of the document bulk delete functionality. The DELETE /api/documents/bulk endpoint consistently returns a 404 error with 'Document not found' message for both empty arrays and valid document IDs, regardless of the request format used. However, the POST /api/documents/bulk-delete endpoint is now working correctly for all test cases: it handles empty arrays, valid document IDs, and non-existent document IDs as expected. The POST endpoint correctly returns a 200 OK response with a message of 'Successfully deleted X documents' and a deleted_count field. This provides a functional alternative to the DELETE endpoint, allowing users to delete multiple documents at once. While the DELETE endpoint still has issues, the POST endpoint provides the necessary functionality for bulk document deletion."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted thorough testing of the bulk delete functionality with 37 documents to match the user's scenario. Created 37 test documents and attempted to delete them using both endpoints. The POST /api/documents/bulk-delete endpoint successfully deleted all 37 documents in a single request, returning a 200 OK response with the correct deleted_count. However, the DELETE /api/documents/bulk endpoint consistently failed with a 404 error regardless of the request format used (direct array, object with document_ids field, or object with data field). The issue appears to be with how FastAPI handles request bodies for DELETE methods. The POST endpoint is fully functional and provides a reliable alternative for bulk deletion operations. Authentication is properly enforced for both endpoints, and they correctly handle invalid document IDs. The user should use the POST endpoint for bulk deletion operations."
 
   - task: "Document Count Verification"
     implemented: true
