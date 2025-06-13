@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL ? `${process.env.REACT_APP_BACKEND_URL}/api` : 'http://localhost:8001/api';
 
-// Add styles for line clamping
+// Add styles for line clamping and image optimization
 const styles = `
   .line-clamp-2 {
     display: -webkit-box;
@@ -17,6 +17,32 @@ const styles = `
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  
+  /* Avatar optimization */
+  .avatar-optimized {
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  /* Preload critical images */
+  .agent-avatar {
+    content-visibility: auto;
+    contain-intrinsic-size: 48px 48px;
+  }
+  
+  .agent-avatar-large {
+    content-visibility: auto;
+    contain-intrinsic-size: 64px 64px;
+  }
+  
+  /* Improve scrolling performance */
+  .agent-grid {
+    contain: layout style paint;
   }
 `;
 
