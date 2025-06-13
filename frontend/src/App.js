@@ -4577,7 +4577,9 @@ const FileCenter = ({ onRefresh }) => {
           <h3 className="text-lg font-bold">📁 File Center</h3>
           <div className="flex items-center space-x-2">
             <div className="text-xs text-gray-500">
-              {scenarioDocuments.reduce((total, scenario) => total + scenario.document_count, 0)} documents
+              {scenarioDocuments.reduce((total, scenario) => {
+                return total + (scenario.document_count || scenario.documents?.length || 0);
+              }, 0)} documents
             </div>
             <button
               onClick={() => setShowFileCenter(true)}
