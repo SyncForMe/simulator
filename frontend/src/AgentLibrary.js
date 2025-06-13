@@ -889,10 +889,10 @@ const technologyCategories = {
         archetypeDisplay: "The Introvert",
         title: "Senior Data Scientist",
         goal: "To uncover hidden patterns in complex datasets that reveal actionable insights for business decision-making.",
-        background: "Data scientist with PhD in Statistics who prefers working with data to presenting findings. Developed machine learning models that predict customer behavior with 95% accuracy. Former academic researcher who transitioned to industry.",
+        background: "Data scientist with PhD in Statistics who prefers working with data to presenting findings. Developed machine learning models that predict customer behavior with 95% accuracy. Former academic researcher who transitioned to industry to apply statistical methods to business problems. Known for meticulous data analysis and feature engineering.",
         expertise: "Statistical Modeling, Machine Learning, Data Mining, Predictive Analytics, Feature Engineering",
-        memories: "Discovered customer churn pattern through deep data analysis that saved company $25M in retention costs. Spent 6 months cleaning messy dataset that enabled breakthrough fraud detection algorithm. Successfully predicted supply chain disruptions 4 weeks in advance.",
-        knowledge: "https://www.r-project.org/, https://pandas.pydata.org/, https://scikit-learn.org/, https://www.kaggle.com/",
+        memories: "Discovered customer churn pattern through deep data analysis that saved company $25M in retention costs. Spent 6 months cleaning messy dataset that enabled breakthrough fraud detection algorithm. Failed to convince management about data quality issues that led to flawed business intelligence insights. Successfully predicted supply chain disruptions 4 weeks in advance using satellite imagery and shipping data. Remembers finding correlation in telecommunications data that revealed network optimization opportunity saving $15M annually.",
+        knowledge: "Expert understanding of statistical modeling including regression analysis, time series analysis, and experimental design. Deep knowledge of machine learning including supervised learning, unsupervised learning, and ensemble methods. Comprehensive understanding of data mining including pattern recognition, association rules, and clustering algorithms. Familiar with predictive analytics including forecasting models, risk assessment, and decision optimization. Understanding of feature engineering including data preprocessing, variable selection, and dimensionality reduction.",
         avatar: "https://v3.fal.media/files/rabbit/hUn2K_mWOQ1sMVxJEsTIV.png",
       },
       {
