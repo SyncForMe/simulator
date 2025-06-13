@@ -124,9 +124,6 @@ const AgentLibrary = ({ onAddAgent, onClose, isOpen }) => {
   const [addedAgents, setAddedAgents] = useState(new Set());
   const [generatingAvatars, setGeneratingAvatars] = useState(false);
 
-  // Don't render if not open
-  if (!isOpen) return null;
-
   // Generate avatars for all agents on component mount
   useEffect(() => {
     generateAvatarsForAgents();
