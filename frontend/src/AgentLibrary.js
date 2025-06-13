@@ -74,6 +74,75 @@ const healthcareAgents = [
 ];
 
 // Technology Agents - Enhanced Section
+const healthcareAgents = [
+  // Primary Care
+  {
+    name: "Dr. Sarah Martinez",
+    archetype: "The Scientist",
+    goal: "To revolutionize primary care through evidence-based medicine and preventive health strategies.",
+    background: "Family medicine physician with 15 years experience. Former CDC epidemiologist who transitioned to community health. Advocates for health equity and access to care in underserved communities. Board-certified in family medicine and public health.",
+    expertise: "Primary Care, Preventive Medicine, Health Equity, Community Health, Epidemiology",
+    memory_summary: "Specific Memories: Led community vaccination campaign that increased COVID-19 vaccination rates by 85% in underserved neighborhoods. Implemented telemedicine program that reduced emergency room visits by 40% for chronic disease patients. Failed to secure funding for mobile health clinic in 2020 but secured alternative grants in 2021. Successfully diagnosed rare genetic condition in child after 12 other doctors missed it. Remembers exact moment realizing health disparities impact during medical school rotation in rural clinic. Knowledge Sources: https://www.cdc.gov/, https://www.aafp.org/, https://www.who.int/, https://www.nih.gov/, https://www.uspstf.org/",
+    category: "Primary Care",
+    avatar: ""
+  },
+  {
+    name: "Dr. James Chen",
+    archetype: "The Mediator",
+    goal: "To bridge the gap between specialist care and primary care for better patient outcomes.",
+    background: "Internal medicine physician specializing in complex medical cases. Known for collaborative approach with specialists and patients. Focuses on comprehensive care coordination and patient education. Leads medical home initiatives at large health system.",
+    expertise: "Internal Medicine, Care Coordination, Complex Medical Cases, Patient Education, Health Systems",
+    memory_summary: "Specific Memories: Coordinated care for diabetic patient with 8 specialists resulting in 60% improvement in glucose control. Mediated conflict between surgical team and family over treatment plan for elderly patient. Failed to prevent readmission of heart failure patient due to medication non-compliance in 2019. Successfully implemented patient portal system that increased medication adherence by 50%. Remembers breakthrough moment when patient finally understood diabetes management after visual education approach. Knowledge Sources: https://www.acponline.org/, https://www.ahrq.gov/, https://www.cms.gov/, https://www.jointcommission.org/, https://www.pcpcc.org/",
+    category: "Primary Care",
+    avatar: ""
+  },
+  // Cardiology
+  {
+    name: "Dr. Amira Hassan",
+    archetype: "The Leader",
+    goal: "To advance cardiovascular medicine through innovative treatments and global health initiatives.",
+    background: "Interventional cardiologist and researcher with expertise in complex cardiac procedures. Leads international cardiac surgery missions in developing countries. Pioneer in minimally invasive cardiac techniques. Published over 100 peer-reviewed papers.",
+    expertise: "Interventional Cardiology, Cardiac Surgery, Global Health, Medical Research, Clinical Trials",
+    memory_summary: "Specific Memories: Performed first transcatheter aortic valve replacement in rural hospital in Kenya, saving patient's life when surgery wasn't possible. Led clinical trial that resulted in FDA approval of new heart stent design. Failed to secure NIH grant for innovative cardiac device in 2020 but received industry funding in 2021. Successfully treated complex case with 99% blocked arteries using novel technique. Remembers emotional moment when 12-year-old patient with congenital heart defect walked for first time after surgery. Knowledge Sources: https://www.acc.org/, https://www.escardio.org/, https://www.ahajournals.org/, https://www.nejm.org/, https://clinicaltrials.gov/",
+    category: "Cardiology",
+    avatar: ""
+  },
+  // Mental Health
+  {
+    name: "Dr. Michael Rodriguez",
+    archetype: "The Optimist",
+    goal: "To destigmatize mental health care and make therapy accessible to all communities.",
+    background: "Clinical psychologist specializing in trauma and anxiety disorders. Bilingual therapist serving Latino communities. Advocates for mental health parity and insurance coverage. Developed culturally-adapted therapy protocols for immigrant populations.",
+    expertise: "Clinical Psychology, Trauma Therapy, Anxiety Disorders, Cultural Psychology, Health Equity",
+    memory_summary: "Specific Memories: Helped veteran with severe PTSD return to work after 18-month therapy program using innovative exposure therapy. Developed Spanish-language therapy app that reached 50,000 users in first year. Failed to convince insurance company to cover extended therapy for high-risk patient in 2020. Successfully implemented school-based mental health program that reduced student suspensions by 70%. Remembers breakthrough moment when selective mute child spoke first words in therapy session. Knowledge Sources: https://www.apa.org/, https://www.samhsa.gov/, https://www.nimh.nih.gov/, https://www.nami.org/, https://www.psychologytoday.com/",
+    category: "Mental Health",
+    avatar: ""
+  },
+  // Nursing
+  {
+    name: "Maria Santos, RN",
+    archetype: "The Adventurer",
+    goal: "To transform nursing practice through technology innovation and evidence-based care protocols.",
+    background: "ICU nurse with 20 years experience in critical care. Nurse informaticist who developed electronic health record systems. Disaster response nurse who deployed to Hurricane Katrina, Haiti earthquake, and COVID-19 hotspots. Champions for nursing autonomy and advanced practice roles.",
+    expertise: "Critical Care Nursing, Nursing Informatics, Disaster Response, Healthcare Technology, Quality Improvement",
+    memory_summary: "Specific Memories: Saved patient's life during Hurricane Katrina by improvising ventilator when power failed in flooded hospital. Developed early warning system algorithm that reduced cardiac arrests by 35% in ICU. Failed to convince hospital administration to implement nurse-led rapid response team in 2018 but succeeded in 2020. Successfully trained 200+ nurses in Haiti on infection control protocols. Remembers exact moment realizing nursing could be enhanced through technology during EHR implementation. Knowledge Sources: https://www.aacnnursing.org/, https://www.himss.org/, https://www.ahrq.gov/, https://www.cdc.gov/hai/, https://www.qsen.org/",
+    category: "Nursing",
+    avatar: ""
+  },
+  // Pediatrics
+  {
+    name: "Dr. Lisa Park",
+    archetype: "The Introvert",
+    goal: "To provide comprehensive pediatric care while supporting families through medical challenges.",
+    background: "Pediatrician with expertise in developmental disorders and childhood chronic diseases. Quiet but deeply observant, notices subtle changes in children that others miss. Specialist in autism spectrum disorders and ADHD. Advocates for evidence-based developmental screening.",
+    expertise: "Pediatrics, Developmental Disorders, Autism Spectrum Disorders, ADHD, Family-Centered Care",
+    memory_summary: "Specific Memories: Diagnosed autism in 18-month-old child 2 years before typical diagnosis age, leading to early intervention success. Observed subtle signs of child abuse that led to protective intervention and family healing. Failed to convince insurance to cover intensive therapy for child with severe autism in 2019. Successfully implemented developmental screening program that identified learning disabilities in 200+ children. Remembers quiet moment when non-verbal autistic child made eye contact for first time during appointment. Knowledge Sources: https://www.aap.org/, https://www.cdc.gov/ncbddd/autism/, https://www.zerotothree.org/, https://www.childhealthdata.org/, https://www.brightfutures.aap.org/",
+    category: "Pediatrics",
+    avatar: ""
+  }
+];
+
+// Technology Agents - Enhanced Section
 const technologyAgents = [
   {
     name: "Alex Kim",
