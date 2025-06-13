@@ -1483,54 +1483,71 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
     // Register service worker immediately on app load
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('Service Worker registered successfully');
+          
+          // Wait for service worker to be ready, then preload
+          navigator.serviceWorker.ready.then((swRegistration) => {
+            // Preload ALL avatars immediately when component mounts
+            const preloadAllAvatars = () => {
+              const allAvatars = [];
+              
+              // Collect ALL avatar URLs from all sectors
+              Object.values(sectors).forEach(sector => {
+                Object.values(sector.categories).forEach(category => {
+                  category.agents.forEach(agent => {
+                    if (agent.avatar) {
+                      // Add optimized URLs for both sizes
+                      const baseUrl = agent.avatar;
+                      allAvatars.push(baseUrl + '?w=48&h=48&fit=crop&auto=format,compress');
+                      allAvatars.push(baseUrl + '?w=64&h=64&fit=crop&auto=format,compress');
+                    }
+                  });
+                });
+              });
+
+              console.log(`🚀 Preloading ${allAvatars.length} optimized agent avatars...`);
+
+              // Send URLs to service worker for aggressive caching
+              if (swRegistration.active) {
+                swRegistration.active.postMessage({
+                  type: 'PRELOAD_AVATARS',
+                  urls: allAvatars
+                });
+              }
+
+              // Also preload in main thread for immediate display
+              allAvatars.forEach((avatarUrl, index) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                // Set loading state
+                setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'loading'));
+                
+                img.onload = () => {
+                  setLoadedImages(prev => new Set(prev).add(avatarUrl));
+                  setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'loaded'));
+                  if (index < 5) console.log(`✅ Preloaded avatar ${index + 1}`);
+                };
+                
+                img.onerror = () => {
+                  setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'error'));
+                };
+                
+                // Start loading immediately with high priority
+                img.fetchPriority = 'high';
+                img.src = avatarUrl;
+              });
+            };
+
+            // Start preloading immediately
+            preloadAllAvatars();
+          });
+        })
         .catch((error) => {
           console.warn('SW registration failed:', error);
         });
     }
-
-    // Preload ALL avatars immediately when component mounts
-    const preloadAllAvatars = () => {
-      const allAvatars = [];
-      
-      // Collect ALL avatar URLs from all sectors
-      Object.values(sectors).forEach(sector => {
-        Object.values(sector.categories).forEach(category => {
-          category.agents.forEach(agent => {
-            if (agent.avatar) {
-              allAvatars.push(agent.avatar);
-            }
-          });
-        });
-      });
-
-      console.log(`Preloading ${allAvatars.length} agent avatars...`);
-
-      // Preload all images immediately with high priority
-      allAvatars.forEach((avatarUrl, index) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        
-        // Set loading state
-        setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'loading'));
-        
-        img.onload = () => {
-          setLoadedImages(prev => new Set(prev).add(avatarUrl));
-          setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'loaded'));
-          if (index < 10) console.log(`✅ Preloaded avatar ${index + 1}:`, avatarUrl);
-        };
-        
-        img.onerror = () => {
-          console.warn(`❌ Failed to preload avatar ${index + 1}:`, avatarUrl);
-          setImageLoadingStates(prev => new Map(prev).set(avatarUrl, 'error'));
-        };
-        
-        // Start loading immediately
-        img.src = avatarUrl;
-      });
-    };
-
-    // Start preloading immediately
-    preloadAllAvatars();
   }, []); // Run once on mount
 
   // Additional preloading when library opens
