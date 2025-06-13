@@ -1389,7 +1389,7 @@ const technologyCategories = {
         background: "Aeronautical engineer who leads development of electric aircraft and autonomous flight systems. Former Boeing executive who transitioned to startup developing electric aviation. Known for building diverse engineering teams and managing complex certification processes.",
         expertise: "Aircraft Design, Electric Propulsion, Autonomous Flight, Certification, Sustainable Aviation",
         memories: "Led certification of first electric passenger aircraft approved for commercial service in 2023. Successfully convinced investors to fund $500M electric aviation startup despite industry skepticism. Developed electric aircraft that achieved 400-mile range with zero emissions for regional flights.",
-        knowledge: "https://www.faa.gov/", https://www.easa.europa.eu/, https://www.boeing.com/", 
+        knowledge: "https://www.faa.gov/, https://www.easa.europa.eu/, https://www.boeing.com/", 
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Catherine Williams, African American woman, aerospace director, wearing executive aviation attire, leadership expression, electric aircraft hangar background"
       },
