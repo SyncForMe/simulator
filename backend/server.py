@@ -5111,18 +5111,15 @@ async def delete_documents_bulk(
         logging.error(f"Error deleting documents: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
 
-class DocumentIdsRequest(BaseModel):
-    document_ids: List[str] = []
-
-@api_router.delete("/documents/bulk-model")
-async def delete_documents_bulk_model(
-    request: DocumentIdsRequest,
+@api_router.delete("/documents/bulk-query")
+async def delete_documents_bulk_query(
+    document_ids: Optional[List[str]] = Query(None),
     current_user: dict = Depends(get_current_user)
 ):
-    """Delete multiple documents for the authenticated user using a Pydantic model"""
+    """Delete multiple documents for the authenticated user using query parameters"""
     try:
         # Handle empty array case
-        if not request.document_ids:
+        if not document_ids:
             return {
                 "message": "Successfully deleted 0 documents",
                 "deleted_count": 0
@@ -5130,16 +5127,16 @@ async def delete_documents_bulk_model(
             
         # Verify all documents belong to the user
         documents = await db.documents.find({
-            "id": {"$in": request.document_ids},
+            "id": {"$in": document_ids},
             "metadata.user_id": current_user.id
         }).to_list(None)
         
-        if len(documents) != len(request.document_ids):
+        if len(documents) != len(document_ids):
             raise HTTPException(status_code=404, detail="Some documents not found or don't belong to user")
         
         # Delete the documents
         result = await db.documents.delete_many({
-            "id": {"$in": request.document_ids},
+            "id": {"$in": document_ids},
             "metadata.user_id": current_user.id
         })
         
