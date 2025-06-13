@@ -5478,11 +5478,32 @@ async def delete_conversations_bulk(
 
 @api_router.post("/documents/bulk-delete")
 async def delete_documents_bulk_post(
-    document_ids: List[str],
+    request: Request,
     current_user: dict = Depends(get_current_user)
 ):
     """Delete multiple documents for the authenticated user using POST"""
     try:
+        # Get document IDs from request body
+        body = await request.body()
+        if body:
+            import json
+            request_data = json.loads(body)
+            # Handle both array directly and object with document_ids field
+            if isinstance(request_data, list):
+                document_ids = request_data
+            elif isinstance(request_data, dict) and 'document_ids' in request_data:
+                document_ids = request_data['document_ids']
+            elif isinstance(request_data, dict) and 'data' in request_data:
+                document_ids = request_data['data']
+            else:
+                document_ids = []
+        else:
+            document_ids = []
+            
+        # Ensure document_ids is a list
+        if not isinstance(document_ids, list):
+            raise HTTPException(status_code=400, detail="Request must contain a list of document IDs")
+            
         # Handle empty array case
         if not document_ids:
             return {
