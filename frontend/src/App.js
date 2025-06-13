@@ -1056,6 +1056,43 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
                   </svg>
                 </button>
               )}
+
+              {/* Upload button */}
+              <label className="w-6 h-6 text-gray-600 hover:text-gray-800 disabled:opacity-50 transition-colors flex items-center justify-center cursor-pointer" title="Upload files">
+                <input
+                  type="file"
+                  multiple
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg,.gif"
+                  onChange={handleFileUpload}
+                  disabled={loading || justSubmitted || randomLoading || uploading}
+                  className="hidden"
+                />
+                {uploading ? (
+                  <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-full h-full"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    <path d="M12,11L16,15H13V19H11V15H8L12,11Z"/>
+                  </svg>
+                )}
+              </label>
+
+              {/* View uploaded files button */}
+              {uploadedFiles.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowUploadedFiles(!showUploadedFiles)}
+                  className="w-6 h-6 text-blue-600 hover:text-blue-800 transition-colors flex items-center justify-center"
+                  title={`View uploaded files (${uploadedFiles.length})`}
+                >
+                  <span className="text-xs font-bold">{uploadedFiles.length}</span>
+                </button>
+              )}
               
               {scenario.trim() && (
                 <button
