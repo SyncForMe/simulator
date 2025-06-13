@@ -3121,9 +3121,23 @@ const PreConversationConfigModal = ({ isOpen, onClose, onStartWithConfig }) => {
   const handleStartSimulation = async () => {
     setSaving(true);
     try {
+      // Calculate time limit in hours for backend
+      let timeLimitHours = null;
+      if (timeLimitEnabled) {
+        const multipliers = {
+          day: 24,
+          week: 24 * 7,
+          month: 24 * 30,
+          year: 24 * 365
+        };
+        timeLimitHours = timeLimitAmount * multipliers[timeLimitUnit];
+      }
+
       await onStartWithConfig({
         language: selectedLanguage,
-        audioNarrative: audioNarrative
+        audioNarrative: audioNarrative,
+        timeLimit: timeLimitEnabled ? timeLimitHours : null,
+        timeLimitDisplay: timeLimitEnabled ? `${timeLimitAmount} ${timeLimitUnit}${timeLimitAmount > 1 ? 's' : ''}` : null
       });
       onClose();
     } catch (error) {
