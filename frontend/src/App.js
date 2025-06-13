@@ -4594,26 +4594,32 @@ const FileCenter = ({ onRefresh }) => {
         <div className="grid grid-cols-3 gap-2 text-xs">
           <div className="bg-blue-50 p-2 rounded text-center">
             <div className="font-semibold text-blue-700">
-              {scenarioDocuments.length}
+              {scenarioDocuments?.length || 0}
             </div>
             <div className="text-blue-600">Scenarios</div>
           </div>
           <div className="bg-green-50 p-2 rounded text-center">
             <div className="font-semibold text-green-700">
-              {scenarioDocuments.reduce((total, scenario) => {
+              {scenarioDocuments?.reduce((total, scenario) => {
                 // Handle both document_count field and documents array length
-                return total + (scenario.document_count || scenario.documents?.length || 0);
-              }, 0)}
+                const count = scenario?.document_count || scenario?.documents?.length || 0;
+                return total + count;
+              }, 0) || 0}
             </div>
             <div className="text-green-600">Documents</div>
           </div>
           <div className="bg-purple-50 p-2 rounded text-center">
             <div className="font-semibold text-purple-700">
-              {new Set(
-                scenarioDocuments.flatMap(s => 
-                  (s.documents || []).map(d => d.category).filter(Boolean)
-                )
-              ).size}
+              {(() => {
+                try {
+                  const allDocs = scenarioDocuments?.flatMap(s => s?.documents || []) || [];
+                  const categories = allDocs.map(d => d?.category).filter(Boolean);
+                  return new Set(categories).size;
+                } catch (error) {
+                  console.error('Error calculating categories:', error);
+                  return 0;
+                }
+              })()}
             </div>
             <div className="text-purple-600">Categories</div>
           </div>
