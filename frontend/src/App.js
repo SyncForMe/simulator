@@ -5745,7 +5745,6 @@ function App() {
             
             <CurrentScenarioCard currentScenario={simulationState?.scenario} />
             
-            <SimulationStatusBar simulationState={simulationState} />
             
             <ControlPanel
               simulationState={simulationState}
