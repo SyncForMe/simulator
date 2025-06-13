@@ -3793,26 +3793,15 @@ const ControlPanel = ({
     <div className="control-panel bg-white rounded-lg shadow-md p-4">
       <h3 className="text-lg font-bold mb-4">🎮 Simulation Control</h3>
       
+      {/* Simplified control panel with just auto settings */}
       <div className="simulation-info mb-4">
-        <p className="text-sm"><strong>Day:</strong> {simulationState?.current_day || 1}</p>
-        <p className="text-sm"><strong>Time:</strong> {simulationState?.current_time_period || 'morning'}</p>
-        <p className="text-sm"><strong>Scenario:</strong> 
-          <span className="text-xs bg-gray-100 px-2 py-1 rounded ml-1">
-            {simulationState?.scenario ? 
-              simulationState.scenario.substring(0, 40) + (simulationState.scenario.length > 40 ? '...' : '') 
-              : 'Research Station'}
-          </span>
+        <p className="text-sm">
+          <strong>Auto Conversations:</strong> {simulationState?.auto_conversations ? 'ON' : 'OFF'}
         </p>
-        <p className="text-sm"><strong>Status:</strong> 
-          <span className={`ml-1 px-2 py-1 rounded text-xs ${
-            isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-          }`}>
-            {isActive ? (autoRunning ? 'Auto Running' : 'Active') : 'Paused'}
-          </span>
+        <p className="text-sm">
+          <strong>Auto Time:</strong> {simulationState?.auto_time ? 'ON' : 'OFF'}
         </p>
-        
-        {/* Auto Status Indicators */}
-        <div className="auto-status mt-2 space-y-1">
+      </div>
           <div className="flex items-center text-xs">
             <span className={`w-2 h-2 rounded-full mr-2 ${
               simulationState?.auto_conversations ? 'bg-green-500' : 'bg-gray-300'
