@@ -4942,6 +4942,7 @@ function App() {
     return localStorage.getItem('audioNarrativeEnabled') !== 'false';
   });
   const [showAgentLibrary, setShowAgentLibrary] = useState(false);
+  const [autoExpandCurrentScenario, setAutoExpandCurrentScenario] = useState(false);
 
   const handleTestBackgrounds = async () => {
     setLoading(true);
