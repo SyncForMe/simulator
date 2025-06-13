@@ -1423,7 +1423,7 @@ const technologyCategories = {
         background: "Biomedical engineer specializing in neural interfaces and brain-computer systems. Believes technology can solve most medical challenges. Led development of devices that enable paralyzed patients to control computers with thoughts.",
         expertise: "Neural Engineering, Brain-Computer Interfaces, Medical Device Development, Regulatory Affairs, Clinical Research",
         memories: "Developed brain implant that enabled paralyzed patient to type 90 words per minute using thoughts alone in 2022. Successfully guided neural interface through FDA approval process after 8 years of clinical trials. Created prosthetic limb that provides sense of touch through neural stimulation.",
-        knowledge: "https://www.fda.gov/medical-devices/", https://www.bmes.org/, https://clinicaltrials.gov/", 
+        knowledge: "https://www.fda.gov/medical-devices/, https://www.bmes.org/, https://clinicaltrials.gov/", 
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Jennifer Walsh, Caucasian woman, neural engineer, wearing medical professional attire, hopeful expression, neurotechnology laboratory background"
       },
