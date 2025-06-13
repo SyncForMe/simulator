@@ -4730,6 +4730,10 @@ const FileCenter = ({ onRefresh }) => {
                     )}
                   </div>
                 ) : null;
+                } catch (error) {
+                  console.error('Error rendering bulk selection controls:', error);
+                  return null;
+                }
               })()}
             </div>
 
