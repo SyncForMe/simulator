@@ -3092,6 +3092,11 @@ const PreConversationConfigModal = ({ isOpen, onClose, onStartWithConfig }) => {
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [audioNarrative, setAudioNarrative] = useState(true);
   const [saving, setSaving] = useState(false);
+  
+  // Time limit configuration
+  const [timeLimitEnabled, setTimeLimitEnabled] = useState(false);
+  const [timeLimitUnit, setTimeLimitUnit] = useState('day');
+  const [timeLimitAmount, setTimeLimitAmount] = useState(1);
 
   const languages = [
     { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸', voiceSupported: true },
