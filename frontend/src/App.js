@@ -688,6 +688,12 @@ const ScenarioInput = ({ onSetScenario, currentScenario }) => {
   const [supportedLanguages, setSupportedLanguages] = useState([]);
   const { token } = useAuth();
 
+  // Upload functionality state
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [showUploadedFiles, setShowUploadedFiles] = useState(false);
+
   // Fetch supported languages on component mount
   useEffect(() => {
     const fetchSupportedLanguages = async () => {
