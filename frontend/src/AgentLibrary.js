@@ -311,7 +311,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                             <div className="mt-3">
                               <div className="mb-2">
                                 <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">ARCHETYPE</span>
-                                <p className="text-xs text-gray-600 mt-1">{agent.archetype}</p>
+                                <p className="text-xs text-gray-600 mt-1">{agent.archetypeDisplay || agent.archetype}</p>
                               </div>
                               
                               <div className="mb-2">
