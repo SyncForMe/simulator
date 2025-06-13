@@ -1574,18 +1574,16 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
 
   // Optimized Avatar Component with instant loading
   const OptimizedAvatar = ({ src, alt, className, size = 48 }) => {
-    const [imageLoaded, setImageLoaded] = useState(loadedImages.has(src));
+    const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
     
+    // Check if this image is already loaded from preloading
     useEffect(() => {
-      setImageLoaded(loadedImages.has(src));
+      if (loadedImages.has(src)) {
+        setImageLoaded(true);
+      }
     }, [src, loadedImages]);
 
-    const loadingState = imageLoadingStates.get(src) || 'loading';
-    
-    // Create optimized image URL for faster loading
-    const optimizedSrc = src + (src.includes('?') ? '&' : '?') + 'w=' + size + '&h=' + size + '&fit=crop&auto=format,compress';
-    
     // Base64 placeholder for instant display
     const placeholder = `data:image/svg+xml;base64,${btoa(`
       <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1596,22 +1594,21 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
     `)}`;
 
     return (
-      <div className={`relative ${className.includes('w-') ? '' : 'w-12 h-12'} flex-shrink-0`}>
-        {!imageLoaded && !imageError && (
-          <img
-            src={placeholder}
-            alt={alt}
-            className={`${className} absolute inset-0 opacity-50`}
-            style={{ filter: 'blur(1px)' }}
-          />
-        )}
+      <div className={`relative flex-shrink-0`} style={{ width: size, height: size }}>
+        {/* Always show placeholder first */}
         <img
-          src={imageError ? placeholder : optimizedSrc}
+          src={placeholder}
+          alt=""
+          className={`${className} absolute inset-0 ${imageLoaded && !imageError ? 'opacity-30' : 'opacity-100'} transition-opacity duration-200`}
+        />
+        
+        {/* Real image */}
+        <img
+          src={src}
           alt={alt}
-          className={`${className} ${imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'} transition-opacity duration-200`}
+          className={`${className} absolute inset-0 ${imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
           loading="eager"
           decoding="async"
-          fetchPriority="high"
           style={{
             imageRendering: 'crisp-edges',
             transform: 'translateZ(0)',
@@ -1625,11 +1622,6 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
             console.warn(`Failed to load avatar: ${src}`);
           }}
         />
-        {loadingState === 'loading' && !imageLoaded && !imageError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-full">
-            <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        )}
       </div>
     );
   };
