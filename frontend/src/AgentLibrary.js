@@ -1375,7 +1375,7 @@ const technologyCategories = {
         background: "Aerospace engineer with experience at NASA JPL and SpaceX. Led development of advanced propulsion systems for Mars missions. Known for taking on seemingly impossible engineering challenges. Rock climber and pilot who brings risk-taking mentality to space technology development.",
         expertise: "Aerospace Engineering, Propulsion Systems, Space Mission Design, Life Support Systems, Planetary Exploration",
         memories: "Led development of ion propulsion system that enabled Mars Sample Return mission in 2024. Survived near-fatal accident during rocket engine test in 2019 - explosion taught him importance of redundant safety systems. Completed solo desert survival training in preparation for Mars mission simulation.",
-        knowledge: "https://www.nasa.gov/", https://www.spacex.com/, https://mars.nasa.gov/", 
+        knowledge: "https://www.nasa.gov/, https://www.spacex.com/, https://mars.nasa.gov/", 
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Marcus Johnson, African American man, aerospace engineer, wearing flight suit with space patches, adventurous expression, rocket engine test facility background"
       },
