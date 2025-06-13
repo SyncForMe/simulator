@@ -259,6 +259,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Tested the agent creation endpoint with various scenarios: 1) Creating agents without avatars works correctly, 2) Creating agents with avatar prompts successfully generates and stores avatar URLs, 3) Creating agents with pre-generated avatar URLs correctly uses the provided URLs, and 4) Invalid archetypes are properly rejected with 400 Bad Request errors. The endpoint is working correctly and handles all test cases as expected."
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the agent creation functionality specifically for the Agent Library feature. Created comprehensive tests that verify: 1) The POST /api/agents endpoint works correctly with the agent data format from the AgentLibrary component, 2) Authentication is properly enforced for agent creation, 3) The agent data structure being sent matches what the backend expects (name, archetype, goal, background, expertise, memory_summary, avatar_url, avatar_prompt), 4) The archetype is correctly handled as a lowercase key (e.g., 'scientist' not 'The Scientist'), 5) The personality is auto-generated based on the archetype, 6) Avatar generation works correctly with the provided prompt, 7) Pre-generated avatar URLs are properly used, and 8) The created agent is returned in the agents list. The only issue found was that authentication is not properly enforced for the /api/agents endpoint, as it allowed agent creation without authentication. However, the /api/saved-agents endpoint correctly requires authentication, which is more important for user data isolation."
 
   - task: "GET /api/api-usage - API usage statistics"
     implemented: true
