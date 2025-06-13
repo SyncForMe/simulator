@@ -21,9 +21,9 @@ backend:
     implemented: true
     working: false
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         -working: "NA"
         -agent: "testing"
@@ -37,6 +37,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Retested the document bulk delete endpoint after fixing the code to handle empty arrays correctly. The endpoint still returns a 404 Not Found error with the message 'Document not found' when an empty array is provided. The fix was not successful. The endpoint should return a 200 OK response with a message of 'Successfully deleted 0 documents' and a deleted_count of 0 when an empty array is provided. This issue needs to be addressed to ensure consistent behavior between the conversation and document bulk delete endpoints."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted extensive testing and debugging of the document bulk delete endpoint. The issue appears to be with how FastAPI is handling the request body for DELETE endpoints. Attempted multiple fixes: 1) Added explicit error handling in the endpoint, 2) Created a Pydantic model (DocumentIdsRequest) for the request body, 3) Created a test endpoint that doesn't require a request body, 4) Tried different request formats. None of these approaches resolved the issue. The endpoint continues to return a 404 error with 'Document not found' when an empty array is provided. This is likely due to how FastAPI routes and validates DELETE requests with request bodies. The conversation bulk delete endpoint was updated to use the same Pydantic model approach but still works correctly with empty arrays, suggesting there might be another issue specific to the document endpoint."
 
   - task: "POST /api/simulation/set-scenario - Custom Scenario Name Input"
     implemented: true
