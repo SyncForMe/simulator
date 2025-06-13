@@ -1497,10 +1497,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                 Object.values(sector.categories).forEach(category => {
                   category.agents.forEach(agent => {
                     if (agent.avatar) {
-                      // Add optimized URLs for both sizes
-                      const baseUrl = agent.avatar;
-                      allAvatars.push(baseUrl + '?w=48&h=48&fit=crop&auto=format,compress');
-                      allAvatars.push(baseUrl + '?w=64&h=64&fit=crop&auto=format,compress');
+                      allAvatars.push(agent.avatar);
                     }
                   });
                 });
