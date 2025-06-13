@@ -444,6 +444,10 @@ class FastForwardRequest(BaseModel):
     target_days: int = Field(ge=1, le=30)  # 1-30 days max
     conversations_per_period: int = Field(ge=1, le=5, default=2)  # 1-5 conversations per time period
 
+class SimulationStartRequest(BaseModel):
+    time_limit_hours: Optional[int] = None  # Time limit in hours, None for unlimited
+    time_limit_display: Optional[str] = None  # Human readable time limit for agents
+
 class AgentUpdate(BaseModel):
     name: Optional[str] = None
     archetype: Optional[str] = None
