@@ -1,4 +1,19 @@
 backend:
+  - task: "Time Limit Functionality for Simulations"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for time limit functionality in simulations"
+        -working: true
+        -agent: "testing"
+        -comment: "Tested the time limit functionality for simulations. The POST /api/simulation/start endpoint correctly accepts time_limit_hours and time_limit_display parameters and saves them in the simulation state. The simulation_start_time is properly recorded. The GET /api/simulation/state endpoint correctly calculates time_remaining_hours and time_elapsed_hours based on the time limit and start time. The GET /api/simulation/time-status endpoint provides detailed time information including time_pressure_level which is correctly calculated based on the percentage of time remaining (low, medium, high, critical, expired). Tested with 24-hour time limit (1 day), 168-hour time limit (1 week), and no time limit (null values). All scenarios worked correctly, with appropriate time calculations and pressure levels. The time limit feature allows users to set deadlines for agents to reach conclusions within specific timeframes, and agents are aware of these constraints in their responses."
+
   - task: "AgentLibrary Avatar Loading Performance"
     implemented: true
     working: true
