@@ -10,6 +10,7 @@ import re
 import uuid
 import jwt
 from datetime import datetime, timedelta
+import statistics
 
 # Load environment variables from frontend/.env
 load_dotenv('/app/frontend/.env')
@@ -41,8 +42,9 @@ test_results = {
 # Global variables for auth testing
 auth_token = None
 test_user_id = None
+created_document_ids = []
 
-def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None, auth=False, headers=None, params=None):
+def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None, auth=False, headers=None, params=None, measure_time=False):
     """Run a test against the specified endpoint"""
     url = f"{API_URL}{endpoint}"
     print(f"\n{'='*80}\nTesting: {test_name} ({method} {url})")
@@ -55,6 +57,8 @@ def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, 
         headers["Authorization"] = f"Bearer {auth_token}"
     
     try:
+        start_time = time.time()
+        
         if method == "GET":
             response = requests.get(url, headers=headers, params=params)
         elif method == "POST":
@@ -70,8 +74,13 @@ def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, 
             print(f"Unsupported method: {method}")
             return False, None
         
+        end_time = time.time()
+        response_time = end_time - start_time
+        
         # Print response details
         print(f"Status Code: {response.status_code}")
+        if measure_time:
+            print(f"Response Time: {response_time:.4f} seconds")
         
         # Check if response is JSON
         try:
@@ -99,14 +108,19 @@ def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, 
         result = "PASSED" if test_passed else "FAILED"
         print(f"Test Result: {result}")
         
-        test_results["tests"].append({
+        test_result = {
             "name": test_name,
             "endpoint": endpoint,
             "method": method,
             "status_code": response.status_code,
             "expected_status": expected_status,
             "result": result
-        })
+        }
+        
+        if measure_time:
+            test_result["response_time"] = response_time
+            
+        test_results["tests"].append(test_result)
         
         if test_passed:
             test_results["passed"] += 1
