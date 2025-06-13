@@ -291,8 +291,15 @@ const ObserverLogo = () => {
 
 // Authentication Context
 
-const CurrentScenarioCard = ({ currentScenario }) => {
+const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Auto-expand when autoExpand prop is true
+  useEffect(() => {
+    if (autoExpand) {
+      setIsExpanded(true);
+    }
+  }, [autoExpand]);
 
   if (!currentScenario) {
     return null;
