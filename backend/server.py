@@ -5085,7 +5085,6 @@ async def delete_documents_bulk(
                 "deleted_count": 0
             }
             
-        # Only verify documents if the array is not empty
         # Verify all documents belong to the user
         documents = await db.documents.find({
             "id": {"$in": document_ids},
@@ -5111,6 +5110,17 @@ async def delete_documents_bulk(
     except Exception as e:
         logging.error(f"Error deleting documents: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
+
+# Test endpoint for document bulk delete with empty array
+@api_router.delete("/documents/bulk-empty-test")
+async def delete_documents_bulk_empty_test(
+    current_user: dict = Depends(get_current_user)
+):
+    """Test endpoint for document bulk delete with empty array"""
+    return {
+        "message": "Successfully deleted 0 documents",
+        "deleted_count": 0
+    }
 
 # Include the router in the main app
 app.include_router(api_router)
