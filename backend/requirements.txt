@@ -6,7 +6,7 @@ python-dotenv==1.0.0
 emergentintegrations
 fal-client
 google-cloud-texttospeech==2.16.4
-aiohttp==3.10.12
+aiohttp==3.10.11
 fal-client==0.7.0
 python-jose[cryptography]==3.5.0
 google-auth==2.40.3
