@@ -2879,10 +2879,27 @@ async def test_background_differences():
     }
 
 @api_router.post("/simulation/start")
-async def start_simulation():
-    """Start or reset the simulation"""
+async def start_simulation(request: Optional[SimulationStartRequest] = None):
+    """Start or reset the simulation with optional time limit"""
+    
+    # Get time limit info from request
+    time_limit_hours = None
+    time_limit_display = None
+    simulation_start_time = datetime.utcnow()
+    
+    if request:
+        time_limit_hours = request.time_limit_hours
+        time_limit_display = request.time_limit_display
+    
     # Reset simulation state
-    simulation = SimulationState(is_active=True)
+    simulation = SimulationState(
+        is_active=True,
+        time_limit_hours=time_limit_hours,
+        time_limit_display=time_limit_display,
+        simulation_start_time=simulation_start_time,
+        time_remaining_hours=time_limit_hours  # Initialize with full time limit
+    )
+    
     await db.simulation_state.delete_many({})
     await db.simulation_state.insert_one(simulation.dict())
     
@@ -2891,7 +2908,15 @@ async def start_simulation():
     await db.relationships.delete_many({})
     await db.summaries.delete_many({})  # Clear old weekly reports
     
-    return {"message": "Simulation started", "state": simulation}
+    # Log the simulation start with time limit info
+    time_limit_msg = f" with {time_limit_display} time limit" if time_limit_display else " with no time limit"
+    
+    return {
+        "message": f"Simulation started{time_limit_msg}", 
+        "state": simulation,
+        "time_limit_active": time_limit_hours is not None,
+        "time_limit_display": time_limit_display
+    }
 
 @api_router.get("/simulation/state")
 async def get_simulation_state():
