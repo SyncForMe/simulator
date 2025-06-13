@@ -380,7 +380,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                 />
                 <div>
                   <h3 className="text-xl font-bold">{selectedAgentDetails.name}</h3>
-                  <p className="text-blue-100">Precision Medicine Oncologist</p>
+                  <p className="text-blue-100">{selectedAgentDetails.title || "Precision Medicine Oncologist"}</p>
                   <p className="text-blue-200 text-sm mt-1">{selectedAgentDetails.archetype}</p>
                 </div>
               </div>
