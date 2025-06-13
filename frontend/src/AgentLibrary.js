@@ -1293,7 +1293,7 @@ const technologyCategories = {
         background: "Semiconductor engineer who develops cutting-edge electronic devices and circuits. Former Intel engineer who worked on processor design. Known for pushing performance boundaries and implementing experimental technologies.",
         expertise: "Semiconductor Design, Integrated Circuits, Digital Signal Processing, Embedded Systems, Electronics Innovation",
         memories: "Designed neuromorphic chip that processes AI workloads 1000x more efficiently than traditional processors. Successfully developed quantum dot display technology that achieved perfect color reproduction. Created ultra-low-power sensor chip that enables IoT devices to run for 10 years on single battery.",
-        knowledge: "https://www.intel.com/", https://www.arm.com/, https://www.qualcomm.com/, 
+        knowledge: "https://www.intel.com/, https://www.arm.com/, https://www.qualcomm.com/", 
         avatar: "",
         avatar_prompt: "Professional headshot of Marcus Johnson, African American man, semiconductor engineer, wearing modern tech attire, innovative expression, advanced semiconductor fabrication facility background"
       },
