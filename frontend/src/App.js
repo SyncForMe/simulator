@@ -5390,7 +5390,10 @@ function App() {
       setSummaries([]);
       
       // Start new simulation (this clears everything)
-      await axios.post(`${API}/simulation/start`);
+      await axios.post(`${API}/simulation/start`, {
+        time_limit_hours: config.timeLimit,
+        time_limit_display: config.timeLimitDisplay
+      });
       
       // Set the language for the simulation
       await axios.post(`${API}/simulation/set-language`, { 
@@ -5405,7 +5408,8 @@ function App() {
       // Show success message with configuration details
       const langName = config.language === 'en' ? 'English' : config.language;
       const audioStatus = config.audioNarrative ? 'enabled' : 'disabled';
-      alert(`✅ Simulation started!\nLanguage: ${langName}\nAudio Narration: ${audioStatus}`);
+      const timeLimitInfo = config.timeLimit ? `\nTime Limit: ${config.timeLimitDisplay}` : '\nTime Limit: Unlimited';
+      alert(`✅ Simulation started!\nLanguage: ${langName}\nAudio Narration: ${audioStatus}${timeLimitInfo}`);
       
     } catch (error) {
       console.error('Error starting simulation:', error);
