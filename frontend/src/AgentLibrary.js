@@ -1780,7 +1780,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                   <img
                     src={selectedAgentDetails.avatar}
                     alt={selectedAgentDetails.name}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-white"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-white avatar-optimized agent-avatar-large"
                     loading="eager"
                     decoding="async"
                     style={{
