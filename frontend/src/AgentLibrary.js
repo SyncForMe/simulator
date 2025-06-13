@@ -1489,8 +1489,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
   // Don't render if not open
   if (!isOpen) return null;
 
-  // Aggressive preloading of all avatars on app startup
-  useEffect(() => {
+  const handleAddAgent = async (agent) => {
     // Register service worker immediately on app load
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
