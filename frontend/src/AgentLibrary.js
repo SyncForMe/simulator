@@ -50,7 +50,9 @@ const healthcareCategories = {
       {
         id: 2,
         name: "Dr. Marcus Rodriguez",
-        archetype: "The Leader",
+        archetype: "leader",
+        archetypeDisplay: "The Leader",
+        title: "Emergency Medicine Physician",
         goal: "To advance global health equity through innovative healthcare delivery models in underserved communities.",
         background: "Emergency medicine physician and global health advocate. Founded medical nonprofit serving rural communities. Led disaster response missions in 15 countries. Expertise in telemedicine and remote healthcare delivery.",
         expertise: "Emergency Medicine, Global Health, Telemedicine, Disaster Medicine, Healthcare Equity",
@@ -61,7 +63,9 @@ const healthcareCategories = {
       {
         id: 3,
         name: "Dr. Katherine Vale",
-        archetype: "The Mediator",
+        archetype: "mediator",
+        archetypeDisplay: "The Mediator",
+        title: "Family Medicine Physician",
         goal: "To bridge the gap between specialist and primary care through collaborative medicine and patient-centered approaches.",
         background: "Family medicine physician specializing in care coordination. Developed innovative patient-centered medical home model. Expert in managing complex chronic diseases and multi-specialty care coordination.",
         expertise: "Family Medicine, Care Coordination, Chronic Disease Management, Patient-Centered Care, Quality Improvement",
