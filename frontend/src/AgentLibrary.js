@@ -203,7 +203,7 @@ const AgentLibrary = ({ onAddAgent, onClose, isOpen }) => {
     if (!token) return;
     
     setGeneratingAvatars(true);
-    const allAgents = [...financeAgents, ...technologyAgents];
+    const allAgents = [...healthcareAgents, ...financeAgents, ...technologyAgents];
     
     // Process agents in batches to avoid overwhelming the API
     const batchSize = 5;
