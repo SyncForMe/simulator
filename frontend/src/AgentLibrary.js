@@ -1437,7 +1437,7 @@ const technologyCategories = {
         background: "Nanomedicine researcher with background in both engineering and biology. Prefers laboratory research to public presentations but recognized as leading expert in targeted drug delivery systems. Meticulous approach to safety testing and risk assessment.",
         expertise: "Nanotechnology, Drug Delivery Systems, Biomedical Engineering, Materials Characterization, Toxicology",
         memories: "Developed targeted cancer drug delivery nanoparticles that reduced chemotherapy side effects by 90% in clinical trials. Discovered unexpected nanoparticle toxicity in liver cells during 2020 safety study, leading to complete redesign of delivery system. Spent 2 years in clean room developing single-molecule manipulation techniques.",
-        knowledge: "https://www.nih.gov/research-training/medical-research-initiatives/", https://www.nano.gov/, https://www.nature.com/subjects/nanoscale-devices/", 
+        knowledge: "https://www.nih.gov/research-training/medical-research-initiatives/, https://www.nano.gov/, https://www.nature.com/subjects/nanoscale-devices/", 
         avatar: "",
         avatar_prompt: "Professional headshot of Dr. Anna Petrov, Eastern European woman, nanomedicine researcher, wearing clean room attire, focused expression, nanotechnology research facility background"
       },
