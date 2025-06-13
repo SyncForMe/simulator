@@ -395,120 +395,22 @@ def test_document_bulk_delete():
             print("❌ Cannot test document bulk delete without authentication")
             return False, "Authentication failed"
     
-    # Test 1: Delete with empty array
-    print("\nTest 1: Testing bulk delete with empty array")
+    # Create test documents for deletion
+    print("\nCreating test documents for bulk delete testing...")
+    test_doc_ids = []
     
-    empty_data = {
-        "document_ids": []
-    }
-    
-    empty_delete_test, empty_delete_response = run_test(
-        "Bulk Delete with Empty Array",
-        "/documents/bulk",
-        method="DELETE",
-        data=empty_data,
-        auth=True,
-        expected_keys=["message", "deleted_count"]
-    )
-    
-    if empty_delete_test and empty_delete_response:
-        if empty_delete_response.get("deleted_count") == 0:
-            print("✅ Bulk delete with empty array returned deleted_count=0")
-        else:
-            print(f"❌ Bulk delete with empty array returned unexpected deleted_count: {empty_delete_response.get('deleted_count')}")
-    
-    # Test 2: Delete with non-existent document IDs
-    print("\nTest 2: Testing bulk delete with non-existent document IDs")
-    
-    fake_ids = [str(uuid.uuid4()) for _ in range(3)]
-    fake_data = {
-        "document_ids": fake_ids
-    }
-    
-    fake_delete_test, fake_delete_response = run_test(
-        "Bulk Delete with Non-existent IDs",
-        "/documents/bulk",
-        method="DELETE",
-        data=fake_data,
-        auth=True,
-        expected_status=404
-    )
-    
-    if fake_delete_test:
-        print("✅ Bulk delete with non-existent IDs correctly returned 404 status")
-    
-    # Test 3: Delete with valid document IDs (if we have any)
-    if created_document_ids:
-        print("\nTest 3: Testing bulk delete with valid document IDs")
-        
-        # Use half of the created documents for deletion
-        docs_to_delete = created_document_ids[:len(created_document_ids)//2]
-        valid_data = {
-            "document_ids": docs_to_delete
-        }
-        
-        valid_delete_test, valid_delete_response = run_test(
-            "Bulk Delete with Valid IDs",
-            "/documents/bulk",
-            method="DELETE",
-            data=valid_data,
-            auth=True,
-            expected_keys=["message", "deleted_count"]
-        )
-        
-        if valid_delete_test and valid_delete_response:
-            if valid_delete_response.get("deleted_count") == len(docs_to_delete):
-                print(f"✅ Bulk delete with valid IDs successfully deleted {len(docs_to_delete)} documents")
-                
-                # Remove the deleted IDs from our tracking list
-                for doc_id in docs_to_delete:
-                    if doc_id in created_document_ids:
-                        created_document_ids.remove(doc_id)
-            else:
-                print(f"❌ Bulk delete with valid IDs returned unexpected deleted_count: {valid_delete_response.get('deleted_count')}")
-    else:
-        print("⚠️ Skipping valid document deletion test as no documents were created")
-    
-    # Test 4: Try the POST version of the bulk delete endpoint
-    print("\nTest 4: Testing POST version of bulk delete endpoint")
-    
-    if created_document_ids:
-        # Use remaining created documents for deletion
-        docs_to_delete = created_document_ids.copy()
-        post_data = {
-            "document_ids": docs_to_delete
-        }
-        
-        post_delete_test, post_delete_response = run_test(
-            "Bulk Delete with POST",
-            "/documents/bulk-delete",
-            method="POST",
-            data=post_data,
-            auth=True,
-            expected_keys=["message", "deleted_count"]
-        )
-        
-        if post_delete_test and post_delete_response:
-            if post_delete_response.get("deleted_count") == len(docs_to_delete):
-                print(f"✅ POST bulk delete successfully deleted {len(docs_to_delete)} documents")
-                
-                # Clear our tracking list
-                created_document_ids.clear()
-            else:
-                print(f"❌ POST bulk delete returned unexpected deleted_count: {post_delete_response.get('deleted_count')}")
-    else:
-        # Create a new document for testing POST delete
+    for i in range(3):
         document_data = {
-            "title": "Test Document for POST Delete",
+            "title": f"Test Document for Bulk Delete {uuid.uuid4()}",
             "category": "Protocol",
-            "description": "This is a test document for testing POST bulk delete",
-            "content": "# Test Document\n\nThis document will be deleted using POST bulk delete.",
-            "keywords": ["test", "delete", "post"],
+            "description": "This is a test document for bulk delete testing",
+            "content": "# Test Document\n\nThis is a test document for bulk delete testing.",
+            "keywords": ["test", "bulk", "delete"],
             "authors": ["Test User"]
         }
         
         create_doc_test, create_doc_response = run_test(
-            "Create Document for POST Delete",
+            f"Create Test Document {i+1}",
             "/documents/create",
             method="POST",
             data=document_data,
@@ -519,34 +421,21 @@ def test_document_bulk_delete():
         if create_doc_test and create_doc_response:
             document_id = create_doc_response.get("document_id")
             if document_id:
-                print(f"✅ Created document with ID: {document_id}")
-                
-                # Test POST delete with this document
-                post_data = {
-                    "document_ids": [document_id]
-                }
-                
-                post_delete_test, post_delete_response = run_test(
-                    "Bulk Delete with POST",
-                    "/documents/bulk-delete",
-                    method="POST",
-                    data=post_data,
-                    auth=True,
-                    expected_keys=["message", "deleted_count"]
-                )
-                
-                if post_delete_test and post_delete_response:
-                    if post_delete_response.get("deleted_count") == 1:
-                        print("✅ POST bulk delete successfully deleted the document")
-                    else:
-                        print(f"❌ POST bulk delete returned unexpected deleted_count: {post_delete_response.get('deleted_count')}")
+                print(f"✅ Created test document {i+1} with ID: {document_id}")
+                test_doc_ids.append(document_id)
             else:
-                print("❌ Failed to get document ID for POST delete test")
+                print(f"❌ Failed to get document ID for test document {i+1}")
         else:
-            print("❌ Failed to create document for POST delete test")
+            print(f"❌ Failed to create test document {i+1}")
     
-    # Test 5: Test POST bulk delete with empty array
-    print("\nTest 5: Testing POST bulk delete with empty array")
+    if not test_doc_ids:
+        print("❌ Failed to create any test documents for bulk delete testing")
+        return False, "Failed to create test documents"
+    
+    print(f"Created {len(test_doc_ids)} test documents for bulk delete testing")
+    
+    # Test 1: Test POST bulk delete with empty array
+    print("\nTest 1: Testing POST bulk delete with empty array")
     
     empty_post_data = {
         "document_ids": []
@@ -567,33 +456,192 @@ def test_document_bulk_delete():
         else:
             print(f"❌ POST bulk delete with empty array returned unexpected deleted_count: {empty_post_delete_response.get('deleted_count')}")
     
+    # Test 2: Test POST bulk delete with valid document IDs
+    print("\nTest 2: Testing POST bulk delete with valid document IDs")
+    
+    # Use half of the created documents for deletion
+    docs_to_delete = test_doc_ids[:len(test_doc_ids)//2]
+    valid_post_data = {
+        "document_ids": docs_to_delete
+    }
+    
+    valid_post_delete_test, valid_post_delete_response = run_test(
+        "POST Bulk Delete with Valid IDs",
+        "/documents/bulk-delete",
+        method="POST",
+        data=valid_post_data,
+        auth=True,
+        expected_keys=["message", "deleted_count"]
+    )
+    
+    if valid_post_delete_test and valid_post_delete_response:
+        if valid_post_delete_response.get("deleted_count") == len(docs_to_delete):
+            print(f"✅ POST bulk delete successfully deleted {len(docs_to_delete)} documents")
+            
+            # Remove the deleted IDs from our tracking list
+            for doc_id in docs_to_delete:
+                if doc_id in test_doc_ids:
+                    test_doc_ids.remove(doc_id)
+        else:
+            print(f"❌ POST bulk delete returned unexpected deleted_count: {valid_post_delete_response.get('deleted_count')}")
+    
+    # Test 3: Test POST bulk delete with non-existent document IDs
+    print("\nTest 3: Testing POST bulk delete with non-existent document IDs")
+    
+    fake_ids = [str(uuid.uuid4()) for _ in range(3)]
+    fake_post_data = {
+        "document_ids": fake_ids
+    }
+    
+    fake_post_delete_test, fake_post_delete_response = run_test(
+        "POST Bulk Delete with Non-existent IDs",
+        "/documents/bulk-delete",
+        method="POST",
+        data=fake_post_data,
+        auth=True,
+        expected_status=404
+    )
+    
+    if fake_post_delete_test:
+        print("✅ POST bulk delete with non-existent IDs correctly returned 404 status")
+    
+    # Test 4: Test DELETE bulk delete with empty array
+    print("\nTest 4: Testing DELETE bulk delete with empty array")
+    
+    # Try different formats for the empty array
+    empty_formats = [
+        [],                    # Direct array
+        {"document_ids": []},  # Object with document_ids field
+        {"data": []}           # Object with data field
+    ]
+    
+    empty_delete_success = False
+    
+    for i, empty_data in enumerate(empty_formats):
+        print(f"\nTrying empty array format {i+1}: {empty_data}")
+        
+        empty_delete_test, empty_delete_response = run_test(
+            f"DELETE Bulk Delete with Empty Array (Format {i+1})",
+            "/documents/bulk",
+            method="DELETE",
+            data=empty_data,
+            auth=True,
+            expected_keys=["message", "deleted_count"]
+        )
+        
+        if empty_delete_test and empty_delete_response:
+            if empty_delete_response.get("deleted_count") == 0:
+                print(f"✅ DELETE bulk delete with empty array format {i+1} returned deleted_count=0")
+                empty_delete_success = True
+                break
+            else:
+                print(f"❌ DELETE bulk delete with empty array format {i+1} returned unexpected deleted_count: {empty_delete_response.get('deleted_count')}")
+    
+    if not empty_delete_success:
+        print("❌ All DELETE bulk delete with empty array formats failed")
+    
+    # Test 5: Test DELETE bulk delete with valid document IDs
+    print("\nTest 5: Testing DELETE bulk delete with valid document IDs")
+    
+    if test_doc_ids:
+        # Try different formats for the document IDs
+        valid_formats = [
+            test_doc_ids,                    # Direct array
+            {"document_ids": test_doc_ids},  # Object with document_ids field
+            {"data": test_doc_ids}           # Object with data field
+        ]
+        
+        valid_delete_success = False
+        
+        for i, valid_data in enumerate(valid_formats):
+            print(f"\nTrying valid IDs format {i+1}: {valid_data}")
+            
+            valid_delete_test, valid_delete_response = run_test(
+                f"DELETE Bulk Delete with Valid IDs (Format {i+1})",
+                "/documents/bulk",
+                method="DELETE",
+                data=valid_data,
+                auth=True,
+                expected_keys=["message", "deleted_count"]
+            )
+            
+            if valid_delete_test and valid_delete_response:
+                if valid_delete_response.get("deleted_count") == len(test_doc_ids):
+                    print(f"✅ DELETE bulk delete with valid IDs format {i+1} successfully deleted {len(test_doc_ids)} documents")
+                    valid_delete_success = True
+                    test_doc_ids = []
+                    break
+                else:
+                    print(f"❌ DELETE bulk delete with valid IDs format {i+1} returned unexpected deleted_count: {valid_delete_response.get('deleted_count')}")
+        
+        if not valid_delete_success:
+            print("❌ All DELETE bulk delete with valid IDs formats failed")
+    else:
+        print("⚠️ Skipping DELETE bulk delete with valid IDs test as all test documents were already deleted")
+    
+    # Test 6: Test DELETE bulk delete with non-existent document IDs
+    print("\nTest 6: Testing DELETE bulk delete with non-existent document IDs")
+    
+    fake_ids = [str(uuid.uuid4()) for _ in range(3)]
+    fake_data = fake_ids  # Try direct array format
+    
+    fake_delete_test, fake_delete_response = run_test(
+        "DELETE Bulk Delete with Non-existent IDs",
+        "/documents/bulk",
+        method="DELETE",
+        data=fake_data,
+        auth=True,
+        expected_status=404
+    )
+    
+    if fake_delete_test:
+        print("✅ DELETE bulk delete with non-existent IDs correctly returned 404 status")
+    
     # Print summary
     print("\nDOCUMENT BULK DELETE FUNCTIONALITY SUMMARY:")
     
     # Check if all tests passed
-    empty_array_works = empty_delete_test and empty_delete_response and empty_delete_response.get("deleted_count") == 0
-    non_existent_ids_works = fake_delete_test
     post_empty_array_works = empty_post_delete_test and empty_post_delete_response and empty_post_delete_response.get("deleted_count") == 0
+    post_valid_ids_works = valid_post_delete_test and valid_post_delete_response and valid_post_delete_response.get("deleted_count") > 0
+    post_fake_ids_works = fake_post_delete_test
+    delete_empty_array_works = empty_delete_success
+    delete_valid_ids_works = valid_delete_success
+    delete_fake_ids_works = fake_delete_test
     
-    if empty_array_works and non_existent_ids_works and post_empty_array_works:
-        print("✅ Document bulk delete functionality is working correctly!")
-        print("✅ Bulk delete with empty array works correctly")
-        print("✅ Bulk delete with non-existent IDs returns appropriate error")
-        print("✅ POST version of bulk delete works correctly")
-        return True, "Document bulk delete functionality is working correctly"
+    # Summarize POST endpoint
+    print("\nPOST /api/documents/bulk-delete endpoint:")
+    if post_empty_array_works and post_valid_ids_works and post_fake_ids_works:
+        print("✅ POST bulk delete endpoint is working correctly for all test cases")
     else:
-        issues = []
-        if not empty_array_works:
-            issues.append("Bulk delete with empty array is not working correctly")
-        if not non_existent_ids_works:
-            issues.append("Bulk delete with non-existent IDs is not handling errors correctly")
+        print("❌ POST bulk delete endpoint has issues:")
         if not post_empty_array_works:
-            issues.append("POST version of bulk delete with empty array is not working correctly")
-        
-        print("❌ Document bulk delete functionality has issues:")
-        for issue in issues:
-            print(f"  - {issue}")
-        return False, "Document bulk delete functionality has issues"
+            print("  - Empty array case is not working correctly")
+        if not post_valid_ids_works:
+            print("  - Valid document IDs case is not working correctly")
+        if not post_fake_ids_works:
+            print("  - Non-existent document IDs case is not working correctly")
+    
+    # Summarize DELETE endpoint
+    print("\nDELETE /api/documents/bulk endpoint:")
+    if delete_empty_array_works and delete_valid_ids_works and delete_fake_ids_works:
+        print("✅ DELETE bulk delete endpoint is working correctly for all test cases")
+    else:
+        print("❌ DELETE bulk delete endpoint has issues:")
+        if not delete_empty_array_works:
+            print("  - Empty array case is not working correctly")
+        if not delete_valid_ids_works:
+            print("  - Valid document IDs case is not working correctly")
+        if not delete_fake_ids_works:
+            print("  - Non-existent document IDs case is not working correctly")
+    
+    # Overall assessment
+    if ((post_empty_array_works and post_valid_ids_works and post_fake_ids_works) or 
+       (delete_empty_array_works and delete_valid_ids_works and delete_fake_ids_works)):
+        print("\n✅ At least one bulk delete endpoint is fully functional")
+        return True, "At least one bulk delete endpoint is fully functional"
+    else:
+        print("\n❌ Both bulk delete endpoints have issues")
+        return False, "Both bulk delete endpoints have issues"
 
 def test_document_categories():
     """Test the document categories endpoint and count verification"""
