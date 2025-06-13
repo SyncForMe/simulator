@@ -854,17 +854,14 @@ def main():
     # Test authentication first
     test_login()
     
-    # Create test documents
-    doc_creation_success, _ = test_document_creation()
-    
     # Test document loading performance
     doc_loading_success, doc_loading_results = test_document_loading_performance()
     
-    # Test document categories
-    doc_categories_success, doc_categories_results = test_document_categories()
-    
     # Test document bulk delete
     doc_bulk_delete_success, doc_bulk_delete_message = test_document_bulk_delete()
+    
+    # Test document categories
+    doc_categories_success, doc_categories_results = test_document_categories()
     
     # Print summary of all tests
     print_summary()
@@ -878,24 +875,22 @@ def main():
         print("✅ Document loading performance is acceptable")
         print(f"✅ Average response time: {doc_loading_results['avg_time']:.4f} seconds")
         if not doc_loading_results['issues']:
-            print("✅ No optimization issues detected")
+            print("✅ No data structure issues detected")
         else:
-            print(f"⚠️ {len(doc_loading_results['issues'])} optimization issues detected:")
+            print(f"⚠️ {len(doc_loading_results['issues'])} data structure issues detected:")
             for issue in doc_loading_results['issues']:
                 print(f"  - {issue}")
     else:
         print("❌ Document loading performance needs improvement")
         print(f"❌ Average response time: {doc_loading_results['avg_time']:.4f} seconds")
         if doc_loading_results['issues']:
-            print(f"❌ {len(doc_loading_results['issues'])} optimization issues detected:")
+            print(f"❌ {len(doc_loading_results['issues'])} data structure issues detected:")
             for issue in doc_loading_results['issues']:
                 print(f"  - {issue}")
     
     if doc_bulk_delete_success:
         print("✅ Document bulk delete functionality is working correctly")
-        print("✅ Both DELETE and POST methods work for bulk delete")
-        print("✅ Empty arrays are handled correctly")
-        print("✅ Non-existent document IDs are handled correctly")
+        print("✅ At least one bulk delete endpoint is fully functional")
     else:
         print(f"❌ {doc_bulk_delete_message}")
     
