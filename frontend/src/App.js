@@ -3234,6 +3234,98 @@ const PreConversationConfigModal = ({ isOpen, onClose, onStartWithConfig }) => {
             </div>
           </div>
 
+          {/* Time Limit Configuration */}
+          <div>
+            <label className="block text-sm font-medium mb-3">
+              ⏰ Simulation Time Limit
+            </label>
+            <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+              {/* Enable/Disable Toggle */}
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="font-medium">Set Time Limit</div>
+                  <div className="text-sm text-gray-600">
+                    Give agents a deadline to reach conclusions
+                  </div>
+                </div>
+                <button
+                  onClick={() => setTimeLimitEnabled(!timeLimitEnabled)}
+                  className={`ml-4 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    timeLimitEnabled ? 'bg-orange-600' : 'bg-gray-200'
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                      timeLimitEnabled ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Time Limit Settings */}
+              {timeLimitEnabled && (
+                <div className="border-t border-gray-200 pt-4">
+                  <div className="flex items-center space-x-3">
+                    {/* Amount Input */}
+                    <div className="flex-1">
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Amount</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="999"
+                        value={timeLimitAmount}
+                        onChange={(e) => setTimeLimitAmount(Math.max(1, parseInt(e.target.value) || 1))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      />
+                    </div>
+
+                    {/* Unit Selection */}
+                    <div className="flex-2">
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Unit</label>
+                      <select
+                        value={timeLimitUnit}
+                        onChange={(e) => setTimeLimitUnit(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      >
+                        <option value="day">Day{timeLimitAmount > 1 ? 's' : ''}</option>
+                        <option value="week">Week{timeLimitAmount > 1 ? 's' : ''}</option>
+                        <option value="month">Month{timeLimitAmount > 1 ? 's' : ''}</option>
+                        <option value="year">Year{timeLimitAmount > 1 ? 's' : ''}</option>
+                      </select>
+                    </div>
+
+                    {/* Infinite Option */}
+                    <div className="flex-shrink-0">
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Infinite</label>
+                      <button
+                        onClick={() => setTimeLimitEnabled(false)}
+                        className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        title="No time limit"
+                      >
+                        ∞
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Summary */}
+                  <div className="mt-3 p-2 bg-orange-50 border border-orange-200 rounded text-xs text-orange-800">
+                    <strong>⏰ Agents will work towards conclusions within {timeLimitAmount} {timeLimitUnit}{timeLimitAmount > 1 ? 's' : ''}</strong>
+                    <div className="mt-1">
+                      They will prioritize finding solutions and reaching consensus before the deadline.
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* No Time Limit Message */}
+              {!timeLimitEnabled && (
+                <div className="p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
+                  <strong>∞ No time restrictions</strong> - Agents can continue discussions indefinitely
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Cost Information */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <div className="text-sm text-blue-800">
@@ -3241,6 +3333,11 @@ const PreConversationConfigModal = ({ isOpen, onClose, onStartWithConfig }) => {
               <div className="mt-1 text-xs">
                 • Text only: $0.10/month
                 • With voice: {audioNarrative ? '$3.34/month' : '$0.10/month'}
+                {timeLimitEnabled && (
+                  <div className="mt-1 text-orange-700">
+                    ⏰ Time limit: {timeLimitAmount} {timeLimitUnit}{timeLimitAmount > 1 ? 's' : ''}
+                  </div>
+                )}
               </div>
             </div>
           </div>
