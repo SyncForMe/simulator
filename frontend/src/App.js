@@ -4546,16 +4546,16 @@ const FileCenter = ({ onRefresh }) => {
   };
 
   // Filter documents based on search and category
-  const filteredScenarios = scenarioDocuments.map(scenario => ({
+  const filteredScenarios = (scenarioDocuments || []).map(scenario => ({
     ...scenario,
-    documents: scenario.documents.filter(doc => {
+    documents: (scenario?.documents || []).filter(doc => {
       const matchesSearch = searchTerm === "" || 
-        doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === "" || doc.category === selectedCategory;
+        (doc?.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (doc?.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === "" || doc?.category === selectedCategory;
       return matchesSearch && matchesCategory;
     })
-  })).filter(scenario => scenario.documents.length > 0);
+  })).filter(scenario => (scenario?.documents || []).length > 0);
 
   if (!user) {
     return (
