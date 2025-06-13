@@ -5026,9 +5026,129 @@ async def generate_agent_avatar(
         raise
     except Exception as e:
         logging.error(f"Error in avatar generation endpoint: {e}")
-        raise HTTPException(status_code=500, detail=f"Avatar generation failed: {str(e)}")
+@api_router.post("/scenario/upload-content")
+async def upload_scenario_content(
+    files: List[UploadFile] = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Upload content files for scenario context (images, docs, excel, links, pdfs)"""
+    try:
+        uploaded_files = []
+        
+        for file in files:
+            # Generate unique filename
+            file_id = str(uuid.uuid4())
+            file_extension = file.filename.split('.')[-1] if '.' in file.filename else ''
+            
+            # Read file content
+            content = await file.read()
+            
+            # Process different file types
+            if file.content_type and file.content_type.startswith('image/'):
+                # Convert image to base64 for storage
+                import base64
+                content_base64 = base64.b64encode(content).decode('utf-8')
+                processed_content = f"data:{file.content_type};base64,{content_base64}"
+                content_type = "image"
+            elif file.content_type == 'application/pdf':
+                # For PDFs, we'd normally extract text, but for now store as base64
+                import base64
+                content_base64 = base64.b64encode(content).decode('utf-8')
+                processed_content = f"data:{file.content_type};base64,{content_base64}"
+                content_type = "pdf"
+            elif file.content_type in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
+                # For Excel files, store as base64
+                import base64
+                content_base64 = base64.b64encode(content).decode('utf-8')
+                processed_content = f"data:{file.content_type};base64,{content_base64}"
+                content_type = "excel"
+            elif file.content_type and file.content_type.startswith('text/'):
+                # For text files, store as text
+                processed_content = content.decode('utf-8', errors='ignore')
+                content_type = "text"
+            else:
+                # For other files, store as base64
+                import base64
+                content_base64 = base64.b64encode(content).decode('utf-8')
+                processed_content = f"data:{file.content_type};base64,{content_base64}"
+                content_type = "document"
+            
+            # Store in database
+            file_doc = {
+                "id": file_id,
+                "user_id": current_user.id,
+                "filename": file.filename,
+                "content_type": file.content_type,
+                "file_type": content_type,
+                "content": processed_content,
+                "size": len(content),
+                "uploaded_at": datetime.utcnow(),
+                "scenario_context": True
+            }
+            
+            await db.scenario_uploads.insert_one(file_doc)
+            
+            uploaded_files.append({
+                "id": file_id,
+                "filename": file.filename,
+                "content_type": file.content_type,
+                "file_type": content_type,
+                "size": len(content)
+            })
+        
+        return {
+            "success": True,
+            "message": f"Successfully uploaded {len(uploaded_files)} files",
+            "files": uploaded_files
+        }
+        
+    except Exception as e:
+        logging.error(f"Error uploading scenario content: {e}")
+        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
-# Bulk delete endpoints
+@api_router.get("/scenario/uploads")
+async def get_scenario_uploads(
+    current_user: dict = Depends(get_current_user)
+):
+    """Get all uploaded scenario content for the user"""
+    try:
+        uploads = await db.scenario_uploads.find({
+            "user_id": current_user.id,
+            "scenario_context": True
+        }).to_list(None)
+        
+        # Remove content from list view for performance
+        for upload in uploads:
+            upload.pop('content', None)
+        
+        return uploads
+        
+    except Exception as e:
+        logging.error(f"Error fetching scenario uploads: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch uploads: {str(e)}")
+
+@api_router.get("/scenario/uploads/{file_id}")
+async def get_scenario_upload_content(
+    file_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get specific uploaded file content"""
+    try:
+        upload = await db.scenario_uploads.find_one({
+            "id": file_id,
+            "user_id": current_user.id
+        })
+        
+        if not upload:
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        return upload
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error fetching upload content: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch file content: {str(e)}")
 @api_router.delete("/conversation-history/bulk")
 async def delete_conversations_bulk(
     conversation_ids: List[str],
