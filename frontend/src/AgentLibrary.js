@@ -902,10 +902,10 @@ const technologyCategories = {
         archetypeDisplay: "The Optimist",
         title: "Data Science Director",
         goal: "To democratize data science capabilities and make analytics accessible to non-technical business users.",
-        background: "Data science leader who builds self-service analytics platforms and trains business users. Former consultant who saw how data literacy could transform organizations. Known for creating user-friendly tools.",
+        background: "Data science leader who builds self-service analytics platforms and trains business users. Former consultant who saw how data literacy could transform organizations. Known for creating user-friendly tools that enable business analysts to perform complex analytics. Advocates for data democratization and citizen data science.",
         expertise: "Self-Service Analytics, Data Visualization, Business Intelligence, Data Literacy, Platform Development",
-        memories: "Built no-code analytics platform that enabled 500+ business users to create their own reports and dashboards. Successfully trained sales team to use predictive models, increasing close rates by 40%. Developed data literacy program that increased company-wide data usage by 300%.",
-        knowledge: "https://tableau.com/, https://powerbi.microsoft.com/, https://streamlit.io/, https://plotly.com/",
+        memories: "Built no-code analytics platform that enabled 500+ business users to create their own reports and dashboards. Successfully trained sales team to use predictive models, increasing close rates by 40%. Failed initial data science project due to poor stakeholder communication despite accurate models. Developed data literacy program that increased company-wide data usage by 300%. Remembers emotional moment when non-technical manager used her platform to discover insight that saved failing product line.",
+        knowledge: "Comprehensive understanding of self-service analytics including drag-and-drop interfaces, automated machine learning, and visual query builders. Expert knowledge of data visualization including dashboard design, storytelling with data, and interactive graphics. Deep understanding of business intelligence including data warehousing, OLAP cubes, and reporting systems. Familiar with data literacy including training programs, change management, and adoption strategies. Understanding of platform development including user experience design, scalability considerations, and integration capabilities.",
         avatar: "https://v3.fal.media/files/kangaroo/nSjA76HgwVwCTCWWSExsO.png",
       },
       {
