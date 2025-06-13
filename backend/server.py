@@ -5130,16 +5130,6 @@ async def delete_documents_bulk(
         logging.error(f"Error deleting documents: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
 
-@api_router.delete("/documents/bulk-test-empty")
-async def delete_documents_bulk_test_empty(
-    current_user: dict = Depends(get_current_user)
-):
-    """Test endpoint for deleting documents with empty array"""
-    return {
-        "message": "Successfully deleted 0 documents",
-        "deleted_count": 0
-    }
-
 # Include the router in the main app
 app.include_router(api_router)
 
