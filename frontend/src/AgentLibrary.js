@@ -1504,8 +1504,8 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
         background: agent.background,
         expertise: agent.expertise,
         memory_summary: `${agent.memories} Knowledge Sources: ${agent.knowledge}`,
-        avatar_url: agent.avatar, // Use avatar_url field that App.js expects
-        avatar_prompt: `Professional headshot of ${agent.name}, ${agent.title || 'medical professional'}, professional lighting, business attire`
+        avatar_url: agent.avatar, // Use existing avatar from library
+        avatar_prompt: agent.avatar_prompt || `Professional headshot of ${agent.name}, ${agent.title || 'professional'}, professional lighting, business attire`
       };
       
       const result = await onAddAgent(agentData);
