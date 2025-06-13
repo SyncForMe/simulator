@@ -3243,6 +3243,164 @@ async def get_relationships():
     
     return processed_relationships
 
+@api_router.post("/avatars/generate-library", response_model=dict)
+async def generate_library_avatars():
+    """Generate avatars for all agents in the library that don't have them"""
+    try:
+        # Define all library agents with their prompts
+        library_agents = []
+        
+        # Healthcare agents
+        healthcare_agents = [
+            {"name": "Dr. Sarah Chen", "prompt": "Professional headshot of Dr. Sarah Chen, Asian American woman, precision medicine oncologist, wearing professional medical attire, confident expression, medical research facility background"},
+            {"name": "Dr. Marcus Rodriguez", "prompt": "Professional headshot of Dr. Marcus Rodriguez, Hispanic man, emergency medicine physician, wearing professional medical attire, leadership expression, hospital emergency department background"},
+            {"name": "Dr. Katherine Vale", "prompt": "Professional headshot of Dr. Katherine Vale, Caucasian woman, family medicine physician, wearing professional medical attire, caring expression, family practice clinic background"},
+            {"name": "Dr. Ahmed Hassan", "prompt": "Professional headshot of Dr. Ahmed Hassan, Middle Eastern man, internal medicine specialist, wearing professional medical attire, thoughtful expression, medical office background"},
+            {"name": "Dr. Elena Petrov", "prompt": "Professional headshot of Dr. Elena Petrov, Eastern European woman, clinical pharmacologist, wearing professional attire with lab coat, scientific expression, pharmaceutical research lab background"},
+            {"name": "Dr. James Park", "prompt": "Professional headshot of Dr. James Park, Korean American man, drug safety specialist, wearing professional attire, analytical expression, pharmaceutical safety office background"},
+            {"name": "Dr. Maria Santos", "prompt": "Professional headshot of Dr. Maria Santos, Hispanic woman, pharmaceutical research director, wearing executive business attire, leadership expression, pharmaceutical company office background"},
+            {"name": "Dr. Lisa Wang", "prompt": "Professional headshot of Dr. Lisa Wang, Asian American woman, gene therapy researcher, wearing lab coat and safety equipment, innovative expression, gene therapy laboratory background"},
+            {"name": "Dr. Robert Kim", "prompt": "Professional headshot of Dr. Robert Kim, Korean American man, bioengineering specialist, wearing professional lab attire, scientific expression, bioengineering research facility background"},
+            {"name": "Dr. Jennifer Thompson", "prompt": "Professional headshot of Dr. Jennifer Thompson, Caucasian woman, synthetic biology expert, wearing modern lab attire, optimistic expression, synthetic biology laboratory background"},
+            {"name": "Maria Rodriguez, RN", "prompt": "Professional headshot of Maria Rodriguez, Hispanic woman, critical care nurse, wearing nursing scrubs with professional overlay, adventurous expression, modern ICU background"},
+            {"name": "David Chen, RN", "prompt": "Professional headshot of David Chen, Asian American man, nurse manager, wearing professional nursing attire, diplomatic expression, hospital management office background"},
+            {"name": "Susan Williams, RN", "prompt": "Professional headshot of Susan Williams, Caucasian woman, pediatric nurse, wearing colorful pediatric nursing attire, warm optimistic expression, children's hospital background"},
+            {"name": "Dr. Michael Johnson", "prompt": "Professional headshot of Dr. Michael Johnson, African American man, epidemiologist, wearing professional public health attire, leadership expression, CDC operations center background"},
+            {"name": "Dr. Patricia Lee", "prompt": "Professional headshot of Dr. Patricia Lee, Asian American woman, environmental health specialist, wearing professional attire with field equipment, scientific expression, environmental monitoring station background"},
+            {"name": "Dr. James Wilson", "prompt": "Professional headshot of Dr. James Wilson, Caucasian man, community health director, wearing professional public health attire, optimistic expression, community health center background"},
+            {"name": "Dr. Rachel Green", "prompt": "Professional headshot of Dr. Rachel Green, Caucasian woman, clinical nutritionist, wearing professional medical attire, scientific expression, clinical nutrition laboratory background"},
+            {"name": "Maria Gonzalez, RD", "prompt": "Professional headshot of Maria Gonzalez, Hispanic woman, pediatric dietitian, wearing professional healthcare attire, caring expression, pediatric nutrition clinic background"},
+            {"name": "Dr. Kevin Brown", "prompt": "Professional headshot of Dr. Kevin Brown, African American man, sports physical therapist, wearing professional therapy attire, adventurous expression, sports medicine facility background"},
+            {"name": "Dr. Lisa Anderson", "prompt": "Professional headshot of Dr. Lisa Anderson, Caucasian woman, neurologic physical therapist, wearing professional therapy attire, optimistic expression, rehabilitation center background"},
+            {"name": "Dr. Emily Carter", "prompt": "Professional headshot of Dr. Emily Carter, Caucasian woman, small animal veterinarian, wearing veterinary attire, compassionate expression, veterinary clinic background"},
+            {"name": "Dr. Mark Davis", "prompt": "Professional headshot of Dr. Mark Davis, Caucasian man, wildlife veterinarian, wearing field veterinary gear, adventurous expression, wildlife conservation background"},
+            {"name": "Dr. Amanda Foster", "prompt": "Professional headshot of Dr. Amanda Foster, Caucasian woman, clinical research coordinator, wearing professional research attire, scientific expression, clinical trials center background"},
+            {"name": "Dr. Thomas Mitchell", "prompt": "Professional headshot of Dr. Thomas Mitchell, Caucasian man, biostatistician, wearing professional academic attire, analytical expression, statistical research office background"},
+            {"name": "Dr. Jennifer Walsh", "prompt": "Professional headshot of Dr. Jennifer Walsh, Caucasian woman, infectious disease epidemiologist, wearing professional public health attire, leadership expression, global health organization background"},
+            {"name": "Dr. Carlos Mendez", "prompt": "Professional headshot of Dr. Carlos Mendez, Hispanic man, chronic disease epidemiologist, wearing professional research attire, scientific expression, epidemiology research center background"}
+        ]
+        
+        # Finance agents  
+        finance_agents = [
+            {"name": "Marcus Goldman", "prompt": "Professional headshot of Marcus Goldman, Caucasian man, investment banking managing director, wearing executive business suit, leadership expression, Wall Street office background"},
+            {"name": "Sarah Chen", "prompt": "Professional headshot of Sarah Chen, Asian American woman, equity research director, wearing professional business attire, analytical expression, financial research office background"},
+            {"name": "David Park", "prompt": "Professional headshot of David Park, Korean American man, capital markets VP, wearing modern business attire, innovative expression, trading floor background"},
+            {"name": "Jennifer Liu", "prompt": "Professional headshot of Jennifer Liu, Asian American woman, venture capital general partner, wearing contemporary business attire, adventurous expression, Silicon Valley office background"},
+            {"name": "Michael Torres", "prompt": "Professional headshot of Michael Torres, Hispanic man, early stage VC principal, wearing modern business casual, optimistic expression, startup accelerator background"},
+            {"name": "Robert Sterling", "prompt": "Professional headshot of Robert Sterling, Caucasian man, private equity managing partner, wearing executive business suit, leadership expression, private equity office background"},
+            {"name": "Amanda Foster", "prompt": "Professional headshot of Amanda Foster, Caucasian woman, private equity VP, wearing professional business attire, analytical expression, financial analysis office background"},
+            {"name": "Patricia Williams", "prompt": "Professional headshot of Patricia Williams, African American woman, chief underwriting officer, wearing executive business attire, diplomatic expression, insurance company headquarters background"},
+            {"name": "Carlos Rodriguez", "prompt": "Professional headshot of Carlos Rodriguez, Hispanic man, fraud investigation director, wearing professional investigative attire, skeptical expression, insurance investigation office background"},
+            {"name": "Helen Chang", "prompt": "Professional headshot of Helen Chang, Asian American woman, accounting partner, wearing professional business attire, scientific expression, Big Four accounting firm background"},
+            {"name": "James Mitchell", "prompt": "Professional headshot of James Mitchell, Caucasian man, corporate controller, wearing business attire, diplomatic expression, corporate finance office background"},
+            {"name": "Diana Thompson", "prompt": "Professional headshot of Diana Thompson, Caucasian woman, audit partner, wearing professional business attire, skeptical expression, audit firm office background"},
+            {"name": "Kevin Brown", "prompt": "Professional headshot of Kevin Brown, African American man, IT audit director, wearing professional tech attire, scientific expression, IT audit center background"},
+            {"name": "Rebecca Martinez", "prompt": "Professional headshot of Rebecca Martinez, Hispanic woman, international tax director, wearing professional business attire, scientific expression, international tax office background"},
+            {"name": "Thomas Anderson", "prompt": "Professional headshot of Thomas Anderson, Caucasian man, tax controversy manager, wearing professional legal attire, diplomatic expression, tax law office background"},
+            {"name": "Victoria Sterling", "prompt": "Professional headshot of Victoria Sterling, Caucasian woman, real estate investment director, wearing executive business attire, leadership expression, real estate investment office background"},
+            {"name": "Daniel Kim", "prompt": "Professional headshot of Daniel Kim, Korean American man, real estate development manager, wearing modern business attire, adventurous expression, development project site background"},
+            {"name": "Margaret Davis", "prompt": "Professional headshot of Margaret Davis, Caucasian woman, chief credit officer, wearing executive banking attire, diplomatic expression, bank headquarters background"},
+            {"name": "Steven Wilson", "prompt": "Professional headshot of Steven Wilson, Caucasian man, digital banking VP, wearing modern tech business attire, optimistic expression, fintech office background"},
+            {"name": "Alexander Cross", "prompt": "Professional headshot of Alexander Cross, Caucasian man, proprietary trading head, wearing sharp business attire, adventurous expression, trading floor background"},
+            {"name": "Jennifer Liu", "prompt": "Professional headshot of Jennifer Liu, Asian American woman, quantitative researcher, wearing professional tech attire, scientific expression, quantitative research lab background"},
+            {"name": "Catherine Moore", "prompt": "Professional headshot of Catherine Moore, Caucasian woman, chief risk officer, wearing executive business attire, skeptical expression, risk management center background"},
+            {"name": "Ryan Foster", "prompt": "Professional headshot of Ryan Foster, Caucasian man, model risk management VP, wearing professional analytical attire, scientific expression, risk modeling office background"},
+            {"name": "Linda Johnson", "prompt": "Professional headshot of Linda Johnson, African American woman, chief actuary, wearing professional business attire, scientific expression, actuarial office background"},
+            {"name": "Mark Thompson", "prompt": "Professional headshot of Mark Thompson, Caucasian man, P&C actuary, wearing professional analytical attire, skeptical expression, actuarial modeling center background"}
+        ]
+        
+        # Technology agents
+        technology_agents = [
+            {"name": "Dr. Aisha Muhammad", "prompt": "Professional headshot of Dr. Aisha Muhammad, African American woman, AI researcher, wearing professional attire, confident expression, tech office background"},
+            {"name": "Marcus Chen", "prompt": "Professional headshot of Marcus Chen, Asian American man, software engineer, wearing casual tech attire, friendly expression, modern office background"},
+            {"name": "Emily Rodriguez", "prompt": "Professional headshot of Emily Rodriguez, Hispanic woman, product manager, wearing business attire, approachable expression, collaborative workspace background"},
+            {"name": "Dr. Kevin Park", "prompt": "Professional headshot of Dr. Kevin Park, Korean American man, data scientist, wearing glasses and casual attire, thoughtful expression, data visualization background"},
+            {"name": "Dr. Samira Hassan", "prompt": "Professional headshot of Dr. Samira Hassan, Middle Eastern woman, data science director, wearing professional attire, warm smile, modern analytics office background"},
+            {"name": "Robert Kim", "prompt": "Professional headshot of Robert Kim, Korean American man, model validation specialist, wearing business attire, serious expression, analytical workspace background"},
+            {"name": "Roberto Silva", "prompt": "Professional headshot of Roberto Silva, Hispanic man, cybersecurity analyst, wearing dark professional attire, intense focused expression, security operations center background"},
+            {"name": "Catherine Williams", "prompt": "Professional headshot of Catherine Williams, African American woman, CISO, wearing executive business attire, confident leadership expression, corporate boardroom background"},
+            {"name": "Dr. Lisa Chen", "prompt": "Professional headshot of Dr. Lisa Chen, Asian American woman, cryptography researcher, wearing professional attire with subtle tech accessories, thoughtful expression, research laboratory background"},
+            {"name": "Dr. Yuki Tanaka", "prompt": "Professional headshot of Dr. Yuki Tanaka, Japanese man, ML researcher, wearing casual academic attire, intelligent expression, university research lab background"},
+            {"name": "Jennifer Walsh", "prompt": "Professional headshot of Jennifer Walsh, Caucasian woman, AI product director, wearing modern business attire, enthusiastic expression, innovative tech workspace background"},
+            {"name": "Dr. Ahmed Hassan", "prompt": "Professional headshot of Dr. Ahmed Hassan, Middle Eastern man, AI safety researcher, wearing professional attire, serious analytical expression, AI research facility background"},
+            {"name": "Maria Santos", "prompt": "Professional headshot of Maria Santos, Hispanic woman, DevOps manager, wearing casual tech attire, collaborative expression, modern development office background"},
+            {"name": "David Kim", "prompt": "Professional headshot of David Kim, Korean American man, platform engineer, wearing modern casual attire, innovative expression, cutting-edge tech lab background"},
+            {"name": "Dr. Rachel Anderson", "prompt": "Professional headshot of Dr. Rachel Anderson, Caucasian woman, SRE, wearing professional casual attire, focused expression, monitoring dashboard background"},
+            {"name": "Thomas Wright", "prompt": "Professional headshot of Thomas Wright, Caucasian man, cloud architect, wearing executive business attire, strategic expression, modern cloud operations center background"},
+            {"name": "Dr. Lisa Park", "prompt": "Professional headshot of Dr. Lisa Park, Korean American woman, cloud engineer, wearing technical professional attire, analytical expression, cloud infrastructure visualization background"},
+            {"name": "Hassan Al-Mahmoud", "prompt": "Professional headshot of Hassan Al-Mahmoud, Middle Eastern man, cloud consultant, wearing business attire, diplomatic expression, international business meeting background"},
+            {"name": "Dr. Satoshi Nakamura", "prompt": "Professional headshot of Dr. Satoshi Nakamura, Japanese man, blockchain researcher, wearing modern academic attire, innovative expression, blockchain research lab background"},
+            {"name": "Victoria Chen", "prompt": "Professional headshot of Victoria Chen, Asian American woman, DeFi product manager, wearing modern business attire, optimistic expression, fintech startup office background"},
+            {"name": "Marcus Johnson", "prompt": "Professional headshot of Marcus Johnson, African American man, blockchain analyst, wearing conservative business attire, analytical expression, corporate consulting office background"},
+            {"name": "Dr. Maria Rodriguez", "prompt": "Professional headshot of Dr. Maria Rodriguez, Hispanic woman, civil engineer, wearing professional engineering attire with hard hat nearby, confident leadership expression, construction site background"},
+            {"name": "James Wilson", "prompt": "Professional headshot of James Wilson, Caucasian man, construction engineer, wearing rugged outdoor engineering gear, adventurous expression, extreme construction environment background"},
+            {"name": "Dr. Emily Foster", "prompt": "Professional headshot of Dr. Emily Foster, Caucasian woman, infrastructure researcher, wearing modern professional attire with tech elements, scientific expression, smart city lab background"},
+            {"name": "Dr. Robert Kim", "prompt": "Professional headshot of Dr. Robert Kim, Korean American man, manufacturing engineer, wearing technical professional attire, precise expression, advanced robotics facility background"},
+            {"name": "Jennifer Walsh", "prompt": "Professional headshot of Jennifer Walsh, Caucasian woman, biomedical engineer, wearing modern professional attire, compassionate expression, medical device laboratory background"},
+            {"name": "Hassan Al-Mahmoud", "prompt": "Professional headshot of Hassan Al-Mahmoud, Middle Eastern man, energy engineer, wearing professional engineering attire, diplomatic expression, renewable energy facility background"},
+            {"name": "Dr. Lisa Chen", "prompt": "Professional headshot of Dr. Lisa Chen, Asian American woman, power systems engineer, wearing professional engineering attire, intelligent expression, power grid control center background"},
+            {"name": "Marcus Johnson", "prompt": "Professional headshot of Marcus Johnson, African American man, semiconductor engineer, wearing modern tech attire, innovative expression, advanced semiconductor fabrication facility background"},
+            {"name": "Dr. Patricia Foster", "prompt": "Professional headshot of Dr. Patricia Foster, Caucasian woman, instrumentation engineer, wearing lab coat with precision equipment, focused expression, quantum measurement laboratory background"},
+            {"name": "Dr. Sarah Mitchell", "prompt": "Professional headshot of Dr. Sarah Mitchell, Caucasian woman, chemical engineer, wearing lab coat with safety equipment, sustainable expression, green chemistry laboratory background"},
+            {"name": "Dr. Ahmed Hassan", "prompt": "Professional headshot of Dr. Ahmed Hassan, Middle Eastern man, process safety engineer, wearing safety gear and professional attire, serious safety-focused expression, chemical plant safety control room background"},
+            {"name": "Dr. Elena Rodriguez", "prompt": "Professional headshot of Dr. Elena Rodriguez, Hispanic woman, pharmaceutical engineer, wearing clean room attire, optimistic expression, pharmaceutical manufacturing facility background"},
+            {"name": "Dr. Marcus Johnson", "prompt": "Professional headshot of Dr. Marcus Johnson, African American man, aerospace engineer, wearing flight suit with space patches, adventurous expression, rocket engine test facility background"},
+            {"name": "Dr. Catherine Williams", "prompt": "Professional headshot of Dr. Catherine Williams, African American woman, aerospace director, wearing executive aviation attire, leadership expression, electric aircraft hangar background"},
+            {"name": "Dr. Yuki Tanaka", "prompt": "Professional headshot of Dr. Yuki Tanaka, Japanese man, materials scientist, wearing lab coat with technical equipment, contemplative expression, advanced materials laboratory background"},
+            {"name": "Dr. Jennifer Walsh", "prompt": "Professional headshot of Dr. Jennifer Walsh, Caucasian woman, neural engineer, wearing medical professional attire, hopeful expression, neurotechnology laboratory background"},
+            {"name": "Dr. Anna Petrov", "prompt": "Professional headshot of Dr. Anna Petrov, Eastern European woman, nanomedicine researcher, wearing clean room attire, focused expression, nanotechnology research facility background"},
+            {"name": "Dr. Carlos Rivera", "prompt": "Professional headshot of Dr. Carlos Rivera, Hispanic man, clinical engineer, wearing medical professional attire, collaborative expression, hospital technology center background"}
+        ]
+        
+        # Combine all agents
+        library_agents = healthcare_agents + finance_agents + technology_agents
+        
+        generated_count = 0
+        errors = []
+        
+        for agent in library_agents:
+            try:
+                # Enhanced prompt for better avatar results
+                enhanced_prompt = f"professional portrait, headshot, detailed face, {agent['prompt']}, high quality, photorealistic, studio lighting, neutral background"
+                
+                # Submit to fal.ai using the Flux Schnell model
+                handler = await fal_client.submit_async(
+                    "fal-ai/flux/schnell",
+                    arguments={
+                        "prompt": enhanced_prompt,
+                        "image_size": "portrait_4_3",
+                        "num_images": 1,
+                        "enable_safety_checker": True
+                    }
+                )
+                
+                # Get the result
+                result = await handler.get()
+                
+                if result and result.get("images") and len(result["images"]) > 0:
+                    avatar_url = result["images"][0]["url"]
+                    agent["avatar_url"] = avatar_url
+                    generated_count += 1
+                    logging.info(f"Avatar generated for {agent['name']}: {avatar_url}")
+                else:
+                    errors.append(f"Failed to generate avatar for {agent['name']}: No image returned")
+                    
+            except Exception as e:
+                errors.append(f"Error generating avatar for {agent['name']}: {str(e)}")
+                logging.error(f"Avatar generation error for {agent['name']}: {str(e)}")
+        
+        return {
+            "success": True,
+            "generated_count": generated_count,
+            "total_agents": len(library_agents),
+            "errors": errors,
+            "agents": library_agents
+        }
+        
+    except Exception as e:
+        logging.error(f"Library avatar generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Avatar generation failed: {str(e)}")
+
 @api_router.post("/avatars/generate", response_model=AvatarResponse)
 async def generate_avatar(request: AvatarGenerateRequest):
     """Generate an avatar image using fal.ai"""
