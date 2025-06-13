@@ -424,6 +424,10 @@ class SimulationState(BaseModel):
     last_reset_date: str = Field(default_factory=lambda: str(date.today()))
     scenario: str = "The Research Station"
     is_active: bool = False
+    time_limit_hours: Optional[int] = None  # Time limit in hours
+    time_limit_display: Optional[str] = None  # Human readable time limit
+    simulation_start_time: Optional[datetime] = None  # When simulation started
+    time_remaining_hours: Optional[float] = None  # Calculated remaining time
 
 class ApiUsageTracker(BaseModel):
     date: str
