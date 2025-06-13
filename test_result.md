@@ -115,6 +115,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Retested the document categories endpoint after the route ordering fix. The endpoint now works correctly and returns all expected categories (Protocol, Training, Research, Equipment, Budget, Reference). The issue with the endpoint being shadowed by /documents/{id} has been resolved."
+        -working: true
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of the document categories endpoint. The endpoint correctly returns the expected categories (Protocol, Training, Research, Equipment, Budget, Reference). Created test documents for each category and verified that the document counts match the expected values. The endpoint is working correctly and provides accurate information about available document categories."
 
   - task: "POST /api/conversation/generate - Conversation with Scenario Name"
     implemented: true
