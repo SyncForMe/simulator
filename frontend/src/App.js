@@ -5705,7 +5705,12 @@ function App() {
 
           {/* Middle Column - Conversations & Reports */}
           <div className="lg:col-span-2">
-            <h2 className="text-xl font-bold mb-4">Conversations</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">Conversations</h2>
+              <div className="text-sm text-gray-600 font-medium">
+                Day {simulationState?.current_day || 1}, {simulationState?.current_time_period || 'morning'}
+              </div>
+            </div>
             <ConversationViewer 
               conversations={conversations} 
               selectedLanguage={selectedLanguage}
