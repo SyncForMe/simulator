@@ -5111,16 +5111,48 @@ async def delete_documents_bulk(
         logging.error(f"Error deleting documents: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
 
-# Test endpoint for document bulk delete with empty array
-@api_router.delete("/documents/bulk-empty-test")
-async def delete_documents_bulk_empty_test(
+class DocumentIdsRequest(BaseModel):
+    document_ids: List[str] = []
+
+@api_router.delete("/documents/bulk-model")
+async def delete_documents_bulk_model(
+    request: DocumentIdsRequest,
     current_user: dict = Depends(get_current_user)
 ):
-    """Test endpoint for document bulk delete with empty array"""
-    return {
-        "message": "Successfully deleted 0 documents",
-        "deleted_count": 0
-    }
+    """Delete multiple documents for the authenticated user using a Pydantic model"""
+    try:
+        # Handle empty array case
+        if not request.document_ids:
+            return {
+                "message": "Successfully deleted 0 documents",
+                "deleted_count": 0
+            }
+            
+        # Verify all documents belong to the user
+        documents = await db.documents.find({
+            "id": {"$in": request.document_ids},
+            "metadata.user_id": current_user.id
+        }).to_list(None)
+        
+        if len(documents) != len(request.document_ids):
+            raise HTTPException(status_code=404, detail="Some documents not found or don't belong to user")
+        
+        # Delete the documents
+        result = await db.documents.delete_many({
+            "id": {"$in": request.document_ids},
+            "metadata.user_id": current_user.id
+        })
+        
+        return {
+            "message": f"Successfully deleted {result.deleted_count} documents",
+            "deleted_count": result.deleted_count
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error deleting documents: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
 
 # Include the router in the main app
 app.include_router(api_router)
