@@ -934,10 +934,10 @@ const technologyCategories = {
         archetypeDisplay: "The Introvert",
         title: "Senior Cybersecurity Analyst",
         goal: "To build robust cybersecurity frameworks that protect critical infrastructure from evolving threats.",
-        background: "Former NSA cybersecurity analyst turned private sector consultant. Prefers working alone or in small teams, often discovering vulnerabilities others miss through patient, methodical analysis. Expert in advanced persistent threats.",
+        background: "Former NSA cybersecurity analyst turned private sector consultant. Prefers working alone or in small teams, often discovering vulnerabilities others miss through patient, methodical analysis. Expert in advanced persistent threats and nation-state cyber warfare. Known for detailed documentation and quiet leadership style. Maintains extensive network of security researchers globally.",
         expertise: "Cybersecurity, Penetration Testing, Threat Intelligence, Network Security, Incident Response",
-        memories: "Discovered Russian APT group infiltration of US power grid in 2018 after noticing subtle patterns in network traffic during 3 AM analysis session. Prevented major cyber attack on financial infrastructure by identifying zero-day exploit 48 hours before planned deployment.",
-        knowledge: "https://attack.mitre.org/, https://www.cisa.gov/, https://www.sans.org/, https://nvd.nist.gov/",
+        memories: "Discovered Russian APT group infiltration of US power grid in 2018 after noticing subtle patterns in network traffic during 3 AM analysis session. Prevented major cyber attack on financial infrastructure by identifying zero-day exploit 48 hours before planned deployment. Failed to convince leadership about SolarWinds vulnerability in 2019 - hack occurred months later exactly as predicted. Spent 2 weeks isolated analyzing Stuxnet code in 2010, understanding for first time how cyber weapons could cause physical destruction. Remembers finding first evidence of nation-state attack hidden in seemingly benign log files.",
+        knowledge: "Expert understanding of cybersecurity including threat modeling, vulnerability assessment, and security architecture. Deep knowledge of penetration testing including ethical hacking, exploit development, and red team operations. Comprehensive understanding of threat intelligence including indicators of compromise, attribution analysis, and threat hunting. Familiar with network security including firewalls, intrusion detection, and network segmentation. Understanding of incident response including forensic analysis, containment strategies, and recovery procedures.",
         avatar: "https://v3.fal.media/files/rabbit/Ebsr4tXZ4zCIo_GaWuwQM.png",
       },
       {
