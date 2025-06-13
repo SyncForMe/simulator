@@ -3128,7 +3128,7 @@ async def generate_conversation():
             await asyncio.sleep(3)  # 3 second delay between agents
         
         response = await llm_manager.generate_agent_response(
-            agent, scenario, agent_objects, current_context, recent_conversations, language_instruction, existing_documents
+            agent, scenario, agent_objects, current_context, recent_conversations, language_instruction, existing_documents, state
         )
         
         message = ConversationMessage(
