@@ -987,12 +987,28 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
   };
 
   return (
-    <div className="scenario-input bg-white rounded-lg shadow-md p-4 mb-6">
-      <div className="flex justify-between items-center mb-3">
+    <div className="scenario-input bg-white rounded-lg shadow-md mb-6">
+      {/* Header with expand/collapse functionality */}
+      <div 
+        className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
         <h3 className="text-lg font-bold">🎭 Custom Scenario</h3>
+        <button
+          type="button"
+          className="text-gray-500 hover:text-gray-700 transition-transform duration-200"
+          style={{ transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)' }}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      {/* Collapsible content */}
+      {!isCollapsed && (
+        <div className="p-4 pt-0">
+          <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Scenario Name <span className="text-red-500">*</span>
