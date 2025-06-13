@@ -4670,9 +4670,9 @@ const FileCenter = ({ onRefresh }) => {
                   className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">All Categories</option>
-                  {categories.map(category => (
+                  {categories?.map(category => (
                     <option key={category} value={category}>{category}</option>
-                  ))}
+                  )) || []}
                 </select>
                 <button
                   onClick={fetchScenarioDocuments}
