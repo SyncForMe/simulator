@@ -4257,7 +4257,7 @@ const ConversationHistoryViewer = () => {
                                         Round {conversation.round_number} - {conversation.time_period}
                                       </h4>
                                       <p className="text-sm text-gray-600">
-                                        Participants: {conversation.messages?.map(m => m.agent_name).filter((name, index, arr) => arr.indexOf(name) === index).join(', ') || 'N/A'}
+                                                        Participants: {conversation.messages?.map(m => m.agent_name).filter((name, index, arr) => arr.indexOf(name) === index).join(', ') || 'N/A'}
                                       </p>
                                     </div>
                                     <div className="text-xs text-gray-400">
