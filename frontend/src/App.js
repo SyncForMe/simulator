@@ -671,12 +671,13 @@ const AGENT_ARCHETYPES = {
   }
 };
 
-const ScenarioInput = ({ onSetScenario, currentScenario }) => {
+const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) => {
   const [scenario, setScenario] = useState("");
   const [scenarioName, setScenarioName] = useState("");
   const [loading, setLoading] = useState(false);
   const [randomLoading, setRandomLoading] = useState(false);
   const [justSubmitted, setJustSubmitted] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   
   // Enhanced voice recognition state for Whisper API
   const [isRecording, setIsRecording] = useState(false);
