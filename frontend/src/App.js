@@ -4577,9 +4577,17 @@ const FileCenter = ({ onRefresh }) => {
           <h3 className="text-lg font-bold">📁 File Center</h3>
           <div className="flex items-center space-x-2">
             <div className="text-xs text-gray-500">
-              {scenarioDocuments.reduce((total, scenario) => {
-                return total + (scenario.document_count || scenario.documents?.length || 0);
-              }, 0)} documents
+              {(() => {
+                try {
+                  return scenarioDocuments?.reduce((total, scenario) => {
+                    const count = scenario?.document_count || scenario?.documents?.length || 0;
+                    return total + count;
+                  }, 0) || 0;
+                } catch (error) {
+                  console.error('Error calculating document count:', error);
+                  return 0;
+                }
+              })()} documents
             </div>
             <button
               onClick={() => setShowFileCenter(true)}
