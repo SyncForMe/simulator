@@ -4798,7 +4798,7 @@ const FileCenter = ({ onRefresh }) => {
                             </p>
 
                             <div className="text-xs text-gray-500 mb-3 ml-8">
-                              <div>By: {doc.authors.join(', ')}</div>
+                              <div>By: {doc.authors?.join(', ') || 'Unknown'}</div>
                               <div>{formatDate(doc.created_at)}</div>
                             </div>
 
