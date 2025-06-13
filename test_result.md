@@ -21,7 +21,7 @@ backend:
     implemented: true
     working: false
     file: "/app/backend/server.py"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
     needs_retesting: false
     status_history:
@@ -40,6 +40,9 @@ backend:
         -working: false
         -agent: "testing"
         -comment: "Conducted extensive testing and debugging of the document bulk delete endpoint. The issue appears to be with how FastAPI is handling the request body for DELETE endpoints. Attempted multiple fixes: 1) Added explicit error handling in the endpoint, 2) Created a Pydantic model (DocumentIdsRequest) for the request body, 3) Created a test endpoint that doesn't require a request body, 4) Tried different request formats. None of these approaches resolved the issue. The endpoint continues to return a 404 error with 'Document not found' when an empty array is provided. This is likely due to how FastAPI routes and validates DELETE requests with request bodies. The conversation bulk delete endpoint was updated to use the same Pydantic model approach but still works correctly with empty arrays, suggesting there might be another issue specific to the document endpoint."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of the document bulk delete endpoint with multiple approaches. Created a new endpoint that uses a Pydantic model for the request body, a new endpoint that uses query parameters instead of a request body, and a new endpoint that just returns a success message for empty arrays. All of these approaches still resulted in a 404 error with 'Document not found' when an empty array is provided. The issue appears to be with how FastAPI is handling DELETE requests with request bodies for this specific endpoint. The conversation bulk delete endpoint works correctly with empty arrays, suggesting there might be some middleware or routing issue specific to the document endpoint. This issue needs to be addressed to ensure consistent behavior between the conversation and document bulk delete endpoints."
 
   - task: "POST /api/simulation/set-scenario - Custom Scenario Name Input"
     implemented: true
