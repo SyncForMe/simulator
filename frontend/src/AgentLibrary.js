@@ -1447,6 +1447,43 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
   const [addingAgents, setAddingAgents] = useState(new Set());
   const [addedAgents, setAddedAgents] = useState(new Set());
   const timeoutRefs = useRef(new Map());
+  const [loadedImages, setLoadedImages] = useState(new Set());
+
+  // Preload all agent avatars when component opens
+  useEffect(() => {
+    if (isOpen) {
+      const preloadImages = () => {
+        const allAvatars = [];
+        
+        // Collect all avatar URLs from all sectors
+        Object.values(sectors).forEach(sector => {
+          Object.values(sector.categories).forEach(category => {
+            category.agents.forEach(agent => {
+              if (agent.avatar && !loadedImages.has(agent.avatar)) {
+                allAvatars.push(agent.avatar);
+              }
+            });
+          });
+        });
+
+        // Preload images
+        allAvatars.forEach(avatarUrl => {
+          const img = new Image();
+          img.onload = () => {
+            setLoadedImages(prev => new Set(prev).add(avatarUrl));
+          };
+          img.onerror = () => {
+            console.warn(`Failed to preload image: ${avatarUrl}`);
+          };
+          img.src = avatarUrl;
+        });
+      };
+
+      // Small delay to allow modal to open first
+      const timeoutId = setTimeout(preloadImages, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isOpen]);
 
   // Don't render if not open
   if (!isOpen) return null;
