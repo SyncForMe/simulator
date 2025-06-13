@@ -1490,7 +1490,6 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
   if (!isOpen) return null;
 
   const handleAddAgent = async (agent) => {
-    // Register service worker immediately on app load
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
         .then((registration) => {
