@@ -54,8 +54,6 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(styleSheet);
 }
 
-const API = process.env.REACT_APP_BACKEND_URL ? `${process.env.REACT_APP_BACKEND_URL}/api` : 'http://localhost:8001/api';
-
 // Healthcare Categories with detailed agent data
 const healthcareCategories = {
   medical: {
