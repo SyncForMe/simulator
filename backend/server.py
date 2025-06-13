@@ -4920,116 +4920,113 @@ async def transcribe_and_summarize_for_field(
         raise HTTPException(status_code=500, detail=f"Field transcription failed: {str(e)}")
 
 async def create_field_appropriate_text(raw_text: str, field_type: str) -> str:
-    """Use AI to create field-appropriate text from raw voice transcription"""
-    
-    field_prompts = {
-        "goal": """Take this voice input and create a clear, concise agent goal statement. 
-        Make it action-oriented and specific. Keep it to 1-2 sentences.
-        Remove filler words, ums, ahs, and conversational elements.
-        
-        Example formats:
-        - "Analyze data to identify trends and provide actionable insights"
-        - "Lead team discussions and facilitate decision-making processes"
-        - "Research emerging technologies and assess their potential impact"
-        
-        Voice input: {text}
-        
-        Clean goal statement:""",
-        
-        "expertise": """Take this voice input and create a clean, professional expertise description.
-        Focus on skills, knowledge areas, and professional capabilities.
-        Remove conversational elements and organize into clear, readable text.
-        Keep it concise but comprehensive.
-        
-        Example format:
-        "Data analysis, machine learning, statistical modeling, Python programming, business intelligence, and strategic planning with 8+ years of experience in healthcare analytics."
-        
-        Voice input: {text}
-        
-        Clean expertise description:""",
-        
-        "background": """Take this voice input and create a professional background description.
-        Include relevant experience, education, or context that shapes this person/agent.
-        Remove conversational elements and create flowing, readable text.
-        
-        Example format:
-        "Former senior analyst at tech startups with experience in rapid growth environments. Holds an MBA and has led multiple cross-functional teams through digital transformation projects."
-        
-        Voice input: {text}
-        
-        Clean background description:""",
-        
-        "memory": """Take this voice input and create a clear memory entry.
-        Keep the personal/contextual elements but make it readable and organized.
-        Remove filler words and conversational elements while preserving the essential information.
-        
-        Voice input: {text}
-        
-        Clean memory entry:""",
-        
-        "scenario": """Take this voice input and create an engaging, clear scenario description.
-        Make it narrative and immersive while removing conversational elements.
-        Keep the core situation but enhance the presentation.
-        
-        Example format:
-        "A mysterious signal has been detected from deep space. The research team must decide whether to investigate immediately or gather more data first. Time is critical as the signal appears to be weakening."
-        
-        Voice input: {text}
-        
-        Clean scenario description:""",
-        
-        "general": """Take this voice input and create clean, readable text.
-        Remove filler words, ums, ahs, and conversational elements.
-        Improve grammar and flow while preserving the original meaning.
-        
-        Voice input: {text}
-        
-        Clean text:"""
-    }
-    
-    prompt_template = field_prompts.get(field_type, field_prompts["general"])
-    
+    """Create field-appropriate text based on the field type"""
     try:
         chat = LlmChat(
             api_key=llm_manager.api_key,
-            session_id=f"voice_summary_{field_type}_{datetime.now().timestamp()}",
-            system_message=f"""You are an expert at converting voice input into clean, professional text. 
-            You specialize in creating {field_type} descriptions that are clear, concise, and appropriate for AI agent profiles.
-            
-            Always respond with just the clean text, no explanations or additional formatting."""
+            session_id=f"field-{field_type}-{datetime.now().timestamp()}",
+            system_message=f"You are a professional content creator. Transform the provided text to be appropriate for a {field_type} field while maintaining accuracy and professionalism. Keep it concise and clear."
         ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(200)
         
-        user_message = UserMessage(text=prompt_template.format(text=raw_text))
+        user_message = UserMessage(
+            text=f"Transform this text to be appropriate for {field_type}: {raw_text}"
+        )
+        
         response = await chat.send_message(user_message)
         await llm_manager.increment_usage()
-        
-        # Clean up the response
-        cleaned_text = response.strip()
-        
-        # Remove common AI response prefixes
-        prefixes_to_remove = [
-            "Clean text:", "Clean goal statement:", "Clean expertise description:",
-            "Clean background description:", "Clean memory entry:", "Clean scenario description:",
-            "Here is the cleaned text:", "The cleaned text is:", "Cleaned version:"
-        ]
-        
-        for prefix in prefixes_to_remove:
-            if cleaned_text.startswith(prefix):
-                cleaned_text = cleaned_text[len(prefix):].strip()
-        
-        # Remove quotes if the entire text is wrapped in them
-        if cleaned_text.startswith('"') and cleaned_text.endswith('"'):
-            cleaned_text = cleaned_text[1:-1].strip()
-        
-        # Fallback to raw text if AI response is too short or seems invalid
-        if len(cleaned_text) < 10 or len(cleaned_text) > len(raw_text) * 2:
-            return raw_text.strip()
-        
-        return cleaned_text
+        return response.strip()
         
     except Exception as e:
         logging.error(f"Error in AI summarization for {field_type}: {e}")
         return raw_text.strip()  # Fallback to raw text
+
+def determine_gender_from_name(first_name: str) -> str:
+    """Determine likely gender from first name for avatar generation"""
+    # Common female first names
+    female_names = {
+        'aisha', 'alexandra', 'amanda', 'anna', 'catherine', 'elena', 'elizabeth', 
+        'emily', 'jennifer', 'jessica', 'julia', 'lisa', 'maria', 'marie', 'michelle',
+        'patricia', 'rachel', 'rebecca', 'samira', 'sarah', 'sofia', 'victoria'
+    }
+    
+    # Common male first names  
+    male_names = {
+        'ahmed', 'alexander', 'carlos', 'david', 'hassan', 'james', 'jonathan',
+        'kevin', 'marcus', 'michael', 'robert', 'thomas', 'yuki'
+    }
+    
+    name_lower = first_name.lower()
+    
+    if name_lower in female_names:
+        return "female"
+    elif name_lower in male_names:
+        return "male"
+    else:
+        # Default to male for ambiguous names
+        return "male"
+
+async def generate_professional_avatar(agent_name: str) -> str:
+    """Generate a professional avatar using FAL AI"""
+    try:
+        # Parse first name from full name
+        first_name = agent_name.split()[0] if agent_name else "Person"
+        gender = determine_gender_from_name(first_name)
+        
+        # Create gender-appropriate prompt
+        gender_descriptor = "woman" if gender == "female" else "man"
+        
+        prompt = f"Professional headshot portrait of a {gender_descriptor}, business attire, clean neutral background, high quality, photorealistic, confident expression, professional lighting, facing camera"
+        
+        handler = await fal_client.submit_async(
+            "fal-ai/flux/dev",
+            arguments={
+                "prompt": prompt,
+                "image_size": "portrait_4_3",
+                "num_inference_steps": 28,
+                "guidance_scale": 3.5,
+                "num_images": 1
+            }
+        )
+        
+        result = await handler.get()
+        
+        if result and result.get("images") and len(result["images"]) > 0:
+            return result["images"][0]["url"]
+        else:
+            logging.error(f"No images returned for avatar generation: {agent_name}")
+            return ""
+            
+    except Exception as e:
+        logging.error(f"Error generating avatar for {agent_name}: {e}")
+        return ""
+
+@api_router.post("/agents/generate-avatar")
+async def generate_agent_avatar(
+    request: dict,
+    current_user: dict = Depends(get_current_user)
+):
+    """Generate professional avatar for an agent"""
+    try:
+        agent_name = request.get("agent_name", "")
+        if not agent_name:
+            raise HTTPException(status_code=400, detail="Agent name is required")
+        
+        avatar_url = await generate_professional_avatar(agent_name)
+        
+        if not avatar_url:
+            raise HTTPException(status_code=500, detail="Failed to generate avatar")
+        
+        return {
+            "success": True,
+            "avatar_url": avatar_url,
+            "agent_name": agent_name
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error in avatar generation endpoint: {e}")
+        raise HTTPException(status_code=500, detail=f"Avatar generation failed: {str(e)}")
 
 # Bulk delete endpoints
 @api_router.delete("/conversation-history/bulk")
