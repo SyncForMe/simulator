@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from './App';
 import axios from 'axios';
 
+const API = process.env.REACT_APP_BACKEND_URL ? `${process.env.REACT_APP_BACKEND_URL}/api` : 'http://localhost:8001/api';
+
 // Add styles for line clamping
 const styles = `
   .line-clamp-2 {
