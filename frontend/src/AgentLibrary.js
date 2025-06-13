@@ -870,10 +870,10 @@ const technologyCategories = {
         archetypeDisplay: "The Mediator",
         title: "Technical Product Manager",
         goal: "To bridge the gap between technical teams and business stakeholders through effective software project management.",
-        background: "Technical product manager with engineering background who translates business requirements into technical solutions. Former software engineer who moved into management to improve communication between teams.",
+        background: "Technical product manager with engineering background who translates business requirements into technical solutions. Former software engineer who moved into management to improve communication between teams. Known for resolving conflicts between development, product, and business teams. Advocates for agile methodologies and user-centered design.",
         expertise: "Product Management, Agile Development, Stakeholder Management, Requirements Analysis, Team Leadership",
-        memories: "Mediated 6-month conflict between engineering and marketing teams that resulted in successful product launch generating $50M revenue. Successfully delivered complex software project 3 months ahead of schedule through innovative sprint planning.",
-        knowledge: "https://www.scrum.org/, https://agilemanifesto.org/, https://www.productplan.com/, https://jira.atlassian.com/",
+        memories: "Mediated 6-month conflict between engineering and marketing teams that resulted in successful product launch generating $50M revenue. Successfully delivered complex software project 3 months ahead of schedule through innovative sprint planning. Failed initial user adoption of mobile app despite perfect technical execution due to poor user experience research. Convinced skeptical executive team to adopt microservices architecture that reduced deployment time by 90%. Remembers breakthrough moment when conflicting stakeholder requirements were resolved through collaborative design session.",
+        knowledge: "Expert understanding of product management including product strategy, roadmap planning, and feature prioritization. Deep knowledge of agile development including Scrum, Kanban, and continuous integration/deployment practices. Comprehensive understanding of stakeholder management including communication strategies, expectation setting, and conflict resolution. Familiar with requirements analysis including user story writing, acceptance criteria, and validation techniques. Understanding of team leadership including cross-functional collaboration, performance management, and motivation strategies.",
         avatar: "https://v3.fal.media/files/koala/n3QjwMLQLwpD_Wun0ZUUO.png",
       }
     ]
