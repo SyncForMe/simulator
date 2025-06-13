@@ -4320,14 +4320,43 @@ const FileCenter = ({ onRefresh }) => {
     
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/documents/by-scenario`, {
+      // Use the faster direct documents endpoint instead of by-scenario
+      const response = await axios.get(`${API}/documents`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setScenarioDocuments(response.data);
+      
+      // Group documents by scenario for display
+      const documentsByScenario = response.data.reduce((acc, doc) => {
+        const scenarioName = doc.scenario_name || 'Default Scenario';
+        if (!acc[scenarioName]) {
+          acc[scenarioName] = {
+            scenario_name: scenarioName,
+            documents: [],
+            document_count: 0
+          };
+        }
+        acc[scenarioName].documents.push(doc);
+        acc[scenarioName].document_count++;
+        return acc;
+      }, {});
+      
+      // Convert to array format expected by the component
+      const scenarioArray = Object.values(documentsByScenario);
+      setScenarioDocuments(scenarioArray);
       setSelectedDocuments(new Set()); // Clear selections when refreshing
       setSelectAll(false);
     } catch (error) {
-      console.error('Error fetching documents by scenario:', error);
+      console.error('Error fetching documents:', error);
+      
+      // Fallback to the by-scenario endpoint if direct approach fails
+      try {
+        const response = await axios.get(`${API}/documents/by-scenario`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setScenarioDocuments(response.data);
+      } catch (fallbackError) {
+        console.error('Error with fallback endpoint:', fallbackError);
+      }
     }
     setLoading(false);
   };
