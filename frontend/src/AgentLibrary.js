@@ -1662,7 +1662,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                   </div>
 
                   {currentCategory.agents.length > 0 ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 agent-grid">
                       {currentCategory.agents.map((agent) => (
                         <div key={agent.id} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
                           <div className="p-4">
