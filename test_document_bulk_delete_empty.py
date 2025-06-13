@@ -62,15 +62,15 @@ def test_login():
         print(f"Error during test login: {e}")
         return False
 
-def test_document_bulk_delete_empty_test():
-    """Test the document bulk delete empty test endpoint"""
+def test_document_bulk_delete_empty():
+    """Test the document bulk delete empty endpoint"""
     if not auth_token:
         if not test_login():
             print("❌ Cannot test document bulk delete without authentication")
             return False
     
-    url = f"{API_URL}/documents/bulk-empty-test"
-    print(f"\nTesting: Document Bulk Delete Empty Test (DELETE {url})")
+    url = f"{API_URL}/documents/bulk-empty"
+    print(f"\nTesting: Document Bulk Delete Empty (DELETE {url})")
     
     headers = {"Authorization": f"Bearer {auth_token}"}
     
@@ -88,11 +88,11 @@ def test_document_bulk_delete_empty_test():
             return False
         
         if response.status_code == 200 and "deleted_count" in response_data and response_data["deleted_count"] == 0:
-            print("✅ Document bulk delete empty test works correctly")
+            print("✅ Document bulk delete empty works correctly")
             print("✅ Returned 200 with deleted_count=0")
             return True
         else:
-            print("❌ Document bulk delete empty test failed")
+            print("❌ Document bulk delete empty failed")
             print(f"Expected: 200 with deleted_count=0")
             print(f"Actual: {response.status_code} with {response_data}")
             return False
@@ -104,27 +104,27 @@ def test_document_bulk_delete_empty_test():
 def main():
     """Run all tests"""
     print("\n" + "="*80)
-    print("TESTING DOCUMENT BULK DELETE EMPTY TEST ENDPOINT")
+    print("TESTING DOCUMENT BULK DELETE EMPTY ENDPOINT")
     print("="*80)
     
-    # Test document bulk delete empty test
-    empty_test_success = test_document_bulk_delete_empty_test()
+    # Test document bulk delete empty
+    empty_success = test_document_bulk_delete_empty()
     
     # Print summary
     print("\n" + "="*80)
-    print("DOCUMENT BULK DELETE EMPTY TEST ENDPOINT ASSESSMENT")
+    print("DOCUMENT BULK DELETE EMPTY ENDPOINT ASSESSMENT")
     print("="*80)
     
-    if empty_test_success:
-        print("✅ Document bulk delete empty test endpoint is working correctly!")
+    if empty_success:
+        print("✅ Document bulk delete empty endpoint is working correctly!")
         print("✅ Empty arrays are handled correctly (returns 200 with deleted_count=0)")
     else:
-        print("❌ Document bulk delete empty test endpoint has issues:")
+        print("❌ Document bulk delete empty endpoint has issues:")
         print("  - Empty arrays are not handled correctly (should return 200 with deleted_count=0)")
     
     print("="*80)
     
-    return empty_test_success
+    return empty_success
 
 if __name__ == "__main__":
     main()
