@@ -5679,7 +5679,7 @@ function App() {
       <AgentLibrary
         isOpen={showAgentLibrary}
         onClose={() => setShowAgentLibrary(false)}
-        onSelectAgent={async (agent) => {
+        onAddAgent={async (agent) => {
           try {
             // Generate avatar if not already generated
             if (!agent.avatar_url) {
