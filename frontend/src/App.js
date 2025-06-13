@@ -5774,9 +5774,13 @@ function App() {
             <ScenarioInput 
               onSetScenario={handleSetScenario} 
               currentScenario={simulationState?.scenario}
+              onScenarioCollapse={handleScenarioCollapse}
             />
             
-            <CurrentScenarioCard currentScenario={simulationState?.scenario} />
+            <CurrentScenarioCard 
+              currentScenario={simulationState?.scenario}
+              autoExpand={autoExpandCurrentScenario}
+            />
             
             
             <ControlPanel
