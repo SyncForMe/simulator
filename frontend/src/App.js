@@ -3802,20 +3802,6 @@ const ControlPanel = ({
           <strong>Auto Time:</strong> {simulationState?.auto_time ? 'ON' : 'OFF'}
         </p>
       </div>
-          <div className="flex items-center text-xs">
-            <span className={`w-2 h-2 rounded-full mr-2 ${
-              simulationState?.auto_conversations ? 'bg-green-500' : 'bg-gray-300'
-            }`}></span>
-            Auto Conversations: {simulationState?.auto_conversations ? 'ON' : 'OFF'}
-          </div>
-          <div className="flex items-center text-xs">
-            <span className={`w-2 h-2 rounded-full mr-2 ${
-              simulationState?.auto_time ? 'bg-blue-500' : 'bg-gray-300'
-            }`}></span>
-            Auto Time: {simulationState?.auto_time ? 'ON' : 'OFF'}
-          </div>
-        </div>
-      </div>
 
       <div className="api-usage mb-4 p-3 bg-gray-50 rounded">
         <h4 className="font-semibold text-sm mb-2">📊 Daily Usage & Cost</h4>
