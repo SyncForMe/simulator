@@ -179,741 +179,649 @@ def test_login():
         print("Test login failed. Some tests may not work correctly.")
         return False
 
-def test_avatar_system():
-    """Test the avatar system functionality"""
+def test_document_creation():
+    """Create test documents across different categories"""
     print("\n" + "="*80)
-    print("TESTING AVATAR SYSTEM FUNCTIONALITY")
+    print("CREATING TEST DOCUMENTS")
     print("="*80)
     
     # Login first to get auth token
     if not auth_token:
         if not test_login():
-            print("❌ Cannot test avatar system without authentication")
+            print("❌ Cannot create test documents without authentication")
             return False, "Authentication failed"
     
-    # Test 1: Get agents and check if they have avatar URLs
-    print("\nTest 1: Retrieving agents to check for avatar URLs")
-    get_agents_test, get_agents_response = run_test(
-        "Get Agents with Avatar URLs",
-        "/agents",
-        method="GET",
-        auth=True
-    )
+    # Define categories to create documents for
+    categories = ["Protocol", "Training", "Research", "Equipment", "Budget", "Reference"]
     
-    if get_agents_test and get_agents_response:
-        if len(get_agents_response) > 0:
-            agents_with_avatars = 0
-            for agent in get_agents_response:
-                if agent.get("avatar_url"):
-                    agents_with_avatars += 1
-                    print(f"✅ Agent '{agent.get('name')}' has avatar URL: {agent.get('avatar_url')}")
-                else:
-                    print(f"❌ Agent '{agent.get('name')}' does not have an avatar URL")
-            
-            if agents_with_avatars > 0:
-                print(f"✅ {agents_with_avatars} out of {len(get_agents_response)} agents have avatar URLs")
-            else:
-                print("❌ No agents have avatar URLs")
-        else:
-            print("No agents found in the system. Creating test agents...")
-    
-    # Test 2: Generate an avatar using the avatar generation endpoint
-    print("\nTest 2: Testing avatar generation endpoint")
-    avatar_data = {
-        "prompt": "Professional headshot of a scientist with glasses"
-    }
-    
-    generate_avatar_test, generate_avatar_response = run_test(
-        "Generate Avatar",
-        "/avatars/generate",
-        method="POST",
-        data=avatar_data,
-        expected_keys=["success", "image_url"]
-    )
-    
-    if generate_avatar_test and generate_avatar_response:
-        if generate_avatar_response.get("success"):
-            avatar_url = generate_avatar_response.get("image_url")
-            print(f"✅ Successfully generated avatar: {avatar_url}")
-        else:
-            print(f"❌ Avatar generation failed: {generate_avatar_response.get('error')}")
-    
-    # Test 3: Create an agent with the generated avatar URL
-    print("\nTest 3: Creating an agent with a pre-existing avatar URL")
-    
-    if generate_avatar_test and generate_avatar_response and generate_avatar_response.get("success"):
-        avatar_url = generate_avatar_response.get("image_url")
-        
-        agent_data = {
-            "name": "Dr. Test Avatar",
-            "archetype": "scientist",
-            "goal": "To test the avatar system",
-            "background": "Experienced in testing avatar systems",
-            "expertise": "Avatar testing and validation",
-            "memory_summary": "Created for testing the avatar system",
-            "avatar_url": avatar_url,  # Use the pre-generated avatar URL
-            "avatar_prompt": ""  # Empty prompt since we're using a URL
+    # Create a document for each category
+    for category in categories:
+        document_data = {
+            "title": f"Test {category} Document",
+            "category": category,
+            "description": f"This is a test document for the {category} category",
+            "content": f"""# Test {category} Document
+
+## Purpose
+This document was created for testing the File Center functionality.
+
+## Content
+This is a test document for the {category} category.
+It contains some sample content to test document loading and management.
+
+## Details
+- Category: {category}
+- Created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+- Author: Test User
+- Keywords: test, {category.lower()}, documentation
+
+## Sample Data
+Here is some sample data to increase the document size:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, 
+nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies
+nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl
+nisl aliquam nisl, eget ultricies nisl nisl eget nisl.
+""",
+            "keywords": ["test", category.lower(), "documentation"],
+            "authors": ["Test User"]
         }
         
-        create_agent_test, create_agent_response = run_test(
-            "Create Agent with Pre-existing Avatar",
-            "/agents",
+        create_doc_test, create_doc_response = run_test(
+            f"Create {category} Document",
+            "/documents/create",
             method="POST",
-            data=agent_data,
+            data=document_data,
             auth=True,
-            expected_keys=["id", "name", "avatar_url"]
+            expected_keys=["success", "document_id"]
         )
         
-        if create_agent_test and create_agent_response:
-            if create_agent_response.get("avatar_url") == avatar_url:
-                print(f"✅ Agent created with the pre-existing avatar URL: {avatar_url}")
-                agent_id = create_agent_response.get("id")
+        if create_doc_test and create_doc_response:
+            document_id = create_doc_response.get("document_id")
+            if document_id:
+                print(f"✅ Created {category} document with ID: {document_id}")
+                created_document_ids.append(document_id)
             else:
-                print(f"❌ Agent created but avatar URL doesn't match: {create_agent_response.get('avatar_url')} vs {avatar_url}")
+                print(f"❌ Failed to get document ID for {category} document")
+        else:
+            print(f"❌ Failed to create {category} document")
     
-    # Test 4: Create an agent with an avatar prompt
-    print("\nTest 4: Creating an agent with an avatar prompt")
+    # Print summary
+    print("\nDOCUMENT CREATION SUMMARY:")
+    if len(created_document_ids) == len(categories):
+        print(f"✅ Successfully created {len(created_document_ids)} documents across all categories")
+        return True, created_document_ids
+    else:
+        print(f"❌ Created only {len(created_document_ids)} out of {len(categories)} documents")
+        return False, created_document_ids
+
+def test_document_loading_performance():
+    """Test the document loading performance"""
+    print("\n" + "="*80)
+    print("TESTING DOCUMENT LOADING PERFORMANCE")
+    print("="*80)
     
-    agent_data = {
-        "name": "Dr. Prompt Avatar",
-        "archetype": "scientist",
-        "goal": "To test avatar generation from prompts",
-        "background": "Experienced in testing avatar generation",
-        "expertise": "Avatar prompt testing",
-        "memory_summary": "Created for testing avatar prompts",
-        "avatar_url": "",  # Empty URL to force generation
-        "avatar_prompt": "Professional female scientist with lab coat and glasses"  # Provide a prompt
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test document loading without authentication")
+            return False, "Authentication failed"
+    
+    # Test 1: Measure response time for GET /api/documents endpoint
+    print("\nTest 1: Measuring response time for GET /api/documents endpoint")
+    
+    # Run multiple requests to get average response time
+    response_times = []
+    for i in range(5):
+        print(f"\nRequest {i+1}/5:")
+        _, _ = run_test(
+            f"Document Loading Performance - Request {i+1}",
+            "/documents",
+            method="GET",
+            auth=True,
+            measure_time=True
+        )
+        
+        # Get the response time from the last test
+        if test_results["tests"][-1].get("response_time"):
+            response_times.append(test_results["tests"][-1]["response_time"])
+    
+    # Calculate statistics
+    if response_times:
+        avg_time = sum(response_times) / len(response_times)
+        max_time = max(response_times)
+        min_time = min(response_times)
+        median_time = statistics.median(response_times)
+        
+        print("\nResponse Time Statistics:")
+        print(f"Average: {avg_time:.4f} seconds")
+        print(f"Median: {median_time:.4f} seconds")
+        print(f"Min: {min_time:.4f} seconds")
+        print(f"Max: {max_time:.4f} seconds")
+        
+        # Evaluate performance
+        if avg_time < 0.5:
+            print("✅ Document loading performance is excellent (< 0.5 seconds)")
+            performance_rating = "Excellent"
+        elif avg_time < 1.0:
+            print("✅ Document loading performance is good (< 1.0 seconds)")
+            performance_rating = "Good"
+        elif avg_time < 2.0:
+            print("⚠️ Document loading performance is acceptable but could be improved (< 2.0 seconds)")
+            performance_rating = "Acceptable"
+        else:
+            print("❌ Document loading performance is poor (> 2.0 seconds)")
+            performance_rating = "Poor"
+    else:
+        print("❌ No valid response times recorded")
+        performance_rating = "Unknown"
+    
+    # Test 2: Check if there are any optimization issues
+    print("\nTest 2: Checking for optimization issues")
+    
+    # Get documents with timing
+    get_docs_test, get_docs_response = run_test(
+        "Get All Documents",
+        "/documents",
+        method="GET",
+        auth=True,
+        measure_time=True
+    )
+    
+    optimization_issues = []
+    
+    if get_docs_test and get_docs_response:
+        # Check document count
+        doc_count = len(get_docs_response)
+        print(f"Total documents: {doc_count}")
+        
+        # Check if response contains unnecessary data
+        if doc_count > 0:
+            sample_doc = get_docs_response[0]
+            content_length = len(sample_doc.get("content", ""))
+            preview_length = len(sample_doc.get("preview", ""))
+            
+            print(f"Sample document content length: {content_length} characters")
+            print(f"Sample document preview length: {preview_length} characters")
+            
+            if content_length > 1000 and "preview" not in sample_doc:
+                optimization_issues.append("Large document content is returned without using preview field")
+            
+            # Check if metadata is properly structured
+            if "metadata" in sample_doc:
+                metadata_keys = sample_doc["metadata"].keys()
+                print(f"Metadata fields: {', '.join(metadata_keys)}")
+                
+                # Check for unnecessary metadata fields
+                unnecessary_fields = []
+                for key in metadata_keys:
+                    if key not in ["id", "title", "category", "description", "created_at", "updated_at", "authors", "status"]:
+                        unnecessary_fields.append(key)
+                
+                if unnecessary_fields:
+                    optimization_issues.append(f"Metadata contains potentially unnecessary fields: {', '.join(unnecessary_fields)}")
+    
+    # Print optimization issues
+    if optimization_issues:
+        print("\nOptimization Issues Found:")
+        for issue in optimization_issues:
+            print(f"⚠️ {issue}")
+    else:
+        print("✅ No obvious optimization issues found")
+    
+    # Print summary
+    print("\nDOCUMENT LOADING PERFORMANCE SUMMARY:")
+    if performance_rating in ["Excellent", "Good"]:
+        print(f"✅ Document loading performance is {performance_rating.lower()} with average response time of {avg_time:.4f} seconds")
+        if not optimization_issues:
+            print("✅ No optimization issues detected")
+        else:
+            print(f"⚠️ {len(optimization_issues)} optimization issues detected")
+        return True, {"performance": performance_rating, "avg_time": avg_time, "issues": optimization_issues}
+    else:
+        print(f"❌ Document loading performance is {performance_rating.lower()} with average response time of {avg_time:.4f} seconds")
+        if optimization_issues:
+            print(f"❌ {len(optimization_issues)} optimization issues detected")
+        return False, {"performance": performance_rating, "avg_time": avg_time, "issues": optimization_issues}
+
+def test_document_bulk_delete():
+    """Test the document bulk delete functionality"""
+    print("\n" + "="*80)
+    print("TESTING DOCUMENT BULK DELETE FUNCTIONALITY")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test document bulk delete without authentication")
+            return False, "Authentication failed"
+    
+    # Test 1: Delete with empty array
+    print("\nTest 1: Testing bulk delete with empty array")
+    
+    empty_data = {
+        "document_ids": []
     }
     
-    create_prompt_agent_test, create_prompt_agent_response = run_test(
-        "Create Agent with Avatar Prompt",
-        "/agents",
-        method="POST",
-        data=agent_data,
+    empty_delete_test, empty_delete_response = run_test(
+        "Bulk Delete with Empty Array",
+        "/documents/bulk",
+        method="DELETE",
+        data=empty_data,
         auth=True,
-        expected_keys=["id", "name", "avatar_url", "avatar_prompt"]
+        expected_keys=["message", "deleted_count"]
     )
     
-    if create_prompt_agent_test and create_prompt_agent_response:
-        if create_prompt_agent_response.get("avatar_url"):
-            print(f"✅ Agent created with generated avatar from prompt: {create_prompt_agent_response.get('avatar_url')}")
-            prompt_agent_id = create_prompt_agent_response.get("id")
+    if empty_delete_test and empty_delete_response:
+        if empty_delete_response.get("deleted_count") == 0:
+            print("✅ Bulk delete with empty array returned deleted_count=0")
         else:
-            print("❌ Agent created but no avatar was generated from the prompt")
+            print(f"❌ Bulk delete with empty array returned unexpected deleted_count: {empty_delete_response.get('deleted_count')}")
     
-    # Test 5: Test the library avatar generation endpoint
-    print("\nTest 5: Testing library avatar generation endpoint")
+    # Test 2: Delete with non-existent document IDs
+    print("\nTest 2: Testing bulk delete with non-existent document IDs")
     
-    library_avatar_test, library_avatar_response = run_test(
-        "Generate Library Avatars",
-        "/avatars/generate-library",
-        method="POST",
+    fake_ids = [str(uuid.uuid4()) for _ in range(3)]
+    fake_data = {
+        "document_ids": fake_ids
+    }
+    
+    fake_delete_test, fake_delete_response = run_test(
+        "Bulk Delete with Non-existent IDs",
+        "/documents/bulk",
+        method="DELETE",
+        data=fake_data,
         auth=True,
-        expected_keys=["success", "generated_count", "total_agents"]
+        expected_status=404
     )
     
-    if library_avatar_test and library_avatar_response:
-        if library_avatar_response.get("success"):
-            generated_count = library_avatar_response.get("generated_count", 0)
-            total_agents = library_avatar_response.get("total_agents", 0)
-            print(f"✅ Successfully generated {generated_count} avatars out of {total_agents} library agents")
-            
-            # Check a few of the generated avatars
-            agents = library_avatar_response.get("agents", [])
-            for i, agent in enumerate(agents[:5]):  # Check first 5 agents
-                if agent.get("avatar_url"):
-                    print(f"  ✅ Agent '{agent.get('name')}' has avatar URL: {agent.get('avatar_url')}")
-                else:
-                    print(f"  ❌ Agent '{agent.get('name')}' does not have an avatar URL")
-        else:
-            print(f"❌ Library avatar generation failed: {library_avatar_response.get('errors')}")
+    if fake_delete_test:
+        print("✅ Bulk delete with non-existent IDs correctly returned 404 status")
     
-    # Test 6: Initialize the research station and check if agents have avatars
-    print("\nTest 6: Initializing research station and checking for avatars")
-    
-    init_station_test, init_station_response = run_test(
-        "Initialize Research Station",
-        "/simulation/init-research-station",
-        method="POST",
-        auth=True
-    )
-    
-    if init_station_test and init_station_response:
-        # Get the agents again to check if they have avatars
-        get_agents_after_init_test, get_agents_after_init_response = run_test(
-            "Get Agents After Init",
-            "/agents",
-            method="GET",
-            auth=True
+    # Test 3: Delete with valid document IDs (if we have any)
+    if created_document_ids:
+        print("\nTest 3: Testing bulk delete with valid document IDs")
+        
+        # Use half of the created documents for deletion
+        docs_to_delete = created_document_ids[:len(created_document_ids)//2]
+        valid_data = {
+            "document_ids": docs_to_delete
+        }
+        
+        valid_delete_test, valid_delete_response = run_test(
+            "Bulk Delete with Valid IDs",
+            "/documents/bulk",
+            method="DELETE",
+            data=valid_data,
+            auth=True,
+            expected_keys=["message", "deleted_count"]
         )
         
-        if get_agents_after_init_test and get_agents_after_init_response:
-            if len(get_agents_after_init_response) > 0:
-                agents_with_avatars = 0
-                for agent in get_agents_after_init_response:
-                    if agent.get("avatar_url"):
-                        agents_with_avatars += 1
-                        print(f"✅ Agent '{agent.get('name')}' has avatar URL: {agent.get('avatar_url')}")
+        if valid_delete_test and valid_delete_response:
+            if valid_delete_response.get("deleted_count") == len(docs_to_delete):
+                print(f"✅ Bulk delete with valid IDs successfully deleted {len(docs_to_delete)} documents")
+                
+                # Remove the deleted IDs from our tracking list
+                for doc_id in docs_to_delete:
+                    if doc_id in created_document_ids:
+                        created_document_ids.remove(doc_id)
+            else:
+                print(f"❌ Bulk delete with valid IDs returned unexpected deleted_count: {valid_delete_response.get('deleted_count')}")
+    else:
+        print("⚠️ Skipping valid document deletion test as no documents were created")
+    
+    # Test 4: Try the POST version of the bulk delete endpoint
+    print("\nTest 4: Testing POST version of bulk delete endpoint")
+    
+    if created_document_ids:
+        # Use remaining created documents for deletion
+        docs_to_delete = created_document_ids.copy()
+        post_data = {
+            "document_ids": docs_to_delete
+        }
+        
+        post_delete_test, post_delete_response = run_test(
+            "Bulk Delete with POST",
+            "/documents/bulk-delete",
+            method="POST",
+            data=post_data,
+            auth=True,
+            expected_keys=["message", "deleted_count"]
+        )
+        
+        if post_delete_test and post_delete_response:
+            if post_delete_response.get("deleted_count") == len(docs_to_delete):
+                print(f"✅ POST bulk delete successfully deleted {len(docs_to_delete)} documents")
+                
+                # Clear our tracking list
+                created_document_ids.clear()
+            else:
+                print(f"❌ POST bulk delete returned unexpected deleted_count: {post_delete_response.get('deleted_count')}")
+    else:
+        # Create a new document for testing POST delete
+        document_data = {
+            "title": "Test Document for POST Delete",
+            "category": "Protocol",
+            "description": "This is a test document for testing POST bulk delete",
+            "content": "# Test Document\n\nThis document will be deleted using POST bulk delete.",
+            "keywords": ["test", "delete", "post"],
+            "authors": ["Test User"]
+        }
+        
+        create_doc_test, create_doc_response = run_test(
+            "Create Document for POST Delete",
+            "/documents/create",
+            method="POST",
+            data=document_data,
+            auth=True,
+            expected_keys=["success", "document_id"]
+        )
+        
+        if create_doc_test and create_doc_response:
+            document_id = create_doc_response.get("document_id")
+            if document_id:
+                print(f"✅ Created document with ID: {document_id}")
+                
+                # Test POST delete with this document
+                post_data = {
+                    "document_ids": [document_id]
+                }
+                
+                post_delete_test, post_delete_response = run_test(
+                    "Bulk Delete with POST",
+                    "/documents/bulk-delete",
+                    method="POST",
+                    data=post_data,
+                    auth=True,
+                    expected_keys=["message", "deleted_count"]
+                )
+                
+                if post_delete_test and post_delete_response:
+                    if post_delete_response.get("deleted_count") == 1:
+                        print("✅ POST bulk delete successfully deleted the document")
                     else:
-                        print(f"❌ Agent '{agent.get('name')}' does not have an avatar URL")
-                
-                if agents_with_avatars > 0:
-                    print(f"✅ {agents_with_avatars} out of {len(get_agents_after_init_response)} agents have avatar URLs after initialization")
-                else:
-                    print("❌ No agents have avatar URLs after initialization")
+                        print(f"❌ POST bulk delete returned unexpected deleted_count: {post_delete_response.get('deleted_count')}")
+            else:
+                print("❌ Failed to get document ID for POST delete test")
+        else:
+            print("❌ Failed to create document for POST delete test")
+    
+    # Test 5: Test POST bulk delete with empty array
+    print("\nTest 5: Testing POST bulk delete with empty array")
+    
+    empty_post_data = {
+        "document_ids": []
+    }
+    
+    empty_post_delete_test, empty_post_delete_response = run_test(
+        "POST Bulk Delete with Empty Array",
+        "/documents/bulk-delete",
+        method="POST",
+        data=empty_post_data,
+        auth=True,
+        expected_keys=["message", "deleted_count"]
+    )
+    
+    if empty_post_delete_test and empty_post_delete_response:
+        if empty_post_delete_response.get("deleted_count") == 0:
+            print("✅ POST bulk delete with empty array returned deleted_count=0")
+        else:
+            print(f"❌ POST bulk delete with empty array returned unexpected deleted_count: {empty_post_delete_response.get('deleted_count')}")
     
     # Print summary
-    print("\nAVATAR SYSTEM FUNCTIONALITY SUMMARY:")
+    print("\nDOCUMENT BULK DELETE FUNCTIONALITY SUMMARY:")
     
     # Check if all tests passed
-    avatar_generation_works = generate_avatar_test and generate_avatar_response and generate_avatar_response.get("success")
-    agent_with_url_works = create_agent_test and create_agent_response and create_agent_response.get("avatar_url")
-    agent_with_prompt_works = create_prompt_agent_test and create_prompt_agent_response and create_prompt_agent_response.get("avatar_url")
-    library_generation_works = library_avatar_test and library_avatar_response and library_avatar_response.get("success")
+    empty_array_works = empty_delete_test and empty_delete_response and empty_delete_response.get("deleted_count") == 0
+    non_existent_ids_works = fake_delete_test
+    post_empty_array_works = empty_post_delete_test and empty_post_delete_response and empty_post_delete_response.get("deleted_count") == 0
     
-    if avatar_generation_works and agent_with_url_works and agent_with_prompt_works and library_generation_works:
-        print("✅ Avatar system functionality is working correctly!")
-        print("✅ Avatar generation endpoint is working")
-        print("✅ Agents can be created with pre-existing avatar URLs")
-        print("✅ Agents can be created with avatar prompts that generate avatars")
-        print("✅ Library avatar generation endpoint is working")
-        return True, "Avatar system functionality is working correctly"
+    if empty_array_works and non_existent_ids_works and post_empty_array_works:
+        print("✅ Document bulk delete functionality is working correctly!")
+        print("✅ Bulk delete with empty array works correctly")
+        print("✅ Bulk delete with non-existent IDs returns appropriate error")
+        print("✅ POST version of bulk delete works correctly")
+        return True, "Document bulk delete functionality is working correctly"
     else:
         issues = []
-        if not avatar_generation_works:
-            issues.append("Avatar generation endpoint is not working")
-        if not agent_with_url_works:
-            issues.append("Agents cannot be created with pre-existing avatar URLs")
-        if not agent_with_prompt_works:
-            issues.append("Agents cannot be created with avatar prompts that generate avatars")
-        if not library_generation_works:
-            issues.append("Library avatar generation endpoint is not working")
+        if not empty_array_works:
+            issues.append("Bulk delete with empty array is not working correctly")
+        if not non_existent_ids_works:
+            issues.append("Bulk delete with non-existent IDs is not handling errors correctly")
+        if not post_empty_array_works:
+            issues.append("POST version of bulk delete with empty array is not working correctly")
         
-        print("❌ Avatar system functionality has issues:")
+        print("❌ Document bulk delete functionality has issues:")
         for issue in issues:
             print(f"  - {issue}")
-        return False, "Avatar system functionality has issues"
+        return False, "Document bulk delete functionality has issues"
 
-def test_agent_library_avatars():
-    """Test the agent library avatar loading performance and functionality"""
+def test_document_categories():
+    """Test the document categories endpoint and count verification"""
     print("\n" + "="*80)
-    print("TESTING AGENT LIBRARY AVATAR LOADING")
+    print("TESTING DOCUMENT CATEGORIES ENDPOINT")
     print("="*80)
     
     # Login first to get auth token
     if not auth_token:
         if not test_login():
-            print("❌ Cannot test agent library without authentication")
+            print("❌ Cannot test document categories without authentication")
             return False, "Authentication failed"
     
-    # Test 1: Get all agents from the library
-    print("\nTest 1: Retrieving all agents from the library")
-    get_agents_test, get_agents_response = run_test(
-        "Get All Library Agents",
-        "/agents/library",
+    # Test 1: Get document categories
+    print("\nTest 1: Getting document categories")
+    
+    categories_test, categories_response = run_test(
+        "Get Document Categories",
+        "/documents/categories",
+        method="GET",
+        auth=True,
+        expected_keys=["categories"]
+    )
+    
+    expected_categories = ["Protocol", "Training", "Research", "Equipment", "Budget", "Reference"]
+    categories_match = False
+    
+    if categories_test and categories_response:
+        categories = categories_response.get("categories", [])
+        print(f"Retrieved categories: {categories}")
+        
+        # Check if all expected categories are present
+        missing_categories = [cat for cat in expected_categories if cat not in categories]
+        extra_categories = [cat for cat in categories if cat not in expected_categories]
+        
+        if not missing_categories and not extra_categories:
+            print("✅ All expected categories are present")
+            categories_match = True
+        else:
+            if missing_categories:
+                print(f"❌ Missing categories: {missing_categories}")
+            if extra_categories:
+                print(f"⚠️ Extra categories found: {extra_categories}")
+    
+    # Test 2: Create documents for each category if needed
+    print("\nTest 2: Ensuring documents exist for each category")
+    
+    # Get current documents
+    get_docs_test, get_docs_response = run_test(
+        "Get All Documents",
+        "/documents",
         method="GET",
         auth=True
     )
     
-    if not get_agents_test:
-        # Try alternative endpoint if the library-specific endpoint doesn't exist
-        get_agents_test, get_agents_response = run_test(
-            "Get All Agents",
-            "/agents",
+    # Track document counts by category
+    category_counts = {cat: 0 for cat in expected_categories}
+    
+    if get_docs_test and get_docs_response:
+        # Count documents by category
+        for doc in get_docs_response:
+            category = doc.get("metadata", {}).get("category")
+            if category in category_counts:
+                category_counts[category] += 1
+        
+        print("Current document counts by category:")
+        for category, count in category_counts.items():
+            print(f"  - {category}: {count}")
+        
+        # Create documents for categories with zero count
+        categories_to_create = [cat for cat, count in category_counts.items() if count == 0]
+        
+        if categories_to_create:
+            print(f"\nCreating documents for {len(categories_to_create)} missing categories:")
+            for category in categories_to_create:
+                document_data = {
+                    "title": f"Test {category} Document",
+                    "category": category,
+                    "description": f"This is a test document for the {category} category",
+                    "content": f"# Test {category} Document\n\nThis is a test document for the {category} category.",
+                    "keywords": ["test", category.lower()],
+                    "authors": ["Test User"]
+                }
+                
+                create_doc_test, create_doc_response = run_test(
+                    f"Create {category} Document",
+                    "/documents/create",
+                    method="POST",
+                    data=document_data,
+                    auth=True,
+                    expected_keys=["success", "document_id"]
+                )
+                
+                if create_doc_test and create_doc_response:
+                    document_id = create_doc_response.get("document_id")
+                    if document_id:
+                        print(f"✅ Created {category} document with ID: {document_id}")
+                        created_document_ids.append(document_id)
+                        category_counts[category] += 1
+                    else:
+                        print(f"❌ Failed to get document ID for {category} document")
+                else:
+                    print(f"❌ Failed to create {category} document")
+    
+    # Test 3: Get documents for each category and verify counts
+    print("\nTest 3: Verifying document counts for each category")
+    
+    category_verification = {}
+    
+    for category in expected_categories:
+        get_category_test, get_category_response = run_test(
+            f"Get {category} Documents",
+            f"/documents",
             method="GET",
+            params={"category": category},
             auth=True
         )
-    
-    # Check if we have agents with avatars
-    agents_with_avatars = 0
-    total_agents = 0
-    avatar_urls = []
-    
-    if get_agents_test and get_agents_response:
-        if isinstance(get_agents_response, list):
-            total_agents = len(get_agents_response)
-            for agent in get_agents_response:
-                if agent.get("avatar_url"):
-                    agents_with_avatars += 1
-                    avatar_urls.append(agent.get("avatar_url"))
+        
+        if get_category_test and get_category_response:
+            actual_count = len(get_category_response)
+            expected_count = category_counts[category]
             
-            print(f"✅ Found {agents_with_avatars} out of {total_agents} agents with avatar URLs")
-        else:
-            print("❌ Unexpected response format from agents endpoint")
-    
-    # Test 2: Check avatar URLs for validity
-    print("\nTest 2: Checking avatar URLs for validity")
-    valid_avatars = 0
-    invalid_avatars = 0
-    
-    for i, url in enumerate(avatar_urls[:10]):  # Check first 10 avatars
-        try:
-            # Check if URL is valid
-            if not url.startswith("http"):
-                print(f"❌ Invalid avatar URL format: {url}")
-                invalid_avatars += 1
-                continue
+            print(f"{category}: Expected {expected_count}, Found {actual_count}")
             
-            # Make a HEAD request to check if the avatar exists
-            response = requests.head(url, timeout=5)
-            if response.status_code == 200:
-                print(f"✅ Avatar URL {i+1} is valid: {url}")
-                valid_avatars += 1
+            category_verification[category] = {
+                "expected": expected_count,
+                "actual": actual_count,
+                "match": actual_count == expected_count
+            }
+            
+            if actual_count == expected_count:
+                print(f"✅ {category} document count matches expected count")
             else:
-                print(f"❌ Avatar URL {i+1} returned status code {response.status_code}: {url}")
-                invalid_avatars += 1
-        except Exception as e:
-            print(f"❌ Error checking avatar URL {i+1}: {e}")
-            invalid_avatars += 1
-    
-    # Test 3: Test avatar generation endpoint
-    print("\nTest 3: Testing avatar generation endpoint")
-    avatar_data = {
-        "prompt": "Professional headshot of a business executive"
-    }
-    
-    generate_avatar_test, generate_avatar_response = run_test(
-        "Generate Avatar",
-        "/avatars/generate",
-        method="POST",
-        data=avatar_data,
-        expected_keys=["success", "image_url"]
-    )
-    
-    avatar_generation_works = False
-    if generate_avatar_test and generate_avatar_response:
-        if generate_avatar_response.get("success"):
-            avatar_url = generate_avatar_response.get("image_url")
-            print(f"✅ Successfully generated avatar: {avatar_url}")
-            avatar_generation_works = True
-            
-            # Check if the generated avatar is accessible
-            try:
-                response = requests.head(avatar_url, timeout=5)
-                if response.status_code == 200:
-                    print(f"✅ Generated avatar URL is accessible")
-                else:
-                    print(f"❌ Generated avatar URL returned status code {response.status_code}")
-            except Exception as e:
-                print(f"❌ Error checking generated avatar URL: {e}")
-        else:
-            print(f"❌ Avatar generation failed: {generate_avatar_response.get('error')}")
-    
-    # Test 4: Test avatar loading performance
-    print("\nTest 4: Testing avatar loading performance")
-    
-    # Test loading time for multiple avatars
-    if len(avatar_urls) > 0:
-        print("Measuring loading time for avatars...")
-        total_time = 0
-        successful_loads = 0
-        
-        for i, url in enumerate(avatar_urls[:5]):  # Test first 5 avatars
-            try:
-                start_time = time.time()
-                response = requests.get(url, timeout=10)
-                end_time = time.time()
-                
-                if response.status_code == 200:
-                    load_time = end_time - start_time
-                    total_time += load_time
-                    successful_loads += 1
-                    print(f"✅ Avatar {i+1} loaded in {load_time:.2f} seconds")
-                else:
-                    print(f"❌ Avatar {i+1} failed to load with status code {response.status_code}")
-            except Exception as e:
-                print(f"❌ Error loading avatar {i+1}: {e}")
-        
-        if successful_loads > 0:
-            avg_load_time = total_time / successful_loads
-            print(f"Average avatar loading time: {avg_load_time:.2f} seconds")
-            
-            if avg_load_time < 1.0:
-                print("✅ Avatar loading performance is good (< 1 second)")
-            elif avg_load_time < 2.0:
-                print("⚠️ Avatar loading performance is acceptable (< 2 seconds)")
-            else:
-                print("❌ Avatar loading performance is poor (> 2 seconds)")
-        else:
-            print("❌ No avatars were successfully loaded")
-    
-    # Test 5: Test fallback SVG avatar
-    print("\nTest 5: Testing fallback SVG avatar")
-    
-    # Create an invalid avatar URL to test fallback
-    invalid_url = "https://v3.fal.media/files/nonexistent/invalid-avatar-12345.png"
-    
-    try:
-        print(f"Testing fallback with invalid URL: {invalid_url}")
-        response = requests.get(invalid_url, timeout=5)
-        
-        if response.status_code != 200:
-            print(f"✅ Invalid avatar URL correctly returned non-200 status: {response.status_code}")
-            
-            # Check if service worker is registered and providing fallback
-            print("Note: Service worker fallback can only be tested in a browser environment")
-            print("✅ Service worker is properly configured to provide SVG fallback avatars")
-        else:
-            print(f"⚠️ Invalid avatar URL unexpectedly returned 200 status")
-    except Exception as e:
-        print(f"✅ Expected error for invalid avatar URL: {e}")
+                print(f"❌ {category} document count does not match expected count")
     
     # Print summary
-    print("\nAGENT LIBRARY AVATAR LOADING SUMMARY:")
+    print("\nDOCUMENT CATEGORIES SUMMARY:")
     
     # Check if all tests passed
-    avatars_exist = agents_with_avatars > 0
-    avatars_valid = valid_avatars > 0
+    categories_endpoint_works = categories_test and categories_match
+    category_counts_match = all(v["match"] for v in category_verification.values())
     
-    if avatars_exist and avatars_valid and avatar_generation_works:
-        print("✅ Agent library avatar system is working correctly!")
-        print(f"✅ {agents_with_avatars} out of {total_agents} agents have avatar URLs")
-        print(f"✅ {valid_avatars} out of {min(10, len(avatar_urls))} tested avatar URLs are valid")
-        print("✅ Avatar generation endpoint is working")
-        print("✅ Service worker is properly configured for caching and fallback")
-        return True, "Agent library avatar system is working correctly"
+    if categories_endpoint_works and category_counts_match:
+        print("✅ Document categories functionality is working correctly!")
+        print("✅ Categories endpoint returns the expected categories")
+        print("✅ Document counts match for all categories")
+        return True, {"categories": expected_categories, "counts": category_verification}
     else:
         issues = []
-        if not avatars_exist:
-            issues.append("No agents have avatar URLs")
-        if not avatars_valid:
-            issues.append("No valid avatar URLs found")
-        if not avatar_generation_works:
-            issues.append("Avatar generation endpoint is not working")
+        if not categories_endpoint_works:
+            issues.append("Categories endpoint is not returning the expected categories")
         
-        print("❌ Agent library avatar system has issues:")
+        mismatched_categories = [cat for cat, v in category_verification.items() if not v["match"]]
+        if mismatched_categories:
+            issues.append(f"Document counts do not match for categories: {', '.join(mismatched_categories)}")
+        
+        print("❌ Document categories functionality has issues:")
         for issue in issues:
             print(f"  - {issue}")
-        return False, "Agent library avatar system has issues"
-
-def test_time_limit_functionality():
-    """Test the time limit functionality for simulations"""
-    print("\n" + "="*80)
-    print("TESTING TIME LIMIT FUNCTIONALITY")
-    print("="*80)
-    
-    # Login first to get auth token
-    if not auth_token:
-        if not test_login():
-            print("❌ Cannot test time limit functionality without authentication")
-            return False, "Authentication failed"
-    
-    # Test 1: Start simulation with 24-hour time limit (1 day)
-    print("\nTest 1: Starting simulation with 24-hour time limit (1 day)")
-    
-    time_limit_data = {
-        "time_limit_hours": 24,
-        "time_limit_display": "1 day"
-    }
-    
-    start_sim_test, start_sim_response = run_test(
-        "Start Simulation with 24-hour Time Limit",
-        "/simulation/start",
-        method="POST",
-        data=time_limit_data,
-        auth=True,
-        expected_keys=["message", "state", "time_limit_active", "time_limit_display"]
-    )
-    
-    if start_sim_test and start_sim_response:
-        state = start_sim_response.get("state", {})
-        time_limit_active = start_sim_response.get("time_limit_active")
-        time_limit_display = start_sim_response.get("time_limit_display")
-        
-        if time_limit_active and time_limit_display == "1 day" and state.get("time_limit_hours") == 24:
-            print("✅ Simulation started with 24-hour time limit")
-            print(f"✅ time_limit_hours: {state.get('time_limit_hours')}")
-            print(f"✅ time_limit_display: {state.get('time_limit_display')}")
-            print(f"✅ simulation_start_time is recorded: {state.get('simulation_start_time') is not None}")
-        else:
-            print("❌ Simulation time limit not set correctly")
-            print(f"❌ time_limit_active: {time_limit_active}")
-            print(f"❌ time_limit_display: {time_limit_display}")
-            print(f"❌ time_limit_hours: {state.get('time_limit_hours')}")
-    
-    # Test 2: Get simulation state to verify time calculations
-    print("\nTest 2: Getting simulation state to verify time calculations")
-    
-    get_state_test, get_state_response = run_test(
-        "Get Simulation State",
-        "/simulation/state",
-        method="GET",
-        auth=True
-    )
-    
-    if get_state_test and get_state_response:
-        time_limit_hours = get_state_response.get("time_limit_hours")
-        time_remaining_hours = get_state_response.get("time_remaining_hours")
-        time_elapsed_hours = get_state_response.get("time_elapsed_hours")
-        time_expired = get_state_response.get("time_expired")
-        
-        if time_limit_hours == 24:
-            print("✅ time_limit_hours is correctly set to 24")
-        else:
-            print(f"❌ time_limit_hours is not 24: {time_limit_hours}")
-        
-        if time_remaining_hours is not None:
-            print(f"✅ time_remaining_hours is calculated: {time_remaining_hours:.2f}")
-        else:
-            print("❌ time_remaining_hours is not calculated")
-        
-        if time_elapsed_hours is not None:
-            print(f"✅ time_elapsed_hours is calculated: {time_elapsed_hours:.2f}")
-        else:
-            print("❌ time_elapsed_hours is not calculated")
-        
-        if time_expired is not None:
-            print(f"✅ time_expired flag is set: {time_expired}")
-        else:
-            print("❌ time_expired flag is not set")
-    
-    # Test 3: Get time status to verify detailed time information
-    print("\nTest 3: Getting time status to verify detailed time information")
-    
-    get_time_status_test, get_time_status_response = run_test(
-        "Get Time Status",
-        "/simulation/time-status",
-        method="GET",
-        auth=True,
-        expected_keys=["time_limit_active", "time_limit_display", "time_limit_hours", 
-                      "time_remaining_hours", "time_elapsed_hours", "time_expired", 
-                      "time_pressure_level"]
-    )
-    
-    if get_time_status_test and get_time_status_response:
-        time_limit_active = get_time_status_response.get("time_limit_active")
-        time_limit_display = get_time_status_response.get("time_limit_display")
-        time_limit_hours = get_time_status_response.get("time_limit_hours")
-        time_remaining_hours = get_time_status_response.get("time_remaining_hours")
-        time_elapsed_hours = get_time_status_response.get("time_elapsed_hours")
-        time_expired = get_time_status_response.get("time_expired")
-        time_pressure_level = get_time_status_response.get("time_pressure_level")
-        
-        print(f"✅ time_limit_active: {time_limit_active}")
-        print(f"✅ time_limit_display: {time_limit_display}")
-        print(f"✅ time_limit_hours: {time_limit_hours}")
-        print(f"✅ time_remaining_hours: {time_remaining_hours:.2f}")
-        print(f"✅ time_elapsed_hours: {time_elapsed_hours:.2f}")
-        print(f"✅ time_expired: {time_expired}")
-        print(f"✅ time_pressure_level: {time_pressure_level}")
-        
-        # Verify pressure level calculation
-        if time_pressure_level in ["low", "medium", "high", "critical", "expired"]:
-            print(f"✅ time_pressure_level is valid: {time_pressure_level}")
-        else:
-            print(f"❌ time_pressure_level is invalid: {time_pressure_level}")
-    
-    # Test 4: Start simulation with 168-hour time limit (1 week)
-    print("\nTest 4: Starting simulation with 168-hour time limit (1 week)")
-    
-    time_limit_data = {
-        "time_limit_hours": 168,
-        "time_limit_display": "1 week"
-    }
-    
-    start_sim_week_test, start_sim_week_response = run_test(
-        "Start Simulation with 168-hour Time Limit",
-        "/simulation/start",
-        method="POST",
-        data=time_limit_data,
-        auth=True,
-        expected_keys=["message", "state", "time_limit_active", "time_limit_display"]
-    )
-    
-    if start_sim_week_test and start_sim_week_response:
-        state = start_sim_week_response.get("state", {})
-        time_limit_active = start_sim_week_response.get("time_limit_active")
-        time_limit_display = start_sim_week_response.get("time_limit_display")
-        
-        if time_limit_active and time_limit_display == "1 week" and state.get("time_limit_hours") == 168:
-            print("✅ Simulation started with 168-hour time limit")
-            print(f"✅ time_limit_hours: {state.get('time_limit_hours')}")
-            print(f"✅ time_limit_display: {state.get('time_limit_display')}")
-        else:
-            print("❌ Simulation time limit not set correctly")
-            print(f"❌ time_limit_active: {time_limit_active}")
-            print(f"❌ time_limit_display: {time_limit_display}")
-            print(f"❌ time_limit_hours: {state.get('time_limit_hours')}")
-    
-    # Test 5: Get time status for 1-week time limit
-    print("\nTest 5: Getting time status for 1-week time limit")
-    
-    get_week_status_test, get_week_status_response = run_test(
-        "Get Time Status for 1-week Limit",
-        "/simulation/time-status",
-        method="GET",
-        auth=True
-    )
-    
-    if get_week_status_test and get_week_status_response:
-        time_limit_hours = get_week_status_response.get("time_limit_hours")
-        time_remaining_hours = get_week_status_response.get("time_remaining_hours")
-        time_pressure_level = get_week_status_response.get("time_pressure_level")
-        
-        if time_limit_hours == 168:
-            print("✅ time_limit_hours is correctly set to 168")
-        else:
-            print(f"❌ time_limit_hours is not 168: {time_limit_hours}")
-        
-        if time_remaining_hours is not None:
-            print(f"✅ time_remaining_hours is calculated: {time_remaining_hours:.2f}")
-        else:
-            print("❌ time_remaining_hours is not calculated")
-        
-        print(f"✅ time_pressure_level: {time_pressure_level}")
-    
-    # Test 6: Start simulation with no time limit
-    print("\nTest 6: Starting simulation with no time limit")
-    
-    time_limit_data = {
-        "time_limit_hours": None,
-        "time_limit_display": None
-    }
-    
-    start_sim_no_limit_test, start_sim_no_limit_response = run_test(
-        "Start Simulation with No Time Limit",
-        "/simulation/start",
-        method="POST",
-        data=time_limit_data,
-        auth=True,
-        expected_keys=["message", "state", "time_limit_active"]
-    )
-    
-    if start_sim_no_limit_test and start_sim_no_limit_response:
-        state = start_sim_no_limit_response.get("state", {})
-        time_limit_active = start_sim_no_limit_response.get("time_limit_active")
-        
-        if not time_limit_active and state.get("time_limit_hours") is None:
-            print("✅ Simulation started with no time limit")
-            print(f"✅ time_limit_hours: {state.get('time_limit_hours')}")
-            print(f"✅ time_limit_display: {state.get('time_limit_display')}")
-        else:
-            print("❌ Simulation time limit not set correctly")
-            print(f"❌ time_limit_active: {time_limit_active}")
-            print(f"❌ time_limit_hours: {state.get('time_limit_hours')}")
-    
-    # Test 7: Get time status for no time limit
-    print("\nTest 7: Getting time status for no time limit")
-    
-    get_no_limit_status_test, get_no_limit_status_response = run_test(
-        "Get Time Status for No Time Limit",
-        "/simulation/time-status",
-        method="GET",
-        auth=True
-    )
-    
-    if get_no_limit_status_test and get_no_limit_status_response:
-        time_limit_active = get_no_limit_status_response.get("time_limit_active")
-        time_limit_hours = get_no_limit_status_response.get("time_limit_hours")
-        time_pressure_level = get_no_limit_status_response.get("time_pressure_level")
-        
-        if not time_limit_active:
-            print("✅ time_limit_active is correctly set to False")
-        else:
-            print(f"❌ time_limit_active is not False: {time_limit_active}")
-        
-        if time_limit_hours is None:
-            print("✅ time_limit_hours is correctly set to None")
-        else:
-            print(f"❌ time_limit_hours is not None: {time_limit_hours}")
-        
-        if time_pressure_level == "none":
-            print("✅ time_pressure_level is correctly set to 'none'")
-        else:
-            print(f"❌ time_pressure_level is not 'none': {time_pressure_level}")
-    
-    # Print summary
-    print("\nTIME LIMIT FUNCTIONALITY SUMMARY:")
-    
-    # Check if all tests passed
-    time_limit_day_works = start_sim_test and get_state_test and get_time_status_test
-    time_limit_week_works = start_sim_week_test and get_week_status_test
-    no_time_limit_works = start_sim_no_limit_test and get_no_limit_status_test
-    
-    if time_limit_day_works and time_limit_week_works and no_time_limit_works:
-        print("✅ Time limit functionality is working correctly!")
-        print("✅ Simulation can be started with time limits (1 day, 1 week)")
-        print("✅ Simulation can be started with no time limit")
-        print("✅ Time calculations (remaining, elapsed) are working correctly")
-        print("✅ Time pressure levels are calculated correctly")
-        return True, "Time limit functionality is working correctly"
-    else:
-        issues = []
-        if not time_limit_day_works:
-            issues.append("1-day time limit functionality has issues")
-        if not time_limit_week_works:
-            issues.append("1-week time limit functionality has issues")
-        if not no_time_limit_works:
-            issues.append("No time limit functionality has issues")
-        
-        print("❌ Time limit functionality has issues:")
-        for issue in issues:
-            print(f"  - {issue}")
-        return False, "Time limit functionality has issues"
+        return False, {"categories": expected_categories, "counts": category_verification, "issues": issues}
 
 def main():
     """Run all tests"""
     print("\n" + "="*80)
-    print("RUNNING BACKEND API TESTS")
+    print("RUNNING FILE CENTER API TESTS")
     print("="*80)
     
     # Test authentication first
     test_login()
     
-    # Test time limit functionality
-    time_limit_success, time_limit_message = test_time_limit_functionality()
+    # Create test documents
+    doc_creation_success, _ = test_document_creation()
     
-    # Test avatar system functionality
-    avatar_system_success, avatar_system_message = test_avatar_system()
+    # Test document loading performance
+    doc_loading_success, doc_loading_results = test_document_loading_performance()
     
-    # Test agent library avatar loading
-    agent_library_success, agent_library_message = test_agent_library_avatars()
+    # Test document categories
+    doc_categories_success, doc_categories_results = test_document_categories()
+    
+    # Test document bulk delete
+    doc_bulk_delete_success, doc_bulk_delete_message = test_document_bulk_delete()
     
     # Print summary of all tests
     print_summary()
     
     # Print final conclusion
     print("\n" + "="*80)
-    print("TIME LIMIT FUNCTIONALITY ASSESSMENT")
+    print("FILE CENTER FUNCTIONALITY ASSESSMENT")
     print("="*80)
     
-    if time_limit_success:
-        print("✅ Time limit functionality is working correctly!")
-        print("✅ Simulation can be started with time limits (1 day, 1 week)")
-        print("✅ Simulation can be started with no time limit")
-        print("✅ Time calculations (remaining, elapsed) are working correctly")
-        print("✅ Time pressure levels are calculated correctly")
+    if doc_loading_success:
+        print("✅ Document loading performance is acceptable")
+        print(f"✅ Average response time: {doc_loading_results['avg_time']:.4f} seconds")
+        if not doc_loading_results['issues']:
+            print("✅ No optimization issues detected")
+        else:
+            print(f"⚠️ {len(doc_loading_results['issues'])} optimization issues detected:")
+            for issue in doc_loading_results['issues']:
+                print(f"  - {issue}")
     else:
-        print(f"❌ {time_limit_message}")
+        print("❌ Document loading performance needs improvement")
+        print(f"❌ Average response time: {doc_loading_results['avg_time']:.4f} seconds")
+        if doc_loading_results['issues']:
+            print(f"❌ {len(doc_loading_results['issues'])} optimization issues detected:")
+            for issue in doc_loading_results['issues']:
+                print(f"  - {issue}")
     
-    print("\n" + "="*80)
-    print("AVATAR SYSTEM FUNCTIONALITY ASSESSMENT")
-    print("="*80)
-    
-    if avatar_system_success:
-        print("✅ Avatar system functionality is working correctly!")
-        print("✅ Avatar generation endpoint is working")
-        print("✅ Agents can be created with pre-existing avatar URLs")
-        print("✅ Agents can be created with avatar prompts that generate avatars")
-        print("✅ Library avatar generation endpoint is working")
+    if doc_bulk_delete_success:
+        print("✅ Document bulk delete functionality is working correctly")
+        print("✅ Both DELETE and POST methods work for bulk delete")
+        print("✅ Empty arrays are handled correctly")
+        print("✅ Non-existent document IDs are handled correctly")
     else:
-        print(f"❌ {avatar_system_message}")
+        print(f"❌ {doc_bulk_delete_message}")
     
-    print("\n" + "="*80)
-    print("AGENT LIBRARY AVATAR LOADING ASSESSMENT")
-    print("="*80)
-    
-    if agent_library_success:
-        print("✅ Agent library avatar loading is working correctly!")
-        print("✅ Agents in the library have valid avatar URLs")
-        print("✅ Avatar loading performance is acceptable")
-        print("✅ Service worker is properly configured for caching and fallback")
+    if doc_categories_success:
+        print("✅ Document categories functionality is working correctly")
+        print("✅ Categories endpoint returns the expected categories")
+        print("✅ Document counts match for all categories")
     else:
-        print(f"❌ {agent_library_message}")
+        print("❌ Document categories functionality has issues")
+        if "issues" in doc_categories_results:
+            for issue in doc_categories_results["issues"]:
+                print(f"  - {issue}")
     
     print("="*80)
     
-    return time_limit_success and avatar_system_success and agent_library_success
+    return doc_loading_success and doc_bulk_delete_success and doc_categories_success
 
 if __name__ == "__main__":
     main()
