@@ -360,6 +360,7 @@ const AgentLibrary = ({ onAddAgent, onClose, isOpen }) => {
   );
 
   const [collapsedSections, setCollapsedSections] = useState({
+    healthcare: false,
     finance: false,
     technology: false
   });
