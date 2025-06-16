@@ -1,0 +1,41 @@
+fastapi==0.115.6
+python-dotenv==1.0.0
+motor==3.3.2
+python-multipart==0.0.6
+emergentintegrations
+fal-client
+google-cloud-texttospeech==2.16.4
+aiohttp==3.10.11
+fal-client==0.7.0
+python-jose[cryptography]==3.5.0
+google-auth==2.40.3
+google-auth-oauthlib==1.2.2
+google-auth-httplib2==0.2.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.3.0
+openai==1.54.5
+pydub==0.25.1
+email-validator==2.2.0
+PyJWT==2.8.0
+
+# Production scaling dependencies
+redis==5.0.1
+aioredis==2.0.1
+gunicorn==21.2.0
+prometheus-client==0.19.0
+python-multipart==0.0.6
+
+# Database optimization
+pymongo==4.6.1
+mongoengine==0.27.0
+
+# Caching and performance
+aiocache==0.12.2
+cachetools==5.3.2
+
+# Monitoring and logging
+structlog==23.2.0
+sentry-sdk==1.40.0
+
+# Connection pooling
+psutil==5.9.6
