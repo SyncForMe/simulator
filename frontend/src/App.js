@@ -5446,10 +5446,9 @@ function App() {
   const handleInitResearchStation = async () => {
     setLoading(true);
     try {
-      // Create the crypto team
-      await axios.post(`${API}/simulation/init-research-station`);
+      // Users start with empty workspace - no default agents created
       
-      // Refresh data to get the new agents
+      // Refresh data
       await refreshAllData();
       
       // Wait a moment for the agents to be properly created
