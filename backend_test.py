@@ -43,6 +43,9 @@ test_results = {
 auth_token = None
 test_user_id = None
 created_document_ids = []
+test_user_email = f"test.user.{uuid.uuid4()}@example.com"
+test_user_password = "securePassword123"
+test_user_name = "Test User"
 
 def run_test(test_name, endpoint, method="GET", data=None, expected_status=200, expected_keys=None, auth=False, headers=None, params=None, measure_time=False):
     """Run a test against the specified endpoint"""
