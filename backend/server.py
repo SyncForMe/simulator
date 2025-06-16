@@ -1209,7 +1209,7 @@ Respond with ONLY: YES, NO, or ABSTAIN followed by a brief 1-sentence reason."""
         }
 
     async def generate_document_content(self, document_type: str, title: str, conversation_context: str, creating_agent: Agent) -> str:
-        """Generate structured document content based on type and context"""
+        """Generate professionally formatted document content with charts and visual elements"""
         if not await self.can_make_request():
             return f"# {title}\n\n*Document generation failed - API limit reached*"
         
