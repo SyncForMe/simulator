@@ -453,6 +453,7 @@ class ConversationRound(BaseModel):
     scenario: str
     scenario_name: str = ""  # Name/title of the scenario
     messages: List[ConversationMessage]
+    user_id: str = ""  # Associate conversation with user for data isolation
     created_at: datetime = Field(default_factory=datetime.utcnow)
     language: str = "en"
     original_language: Optional[str] = None
