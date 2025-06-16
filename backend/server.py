@@ -3663,10 +3663,13 @@ async def debug_simple_conversation():
 async def generate_conversation():
     """Generate a conversation round between agents with sequential responses and progression tracking"""
     # Get current agents (in simulation mode, get all available agents)
-    agents = await db.agents.find().to_list(100)
-    if len(agents) < 2:
+    all_agents = await db.agents.find().to_list(100)
+    if len(all_agents) < 2:
         raise HTTPException(status_code=400, detail="Need at least 2 agents for conversation")
     
+    # Limit to 6 agents per conversation for reasonable generation time
+    import random
+    agents = random.sample(all_agents, min(6, len(all_agents)))
     agent_objects = [Agent(**agent) for agent in agents]
     
     # Get simulation state including language setting
