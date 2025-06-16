@@ -906,7 +906,7 @@ PROVIDE IMMEDIATE EXPERT ANALYSIS:
                 return self._generate_intelligent_fallback(agent, context, scenario)
             except asyncio.TimeoutError:
                 logging.error(f"LLM request timed out for {agent.name}")
-                return f"{agent.name}: I need more time to think about this complex situation."
+                return self._generate_intelligent_fallback(agent, context, scenario)
                 
         except Exception as e:
             logging.error(f"LLM error for {agent.name}: {e}")
@@ -915,14 +915,18 @@ PROVIDE IMMEDIATE EXPERT ANALYSIS:
             if "quota" in str(e).lower() or "429" in str(e):
                 logging.warning("API quota exceeded - using intelligent fallbacks")
             
-            # Create varied fallback responses based on agent's background and current context
-            import random
-            
-            # Check if others have spoken (for more contextual fallbacks)
-            is_responding_to_others = "In this conversation:" in context
-            
-            # Agent-specific responses based on their background and personality
-            if agent.name == "Marcus \"Mark\" Castellano":
+            return self._generate_intelligent_fallback(agent, context, scenario)
+    
+    def _generate_intelligent_fallback(self, agent: Agent, context: str, scenario: str) -> str:
+        """Generate intelligent fallback responses that are solution-focused and non-repetitive"""
+        import random
+        
+        # Check if others have spoken (for more contextual fallbacks)
+        is_responding_to_others = "In this conversation:" in context
+        
+        # Solution-focused responses based on archetype
+        if agent.archetype == "leader":
+            if is_responding_to_others:
                 if is_responding_to_others:
                     responses = [
                         "I see your point, but from my marketing perspective, we need to consider the narrative implications first.",
