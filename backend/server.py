@@ -3981,17 +3981,39 @@ async def generate_conversation():
     
     return conversation_round
 
-@api_router.get("/conversations", response_model=List[ConversationRound])
-async def get_conversations(current_user: User = Depends(get_current_user)):
-    """Get conversation rounds for the authenticated user and auto-generated simulation conversations"""
-    # Get both user-specific conversations AND auto-generated simulation conversations
+@api_router.get("/conversations")
+async def get_conversations():
+    """Get all simulation conversation rounds (auto-generated conversations are public)"""
+    # Get auto-generated simulation conversations (user_id is empty)
     conversations = await db.conversations.find({
-        "$or": [
-            {"user_id": current_user.id},  # User's personal conversations
-            {"user_id": ""}                # Auto-generated simulation conversations
-        ]
+        "user_id": ""  # Only auto-generated simulation conversations
     }).sort("created_at", 1).to_list(1000)
-    return [ConversationRound(**conv) for conv in conversations]
+    
+    # Convert to response format, handling any missing fields
+    conversation_rounds = []
+    for conv in conversations:
+        try:
+            # Ensure all required fields exist with defaults
+            conv_data = {
+                "id": conv.get("id", str(uuid.uuid4())),
+                "round_number": conv.get("round_number", 1),
+                "time_period": conv.get("time_period", "morning"),
+                "scenario": conv.get("scenario", ""),
+                "scenario_name": conv.get("scenario_name", ""),
+                "messages": conv.get("messages", []),
+                "user_id": conv.get("user_id", ""),
+                "created_at": conv.get("created_at", datetime.utcnow()),
+                "language": conv.get("language", "en"),
+                "original_language": conv.get("original_language"),
+                "translated_at": conv.get("translated_at"),
+                "force_translated": conv.get("force_translated", False)
+            }
+            conversation_rounds.append(conv_data)
+        except Exception as e:
+            logging.warning(f"Skipping malformed conversation: {e}")
+            continue
+    
+    return conversation_rounds
 
 @api_router.get("/relationships")
 async def get_relationships():
