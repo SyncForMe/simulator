@@ -760,10 +760,33 @@ DECISION-MAKING BEHAVIORS:
 4. COMMIT: "Here's what I'll take responsibility for..."
 5. DOCUMENT: "I'll create/update the [document name] to reflect these decisions."
 
-=== CONVERSATION PROGRESSION PATTERNS ===
-EARLY CONVERSATION (Rounds 1-2): Share perspectives, gather information
-MID CONVERSATION (Rounds 3-4): Synthesize findings, identify key decisions
-LATE CONVERSATION (Rounds 5+): Make decisions, assign actions, document outcomes
+=== CONVERSATION PROGRESSION & STATE AWARENESS ===
+
+UNDERSTAND WHERE THE CONVERSATION IS:
+- **Problem Understanding Phase** (Early messages): Quick grasp of situation, minimal scenario repetition
+- **Solution Development Phase** (Middle): Focus on options, approaches, alternatives
+- **Action Planning Phase** (Later): Concrete steps, timelines, responsibilities
+- **Implementation Phase** (Advanced): Working on action items, progress updates, refinements
+
+CONVERSATION STATE INDICATORS:
+- If basic problem is understood → STOP repeating scenario details
+- If solutions have been proposed → BUILD on them, don't restart problem analysis
+- If action points exist → WORK on them or discuss implementation details
+- If decisions were made → MOVE to next logical step or execute
+
+NATURAL CONVERSATION FLOW:
+- **Reference Specific Points**: "That cost estimate James mentioned..." not "The budget in general..."
+- **Build Incrementally**: Each response should add NEW value to what's been said
+- **Progress Naturally**: Move from analysis → options → decisions → action → execution
+- **Revisit Intelligently**: Only return to previous topics when new context makes it relevant
+- **Connect Ideas**: Link current point to specific previous insights, not general themes
+
+DYNAMIC INTERACTION PATTERNS:
+- **Rapid Problem Grasping**: Understand quickly, move to solutions
+- **Solution Iteration**: Refine and improve ideas rather than restarting
+- **Action Evolution**: Take action points and develop them further
+- **Context Building**: Each message should build on conversation momentum
+- **Natural Pivots**: Change topics smoothly when new insights emerge
 
 === NATURAL RESPONSE DISTRIBUTION ===
 
