@@ -887,29 +887,80 @@ Others in discussion: {others_text.replace('Others present: ', '')}
 
 Remember: Great teams don't just talk - they decide, act, and document their progress. Be the agent who moves things forward!"""
         
-        # Enhanced prompts with conversation history awareness
+        # Enhanced prompts with conversation history awareness and question detection
         conversation_history_text = ""
+        pending_questions = []
+        
         if conversation_history and len(conversation_history) > 0:
             # Get last 3 messages for context
             recent_messages = conversation_history[-3:]
             conversation_history_text = "\n\nRecent conversation history:\n"
+            
             for msg in recent_messages:
                 if hasattr(msg, 'agent_name') and hasattr(msg, 'message'):
-                    conversation_history_text += f"{msg.agent_name}: {msg.message[:100]}...\n"
+                    message_text = msg.message
+                    agent_name = msg.agent_name
+                    conversation_history_text += f"{agent_name}: {message_text[:150]}...\n"
+                    
+                    # Detect questions directed at this agent
+                    if ("?" in message_text and 
+                        (agent.name.lower() in message_text.lower() or 
+                         agent.expertise.lower() in message_text.lower() or
+                         any(keyword in message_text.lower() for keyword in agent.expertise.lower().split()))):
+                        pending_questions.append({
+                            "asker": agent_name,
+                            "question": message_text,
+                            "relevance": "direct"
+                        })
+                    
+                    # Detect general questions that might need this agent's expertise
+                    elif "?" in message_text and any(word in message_text.lower() for word in 
+                        ["timeline", "budget", "risk", "technical", "implementation", "feasible", "cost", "schedule"]):
+                        if (("timeline" in message_text.lower() and "project" in agent.expertise.lower()) or
+                            ("budget" in message_text.lower() and "financial" in agent.expertise.lower()) or
+                            ("risk" in message_text.lower() and "risk" in agent.expertise.lower()) or
+                            ("technical" in message_text.lower() and any(t in agent.expertise.lower() for t in ["technical", "engineer", "science", "quantum"]))):
+                            pending_questions.append({
+                                "asker": agent_name,
+                                "question": message_text,
+                                "relevance": "expertise"
+                            })
                 elif isinstance(msg, dict):
-                    conversation_history_text += f"{msg.get('agent_name', 'Unknown')}: {msg.get('message', '')[:100]}...\n"
+                    message_text = msg.get('message', '')
+                    agent_name = msg.get('agent_name', 'Unknown')
+                    conversation_history_text += f"{agent_name}: {message_text[:150]}...\n"
         
         if "In this conversation:" in context:
-            # This agent is responding to others - be specific and solution-focused
-            prompt = f"""{context}
+            # This agent is responding to others
+            if pending_questions:
+                # Prioritize answering questions when directly asked
+                most_relevant_q = pending_questions[0]  # Take the most recent relevant question
+                prompt = f"""{context}
 {conversation_history_text}
 
-RESPOND TO THE MOST RECENT COMMENT. 
+IMPORTANT: {most_relevant_q['asker']} asked you a question that relates to your expertise.
+Question: "{most_relevant_q['question']}"
+
+RESPOND BY:
+1. Directly answering the question with your expert knowledge
+2. Providing specific, actionable information
+3. Adding context or reasoning behind your answer
+4. Connecting to next steps or implications
+5. Building on this to move the conversation forward
+
+Be thorough but concise in your expert response."""
+            else:
+                # Regular response - be solution-focused and maybe ask strategic questions
+                prompt = f"""{context}
+{conversation_history_text}
+
+RESPOND TO THE MOST RECENT COMMENT:
 - Reference the specific point made by the last speaker
 - Add your expert perspective with concrete solutions
+- Consider asking a strategic question if you need specific expertise from teammates (20% chance)
 - Propose next steps with timelines/specifics
-- Do NOT ask questions or restate problems
-- Focus on implementation and action"""
+- Focus on implementation and action
+- Learn from and build on others' insights"""
         else:
             # This agent is speaking first - jump straight to analysis and solutions
             prompt = f"""Current situation: {scenario}
@@ -920,6 +971,7 @@ PROVIDE IMMEDIATE EXPERT ANALYSIS:
 - Jump directly to your professional assessment
 - Propose concrete solutions or next steps
 - Include specific timelines, resources, or metrics
+- Consider asking strategic questions to gather needed expertise from teammates
 - Make definitive statements based on your expertise"""
         
         try:
