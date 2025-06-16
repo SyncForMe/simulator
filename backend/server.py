@@ -887,10 +887,11 @@ PROVIDE IMMEDIATE EXPERT ANALYSIS:
                 if response and len(response.strip()) > 5:
                     # Check for banned repetitive phrases
                     banned_phrases = [
-                        "good morning", "good afternoon", "good evening", 
-                        "i'm", "and i'm here to", "alright team", "alright everyone",
-                        "as an expert in", "this is concerning", "this is interesting", 
-                        "this is exciting", "let me share my perspective", "from my experience in"
+                        "good morning", "good afternoon", "good evening", "i'm", "my name is",
+                        "alright team", "alright everyone", "okay team", "okay everyone",
+                        "as an expert in", "as a", "this is concerning", "this is interesting",
+                        "this is exciting", "this is fascinating", "let me share my perspective",
+                        "from my perspective", "from my experience in", "in my experience with"
                     ]
                     
                     response_lower = response.lower()
