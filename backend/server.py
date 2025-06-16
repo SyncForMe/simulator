@@ -830,13 +830,40 @@ Others in discussion: {others_text.replace('Others present: ', '')}
 
 Remember: Great teams don't just talk - they decide, act, and document their progress. Be the agent who moves things forward!"""
         
-        # Enhanced prompts for natural conversation without forced questions
+        # Enhanced prompts with conversation history awareness
+        conversation_history_text = ""
+        if conversation_history and len(conversation_history) > 0:
+            # Get last 3 messages for context
+            recent_messages = conversation_history[-3:]
+            conversation_history_text = "\n\nRecent conversation history:\n"
+            for msg in recent_messages:
+                if hasattr(msg, 'agent_name') and hasattr(msg, 'message'):
+                    conversation_history_text += f"{msg.agent_name}: {msg.message[:100]}...\n"
+                elif isinstance(msg, dict):
+                    conversation_history_text += f"{msg.get('agent_name', 'Unknown')}: {msg.get('message', '')[:100]}...\n"
+        
         if "In this conversation:" in context:
-            # This agent is responding to others - discourage questions
-            prompt = f"{context}\n\nRespond to what others have said. Make a definitive statement based on your expertise. Share your opinion, provide facts, or give a conclusion. DO NOT end with a question unless you genuinely need specific information."
+            # This agent is responding to others - be specific and solution-focused
+            prompt = f"""{context}
+{conversation_history_text}
+
+RESPOND TO THE MOST RECENT COMMENT. 
+- Reference the specific point made by the last speaker
+- Add your expert perspective with concrete solutions
+- Propose next steps with timelines/specifics
+- Do NOT ask questions or restate problems
+- Focus on implementation and action"""
         else:
-            # This agent is speaking first - start with a statement
-            prompt = f"You're starting a discussion about: {scenario}\n\nShare your expert perspective with a clear statement or opinion. Be definitive and confident. DO NOT end with a question - let others respond to your statement naturally."
+            # This agent is speaking first - jump straight to analysis and solutions
+            prompt = f"""Current situation: {scenario}
+{conversation_history_text}
+
+PROVIDE IMMEDIATE EXPERT ANALYSIS:
+- Skip introductions (everyone knows who you are)
+- Jump directly to your professional assessment
+- Propose concrete solutions or next steps
+- Include specific timelines, resources, or metrics
+- Make definitive statements based on your expertise"""
         
         try:
             # Create chat instance with basic configuration
