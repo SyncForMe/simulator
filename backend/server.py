@@ -766,11 +766,11 @@ Scenario: {scenario}
             
             user_message = UserMessage(text=prompt)
             
-            # Add timeout to prevent hanging
+            # Add timeout to prevent hanging - reduced timeout for faster generation
             try:
                 response = await asyncio.wait_for(
                     chat.send_message(user_message), 
-                    timeout=30.0
+                    timeout=10.0  # Reduced from 30s to 10s for faster fallbacks
                 )
                 await self.increment_usage()
                 
