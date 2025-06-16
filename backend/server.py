@@ -770,7 +770,7 @@ Scenario: {scenario}
             try:
                 response = await asyncio.wait_for(
                     chat.send_message(user_message), 
-                    timeout=5.0  # Very short timeout for instant fallbacks
+                    timeout=15.0  # Increased timeout for better LLM responses
                 )
                 await self.increment_usage()
                 
