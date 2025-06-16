@@ -529,6 +529,9 @@ class LLMManager:
     def __init__(self):
         self.api_key = os.environ.get('GEMINI_API_KEY')
         self.max_daily_requests = 50000  # Paid tier - much higher limit
+        self.document_quality_gate = DocumentQualityGate()
+        self.document_formatter = ProfessionalDocumentFormatter()
+        self.last_document_round = 0  # Track when last document was created
         
     async def get_usage_today(self):
         """Get current API usage for today"""
