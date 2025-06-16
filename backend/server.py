@@ -2702,6 +2702,79 @@ async def get_admin_recent_activity(
         logging.error(f"Error getting recent activity: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get recent activity: {str(e)}")
 
+@api_router.post("/admin/reset-password")
+async def reset_admin_password(
+    new_password: str = Field(..., min_length=6),
+    current_user: User = Depends(get_admin_user)
+):
+    """Reset admin password - admin only"""
+    try:
+        # Hash the new password
+        password_hash = hash_password(new_password)
+        
+        # Update admin user's password
+        result = await db.users.update_one(
+            {"email": ADMIN_EMAIL},
+            {"$set": {"password_hash": password_hash}}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Admin user not found")
+        
+        return {"message": "Admin password updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error resetting admin password: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to reset password: {str(e)}")
+
+@api_router.post("/admin/setup")
+async def setup_admin_account(setup_data: dict):
+    """One-time setup for admin account - no authentication required"""
+    try:
+        # Check if admin already exists and has a password
+        admin_user = await db.users.find_one({"email": ADMIN_EMAIL})
+        
+        if admin_user and admin_user.get("password_hash"):
+            raise HTTPException(status_code=400, detail="Admin account already set up")
+        
+        password = setup_data.get("password")
+        if not password or len(password) < 6:
+            raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+        
+        # Hash the password
+        password_hash = hash_password(password)
+        
+        if admin_user:
+            # Update existing admin with password
+            await db.users.update_one(
+                {"email": ADMIN_EMAIL},
+                {"$set": {
+                    "password_hash": password_hash,
+                    "auth_type": "email"
+                }}
+            )
+        else:
+            # Create new admin user
+            admin_user = UserWithPassword(
+                email=ADMIN_EMAIL,
+                name="Admin",
+                password_hash=password_hash,
+                auth_type="email",
+                picture="",
+                google_id=""
+            )
+            await db.users.insert_one(admin_user.dict())
+        
+        return {"message": "Admin account set up successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error setting up admin account: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to set up admin account: {str(e)}")
+
 # Saved Agents Endpoints
 @api_router.get("/saved-agents", response_model=List[SavedAgent])
 async def get_saved_agents(current_user: User = Depends(get_current_user)):
