@@ -247,6 +247,7 @@ test_plan:
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
     - "Admin Functionality"
     - "Improved Conversation Generation System"
+    - "Enhanced Dynamic Conversation System"
   test_all: false
   test_priority: "high_first"
 
