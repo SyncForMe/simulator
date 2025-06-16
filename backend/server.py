@@ -692,8 +692,11 @@ class LLMManager:
                 document_context += f"{i}. '{doc.get('title', 'Untitled')}' ({doc.get('category', 'Unknown')}) - {doc.get('description', 'No description')}\n"
             document_context += "\nYou can reference these documents by name in your responses and suggest improvements if relevant.\n"
         
-        # Action-oriented system message for decision-making and document management
-        system_message = f"""You are {agent.name}, {AGENT_ARCHETYPES[agent.archetype]['description']}.
+        # Get conversation count for context
+        conversation_count = await db.conversations.count_documents({})
+        
+        # Enhanced system message with stronger anti-repetition and solution focus
+        system_message = f"""You are {agent.name}, a professional {AGENT_ARCHETYPES[agent.archetype]['description']}.
 
 === YOUR IDENTITY ===
 Professional role: {agent.expertise}
