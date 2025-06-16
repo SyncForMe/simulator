@@ -1414,14 +1414,536 @@ def test_default_agents_removal():
     
     return True, "Default agents removal is working correctly"
 
+def test_enhanced_document_generation():
+    """Test the enhanced document generation system"""
+    print("\n" + "="*80)
+    print("TESTING ENHANCED DOCUMENT GENERATION SYSTEM")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test enhanced document generation without authentication")
+            return False, "Authentication failed"
+    
+    # Test 1: Test the quality gate with budget/financial discussions
+    print("\nTest 1: Testing quality gate with budget/financial discussions")
+    
+    # Create a conversation with budget/financial discussions
+    budget_conversation = """
+    Mark: I think we need to allocate our budget more effectively for the next quarter.
+    Alex: I agree. We should put 40% towards development, 30% towards marketing, and 20% towards operations.
+    Dex: What about the remaining 10%? I suggest we keep it as a contingency fund.
+    Mark: That's a good point. Let's allocate the budget as Alex suggested with the 10% contingency.
+    Alex: Great, so we have consensus on the budget allocation. Let's create a budget document to formalize this.
+    """
+    
+    # Call the document quality gate endpoint
+    quality_gate_data = {
+        "conversation_text": budget_conversation,
+        "conversation_round": 5,
+        "last_document_round": 0
+    }
+    
+    budget_quality_test, budget_quality_response = run_test(
+        "Quality Gate - Budget Discussion",
+        "/documents/quality-check",
+        method="POST",
+        data=quality_gate_data,
+        auth=True,
+        expected_keys=["should_create", "reason"]
+    )
+    
+    if budget_quality_test and budget_quality_response:
+        should_create = budget_quality_response.get("should_create", False)
+        reason = budget_quality_response.get("reason", "")
+        
+        if should_create:
+            print(f"✅ Quality gate correctly allows document creation for budget discussions")
+            print(f"Reason: {reason}")
+        else:
+            print(f"❌ Quality gate incorrectly blocks document creation for budget discussions")
+            print(f"Reason: {reason}")
+    else:
+        print("❌ Failed to test quality gate with budget discussions")
+    
+    # Test 2: Test the quality gate with timeline/milestone discussions
+    print("\nTest 2: Testing quality gate with timeline/milestone discussions")
+    
+    # Create a conversation with timeline/milestone discussions
+    timeline_conversation = """
+    Alex: We need to establish a timeline for the project launch.
+    Mark: I think we should aim for initial development in Month 1-2, testing in Month 3-4, and launch in Month 5.
+    Dex: That seems reasonable, but we should add a beta phase between testing and launch.
+    Alex: Good point. So the timeline would be: Month 1-2 Development, Month 3-4 Testing, Month 4-5 Beta, Month 6 Launch.
+    Mark: I agree with this timeline. Let's document this so the team has clear milestones to work towards.
+    """
+    
+    # Call the document quality gate endpoint
+    quality_gate_data = {
+        "conversation_text": timeline_conversation,
+        "conversation_round": 5,
+        "last_document_round": 0
+    }
+    
+    timeline_quality_test, timeline_quality_response = run_test(
+        "Quality Gate - Timeline Discussion",
+        "/documents/quality-check",
+        method="POST",
+        data=quality_gate_data,
+        auth=True,
+        expected_keys=["should_create", "reason"]
+    )
+    
+    if timeline_quality_test and timeline_quality_response:
+        should_create = timeline_quality_response.get("should_create", False)
+        reason = timeline_quality_response.get("reason", "")
+        
+        if should_create:
+            print(f"✅ Quality gate correctly allows document creation for timeline discussions")
+            print(f"Reason: {reason}")
+        else:
+            print(f"❌ Quality gate incorrectly blocks document creation for timeline discussions")
+            print(f"Reason: {reason}")
+    else:
+        print("❌ Failed to test quality gate with timeline discussions")
+    
+    # Test 3: Test the quality gate with risk assessment discussions
+    print("\nTest 3: Testing quality gate with risk assessment discussions")
+    
+    # Create a conversation with risk assessment discussions
+    risk_conversation = """
+    Dex: We need to assess the risks associated with this project.
+    Mark: I see three main risks: technical complexity, market competition, and regulatory challenges.
+    Alex: I agree. On a scale of 1-10, I'd rate technical complexity as 7, market competition as 8, and regulatory challenges as 6.
+    Dex: That seems accurate. We should also consider mitigation strategies for each risk.
+    Mark: Good point. Let's create a risk assessment document that outlines these risks and our mitigation strategies.
+    """
+    
+    # Call the document quality gate endpoint
+    quality_gate_data = {
+        "conversation_text": risk_conversation,
+        "conversation_round": 5,
+        "last_document_round": 0
+    }
+    
+    risk_quality_test, risk_quality_response = run_test(
+        "Quality Gate - Risk Assessment Discussion",
+        "/documents/quality-check",
+        method="POST",
+        data=quality_gate_data,
+        auth=True,
+        expected_keys=["should_create", "reason"]
+    )
+    
+    if risk_quality_test and risk_quality_response:
+        should_create = risk_quality_response.get("should_create", False)
+        reason = risk_quality_response.get("reason", "")
+        
+        if should_create:
+            print(f"✅ Quality gate correctly allows document creation for risk assessment discussions")
+            print(f"Reason: {reason}")
+        else:
+            print(f"❌ Quality gate incorrectly blocks document creation for risk assessment discussions")
+            print(f"Reason: {reason}")
+    else:
+        print("❌ Failed to test quality gate with risk assessment discussions")
+    
+    # Test 4: Test the quality gate with substantive content without perfect consensus phrases
+    print("\nTest 4: Testing quality gate with substantive content without perfect consensus phrases")
+    
+    # Create a conversation with substantive content but without perfect consensus phrases
+    substantive_conversation = """
+    Alex: I've been analyzing our current market position and I think we need to pivot our strategy.
+    Mark: What specifically are you suggesting?
+    Alex: We should focus more on enterprise clients rather than small businesses. They have bigger budgets and longer contracts.
+    Dex: That makes sense. Enterprise clients would provide more stability for our revenue.
+    Mark: I see the benefits, but it would require significant changes to our sales approach and product features.
+    Alex: True, but the long-term benefits outweigh the short-term adjustment costs.
+    """
+    
+    # Call the document quality gate endpoint
+    quality_gate_data = {
+        "conversation_text": substantive_conversation,
+        "conversation_round": 5,
+        "last_document_round": 0
+    }
+    
+    substantive_quality_test, substantive_quality_response = run_test(
+        "Quality Gate - Substantive Content",
+        "/documents/quality-check",
+        method="POST",
+        data=quality_gate_data,
+        auth=True,
+        expected_keys=["should_create", "reason"]
+    )
+    
+    if substantive_quality_test and substantive_quality_response:
+        should_create = substantive_quality_response.get("should_create", False)
+        reason = substantive_quality_response.get("reason", "")
+        
+        if should_create:
+            print(f"✅ Quality gate correctly allows document creation for substantive content without perfect consensus phrases")
+            print(f"Reason: {reason}")
+        else:
+            print(f"❌ Quality gate incorrectly blocks document creation for substantive content without perfect consensus phrases")
+            print(f"Reason: {reason}")
+    else:
+        print("❌ Failed to test quality gate with substantive content")
+    
+    # Test 5: Test chart embedding in budget document
+    print("\nTest 5: Testing chart embedding in budget document")
+    
+    # Create a budget document
+    budget_doc_data = {
+        "title": "Q3 Budget Allocation Plan",
+        "category": "Budget",
+        "description": "Budget allocation for Q3 with detailed breakdown",
+        "content": """# Q3 Budget Allocation Plan
+
+## Executive Summary
+This document outlines our budget allocation for Q3 2023.
+
+## Budget Breakdown
+- Development: 40%
+- Marketing: 30%
+- Operations: 20%
+- Contingency: 10%
+
+## Justification
+The allocation prioritizes development to complete our new product features while maintaining adequate marketing spend to promote the launch.
+
+## Approval
+This budget has been approved by the management team.
+""",
+        "keywords": ["budget", "finance", "allocation", "Q3"],
+        "authors": ["Mark Castellano", "Alex Chen"]
+    }
+    
+    create_budget_doc_test, create_budget_doc_response = run_test(
+        "Create Budget Document",
+        "/documents/create",
+        method="POST",
+        data=budget_doc_data,
+        auth=True,
+        expected_keys=["success", "document_id"]
+    )
+    
+    budget_doc_id = None
+    if create_budget_doc_test and create_budget_doc_response:
+        budget_doc_id = create_budget_doc_response.get("document_id")
+        print(f"✅ Created budget document with ID: {budget_doc_id}")
+    else:
+        print("❌ Failed to create budget document")
+    
+    # Get the created document to check for chart embedding
+    if budget_doc_id:
+        get_budget_doc_test, get_budget_doc_response = run_test(
+            "Get Budget Document",
+            f"/documents/{budget_doc_id}",
+            method="GET",
+            auth=True,
+            expected_keys=["id", "metadata", "content"]
+        )
+        
+        if get_budget_doc_test and get_budget_doc_response:
+            content = get_budget_doc_response.get("content", "")
+            
+            # Check if content contains base64 image data for chart
+            has_chart = "data:image/png;base64," in content and "chart-container" in content
+            
+            if has_chart:
+                print("✅ Budget document correctly contains embedded pie chart")
+            else:
+                print("❌ Budget document does not contain embedded pie chart")
+                print("Content excerpt:")
+                print(content[:500] + "..." if len(content) > 500 else content)
+        else:
+            print("❌ Failed to retrieve budget document")
+    
+    # Test 6: Test chart embedding in timeline document
+    print("\nTest 6: Testing chart embedding in timeline document")
+    
+    # Create a timeline document
+    timeline_doc_data = {
+        "title": "Project Launch Timeline",
+        "category": "Protocol",
+        "description": "Timeline for project development and launch",
+        "content": """# Project Launch Timeline
+
+## Overview
+This document outlines the timeline for our project development and launch.
+
+## Key Milestones
+- Month 1-2: Development
+- Month 3-4: Testing
+- Month 4-5: Beta
+- Month 6: Launch
+
+## Dependencies
+The testing phase cannot begin until development is at least 90% complete.
+
+## Responsibility
+Each team lead is responsible for meeting their respective milestones.
+""",
+        "keywords": ["timeline", "project", "milestones", "launch"],
+        "authors": ["Alex Chen", "Dex Rodriguez"]
+    }
+    
+    create_timeline_doc_test, create_timeline_doc_response = run_test(
+        "Create Timeline Document",
+        "/documents/create",
+        method="POST",
+        data=timeline_doc_data,
+        auth=True,
+        expected_keys=["success", "document_id"]
+    )
+    
+    timeline_doc_id = None
+    if create_timeline_doc_test and create_timeline_doc_response:
+        timeline_doc_id = create_timeline_doc_response.get("document_id")
+        print(f"✅ Created timeline document with ID: {timeline_doc_id}")
+    else:
+        print("❌ Failed to create timeline document")
+    
+    # Get the created document to check for chart embedding
+    if timeline_doc_id:
+        get_timeline_doc_test, get_timeline_doc_response = run_test(
+            "Get Timeline Document",
+            f"/documents/{timeline_doc_id}",
+            method="GET",
+            auth=True,
+            expected_keys=["id", "metadata", "content"]
+        )
+        
+        if get_timeline_doc_test and get_timeline_doc_response:
+            content = get_timeline_doc_response.get("content", "")
+            
+            # Check if content contains base64 image data for chart
+            has_chart = "data:image/png;base64," in content and "chart-container" in content
+            
+            if has_chart:
+                print("✅ Timeline document correctly contains embedded timeline chart")
+            else:
+                print("❌ Timeline document does not contain embedded timeline chart")
+                print("Content excerpt:")
+                print(content[:500] + "..." if len(content) > 500 else content)
+        else:
+            print("❌ Failed to retrieve timeline document")
+    
+    # Test 7: Test chart embedding in risk document
+    print("\nTest 7: Testing chart embedding in risk document")
+    
+    # Create a risk document
+    risk_doc_data = {
+        "title": "Project Risk Assessment",
+        "category": "Research",
+        "description": "Assessment of project risks and mitigation strategies",
+        "content": """# Project Risk Assessment
+
+## Overview
+This document outlines the key risks associated with our project and proposed mitigation strategies.
+
+## Risk Factors
+- Technical Complexity: 7/10
+- Market Competition: 8/10
+- Regulatory Challenges: 6/10
+
+## Mitigation Strategies
+- Technical Complexity: Hire additional senior developers and implement phased approach
+- Market Competition: Focus on unique value proposition and accelerate go-to-market
+- Regulatory Challenges: Engage legal consultants early in the process
+
+## Monitoring
+Risks will be reviewed bi-weekly during project status meetings.
+""",
+        "keywords": ["risk", "assessment", "mitigation", "project"],
+        "authors": ["Mark Castellano", "Dex Rodriguez"]
+    }
+    
+    create_risk_doc_test, create_risk_doc_response = run_test(
+        "Create Risk Document",
+        "/documents/create",
+        method="POST",
+        data=risk_doc_data,
+        auth=True,
+        expected_keys=["success", "document_id"]
+    )
+    
+    risk_doc_id = None
+    if create_risk_doc_test and create_risk_doc_response:
+        risk_doc_id = create_risk_doc_response.get("document_id")
+        print(f"✅ Created risk document with ID: {risk_doc_id}")
+    else:
+        print("❌ Failed to create risk document")
+    
+    # Get the created document to check for chart embedding
+    if risk_doc_id:
+        get_risk_doc_test, get_risk_doc_response = run_test(
+            "Get Risk Document",
+            f"/documents/{risk_doc_id}",
+            method="GET",
+            auth=True,
+            expected_keys=["id", "metadata", "content"]
+        )
+        
+        if get_risk_doc_test and get_risk_doc_response:
+            content = get_risk_doc_response.get("content", "")
+            
+            # Check if content contains base64 image data for chart
+            has_chart = "data:image/png;base64," in content and "chart-container" in content
+            
+            if has_chart:
+                print("✅ Risk document correctly contains embedded bar chart")
+            else:
+                print("❌ Risk document does not contain embedded bar chart")
+                print("Content excerpt:")
+                print(content[:500] + "..." if len(content) > 500 else content)
+        else:
+            print("❌ Failed to retrieve risk document")
+    
+    # Test 8: Test end-to-end document quality
+    print("\nTest 8: Testing end-to-end document quality")
+    
+    # Check HTML formatting, CSS styling, and section headers in all created documents
+    document_ids = [doc_id for doc_id in [budget_doc_id, timeline_doc_id, risk_doc_id] if doc_id]
+    
+    if not document_ids:
+        print("❌ No documents were created successfully for quality testing")
+        return False, "No documents were created successfully for quality testing"
+    
+    quality_results = []
+    
+    for doc_id in document_ids:
+        get_doc_test, get_doc_response = run_test(
+            f"Get Document {doc_id} for Quality Check",
+            f"/documents/{doc_id}",
+            method="GET",
+            auth=True
+        )
+        
+        if get_doc_test and get_doc_response:
+            content = get_doc_response.get("content", "")
+            
+            # Check for HTML formatting
+            has_html = content.startswith("<!DOCTYPE html>") or "<html>" in content
+            
+            # Check for CSS styling
+            has_css = "<style>" in content
+            
+            # Check for section headers
+            has_headers = "section-header" in content or "<h1>" in content or "<h2>" in content
+            
+            # Check for embedded charts
+            has_charts = "data:image/png;base64," in content and "chart-container" in content
+            
+            quality_results.append({
+                "doc_id": doc_id,
+                "has_html": has_html,
+                "has_css": has_css,
+                "has_headers": has_headers,
+                "has_charts": has_charts
+            })
+            
+            print(f"Document {doc_id} quality check:")
+            print(f"  - HTML formatting: {'✅' if has_html else '❌'}")
+            print(f"  - CSS styling: {'✅' if has_css else '❌'}")
+            print(f"  - Section headers: {'✅' if has_headers else '❌'}")
+            print(f"  - Embedded charts: {'✅' if has_charts else '❌'}")
+        else:
+            print(f"❌ Failed to retrieve document {doc_id} for quality check")
+    
+    # Print summary
+    print("\nENHANCED DOCUMENT GENERATION SUMMARY:")
+    
+    # Check quality gate tests
+    quality_gate_tests = [
+        budget_quality_test and budget_quality_response and budget_quality_response.get("should_create", False),
+        timeline_quality_test and timeline_quality_response and timeline_quality_response.get("should_create", False),
+        risk_quality_test and risk_quality_response and risk_quality_response.get("should_create", False),
+        substantive_quality_test and substantive_quality_response and substantive_quality_response.get("should_create", False)
+    ]
+    
+    quality_gate_working = all(quality_gate_tests)
+    
+    # Check chart embedding tests
+    chart_embedding_tests = [result["has_charts"] for result in quality_results]
+    chart_embedding_working = all(chart_embedding_tests)
+    
+    # Check document quality tests
+    document_quality_tests = [
+        all(result["has_html"] for result in quality_results),
+        all(result["has_css"] for result in quality_results),
+        all(result["has_headers"] for result in quality_results)
+    ]
+    document_quality_working = all(document_quality_tests)
+    
+    if quality_gate_working:
+        print("✅ Quality gate is working correctly")
+        print("✅ Document creation is allowed for budget/financial discussions")
+        print("✅ Document creation is allowed for timeline/milestone conversations")
+        print("✅ Document creation is allowed for risk assessment discussions")
+        print("✅ Document creation is allowed for substantive content without perfect consensus phrases")
+    else:
+        print("❌ Quality gate has issues")
+        if not quality_gate_tests[0]:
+            print("❌ Document creation is blocked for budget/financial discussions")
+        if not quality_gate_tests[1]:
+            print("❌ Document creation is blocked for timeline/milestone conversations")
+        if not quality_gate_tests[2]:
+            print("❌ Document creation is blocked for risk assessment discussions")
+        if not quality_gate_tests[3]:
+            print("❌ Document creation is blocked for substantive content without perfect consensus phrases")
+    
+    if chart_embedding_working:
+        print("✅ Chart embedding is working correctly")
+        print("✅ Pie charts are properly embedded in budget documents")
+        print("✅ Timeline charts are properly embedded in timeline documents")
+        print("✅ Bar charts are properly embedded in risk documents")
+    else:
+        print("❌ Chart embedding has issues")
+        for i, result in enumerate(quality_results):
+            if not result["has_charts"]:
+                print(f"❌ Charts are not properly embedded in document {result['doc_id']}")
+    
+    if document_quality_working:
+        print("✅ Document quality is excellent")
+        print("✅ Documents have professional HTML formatting")
+        print("✅ Documents have CSS styling")
+        print("✅ Documents have proper section headers and structure")
+    else:
+        print("❌ Document quality has issues")
+        if not document_quality_tests[0]:
+            print("❌ Documents lack proper HTML formatting")
+        if not document_quality_tests[1]:
+            print("❌ Documents lack CSS styling")
+        if not document_quality_tests[2]:
+            print("❌ Documents lack proper section headers and structure")
+    
+    # Overall assessment
+    if quality_gate_working and chart_embedding_working and document_quality_working:
+        print("\n✅ Enhanced document generation system is working correctly")
+        return True, "Enhanced document generation system is working correctly"
+    else:
+        issues = []
+        if not quality_gate_working:
+            issues.append("Quality gate has issues")
+        if not chart_embedding_working:
+            issues.append("Chart embedding has issues")
+        if not document_quality_working:
+            issues.append("Document quality has issues")
+        
+        print(f"\n❌ Enhanced document generation system has issues: {', '.join(issues)}")
+        return False, {"issues": issues}
+
 def main():
     """Run all tests"""
     print("\n" + "="*80)
     print("RUNNING API TESTS")
     print("="*80)
     
-    # Test the removal of default agents creation
-    default_agents_removal_success, default_agents_removal_message = test_default_agents_removal()
+    # Test the enhanced document generation system
+    enhanced_doc_success, enhanced_doc_message = test_enhanced_document_generation()
     
     # Print summary of all tests
     print_summary()
@@ -1431,17 +1953,21 @@ def main():
     print("API FUNCTIONALITY ASSESSMENT")
     print("="*80)
     
-    if default_agents_removal_success:
-        print("✅ Default agents removal is working correctly")
-        print("✅ New users start with completely empty workspaces")
-        print("✅ Starting a simulation does not automatically create any agents")
-        print("✅ The init-research-station endpoint still works when called explicitly")
+    if enhanced_doc_success:
+        print("✅ Enhanced document generation system is working correctly")
+        print("✅ Quality gate properly allows document creation for substantive content")
+        print("✅ Charts are properly embedded in documents")
+        print("✅ Documents have professional formatting and structure")
     else:
-        print(f"❌ {default_agents_removal_message}")
+        if isinstance(enhanced_doc_message, dict) and "issues" in enhanced_doc_message:
+            for issue in enhanced_doc_message["issues"]:
+                print(f"❌ {issue}")
+        else:
+            print(f"❌ {enhanced_doc_message}")
     
     print("="*80)
     
-    return default_agents_removal_success
+    return enhanced_doc_success
 
 if __name__ == "__main__":
     main()
