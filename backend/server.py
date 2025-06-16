@@ -3822,7 +3822,8 @@ async def generate_conversation(current_user: User = Depends(get_current_user)):
         time_period=f"Day {day} - {time_period}",
         scenario=scenario,
         scenario_name=scenario_name,
-        messages=messages
+        messages=messages,
+        user_id=current_user.id  # Associate conversation with current user
     )
     
     await db.conversations.insert_one(conversation_round.dict())
