@@ -97,6 +97,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Tested the email/password authentication endpoints. The POST /api/auth/register endpoint correctly registers new users with valid email and password, and returns a JWT token and user data. The endpoint properly validates email format and password length, rejecting invalid emails and passwords that are too short. It also correctly prevents duplicate email registrations. The POST /api/auth/login endpoint successfully authenticates users with valid credentials and returns a JWT token and user data. It correctly rejects login attempts with invalid email or password. The JWT tokens are properly generated and contain the required fields (user_id, sub). However, there is an issue with using the JWT tokens to access protected endpoints - the tokens are valid but the protected endpoints return a 401 'User not found' error. This suggests an issue with how the user is being looked up in the database when validating the token."
+        -working: true
+        -agent: "testing"
+        -comment: "Retested the complete authentication flow after the fix to the get_current_user function. Created a dedicated test script to verify the entire authentication process. The registration endpoint successfully creates new users and returns valid JWT tokens containing both user_id and sub (email) fields. The login endpoint correctly authenticates users and returns valid tokens. Most importantly, the tokens now work properly with protected endpoints - the GET /api/documents endpoint returns the expected data when accessed with a valid token. The GET /api/auth/me endpoint also works correctly, returning the user's data. The 'User not found' error has been resolved. The fix to the get_current_user function now properly looks up users by both user_id and email, ensuring that tokens work correctly regardless of which authentication method was used."
 
 metadata:
   created_by: "testing_agent"
