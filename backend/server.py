@@ -3193,9 +3193,9 @@ async def create_agent(agent_data: AgentCreate):
     return agent
 
 @api_router.get("/agents", response_model=List[Agent])
-async def get_agents(current_user: User = Depends(get_current_user)):
-    """Get agents for the authenticated user only"""
-    agents = await db.agents.find({"user_id": current_user.id}).to_list(100)
+async def get_agents():
+    """Get all agents for simulation"""
+    agents = await db.agents.find().to_list(100)
     return [Agent(**agent) for agent in agents]
 
 @api_router.put("/agents/{agent_id}")
