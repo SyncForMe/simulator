@@ -46,7 +46,7 @@ class DocumentQualityGate:
                 "reason": f"Cooldown period active - wait {self.cooldown_period - (conversation_round - last_document_round)} more rounds"
             }
         
-        # Enhanced trigger detection - more selective
+        # Enhanced trigger detection - more flexible recognition
         thoughtful_triggers = [
             "after careful consideration",
             "we've thoroughly discussed",
@@ -61,32 +61,51 @@ class DocumentQualityGate:
             "we should capture these decisions",
             "it's time to create",
             "we need to formalize",
-            "let's put this in writing"
+            "let's put this in writing",
+            "we need to create",
+            "let's create a",
+            "should document",
+            "need a document",
+            "create a comprehensive"
         ]
         
+        # More flexible substantive content detection
         substantive_content = [
-            "specific timeline",
-            "budget allocation",
-            "resource requirements",
-            "risk assessment",
-            "implementation plan",
-            "success metrics",
-            "responsible parties",
-            "next steps",
-            "deliverables",
-            "milestones"
+            "timeline",
+            "budget",
+            "allocation", 
+            "resource",
+            "plan",
+            "strategy",
+            "implementation",
+            "risk",
+            "assessment",
+            "decision",
+            "agreement",
+            "conclusion",
+            "milestone",
+            "deliverable",
+            "responsibility",
+            "cost",
+            "investment",
+            "funding",
+            "schedule",
+            "deadline"
         ]
         
         conv_lower = conversation_text.lower()
         
-        # Must have thoughtful trigger AND substantive content
+        # Check for thoughtful triggers OR document creation phrases
         has_thoughtful_trigger = any(trigger in conv_lower for trigger in thoughtful_triggers)
+        
+        # More lenient check - if substantive content is present, allow document creation
         has_substance = any(content in conv_lower for content in substantive_content)
         
-        if not (has_thoughtful_trigger and has_substance):
+        # Allow creation if EITHER condition is met (not both required)
+        if not (has_thoughtful_trigger or has_substance):
             return {
                 "should_create": False,
-                "reason": "Document requires both thoughtful consensus and substantive content"
+                "reason": "Document requires either thoughtful consensus OR substantive content"
             }
         
         return {
