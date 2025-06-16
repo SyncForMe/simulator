@@ -3983,10 +3983,13 @@ async def generate_conversation():
 
 @api_router.get("/conversations", response_model=List[ConversationRound])
 async def get_conversations(current_user: User = Depends(get_current_user)):
-    """Get conversation rounds for the authenticated user only"""
-    # Filter conversations by user_id to ensure data isolation
+    """Get conversation rounds for the authenticated user and auto-generated simulation conversations"""
+    # Get both user-specific conversations AND auto-generated simulation conversations
     conversations = await db.conversations.find({
-        "user_id": current_user.id
+        "$or": [
+            {"user_id": current_user.id},  # User's personal conversations
+            {"user_id": ""}                # Auto-generated simulation conversations
+        ]
     }).sort("created_at", 1).to_list(1000)
     return [ConversationRound(**conv) for conv in conversations]
 
