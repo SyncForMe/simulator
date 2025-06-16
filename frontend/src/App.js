@@ -5267,8 +5267,10 @@ function App() {
 
   const fetchConversations = async () => {
     try {
+      console.log('Fetching conversations from:', `${API}/conversations`);
       // Fetch simulation conversations (public, no auth required)
       const response = await axios.get(`${API}/conversations`);
+      console.log('Conversations fetched successfully:', response.data.length, 'conversations');
       setConversations(response.data);
       
       // Auto-save new conversations to user's history if authenticated
