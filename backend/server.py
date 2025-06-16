@@ -766,13 +766,13 @@ Others in discussion: {others_text.replace('Others present: ', '')}
 
 Remember: Real conversations mix statements, questions, opinions, and facts naturally. Don't force questions - let your personality and expertise guide how you respond."""
         
-        # Enhanced prompts for genuine dialogue and conversation flow
+        # Enhanced prompts for natural conversation without forced questions
         if "In this conversation:" in context:
-            # This agent is responding to others - make it conversational
-            prompt = f"{context}\n\nRespond directly to what others have said. Address their specific points, answer any questions they asked, and build on their ideas. Don't repeat what they already said - add something new to move the conversation forward."
+            # This agent is responding to others - discourage questions
+            prompt = f"{context}\n\nRespond to what others have said. Make a definitive statement based on your expertise. Share your opinion, provide facts, or give a conclusion. DO NOT end with a question unless you genuinely need specific information."
         else:
-            # This agent is speaking first - start naturally
-            prompt = f"You're starting a team discussion about: {scenario}\n\nBegin by sharing your initial thoughts or asking a specific question that will get others engaged. Be natural and conversational."
+            # This agent is speaking first - start with a statement
+            prompt = f"You're starting a discussion about: {scenario}\n\nShare your expert perspective with a clear statement or opinion. Be definitive and confident. DO NOT end with a question - let others respond to your statement naturally."
         
         try:
             # Create chat instance with basic configuration
