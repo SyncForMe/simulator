@@ -2172,6 +2172,18 @@ async def get_current_user_optional(credentials: HTTPAuthorizationCredentials = 
     except HTTPException:
         return None
 
+# Admin helper functions
+def is_admin_user(user_email: str) -> bool:
+    """Check if user is an admin"""
+    return user_email.lower() == ADMIN_EMAIL.lower()
+
+async def get_admin_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> User:
+    """Get current user and verify admin privileges"""
+    user = await get_current_user(credentials)
+    if not is_admin_user(user.email):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
 # API Routes
 
 # Authentication Endpoints
