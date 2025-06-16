@@ -5166,7 +5166,10 @@ function App() {
 
   const handleCreateAgent = async (agentData) => {
     try {
+      console.log('Creating agent:', agentData);
+      console.log('API URL:', `${API}/agents`);
       const response = await axios.post(`${API}/agents`, agentData);
+      console.log('Agent created successfully:', response.data);
       await refreshAllData();
       
       // Create a more informative success message
@@ -5180,6 +5183,7 @@ function App() {
       alert(`✅ Agent "${agentData.name}" created successfully!${avatarMessage}`);
     } catch (error) {
       console.error('Error creating agent:', error);
+      console.error('Error details:', error.response?.data);
       alert('Failed to create agent. Please try again.');
       throw error;
     }
