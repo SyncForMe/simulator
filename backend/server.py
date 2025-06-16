@@ -4,6 +4,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field, EmailStr
 import bcrypt
 import jwt
+from jwt.exceptions import InvalidTokenError as JWTError
 from datetime import datetime, timedelta
 from typing import List, Optional, Dict, Any
 import asyncio
