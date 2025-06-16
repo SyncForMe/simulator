@@ -3662,8 +3662,8 @@ async def debug_simple_conversation():
 @api_router.post("/conversation/generate")
 async def generate_conversation():
     """Generate a conversation round between agents with sequential responses and progression tracking"""
-    # Get current agents
-    agents = await db.agents.find().to_list(100)
+    # Get current agents from the global agent library (for simulation mode)
+    agents = await db.agent_library.find().to_list(100)
     if len(agents) < 2:
         raise HTTPException(status_code=400, detail="Need at least 2 agents for conversation")
     
