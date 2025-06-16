@@ -3122,8 +3122,8 @@ async def get_archetypes():
     return AGENT_ARCHETYPES
 
 @api_router.post("/agents", response_model=Agent)
-async def create_agent(agent_data: AgentCreate):
-    """Create a new AI agent with avatar generation"""
+async def create_agent(agent_data: AgentCreate, current_user: User = Depends(get_current_user)):
+    """Create a new AI agent with avatar generation for the authenticated user"""
     # Use default personality if not provided
     if not agent_data.personality:
         if agent_data.archetype in AGENT_ARCHETYPES:
