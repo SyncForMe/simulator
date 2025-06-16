@@ -1057,16 +1057,20 @@ PROVIDE EXPERT ANALYSIS:
                 
                 # Validate response and filter out repetitive content
                 if response and len(response.strip()) > 5:
-                    # Enhanced banned phrases detection for dynamic conversations
+                    # Enhanced banned phrases detection for natural expertise demonstration
                     banned_phrases = [
                         # Time-based and introductory phrases
                         "good morning", "good afternoon", "good evening", "i'm", "my name is",
                         "alright team", "alright everyone", "okay team", "okay everyone",
                         
-                        # Expert/perspective statements
+                        # Expert/perspective statements - NO CREDENTIALS MENTIONING
                         "as an expert in", "as a", "this is concerning", "this is interesting",
                         "this is exciting", "this is fascinating", "let me share my perspective",
                         "from my perspective", "from my experience in", "in my experience with",
+                        "based on my experience", "given my background", "with my expertise",
+                        "as someone with", "having worked in", "in my field", "as a professional",
+                        "from my professional experience", "speaking as a", "given my expertise in",
+                        "based on my background in", "with my years of experience", "as someone who has",
                         
                         # Urgency and repetition
                         "we need to act urgently", "the situation requires immediate",
