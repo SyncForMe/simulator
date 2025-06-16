@@ -2007,7 +2007,7 @@ def main():
     
     print("="*80)
     
-    return conversation_success and enhanced_doc_success
+    return conversation_success and enhanced_doc_success and dynamic_conversation_success
 
 if __name__ == "__main__":
     main()
