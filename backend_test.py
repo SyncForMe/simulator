@@ -1421,6 +1421,7 @@ def test_enhanced_document_generation():
     print("="*80)
     
     # Login first to get auth token
+    global auth_token, test_user_id
     if not auth_token:
         if not test_login():
             print("❌ Cannot test enhanced document generation without authentication")
