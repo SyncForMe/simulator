@@ -4243,16 +4243,37 @@ async def generate_conversation():
             # First, try to generate response with real Gemini API
             print(f"🔥 DEBUG: Attempting Gemini API call for {agent.name}")
             
-            # Build rich conversation context so agent can reference what others said
+            # Build rich conversation context with previous work and documents
             if i == 0:
-                # First speaker - no previous context
-                conversation_context = f"You're starting the discussion about: {scenario}"
+                # First speaker - include previous conversation context and existing documents
+                previous_context = ""
+                
+                # Get recent conversations for context
+                recent_conversations = await db.conversations.find().sort("created_at", -1).limit(3).to_list(3)
+                if recent_conversations:
+                    previous_context += "PREVIOUS TEAM DISCUSSIONS:\n"
+                    for conv in recent_conversations:
+                        prev_messages = conv.get('messages', [])
+                        if prev_messages:
+                            key_points = " | ".join([msg.get('message', '')[:80] + "..." for msg in prev_messages[:2]])
+                            previous_context += f"- {conv.get('scenario_name', 'Discussion')}: {key_points}\n"
+                    previous_context += "\n"
+                
+                # Get existing documents for context
+                existing_documents = await db.documents.find({"user_id": ""}).sort("updated_at", -1).limit(5).to_list(5)
+                if existing_documents:
+                    previous_context += "EXISTING TEAM DOCUMENTS:\n"
+                    for doc in existing_documents:
+                        previous_context += f"- {doc.get('title', 'Untitled')} ({doc.get('category', 'Document')}): {doc.get('description', 'No description')}\n"
+                    previous_context += "\n"
+                
+                conversation_context = f"{previous_context}You're starting a discussion about: {scenario}\n\nBuild on previous work where relevant and drive toward concrete decisions and actions."
             else:
                 # Build context from what others have said so far
-                conversation_context = "Here's what has been said so far:\n\n"
+                conversation_context = "CURRENT DISCUSSION:\n\n"
                 for j, msg in enumerate(messages):
                     conversation_context += f"{msg.agent_name}: \"{msg.message}\"\n\n"
-                conversation_context += f"Now respond to what's been said above. Address specific points others made."
+                conversation_context += f"Respond to the discussion above. Look for opportunities to:\n- Synthesize what's been said\n- Propose concrete next steps\n- Call for decisions or votes\n- Commit to creating/updating documents"
             
             # Build conversation history in the format expected by generate_agent_response
             conversation_history_msgs = [{"agent_name": msg.agent_name, "content": msg.message} for msg in messages]
