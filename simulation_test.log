@@ -1,0 +1,292 @@
+Using API URL: https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api
+
+================================================================================
+TESTING SIMULATION WORKFLOW
+================================================================================
+
+================================================================================
+TESTING COMPLETE SIMULATION WORKFLOW
+================================================================================
+
+================================================================================
+Testing: Register new test user (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/auth/register)
+Status Code: 200
+Response: {
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LnVzZXIuOTVkMzFjNTAtMzlhZS00ODRhLWE1Y2QtYmVmNTc4NmE3NDAwQGV4YW1wbGUuY29tIiwidXNlcl9pZCI6ImU5MGUxNzNlLTUwNjctNGQwMi1iOTY0LWZhZmM1MTI1MjYzMSIsImV4cCI6MTc1MDE3OTM0N30.9HHsZoJd02eLBAM0ELGU_-oObnYNGAULLn0fdBl4FVA",
+  "token_type": "bearer",
+  "user": {
+    "id": "e90e173e-5067-4d02-b964-fafc51252631",
+    "email": "test.user.95d31c50-39ae-484a-a5cd-bef5786a7400@example.com",
+    "name": "Test User",
+    "picture": "",
+    "created_at": "2025-06-16T16:55:47.292926",
+    "last_login": "2025-06-16T16:55:47.292928"
+  }
+}
+Test Result: PASSED
+Registration successful. User ID: e90e173e-5067-4d02-b964-fafc51252631
+JWT Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LnVzZXIuOTVkMzFjNTAtMzlhZS00ODRhLWE1Y2QtYmVmNTc4NmE3NDAwQGV4YW1wbGUuY29tIiwidXNlcl9pZCI6ImU5MGUxNzNlLTUwNjctNGQwMi1iOTY0LWZhZmM1MTI1MjYzMSIsImV4cCI6MTc1MDE3OTM0N30.9HHsZoJd02eLBAM0ELGU_-oObnYNGAULLn0fdBl4FVA
+
+Step 1: Start New Simulation
+
+================================================================================
+Testing: Start New Simulation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/start)
+Status Code: 200
+Response: {
+  "message": "Simulation started with no time limit",
+  "state": {
+    "id": "e1f5e7ac-8922-4993-b4df-d799334d7aae",
+    "current_day": 1,
+    "current_time_period": "morning",
+    "daily_api_requests": 0,
+    "last_reset_date": "2025-06-16",
+    "scenario": "The Research Station",
+    "is_active": true,
+    "time_limit_hours": null,
+    "time_limit_display": null,
+    "simulation_start_time": "2025-06-16T16:55:47.313965",
+    "time_remaining_hours": null
+  },
+  "time_limit_active": false,
+  "time_limit_display": null
+}
+Test Result: PASSED
+✅ Successfully started simulation
+✅ Simulation state is active
+
+Step 2: Get available agents from library
+
+================================================================================
+Testing: Get Available Agents (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Status Code: 200
+Response: []
+Test Result: PASSED
+❌ No agents available in the library
+
+Creating test agents...
+
+================================================================================
+Testing: Create Scientist Agent (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Status Code: 200
+Response: {
+  "id": "5b99e4d4-5e14-474a-b15e-d3b186442c0d",
+  "name": "Dr. Emma Watson",
+  "archetype": "scientist",
+  "personality": {
+    "extroversion": 4,
+    "optimism": 6,
+    "curiosity": 9,
+    "cooperativeness": 7,
+    "energy": 6
+  },
+  "goal": "Discover breakthrough technologies",
+  "expertise": "Quantum physics and AI",
+  "background": "PhD in Quantum Computing from MIT",
+  "current_mood": "neutral",
+  "current_activity": "idle",
+  "memory_summary": "",
+  "avatar_url": "",
+  "avatar_prompt": "",
+  "user_id": "e90e173e-5067-4d02-b964-fafc51252631",
+  "created_at": "2025-06-16T16:55:47.414935"
+}
+Test Result: PASSED
+✅ Created scientist agent: Dr. Emma Watson
+
+================================================================================
+Testing: Create Leader Agent (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Status Code: 200
+Response: {
+  "id": "5507e9c6-3e9e-4b4f-ac20-1dc870e21c68",
+  "name": "Captain James Kirk",
+  "archetype": "leader",
+  "personality": {
+    "extroversion": 9,
+    "optimism": 8,
+    "curiosity": 6,
+    "cooperativeness": 8,
+    "energy": 8
+  },
+  "goal": "Lead the team to success",
+  "expertise": "Strategic planning and team management",
+  "background": "Former military commander with 15 years of experience",
+  "current_mood": "neutral",
+  "current_activity": "idle",
+  "memory_summary": "",
+  "avatar_url": "",
+  "avatar_prompt": "",
+  "user_id": "e90e173e-5067-4d02-b964-fafc51252631",
+  "created_at": "2025-06-16T16:55:47.445552"
+}
+Test Result: PASSED
+✅ Created leader agent: Captain James Kirk
+
+================================================================================
+Testing: Create Skeptic Agent (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Status Code: 200
+Response: {
+  "id": "f1bcd3a9-b17d-495b-a336-885923ea9a90",
+  "name": "Dr. House",
+  "archetype": "skeptic",
+  "personality": {
+    "extroversion": 4,
+    "optimism": 3,
+    "curiosity": 7,
+    "cooperativeness": 5,
+    "energy": 5
+  },
+  "goal": "Ensure all decisions are evidence-based",
+  "expertise": "Critical analysis and problem-solving",
+  "background": "Analytical thinker with a background in medicine",
+  "current_mood": "neutral",
+  "current_activity": "idle",
+  "memory_summary": "",
+  "avatar_url": "",
+  "avatar_prompt": "",
+  "user_id": "e90e173e-5067-4d02-b964-fafc51252631",
+  "created_at": "2025-06-16T16:55:47.472386"
+}
+Test Result: PASSED
+✅ Created skeptic agent: Dr. House
+
+================================================================================
+Testing: Get Available Agents After Creation (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Status Code: 200
+Response: [
+  {
+    "id": "5b99e4d4-5e14-474a-b15e-d3b186442c0d",
+    "name": "Dr. Emma Watson",
+    "archetype": "scientist",
+    "personality": {
+      "extroversion": 4,
+      "optimism": 6,
+      "curiosity": 9,
+      "cooperativeness": 7,
+      "energy": 6
+    },
+    "goal": "Discover breakthrough technologies",
+    "expertise": "Quantum physics and AI",
+    "background": "PhD in Quantum Computing from MIT",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "",
+    "avatar_url": "",
+    "avatar_prompt": "",
+    "user_id": "e90e173e-5067-4d02-b964-fafc51252631",
+    "created_at": "2025-06-16T16:55:47.414000"
+  },
+  {
+    "id": "5507e9c6-3e9e-4b4f-ac20-1dc870e21c68",
+    "name": "Captain James Kirk",
+    "archetype": "leader",
+    "personality": {
+      "extroversion": 9,
+      "optimism": 8,
+      "curiosity": 6,
+      "cooperativeness": 8,
+      "energy": 8
+    },
+    "goal": "Lead the team to success",
+    "expertise": "Strategic planning and team management",
+    "background": "Former military commander with 15 years of experience",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "",
+    "avatar_url": "",
+    "avatar_prompt": "",
+    "user_id": "e90e173e-5067-4d02-b964-fafc51252631",
+    "created_at": "2025-06-16T16:55:47.445000"
+  },
+  {
+    "id": "f1bcd3a9-b17d-495b-a336-885923ea9a90",
+    "name": "Dr. House",
+    "archetype": "skeptic",
+    "personality": {
+      "extroversion": 4,
+      "optimism": 3,
+      "curiosity": 7,
+      "cooperativeness": 5,
+      "energy": 5
+    },
+    "goal": "Ensure all decisions are evidence-based",
+    "expertise": "Critical analysis and problem-solving",
+    "background": "Analytical thinker with a background in medicine",
+    "current_mood": "neutral",
+    "current_activity": "idle",
+    "memory_summary": "",
+    "avatar_url": "",
+    "avatar_prompt": "",
+    "user_id": "e90e173e-5067-4d02-b964-fafc51252631",
+    "created_at": "2025-06-16T16:55:47.472000"
+  }
+]
+Test Result: PASSED
+
+Available Agents (3):
+1. Dr. Emma Watson (scientist)
+2. Captain James Kirk (leader)
+3. Dr. House (skeptic)
+
+Step 3: Set Random Scenario
+
+================================================================================
+Testing: Set Scenario (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-scenario)
+Status Code: 200
+Response: {
+  "message": "Scenario updated",
+  "scenario": "A mysterious signal has been detected from deep space. The team must analyze the signal and determine its origin and meaning.",
+  "scenario_name": "Mysterious Signal"
+}
+Test Result: PASSED
+✅ Successfully set scenario: Mysterious Signal
+
+Step 4: Start Simulation (Play Button)
+Generating conversation (this may take a while)...
+
+================================================================================
+Testing: Generate Conversation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)Waiting for conversation generation to complete...
+
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+Waiting for conversation generation to complete...
+⚠️ Conversation generation request timed out after 60 seconds
+Checking if conversations were generated despite the timeout...
+
+================================================================================
+Testing: Get Conversations After Timeout (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Status Code: 200
+Response: []
+Test Result: PASSED
+❌ No conversations were generated
+❌ Failed to generate conversation
+Error detail: Conversation generation timed out
+
+================================================================================
+TEST SUMMARY: 9 passed, 0 failed
+================================================================================
+1. ✅ Register new test user (POST /auth/register)
+2. ✅ Start New Simulation (POST /simulation/start)
+3. ✅ Get Available Agents (GET /agents)
+4. ✅ Create Scientist Agent (POST /agents)
+5. ✅ Create Leader Agent (POST /agents)
+6. ✅ Create Skeptic Agent (POST /agents)
+7. ✅ Get Available Agents After Creation (GET /agents)
+8. ✅ Set Scenario (POST /simulation/set-scenario)
+9. ✅ Get Conversations After Timeout (GET /conversations)
+================================================================================
+OVERALL RESULT: PASSED
+================================================================================
+
+================================================================================
+SIMULATION WORKFLOW ASSESSMENT
+================================================================================
+❌ Failed to generate conversation: Conversation generation timed out
+================================================================================
