@@ -3677,6 +3677,321 @@ async def debug_simple_conversation():
         logging.error(f"Debug conversation error: {e}")
         return {"error": str(e), "success": False}
 
+async def auto_generate_documents_from_conversation(conversation_round, agent_objects, scenario, scenario_name, llm_manager):
+    """Automatically generate helpful documents based on conversation content"""
+    
+    # Analyze conversation content to determine what documents would be helpful
+    conversation_text = "\n".join([f"{msg.agent_name}: {msg.message}" for msg in conversation_round.messages])
+    
+    # Determine document types needed based on scenario and conversation content
+    needed_documents = determine_needed_documents(scenario, scenario_name, conversation_text)
+    
+    # Generate each needed document
+    for doc_type, doc_title in needed_documents:
+        try:
+            # Find the most appropriate agent to create this document type
+            creating_agent = select_best_agent_for_document(agent_objects, doc_type)
+            
+            # Generate the document
+            document = await create_contextual_document(
+                creating_agent, doc_type, doc_title, conversation_text, 
+                scenario, scenario_name, llm_manager
+            )
+            
+            # Save to database
+            await db.documents.insert_one(document)
+            print(f"📄 Auto-generated: {doc_title} by {creating_agent.name}")
+            
+        except Exception as e:
+            print(f"Failed to generate {doc_title}: {e}")
+
+def determine_needed_documents(scenario, scenario_name, conversation_text):
+    """Determine what types of documents would be helpful based on the scenario"""
+    scenario_lower = scenario.lower()
+    conversation_lower = conversation_text.lower()
+    
+    needed_docs = []
+    
+    # Budget/Financial documents
+    if any(word in scenario_lower for word in ["cost", "budget", "funding", "investment", "economic", "financial"]):
+        needed_docs.append(("budget", f"{scenario_name} - Budget Analysis"))
+    
+    # Implementation/Action plans
+    if any(word in scenario_lower for word in ["implement", "deploy", "rollout", "strategy", "plan"]):
+        needed_docs.append(("implementation", f"{scenario_name} - Implementation Plan"))
+    
+    # Risk assessments
+    if any(word in scenario_lower for word in ["risk", "challenge", "threat", "danger", "crisis"]):
+        needed_docs.append(("risk", f"{scenario_name} - Risk Assessment"))
+    
+    # Technical specifications
+    if any(word in scenario_lower for word in ["technology", "technical", "engineering", "system", "design"]):
+        needed_docs.append(("technical", f"{scenario_name} - Technical Specifications"))
+    
+    # Policy/Regulatory documents
+    if any(word in scenario_lower for word in ["policy", "regulation", "law", "compliance", "governance"]):
+        needed_docs.append(("policy", f"{scenario_name} - Policy Framework"))
+    
+    # Training materials
+    if any(word in scenario_lower for word in ["training", "education", "skill", "workforce", "job retraining"]):
+        needed_docs.append(("training", f"{scenario_name} - Training Manual"))
+    
+    # Timeline/Project management
+    if any(word in conversation_lower for word in ["timeline", "schedule", "deadline", "phases", "milestones"]):
+        needed_docs.append(("timeline", f"{scenario_name} - Project Timeline"))
+    
+    # Default to at least one action plan if nothing specific is detected
+    if not needed_docs:
+        needed_docs.append(("action", f"{scenario_name} - Action Plan"))
+    
+    return needed_docs[:2]  # Limit to 2 documents per conversation to avoid spam
+
+def select_best_agent_for_document(agent_objects, doc_type):
+    """Select the most appropriate agent to create a specific document type"""
+    
+    # Document type preferences by agent archetype
+    preferences = {
+        "budget": ["skeptic", "leader"],  # Skeptics good with financial analysis, leaders with planning
+        "implementation": ["leader", "scientist"],  # Leaders for strategy, scientists for systematic approach
+        "risk": ["skeptic", "scientist"],  # Skeptics naturally identify risks, scientists analyze them
+        "technical": ["scientist", "artist"],  # Scientists for technical specs, artists for user experience
+        "policy": ["leader", "skeptic"],  # Leaders for governance, skeptics for thorough analysis
+        "training": ["optimist", "leader"],  # Optimists inspire learning, leaders organize training
+        "timeline": ["leader", "scientist"],  # Leaders for project management, scientists for systematic approach
+        "action": ["leader", "optimist"]  # Leaders coordinate action, optimists drive momentum
+    }
+    
+    # Find agents matching preferred archetypes
+    preferred_archetypes = preferences.get(doc_type, ["leader", "scientist"])
+    
+    for archetype in preferred_archetypes:
+        for agent in agent_objects:
+            if agent.archetype == archetype:
+                return agent
+    
+    # If no preferred archetype found, return first agent
+    return agent_objects[0]
+
+async def create_contextual_document(creating_agent, doc_type, title, conversation_text, scenario, scenario_name, llm_manager):
+    """Create a specific document based on conversation context"""
+    
+    # Document templates
+    templates = {
+        "budget": """# {title}
+
+## Executive Summary
+[Budget overview and key financial points]
+
+## Cost Breakdown
+- Initial Investment: $[amount]
+- Operational Costs: $[amount] per year
+- ROI Timeline: [timeframe]
+
+## Key Assumptions
+[List major assumptions affecting costs]
+
+## Risk Factors
+[Financial risks and mitigation strategies]
+
+## Recommendation
+[Budget recommendation and next steps]""",
+
+        "implementation": """# {title}
+
+## Overview
+[Implementation strategy summary]
+
+## Phase 1: Preparation
+- Timeline: [dates]
+- Key Activities: [list]
+- Resources Needed: [list]
+
+## Phase 2: Deployment
+- Timeline: [dates]
+- Key Activities: [list]
+- Success Metrics: [list]
+
+## Phase 3: Optimization
+- Timeline: [dates]
+- Key Activities: [list]
+- Review Points: [list]
+
+## Risk Mitigation
+[Key risks and mitigation strategies]""",
+
+        "risk": """# {title}
+
+## Risk Assessment Summary
+[Overall risk evaluation]
+
+## High Priority Risks
+1. **[Risk Name]**
+   - Probability: [High/Medium/Low]
+   - Impact: [High/Medium/Low]
+   - Mitigation: [strategy]
+
+## Medium Priority Risks
+[List with brief descriptions]
+
+## Monitoring Plan
+[How risks will be tracked]
+
+## Contingency Plans
+[Backup strategies if risks materialize]""",
+
+        "technical": """# {title}
+
+## Technical Overview
+[System/technology description]
+
+## Requirements
+- Functional Requirements: [list]
+- Performance Requirements: [list]
+- Security Requirements: [list]
+
+## Architecture
+[High-level system design]
+
+## Implementation Considerations
+[Technical challenges and solutions]
+
+## Testing Strategy
+[How system will be validated]""",
+
+        "policy": """# {title}
+
+## Policy Objective
+[What this policy aims to achieve]
+
+## Scope
+[Who and what this policy covers]
+
+## Key Principles
+[Guiding principles for decision-making]
+
+## Implementation Guidelines
+[How policy should be applied]
+
+## Compliance Requirements
+[What organizations must do]
+
+## Review Process
+[How policy will be updated]""",
+
+        "training": """# {title}
+
+## Training Objectives
+[What participants will learn]
+
+## Target Audience
+[Who needs this training]
+
+## Learning Modules
+1. **Module 1: [Topic]**
+   - Duration: [time]
+   - Key Concepts: [list]
+
+2. **Module 2: [Topic]**
+   - Duration: [time]
+   - Key Concepts: [list]
+
+## Assessment Methods
+[How competency will be evaluated]
+
+## Resources Required
+[Equipment, materials, facilities needed]""",
+
+        "timeline": """# {title}
+
+## Project Timeline Overview
+[Total duration and key phases]
+
+## Milestones
+- **Month 1**: [major deliverable]
+- **Month 3**: [major deliverable]
+- **Month 6**: [major deliverable]
+
+## Critical Path Activities
+[Tasks that affect overall timeline]
+
+## Dependencies
+[What must happen before other tasks can start]
+
+## Resource Allocation
+[When different teams/resources are needed]""",
+
+        "action": """# {title}
+
+## Action Plan Summary
+[What we plan to accomplish]
+
+## Immediate Actions (Next 30 Days)
+1. [Specific action item]
+2. [Specific action item]
+
+## Short-term Goals (1-3 Months)
+[Key objectives and activities]
+
+## Long-term Strategy (3+ Months)
+[Strategic direction and major initiatives]
+
+## Success Metrics
+[How progress will be measured]
+
+## Resource Requirements
+[What we need to succeed]"""
+    }
+    
+    template = templates.get(doc_type, templates["action"])
+    
+    # Use LLM to generate content based on conversation
+    try:
+        system_message = f"""You are {creating_agent.name}, creating a {doc_type} document titled "{title}".
+
+Based on the conversation below, fill in the template with specific, actionable content.
+Make it professional and immediately usable.
+
+CONVERSATION CONTEXT:
+{conversation_text}
+
+SCENARIO: {scenario}"""
+
+        chat = LlmChat(
+            api_key=llm_manager.api_key,
+            session_id=f"doc_gen_{creating_agent.id}_{datetime.now().timestamp()}",
+            system_message=system_message
+        ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(300)
+        
+        prompt = f"Create detailed content for this {doc_type} document. Fill in the template with specific information based on the conversation:\n\n{template}"
+        user_message = UserMessage(text=prompt)
+        
+        response = await asyncio.wait_for(chat.send_message(user_message), timeout=10.0)
+        
+        if response and len(response.strip()) > 50:
+            content = response.strip()
+        else:
+            # Fallback to template
+            content = template.format(title=title)
+            
+    except Exception as e:
+        print(f"LLM document generation failed: {e}")
+        content = template.format(title=title)
+    
+    # Create document object
+    document = {
+        "id": str(uuid.uuid4()),
+        "title": title,
+        "content": content,
+        "category": doc_type.title(),
+        "created_by": creating_agent.name,
+        "created_at": datetime.utcnow().isoformat(),
+        "updated_at": datetime.utcnow().isoformat(),
+        "description": f"Auto-generated {doc_type} document based on team discussion",
+        "user_id": ""  # Global document accessible to all
+    }
+    
+    return document
+
 @api_router.post("/conversation/generate")
 async def generate_conversation():
     """Generate a conversation round between agents with sequential responses and progression tracking"""
