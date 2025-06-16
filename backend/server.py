@@ -996,11 +996,26 @@ PROVIDE IMMEDIATE EXPERT ANALYSIS:
                 if response and len(response.strip()) > 5:
                     # Check for banned repetitive phrases
                     banned_phrases = [
+                        # Time-based and introductory phrases
                         "good morning", "good afternoon", "good evening", "i'm", "my name is",
                         "alright team", "alright everyone", "okay team", "okay everyone",
+                        
+                        # Expert/perspective statements
                         "as an expert in", "as a", "this is concerning", "this is interesting",
                         "this is exciting", "this is fascinating", "let me share my perspective",
-                        "from my perspective", "from my experience in", "in my experience with"
+                        "from my perspective", "from my experience in", "in my experience with",
+                        
+                        # Urgency and repetition
+                        "we need to act urgently", "the situation requires immediate",
+                        "this is urgent", "we must act now", "time is of the essence",
+                        
+                        # Background restatements
+                        "as you know", "as mentioned earlier", "as discussed before",
+                        "to reiterate", "as previously stated", "let me remind you",
+                        
+                        # Generic team statements
+                        "we need to work together", "collaboration is key",
+                        "teamwork makes the dream work", "let's all pitch in"
                     ]
                     
                     response_lower = response.lower()
