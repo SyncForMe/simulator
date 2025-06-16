@@ -245,8 +245,8 @@ class ProfessionalDocumentFormatter:
         """Identify opportunities to add charts based on content"""
         charts = []
         
-        # Look for budget/financial data
-        if any(word in content.lower() for word in ['budget', 'cost', 'funding', 'investment', '$']):
+        # Look for budget/financial data - more flexible detection
+        if any(word in content.lower() for word in ['budget', 'cost', 'funding', 'investment', '$', 'money', 'financial', 'allocation']):
             # Extract budget data if available
             budget_data = self._extract_budget_data(content, context)
             if budget_data:
@@ -260,8 +260,8 @@ class ProfessionalDocumentFormatter:
                     'position': 'after_budget_section'
                 })
         
-        # Look for timeline/schedule data
-        if any(word in content.lower() for word in ['timeline', 'schedule', 'milestone', 'phase']):
+        # Look for timeline/schedule data - broader detection
+        if any(word in content.lower() for word in ['timeline', 'schedule', 'milestone', 'phase', 'deadline', 'duration', 'time']):
             timeline_data = self._extract_timeline_data(content, context)
             if timeline_data:
                 chart_b64 = self.chart_generator.create_timeline_chart(
@@ -274,8 +274,8 @@ class ProfessionalDocumentFormatter:
                     'position': 'after_timeline_section'
                 })
         
-        # Look for risk assessment data
-        if any(word in content.lower() for word in ['risk', 'assessment', 'probability', 'impact']):
+        # Look for risk assessment data - more comprehensive detection
+        if any(word in content.lower() for word in ['risk', 'assessment', 'probability', 'impact', 'threat', 'challenge', 'issue']):
             risk_data = self._extract_risk_data(content, context)
             if risk_data:
                 chart_b64 = self.chart_generator.create_bar_chart(
