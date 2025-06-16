@@ -5965,19 +5965,29 @@ function App() {
               autoExpand={autoExpandCurrentScenario}
             />
             
-            {/* File Center for Action-Oriented Agent Behavior - Positioned under Current Scenario */}
+            {/* Usage Card - Collapsible API usage and cost information */}
+            <div className="mt-6">
+              <UsageCard 
+                apiUsage={apiUsage}
+              />
+            </div>
+            
+            {/* File Center for Action-Oriented Agent Behavior - Positioned under Usage Card with proper spacing */}
             <div className="mt-6">
               <FileCenter 
                 onRefresh={refreshAllData}
               />
             </div>
             
-            <ControlPanel
-              simulationState={simulationState}
-              apiUsage={apiUsage}
-              onCreateAgent={handleCreateAgent}
-              setShowFastForward={setShowFastForward}
-            />
+            {/* Simulation Control Panel - Now simplified without usage stats */}
+            <div className="mt-6">
+              <ControlPanel
+                simulationState={simulationState}
+                apiUsage={apiUsage}
+                onCreateAgent={handleCreateAgent}
+                setShowFastForward={setShowFastForward}
+              />
+            </div>
           </div>
         </div>
       </main>
