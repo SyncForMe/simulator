@@ -1033,12 +1033,34 @@ PROVIDE IMMEDIATE EXPERT ANALYSIS:
             
             return self._generate_intelligent_fallback(agent, context, scenario)
     
-    def _generate_intelligent_fallback(self, agent: Agent, context: str, scenario: str) -> str:
+    def _generate_intelligent_fallback(self, agent: Agent, context: str, scenario: str, pending_questions: list = None) -> str:
         """Generate intelligent fallback responses that are solution-focused and non-repetitive"""
         import random
         
         # Check if others have spoken (for more contextual fallbacks)
         is_responding_to_others = "In this conversation:" in context
+        
+        # Check if there are questions to answer
+        has_questions = pending_questions and len(pending_questions) > 0
+        
+        # If there are questions, prioritize answering them
+        if has_questions:
+            question_info = pending_questions[0]
+            question_text = question_info['question'].lower()
+            
+            # Generate expert answer based on the question type and agent expertise
+            if agent.archetype == "scientist" and ("quantum" in question_text or "technical" in question_text or "research" in question_text):
+                return f"Based on my quantum physics research, I'd estimate this requires advanced error correction protocols. The technical feasibility depends on maintaining coherence for at least 100 microseconds."
+            elif agent.archetype == "leader" and ("timeline" in question_text or "project" in question_text or "manage" in question_text):
+                return f"From my project management experience, I'd recommend a 6-month timeline with three key milestones. We need to account for integration delays and stakeholder approvals."
+            elif agent.archetype == "skeptic" and ("risk" in question_text or "concern" in question_text or "problem" in question_text):
+                return f"The main risk I see is resource constraints and potential scope creep. I recommend we establish clear boundaries and contingency plans upfront."
+            elif "budget" in question_text or "cost" in question_text:
+                return f"Based on similar projects, I'd estimate $2-4M with 30% contingency. The key cost drivers will be specialized equipment and expert personnel."
+            elif "feasible" in question_text or "possible" in question_text:
+                return f"Yes, it's technically feasible but we need to address the scaling challenges. I recommend starting with a proof of concept to validate our assumptions."
+            else:
+                return f"Good question. Based on my {agent.expertise.lower()} background, I think the key factor is stakeholder alignment and clear success criteria."
         
         # Solution-focused responses based on archetype
         if agent.archetype == "leader":
