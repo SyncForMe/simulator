@@ -266,6 +266,11 @@ AGENT_ARCHETYPES = {
         "name": "The Mediator",
         "description": "Peaceful, diplomatic, empathetic",
         "default_traits": {"extroversion": 6, "optimism": 7, "curiosity": 6, "cooperativeness": 10, "energy": 6}
+    },
+    "researcher": {
+        "name": "The Researcher",
+        "description": "Investigative, detail-oriented, systematic",
+        "default_traits": {"extroversion": 3, "optimism": 6, "curiosity": 9, "cooperativeness": 7, "energy": 5}
     }
 }
 
