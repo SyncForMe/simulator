@@ -5059,6 +5059,10 @@ function App() {
   });
   const [showAgentLibrary, setShowAgentLibrary] = useState(false);
   const [autoExpandCurrentScenario, setAutoExpandCurrentScenario] = useState(false);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+
+  // Check if current user is admin
+  const isAdmin = user && user.email && user.email.toLowerCase() === 'dino@cytonic.com';
 
   const handleTestBackgrounds = async () => {
     setLoading(true);
