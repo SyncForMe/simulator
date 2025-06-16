@@ -5802,6 +5802,19 @@ async def create_document(
             content=document.content
         )
         
+        # Format the document with professional styling and charts if needed
+        llm_manager = LLMManager()
+        if document.category in ["Budget", "Protocol", "Research", "Equipment"]:
+            # Apply professional formatting with potential charts
+            formatted_content = await llm_manager.document_formatter.format_document(
+                document.content,
+                document.title,
+                document.authors,
+                document.category,
+                document.content  # Using content as context for chart generation
+            )
+            doc.content = formatted_content
+        
         # Save to database
         await db.documents.insert_one(doc.dict())
         
