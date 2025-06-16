@@ -797,13 +797,13 @@ Contribute to this discussion as the specific expert you are, with your unique p
 background, and perspective. Make your expertise and character traits clearly visible
 through how you analyze, respond to, and advance the conversation."""
         
-        # Enhanced prompts for better conversation quality
+        # Enhanced prompts for genuine dialogue and conversation flow
         if "In this conversation:" in context:
-            # This agent is responding to others
-            prompt = f"{context}\n\nRespond naturally as {agent.name}. Address what others have said and contribute your expertise to the ongoing discussion. Draw from your background and experience."
+            # This agent is responding to others - make it conversational
+            prompt = f"{context}\n\nRespond directly to what others have said. Address their specific points, answer any questions they asked, and build on their ideas. Don't repeat what they already said - add something new to move the conversation forward."
         else:
-            # This agent is speaking first
-            prompt = f"Start the conversation as {agent.name}. Share your perspective on the scenario based on your expertise in {agent.expertise}. Offer insights that others can build upon."
+            # This agent is speaking first - start naturally
+            prompt = f"You're starting a team discussion about: {scenario}\n\nBegin by sharing your initial thoughts or asking a specific question that will get others engaged. Be natural and conversational."
         
         try:
             # Create chat instance with basic configuration
