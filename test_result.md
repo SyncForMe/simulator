@@ -170,7 +170,7 @@ backend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
@@ -183,6 +183,7 @@ test_plan:
     - "Admin Functionality"
     - "Default Agents Removal"
     - "Simulation Workflow"
+    - "Enhanced Document Generation System"
   stuck_tasks:
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
     - "Admin Functionality"
