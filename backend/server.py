@@ -2327,6 +2327,127 @@ async def logout():
     """Logout user (client should delete token)"""
     return {"message": "Logged out successfully"}
 
+# Email/Password Authentication Endpoints
+@api_router.post("/auth/register", response_model=TokenResponse)
+async def register_user(user_data: UserRegister):
+    """Register a new user with email and password"""
+    try:
+        # Check if user already exists
+        existing_user = await db.users.find_one({"email": user_data.email})
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="Email already registered"
+            )
+        
+        # Hash the password
+        password_hash = hash_password(user_data.password)
+        
+        # Create new user
+        new_user = UserWithPassword(
+            email=user_data.email,
+            name=user_data.name,
+            password_hash=password_hash,
+            auth_type="email",
+            picture="",  # Default empty picture for email users
+            google_id=""  # Not applicable for email users
+        )
+        
+        # Insert user into database
+        user_dict = new_user.dict()
+        await db.users.insert_one(user_dict)
+        
+        # Create access token
+        access_token = create_access_token(data={"sub": new_user.email, "user_id": new_user.id})
+        
+        # Prepare user response (exclude password_hash)
+        user_response = UserResponse(
+            id=new_user.id,
+            email=new_user.email,
+            name=new_user.name,
+            picture=new_user.picture,
+            created_at=new_user.created_at,
+            last_login=new_user.last_login
+        )
+        
+        return TokenResponse(
+            access_token=access_token,
+            token_type="bearer",
+            user=user_response
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error registering user: {e}")
+        raise HTTPException(status_code=500, detail="Registration failed")
+
+@api_router.post("/auth/login", response_model=TokenResponse)
+async def login_user(user_credentials: UserLogin):
+    """Login user with email and password"""
+    try:
+        # Find user by email
+        user_doc = await db.users.find_one({"email": user_credentials.email})
+        if not user_doc:
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid email or password"
+            )
+        
+        # Check if user has a password (email auth user)
+        if not user_doc.get("password_hash"):
+            raise HTTPException(
+                status_code=401,
+                detail="This email is registered with Google. Please use Google sign-in."
+            )
+        
+        # Verify password
+        if not verify_password(user_credentials.password, user_doc["password_hash"]):
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid email or password"
+            )
+        
+        # Check if user is active
+        if not user_doc.get("is_active", True):
+            raise HTTPException(
+                status_code=401,
+                detail="Account is deactivated"
+            )
+        
+        # Update last login
+        await db.users.update_one(
+            {"_id": user_doc["_id"]},
+            {"$set": {"last_login": datetime.utcnow()}}
+        )
+        
+        # Create access token
+        access_token = create_access_token(
+            data={"sub": user_doc["email"], "user_id": user_doc["id"]}
+        )
+        
+        # Prepare user response
+        user_response = UserResponse(
+            id=user_doc["id"],
+            email=user_doc["email"],
+            name=user_doc["name"],
+            picture=user_doc.get("picture", ""),
+            created_at=user_doc["created_at"],
+            last_login=user_doc["last_login"]
+        )
+        
+        return TokenResponse(
+            access_token=access_token,
+            token_type="bearer",
+            user=user_response
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error logging in user: {e}")
+        raise HTTPException(status_code=500, detail="Login failed")
+
 # Saved Agents Endpoints
 @api_router.get("/saved-agents", response_model=List[SavedAgent])
 async def get_saved_agents(current_user: User = Depends(get_current_user)):
