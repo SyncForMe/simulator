@@ -704,13 +704,13 @@ Respond naturally in 1-2 sentences. Be conversational, show your expertise, and 
 Scenario: {scenario}
 {others_text}"""
         
-        # Enhanced prompt for better conversation flow
+        # Simplified prompts for fast conversation generation
         if "In this conversation:" in context:
             # This agent is responding to others
-            prompt = f"{context}\n\nRespond naturally as {agent.name}. Address what others have said and contribute to the ongoing discussion."
+            prompt = f"{context}\n\nRespond as {agent.name} in 1-2 sentences."
         else:
             # This agent is speaking first
-            prompt = f"{context}\n\nSpeak first as {agent.name}. Start the conversation by sharing a thought, asking a question, or raising a point that others can respond to."
+            prompt = f"Start the conversation as {agent.name}. Share your perspective in 1-2 sentences."
         
         try:
             # Create chat instance with basic configuration
