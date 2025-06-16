@@ -3685,6 +3685,32 @@ async def generate_conversation():
     scenario = state.get("scenario", "General discussion about current topics")
     scenario_name = state.get("scenario_name", "General Discussion")
     
+    # Get conversation count for round numbering and context
+    conversation_count = await db.conversations.count_documents({})
+    
+    # Get existing conversations for context
+    existing_conversations = await db.conversations.find().sort("created_at", -1).limit(5).to_list(5)
+    
+    # Build context from previous conversations
+    context = ""
+    if existing_conversations:
+        recent_conv = existing_conversations[0]
+        context = f"In previous discussions: {'; '.join([msg.get('message', '') for msg in recent_conv.get('messages', [])][:2])}"
+    
+    # Get existing documents for context
+    existing_documents = await db.documents.find().sort("updated_at", -1).limit(5).to_list(5)
+    
+    # Language instruction
+    language_instructions = {
+        "en": "Respond in English in a natural and engaging way.",
+        "es": "Responde en español de manera natural y fluida.",
+        "fr": "Répondez en français de manière naturelle et fluide.", 
+        "de": "Antworten Sie auf Deutsch in natürlicher und fließender Weise.",
+        "it": "Rispondi in italiano in modo naturale e fluido.",
+    }
+    language_code = state.get("language", "en")
+    language_instruction = language_instructions.get(language_code, language_instructions["en"])
+    
     # Create smart conversation generator for realistic, contextual responses
     conversation_gen = SmartConversationGenerator()
     
