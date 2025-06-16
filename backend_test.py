@@ -939,11 +939,250 @@ def test_document_categories():
             print(f"  - {issue}")
         return False, {"categories": expected_categories, "counts": category_verification, "issues": issues}
 
+def test_auth_endpoints():
+    """Test the authentication endpoints"""
+    print("\n" + "="*80)
+    print("TESTING AUTHENTICATION ENDPOINTS")
+    print("="*80)
+    
+    global auth_token, test_user_id, test_user_email
+    
+    # Test 1: Register with valid email and password
+    print("\nTest 1: Register with valid email and password")
+    
+    register_data = {
+        "email": test_user_email,
+        "password": test_user_password,
+        "name": test_user_name
+    }
+    
+    register_test, register_response = run_test(
+        "Register with valid credentials",
+        "/auth/register",
+        method="POST",
+        data=register_data,
+        expected_keys=["access_token", "token_type", "user"]
+    )
+    
+    if register_test and register_response:
+        print("✅ Registration successful")
+        auth_token = register_response.get("access_token")
+        user_data = register_response.get("user", {})
+        test_user_id = user_data.get("id")
+        print(f"User registered with ID: {test_user_id}")
+        print(f"JWT Token: {auth_token}")
+        
+        # Verify token structure
+        try:
+            decoded_token = jwt.decode(auth_token, JWT_SECRET, algorithms=["HS256"])
+            print(f"✅ JWT token is valid and contains: {decoded_token}")
+            if "user_id" in decoded_token and "sub" in decoded_token:
+                print("✅ JWT token contains required fields (user_id, sub)")
+            else:
+                print("❌ JWT token is missing required fields")
+        except Exception as e:
+            print(f"❌ JWT token validation failed: {e}")
+    else:
+        print("❌ Registration failed")
+    
+    # Test 2: Register with duplicate email
+    print("\nTest 2: Register with duplicate email")
+    
+    duplicate_register_test, duplicate_register_response = run_test(
+        "Register with duplicate email",
+        "/auth/register",
+        method="POST",
+        data=register_data,
+        expected_status=400
+    )
+    
+    if duplicate_register_test:
+        print("✅ Duplicate email registration correctly rejected")
+    else:
+        print("❌ Duplicate email registration not properly handled")
+    
+    # Test 3: Register with invalid email format
+    print("\nTest 3: Register with invalid email format")
+    
+    invalid_email_data = {
+        "email": "invalid-email",
+        "password": test_user_password,
+        "name": test_user_name
+    }
+    
+    invalid_email_test, invalid_email_response = run_test(
+        "Register with invalid email format",
+        "/auth/register",
+        method="POST",
+        data=invalid_email_data,
+        expected_status=422  # Pydantic validation error
+    )
+    
+    if invalid_email_test:
+        print("✅ Invalid email format correctly rejected")
+    else:
+        print("❌ Invalid email format not properly validated")
+    
+    # Test 4: Register with password too short
+    print("\nTest 4: Register with password too short")
+    
+    short_password_data = {
+        "email": f"another.{uuid.uuid4()}@example.com",
+        "password": "short",
+        "name": test_user_name
+    }
+    
+    short_password_test, short_password_response = run_test(
+        "Register with password too short",
+        "/auth/register",
+        method="POST",
+        data=short_password_data,
+        expected_status=422  # Pydantic validation error
+    )
+    
+    if short_password_test:
+        print("✅ Short password correctly rejected")
+    else:
+        print("❌ Short password not properly validated")
+    
+    # Test 5: Login with valid credentials
+    print("\nTest 5: Login with valid credentials")
+    
+    login_data = {
+        "email": test_user_email,
+        "password": test_user_password
+    }
+    
+    login_test, login_response = run_test(
+        "Login with valid credentials",
+        "/auth/login",
+        method="POST",
+        data=login_data,
+        expected_keys=["access_token", "token_type", "user"]
+    )
+    
+    if login_test and login_response:
+        print("✅ Login successful")
+        login_token = login_response.get("access_token")
+        login_user = login_response.get("user", {})
+        
+        # Verify user data
+        if login_user.get("id") == test_user_id:
+            print("✅ User ID matches registered user")
+        else:
+            print("❌ User ID does not match registered user")
+            
+        # Verify token
+        try:
+            decoded_login_token = jwt.decode(login_token, JWT_SECRET, algorithms=["HS256"])
+            print(f"✅ Login JWT token is valid")
+            if decoded_login_token.get("user_id") == test_user_id:
+                print("✅ Login JWT token contains correct user_id")
+            else:
+                print("❌ Login JWT token has incorrect user_id")
+        except Exception as e:
+            print(f"❌ Login JWT token validation failed: {e}")
+    else:
+        print("❌ Login failed")
+    
+    # Test 6: Login with wrong email
+    print("\nTest 6: Login with wrong email")
+    
+    wrong_email_data = {
+        "email": f"wrong.{uuid.uuid4()}@example.com",
+        "password": test_user_password
+    }
+    
+    wrong_email_test, wrong_email_response = run_test(
+        "Login with wrong email",
+        "/auth/login",
+        method="POST",
+        data=wrong_email_data,
+        expected_status=401
+    )
+    
+    if wrong_email_test:
+        print("✅ Login with wrong email correctly rejected")
+    else:
+        print("❌ Login with wrong email not properly handled")
+    
+    # Test 7: Login with wrong password
+    print("\nTest 7: Login with wrong password")
+    
+    wrong_password_data = {
+        "email": test_user_email,
+        "password": "wrongPassword123"
+    }
+    
+    wrong_password_test, wrong_password_response = run_test(
+        "Login with wrong password",
+        "/auth/login",
+        method="POST",
+        data=wrong_password_data,
+        expected_status=401
+    )
+    
+    if wrong_password_test:
+        print("✅ Login with wrong password correctly rejected")
+    else:
+        print("❌ Login with wrong password not properly handled")
+    
+    # Test 8: Test protected endpoint with token
+    print("\nTest 8: Test protected endpoint with token")
+    
+    # Use the token from login to access a protected endpoint
+    if auth_token:
+        protected_test, protected_response = run_test(
+            "Access protected endpoint",
+            "/documents",
+            method="GET",
+            auth=True
+        )
+        
+        if protected_test:
+            print("✅ Successfully accessed protected endpoint with token")
+        else:
+            print("❌ Failed to access protected endpoint with token")
+    else:
+        print("❌ Cannot test protected endpoint without valid token")
+    
+    # Print summary
+    print("\nAUTHENTICATION ENDPOINTS SUMMARY:")
+    
+    # Check if all critical tests passed
+    registration_works = register_test
+    login_works = login_test
+    token_works = protected_test if auth_token else False
+    
+    if registration_works and login_works and token_works:
+        print("✅ Authentication system is working correctly!")
+        print("✅ Registration endpoint is functioning properly")
+        print("✅ Login endpoint is functioning properly")
+        print("✅ JWT tokens are generated correctly")
+        print("✅ Protected endpoints can be accessed with valid token")
+        return True, "Authentication system is working correctly"
+    else:
+        issues = []
+        if not registration_works:
+            issues.append("Registration endpoint is not functioning properly")
+        if not login_works:
+            issues.append("Login endpoint is not functioning properly")
+        if not token_works:
+            issues.append("JWT token authentication is not working properly")
+        
+        print("❌ Authentication system has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, {"issues": issues}
+
 def main():
     """Run all tests"""
     print("\n" + "="*80)
     print("RUNNING FILE CENTER API TESTS")
     print("="*80)
+    
+    # Test authentication endpoints
+    auth_success, auth_results = test_auth_endpoints()
     
     # Test authentication first
     test_login()
@@ -964,6 +1203,16 @@ def main():
     print("\n" + "="*80)
     print("FILE CENTER FUNCTIONALITY ASSESSMENT")
     print("="*80)
+    
+    if auth_success:
+        print("✅ Authentication system is working correctly")
+        print("✅ Registration and login endpoints are functioning properly")
+        print("✅ JWT tokens are generated correctly and work with protected endpoints")
+    else:
+        print("❌ Authentication system has issues")
+        if isinstance(auth_results, dict) and "issues" in auth_results:
+            for issue in auth_results["issues"]:
+                print(f"  - {issue}")
     
     if doc_loading_success:
         print("✅ Document loading performance is acceptable")
@@ -1000,7 +1249,7 @@ def main():
     
     print("="*80)
     
-    return doc_loading_success and doc_bulk_delete_success and doc_categories_success
+    return auth_success and doc_loading_success and doc_bulk_delete_success and doc_categories_success
 
 if __name__ == "__main__":
     main()
