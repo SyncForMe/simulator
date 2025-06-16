@@ -2704,11 +2704,15 @@ async def get_admin_recent_activity(
 
 @api_router.post("/admin/reset-password")
 async def reset_admin_password(
-    new_password: str = Field(..., min_length=6),
+    request_data: dict,
     current_user: User = Depends(get_admin_user)
 ):
     """Reset admin password - admin only"""
     try:
+        new_password = request_data.get("new_password")
+        if not new_password or len(new_password) < 6:
+            raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+        
         # Hash the new password
         password_hash = hash_password(new_password)
         
