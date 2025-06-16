@@ -1944,6 +1944,12 @@ def main():
     print("RUNNING API TESTS")
     print("="*80)
     
+    # Test login first to get auth token
+    test_login()
+    
+    # Test the improved conversation generation system
+    conversation_success, conversation_message = test_conversation_generation(API_URL, auth_token, run_test)
+    
     # Test the enhanced document generation system
     enhanced_doc_success, enhanced_doc_message = test_enhanced_document_generation()
     
@@ -1954,6 +1960,20 @@ def main():
     print("\n" + "="*80)
     print("API FUNCTIONALITY ASSESSMENT")
     print("="*80)
+    
+    if conversation_success:
+        print("✅ Improved conversation generation system is working correctly")
+        print("✅ No self-introductions after first round")
+        print("✅ No repetitive phrases")
+        print("✅ Conversations are solution-focused")
+        print("✅ Agents reference previous speakers")
+        print("✅ Conversations show progression from analysis to decisions")
+    else:
+        if isinstance(conversation_message, dict) and "issues" in conversation_message:
+            for issue in conversation_message["issues"]:
+                print(f"❌ {issue}")
+        else:
+            print(f"❌ {conversation_message}")
     
     if enhanced_doc_success:
         print("✅ Enhanced document generation system is working correctly")
@@ -1969,7 +1989,7 @@ def main():
     
     print("="*80)
     
-    return enhanced_doc_success
+    return conversation_success and enhanced_doc_success
 
 if __name__ == "__main__":
     main()
