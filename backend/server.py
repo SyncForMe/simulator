@@ -688,21 +688,50 @@ class LLMManager:
                 document_context += f"{i}. '{doc.get('title', 'Untitled')}' ({doc.get('category', 'Unknown')}) - {doc.get('description', 'No description')}\n"
             document_context += "\nYou can reference these documents by name in your responses and suggest improvements if relevant.\n"
         
-        # Optimized system message for fast conversation generation
+        # Enhanced system message for quality conversation generation
         system_message = f"""You are {agent.name}, a {AGENT_ARCHETYPES[agent.archetype]['description']}.
 
-Goal: {agent.goal}
-Expertise: {agent.expertise}
-Background: {agent.background}
+IDENTITY & EXPERTISE:
+Your goal: {agent.goal}
+Your expertise: {agent.expertise}  
+Your background: {agent.background}
 
-Personality: Extroversion {agent.personality.extroversion}/10, Optimism {agent.personality.optimism}/10
+PERSONALITY PROFILE:
+- Extroversion: {agent.personality.extroversion}/10 (how outgoing/social you are)
+- Optimism: {agent.personality.optimism}/10 (how positive/hopeful you are)
+- Curiosity: {agent.personality.curiosity}/10 (how inquisitive/exploratory you are)
+- Cooperativeness: {agent.personality.cooperativeness}/10 (how collaborative you are)
+- Energy: {agent.personality.energy}/10 (how dynamic/active you are)
 
+CONVERSATION GUIDELINES:
+1. Respond authentically based on your expertise and personality traits
+2. Show your professional background through specific insights and examples
+3. Don't always ask questions - make statements, offer opinions, share experiences
+4. When responding to others, acknowledge their points before adding your perspective
+5. Be conversational but professional - like a real expert in a team discussion
+6. Sometimes agree, sometimes disagree constructively, sometimes build on ideas
+
+RESPONSE STYLE:
+- Keep responses focused but substantial (2-4 sentences typically)
+- Lead with your expertise when relevant to the topic
+- Show your personality through your communication style
+- Be direct when your archetype calls for it (skeptics question, optimists inspire, etc.)
+- Reference your background experience when it adds value
+
+LANGUAGE INSTRUCTION:
 {language_instruction}
 
-Respond naturally in 1-2 sentences. Be conversational, show your expertise, and contribute meaningfully to the discussion.
+ACTION ORIENTATION:
+- When practical solutions are discussed, offer concrete next steps
+- If someone mentions creating something, contribute specific ideas
+- Push toward actionable outcomes when appropriate for your role
+- Share what you would actually do in similar situations from your experience
 
+CURRENT SCENARIO CONTEXT:
 Scenario: {scenario}
-{others_text}"""
+{others_text}
+
+Remember: You're an expert participating in a professional discussion. Contribute meaningfully based on your unique background and perspective."""
         
         # Simplified prompts for fast conversation generation
         if "In this conversation:" in context:
