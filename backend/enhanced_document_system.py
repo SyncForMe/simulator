@@ -368,24 +368,35 @@ class ProfessionalDocumentFormatter:
     
     def _extract_risk_data(self, content: str, context: str) -> Optional[Dict[str, float]]:
         """Extract risk assessment data"""
-        text = context.lower()
+        all_text = (content + " " + context).lower()
         
-        if 'investment' in text or 'financial' in text:
-            return {
-                "Market Risk": 7,
-                "Technical Risk": 5,
-                "Regulatory Risk": 6,
-                "Operational Risk": 4,
-                "Competitive Risk": 8
-            }
-        elif 'technology' in text:
-            return {
-                "Technical Complexity": 8,
-                "Security Vulnerabilities": 6,
-                "Scalability Issues": 5,
-                "Integration Challenges": 7,
-                "Maintenance Burden": 4
-            }
+        # Always return risk data when risk-related terms are mentioned
+        if any(word in all_text for word in ['risk', 'assessment', 'challenge', 'threat', 'issue']):
+            if any(word in all_text for word in ['investment', 'financial', 'budget', 'funding']):
+                return {
+                    "Market Risk": 7,
+                    "Technical Risk": 5,
+                    "Regulatory Risk": 6,
+                    "Operational Risk": 4,
+                    "Competitive Risk": 8
+                }
+            elif any(word in all_text for word in ['technology', 'technical', 'development']):
+                return {
+                    "Technical Complexity": 8,
+                    "Security Vulnerabilities": 6,
+                    "Scalability Issues": 5,
+                    "Integration Challenges": 7,
+                    "Maintenance Burden": 4
+                }
+            else:
+                # Generic risk assessment
+                return {
+                    "Implementation Risk": 6,
+                    "Resource Risk": 5,
+                    "Timeline Risk": 7,
+                    "Quality Risk": 4,
+                    "External Risk": 8
+                }
         
         return None
     
