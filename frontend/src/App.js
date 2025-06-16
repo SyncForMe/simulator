@@ -5799,7 +5799,20 @@ function App() {
               
               {/* Authentication Section */}
               {isAuthenticated ? (
-                <UserProfile user={user} onLogout={logout} />
+                <div className="flex items-center space-x-3">
+                  {/* Admin Dashboard Button */}
+                  {isAdmin && (
+                    <button
+                      onClick={() => setShowAdminDashboard(true)}
+                      className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 font-medium transition-colors flex items-center space-x-2"
+                      title="Admin Dashboard"
+                    >
+                      <span>👑</span>
+                      <span>Admin Dashboard</span>
+                    </button>
+                  )}
+                  <UserProfile user={user} onLogout={logout} />
+                </div>
               ) : (
                 <button
                   onClick={() => setShowLoginModal(true)}
