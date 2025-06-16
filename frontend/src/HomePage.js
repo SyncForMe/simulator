@@ -34,10 +34,6 @@ const HomePage = ({ onAuthenticated }) => {
 
       const response = await axios.post(`${API}${endpoint}`, payload);
       
-      // Store token and user data
-      localStorage.setItem('token', response.data.access_token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      
       // Call parent callback to update authentication state
       onAuthenticated(response.data.access_token, response.data.user);
       
@@ -53,9 +49,8 @@ const HomePage = ({ onAuthenticated }) => {
   };
 
   const handleGoogleSignIn = () => {
-    // This would integrate with existing Google OAuth flow
-    // For now, show a message that Google sign-in is coming soon
-    alert('Google sign-in integration coming soon! Please use email/password for now.');
+    // Redirect to Google OAuth flow
+    window.location.href = `${API}/auth/google`;
   };
 
   return (
