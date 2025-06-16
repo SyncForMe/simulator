@@ -4702,40 +4702,40 @@ const FileCenter = ({ onRefresh }) => {
         </div>
       </div>
 
-      {/* File Center Modal */}
+      {/* File Center Modal - Enhanced with better spacing */}
       {showFileCenter && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-7xl max-h-[95vh] overflow-hidden">
-            {/* Header */}
-            <div className="border-b border-gray-200 p-6">
+          <div className="bg-white rounded-xl w-full max-w-7xl max-h-[95vh] overflow-hidden shadow-2xl">
+            {/* Header - Enhanced with gradient and better spacing */}
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">📁 File Center</h2>
-                  <p className="text-gray-600 mt-1">Documents organized by simulation scenario</p>
+                  <h2 className="text-3xl font-bold mb-2">📁 File Center</h2>
+                  <p className="text-blue-100 text-lg">Documents organized by simulation scenario</p>
                 </div>
                 <button
                   onClick={() => setShowFileCenter(false)}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="text-white hover:text-blue-200 text-3xl transition-colors duration-200 p-2 hover:bg-white hover:bg-opacity-10 rounded-lg"
                 >
                   ✕
                 </button>
               </div>
 
-              {/* Search and Filter Bar */}
-              <div className="mt-6 flex gap-4">
+              {/* Search and Filter Bar - Improved spacing */}
+              <div className="mt-8 flex gap-6">
                 <div className="flex-1">
                   <input
                     type="text"
-                    placeholder="Search documents..."
+                    placeholder="Search documents by title, content, or author..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-4 border-0 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 shadow-lg text-lg"
                   />
                 </div>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="p-4 border-0 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 shadow-lg min-w-[180px]"
                 >
                   <option value="">All Categories</option>
                   {categories?.map(category => (
@@ -4744,60 +4744,62 @@ const FileCenter = ({ onRefresh }) => {
                 </select>
                 <button
                   onClick={() => fetchScenarioDocuments(true)}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-8 py-4 bg-white bg-opacity-20 text-white rounded-lg hover:bg-opacity-30 transition-all duration-200 font-medium shadow-lg backdrop-blur-sm"
                 >
                   🔄 Refresh
                 </button>
               </div>
+            </div>
 
-              {/* Bulk Selection Controls */}
+            {/* Bulk Selection Controls - Better spacing and design */}
+            <div className="px-8 py-4 border-b border-gray-100">
               {(() => {
                 try {
                   const totalDocuments = filteredScenarios?.reduce((total, scenario) => {
                     return total + (scenario?.documents?.length || 0);
                   }, 0) || 0;
                   return totalDocuments > 0 && !loading ? (
-                  <div className="mt-4 flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <label className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectAll}
-                          onChange={handleSelectAll}
-                          className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          Select All ({totalDocuments})
-                        </span>
-                      </label>
+                    <div className="flex items-center justify-between p-5 bg-gray-50 rounded-xl border border-gray-200">
+                      <div className="flex items-center space-x-4">
+                        <label className="flex items-center space-x-3 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={selectAll}
+                            onChange={handleSelectAll}
+                            className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 focus:ring-2"
+                          />
+                          <span className="text-base font-medium text-gray-700">
+                            Select All ({totalDocuments} documents)
+                          </span>
+                        </label>
+                        {selectedDocuments.size > 0 && (
+                          <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                            {selectedDocuments.size} selected
+                          </div>
+                        )}
+                      </div>
+                      
                       {selectedDocuments.size > 0 && (
-                        <span className="text-sm text-blue-600 font-medium">
-                          {selectedDocuments.size} selected
-                        </span>
+                        <button
+                          onClick={handleDeleteSelected}
+                          disabled={deleting}
+                          className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 disabled:opacity-50 font-medium flex items-center space-x-2 transition-all duration-200 shadow-sm"
+                        >
+                          {deleting ? (
+                            <>
+                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              <span>Deleting...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>🗑️</span>
+                              <span>Delete Selected ({selectedDocuments.size})</span>
+                            </>
+                          )}
+                        </button>
                       )}
                     </div>
-                    
-                    {selectedDocuments.size > 0 && (
-                      <button
-                        onClick={handleDeleteSelected}
-                        disabled={deleting}
-                        className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 disabled:opacity-50 text-sm flex items-center space-x-2"
-                      >
-                        {deleting ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            <span>Deleting...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span>🗑️</span>
-                            <span>Delete Selected ({selectedDocuments.size})</span>
-                          </>
-                        )}
-                      </button>
-                    )}
-                  </div>
-                ) : null;
+                  ) : null;
                 } catch (error) {
                   console.error('Error rendering bulk selection controls:', error);
                   return null;
