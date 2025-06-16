@@ -2,7 +2,6 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import axios from 'axios';
 import { motion, useAnimationControls } from 'framer-motion';
 import AgentLibrary from './AgentLibrary';
-import { AuthProvider, useAuth } from './AuthContext';
 import HomePage from './HomePage';
 import './App.css';
 
