@@ -5256,9 +5256,8 @@ function App() {
   // Fetch data functions
   const fetchAgents = async () => {
     try {
-      const response = await axios.get(`${API}/agents`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // Fetch agents without authentication (for simulation mode)
+      const response = await axios.get(`${API}/agents`);
       setAgents(response.data);
     } catch (error) {
       console.error('Error fetching agents:', error);
