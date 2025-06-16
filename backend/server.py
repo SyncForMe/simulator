@@ -4142,6 +4142,13 @@ async def generate_conversation():
     # Save conversation
     await db.conversations.insert_one(conversation_round.dict())
     
+    # AUTO-GENERATE HELPFUL DOCUMENTS based on conversation content
+    try:
+        await auto_generate_documents_from_conversation(conversation_round, agent_objects, scenario, scenario_name, llm_manager)
+    except Exception as e:
+        print(f"Document auto-generation failed: {e}")
+        # Don't let document generation failure break conversation generation
+    
     return conversation_round
     agent_objects = [Agent(**agent) for agent in agents]
     
