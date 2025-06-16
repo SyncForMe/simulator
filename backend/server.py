@@ -647,8 +647,10 @@ class LLMManager:
 
     async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None, language_instruction: str = "Respond in English.", existing_documents: List = None, simulation_state: dict = None):
         """Generate a single agent response with better context and progression"""
-        if not await self.can_make_request():
-            return f"{agent.name} is taking a moment to think... (daily API limit reached)"
+        
+        # TEMPORARY: Use fallbacks immediately to fix start simulation issue
+        # TODO: Re-enable LLM calls once API timeout issue is resolved
+        logging.warning(f"Using fallback response for {agent.name} due to LLM timeout issues")
         
         # Build a simple, direct prompt for better LLM performance
         other_agent_names = [a.name for a in other_agents if a.id != agent.id]
