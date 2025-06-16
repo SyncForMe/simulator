@@ -3682,23 +3682,50 @@ async def generate_conversation():
     scenario = state.get("scenario", "General discussion about current topics")
     scenario_name = state.get("scenario_name", "General Discussion")
     
-    # Create simple fallback messages immediately (no LLM calls for now)
-    messages = []
-    topics = [
-        "I think we should consider the practical implications of this scenario.",
-        "That's an interesting perspective. Let me add my thoughts on this matter.", 
-        "Based on my experience, I believe we need to approach this systematically."
-    ]
+    # Create smart conversation generator for realistic, contextual responses
+    conversation_gen = SmartConversationGenerator()
     
-    moods = ["thoughtful", "engaged", "analytical"]
+    # Generate realistic messages based on agent personalities and scenario context
+    messages = []
     
     for i, agent in enumerate(agent_objects):
-        message_text = topics[i % len(topics)]
+        # Convert agent object to dict for the conversation generator
+        agent_dict = {
+            "name": agent.name,
+            "archetype": agent.archetype,
+            "expertise": agent.expertise,
+            "background": agent.background,
+            "personality": agent.personality.dict() if agent.personality else {}
+        }
+        
+        # Generate contextual response based on agent personality and conversation flow
+        message_text = conversation_gen.generate_contextual_response(
+            agent=agent_dict,
+            scenario=scenario,
+            scenario_name=scenario_name,
+            conversation_history=[{"agent_name": msg.agent_name, "message": msg.message} for msg in messages],
+            turn_number=i
+        )
+        
+        # Determine mood based on agent archetype and message content
+        if agent.archetype == "optimist":
+            mood = "enthusiastic"
+        elif agent.archetype == "skeptic":
+            mood = "cautious"
+        elif agent.archetype == "scientist":
+            mood = "analytical"
+        elif agent.archetype == "leader":
+            mood = "strategic"
+        elif agent.archetype == "artist":
+            mood = "creative"
+        else:
+            mood = "engaged"
+        
         message = ConversationMessage(
             agent_name=agent.name,
             agent_id=agent.id,
             message=message_text,
-            mood=moods[i % len(moods)],
+            mood=mood,
             timestamp=datetime.utcnow()
         )
         messages.append(message)
