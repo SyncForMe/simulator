@@ -5816,10 +5816,10 @@ async def create_document(
         )
         
         # Format the document with professional styling and charts if needed
-        llm_manager = LLMManager()
         if document.category in ["Budget", "Protocol", "Research", "Equipment"]:
             # Apply professional formatting with potential charts
-            formatted_content = await llm_manager.document_formatter.format_document(
+            formatter = ProfessionalDocumentFormatter()
+            formatted_content = formatter.format_document(
                 document.content,
                 document.title,
                 document.authors,
