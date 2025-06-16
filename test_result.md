@@ -147,9 +147,11 @@ test_plan:
     - "Document Count Verification"
     - "Email/Password Authentication"
     - "User Data Isolation"
+    - "Admin Functionality"
   stuck_tasks:
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
     - "User Data Isolation"
+    - "Admin Functionality"
   test_all: false
   test_priority: "high_first"
 
