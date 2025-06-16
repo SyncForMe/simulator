@@ -3445,10 +3445,28 @@ async def start_simulation(request: Optional[SimulationStartRequest] = None, cur
     await db.simulation_state.insert_one(simulation.dict())
     
     # Clear all user-specific simulation data for fresh start
-    await db.agents.delete_many({"user_id": current_user.id})  # Clear user's agents
-    await db.conversations.delete_many({"user_id": current_user.id})  # Clear user's conversations
-    await db.relationships.delete_many({"user_id": current_user.id})  # Clear user's relationships
-    await db.summaries.delete_many({"user_id": current_user.id})  # Clear user's summaries
+    
+    # First, get user's agent IDs before deleting agents
+    user_agents = await db.agents.find({"user_id": current_user.id}).to_list(100)
+    user_agent_ids = [agent["id"] for agent in user_agents]
+    
+    # Clear user's agents
+    await db.agents.delete_many({"user_id": current_user.id})
+    
+    # Clear user's conversations  
+    await db.conversations.delete_many({"user_id": current_user.id})
+    
+    # Clear relationships involving user's agents
+    if user_agent_ids:
+        await db.relationships.delete_many({
+            "$or": [
+                {"agent1_id": {"$in": user_agent_ids}},
+                {"agent2_id": {"$in": user_agent_ids}}
+            ]
+        })
+    
+    # Clear user's summaries
+    await db.summaries.delete_many({"user_id": current_user.id})
     
     # Log the simulation start with time limit info
     time_limit_msg = f" with {time_limit_display} time limit" if time_limit_display else " with no time limit"
