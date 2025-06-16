@@ -3420,8 +3420,8 @@ async def test_background_differences():
     }
 
 @api_router.post("/simulation/start")
-async def start_simulation(request: Optional[SimulationStartRequest] = None):
-    """Start or reset the simulation with optional time limit"""
+async def start_simulation(request: Optional[SimulationStartRequest] = None, current_user: User = Depends(get_current_user)):
+    """Start or reset the simulation with optional time limit - clears all user data for fresh start"""
     
     # Get time limit info from request
     time_limit_hours = None
@@ -3444,10 +3444,11 @@ async def start_simulation(request: Optional[SimulationStartRequest] = None):
     await db.simulation_state.delete_many({})
     await db.simulation_state.insert_one(simulation.dict())
     
-    # Clear previous conversations, relationships, and summaries
-    await db.conversations.delete_many({})
-    await db.relationships.delete_many({})
-    await db.summaries.delete_many({})  # Clear old weekly reports
+    # Clear all user-specific simulation data for fresh start
+    await db.agents.delete_many({"user_id": current_user.id})  # Clear user's agents
+    await db.conversations.delete_many({"user_id": current_user.id})  # Clear user's conversations
+    await db.relationships.delete_many({"user_id": current_user.id})  # Clear user's relationships
+    await db.summaries.delete_many({"user_id": current_user.id})  # Clear user's summaries
     
     # Log the simulation start with time limit info
     time_limit_msg = f" with {time_limit_display} time limit" if time_limit_display else " with no time limit"
