@@ -4529,7 +4529,9 @@ const FileCenter = ({ onRefresh }) => {
 
   const handleSuggestionDecision = async (suggestionId, decision) => {
     try {
-      const agents = await axios.get(`${API}/agents`);
+      const agents = await axios.get(`${API}/agents`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       if (agents.data.length === 0) {
         alert('No agents available');
         return;
