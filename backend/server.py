@@ -3953,11 +3953,11 @@ async def generate_conversation(current_user: User = Depends(get_current_user)):
     return conversation_round
 
 @api_router.get("/conversations")
-async def get_conversations():
-    """Get all simulation conversation rounds (auto-generated conversations are public)"""
-    # Get auto-generated simulation conversations (user_id is empty)
+async def get_conversations(current_user: User = Depends(get_current_user)):
+    """Get conversation rounds for the authenticated user's simulation"""
+    # Get conversations for the current user's simulation
     conversations = await db.conversations.find({
-        "user_id": ""  # Only auto-generated simulation conversations
+        "user_id": current_user.id  # User-specific conversations
     }).sort("created_at", 1).to_list(1000)
     
     # Convert to response format, handling any missing fields
