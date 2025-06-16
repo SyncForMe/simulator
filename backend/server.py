@@ -3736,32 +3736,164 @@ async def debug_simple_conversation():
         return {"error": str(e), "success": False}
 
 async def auto_generate_documents_from_conversation(conversation_round, agent_objects, scenario, scenario_name, llm_manager):
-    """Automatically generate helpful documents based on conversation content"""
+    """Automatically generate and update documents based on conversation content"""
     
     # Analyze conversation content to determine what documents would be helpful
     conversation_text = "\n".join([f"{msg.agent_name}: {msg.message}" for msg in conversation_round.messages])
     
-    # Determine document types needed based on scenario and conversation content
-    needed_documents = determine_needed_documents(scenario, scenario_name, conversation_text)
+    # Check if agents made decisions, votes, or commitments that need documentation
+    decisions_made = extract_decisions_from_conversation(conversation_text)
     
-    # Generate each needed document
-    for doc_type, doc_title in needed_documents:
+    # Get existing documents to see what needs updating
+    existing_docs = await db.documents.find({"user_id": ""}).to_list(100)
+    
+    # Determine if we should update existing documents or create new ones
+    needed_actions = determine_document_actions(scenario, scenario_name, conversation_text, existing_docs, decisions_made)
+    
+    # Execute document actions (create new, update existing)
+    for action_type, doc_info in needed_actions:
         try:
-            # Find the most appropriate agent to create this document type
-            creating_agent = select_best_agent_for_document(agent_objects, doc_type)
-            
-            # Generate the document
-            document = await create_contextual_document(
-                creating_agent, doc_type, doc_title, conversation_text, 
-                scenario, scenario_name, llm_manager
-            )
-            
-            # Save to database
-            await db.documents.insert_one(document)
-            print(f"📄 Auto-generated: {doc_title} by {creating_agent.name}")
-            
+            if action_type == "create":
+                doc_type, doc_title = doc_info
+                creating_agent = select_best_agent_for_document(agent_objects, doc_type)
+                document = await create_contextual_document(
+                    creating_agent, doc_type, doc_title, conversation_text, 
+                    scenario, scenario_name, llm_manager
+                )
+                await db.documents.insert_one(document)
+                print(f"📄 Created: {doc_title} by {creating_agent.name}")
+                
+            elif action_type == "update":
+                existing_doc, update_reason = doc_info
+                updating_agent = select_best_agent_for_document(agent_objects, existing_doc.get("category", "action").lower())
+                updated_doc = await update_existing_document(
+                    existing_doc, updating_agent, conversation_text, update_reason, llm_manager
+                )
+                await db.documents.replace_one({"id": existing_doc["id"]}, updated_doc)
+                print(f"📝 Updated: {existing_doc['title']} by {updating_agent.name} - {update_reason}")
+                
         except Exception as e:
-            print(f"Failed to generate {doc_title}: {e}")
+            print(f"Failed to {action_type} document: {e}")
+
+def extract_decisions_from_conversation(conversation_text):
+    """Extract key decisions, votes, and commitments from conversation"""
+    decisions = []
+    
+    # Look for decision indicators
+    decision_keywords = [
+        "vote yes", "vote no", "i vote", "let's vote", "decision", "we should", 
+        "i recommend", "my recommendation", "i propose", "let's move forward",
+        "i'll take responsibility", "i commit to", "i'll handle", "i'll create",
+        "i'll update", "based on our discussion", "the consensus", "we've decided"
+    ]
+    
+    for keyword in decision_keywords:
+        if keyword.lower() in conversation_text.lower():
+            # Extract the sentence containing the decision
+            sentences = conversation_text.split('.')
+            for sentence in sentences:
+                if keyword.lower() in sentence.lower():
+                    decisions.append(sentence.strip())
+    
+    return decisions
+
+def determine_document_actions(scenario, scenario_name, conversation_text, existing_docs, decisions_made):
+    """Determine whether to create new documents or update existing ones"""
+    actions = []
+    scenario_lower = scenario.lower()
+    conversation_lower = conversation_text.lower()
+    
+    # Create a map of existing documents by type
+    existing_by_type = {}
+    for doc in existing_docs:
+        if scenario_name.lower() in doc.get("title", "").lower():
+            doc_type = doc.get("category", "").lower()
+            existing_by_type[doc_type] = doc
+    
+    # Check what documents are needed
+    potential_docs = [
+        ("budget", "budget", ["cost", "budget", "funding", "investment", "economic", "financial"]),
+        ("implementation", "implementation", ["implement", "deploy", "rollout", "strategy", "plan"]),
+        ("risk", "risk", ["risk", "challenge", "threat", "danger", "crisis"]),
+        ("technical", "technical", ["technology", "technical", "engineering", "system", "design"]),
+        ("policy", "policy", ["policy", "regulation", "law", "compliance", "governance"]),
+        ("training", "training", ["training", "education", "skill", "workforce", "job retraining"]),
+        ("timeline", "timeline", ["timeline", "schedule", "deadline", "phases", "milestones"]),
+        ("action", "action", ["action", "next steps", "decisions", "commitments"])
+    ]
+    
+    for doc_key, doc_type, keywords in potential_docs:
+        is_relevant = any(word in scenario_lower or word in conversation_lower for word in keywords)
+        
+        if is_relevant:
+            if doc_key in existing_by_type:
+                # Update existing document if there are new decisions or significant discussion
+                if decisions_made or len(conversation_text) > 500:
+                    update_reason = "New decisions and discussion points"
+                    actions.append(("update", (existing_by_type[doc_key], update_reason)))
+            else:
+                # Create new document
+                title = f"{scenario_name} - {doc_type.title()}"
+                actions.append(("create", (doc_type, title)))
+    
+    # Always update action plan if decisions were made
+    if decisions_made and "action" in existing_by_type:
+        actions.append(("update", (existing_by_type["action"], "New decisions and commitments made")))
+    elif decisions_made and "action" not in existing_by_type:
+        actions.append(("create", ("action", f"{scenario_name} - Action Plan")))
+    
+    return actions[:3]  # Limit to 3 actions per conversation
+
+async def update_existing_document(existing_doc, updating_agent, conversation_text, update_reason, llm_manager):
+    """Update an existing document with new information from conversation"""
+    
+    system_message = f"""You are {updating_agent.name}, updating the document "{existing_doc['title']}".
+
+CURRENT DOCUMENT CONTENT:
+{existing_doc['content']}
+
+NEW CONVERSATION CONTENT:
+{conversation_text}
+
+UPDATE REASON: {update_reason}
+
+Your task: Update the document to incorporate the new information and decisions from the conversation.
+- Keep the existing structure and good content
+- Add new findings, decisions, and insights
+- Update sections that have changed
+- Mark updates with revision notes where appropriate
+- Maintain professional formatting"""
+
+    try:
+        chat = LlmChat(
+            api_key=llm_manager.api_key,
+            session_id=f"doc_update_{updating_agent.id}_{datetime.now().timestamp()}",
+            system_message=system_message
+        ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(400)
+        
+        prompt = f"Update this document to include the new conversation insights. Maintain the structure but add new information:\n\n{existing_doc['content']}"
+        user_message = UserMessage(text=prompt)
+        
+        response = await asyncio.wait_for(chat.send_message(user_message), timeout=10.0)
+        
+        if response and len(response.strip()) > 100:
+            updated_content = response.strip()
+        else:
+            # Fallback: append new insights to existing content
+            updated_content = existing_doc['content'] + f"\n\n## UPDATE ({datetime.now().strftime('%Y-%m-%d')})\n\nBased on recent team discussion:\n- {update_reason}\n- New insights: [Summary of key points from conversation]"
+            
+    except Exception as e:
+        print(f"LLM document update failed: {e}")
+        # Fallback: append new insights to existing content
+        updated_content = existing_doc['content'] + f"\n\n## UPDATE ({datetime.now().strftime('%Y-%m-%d')})\n\nBased on recent team discussion:\n- {update_reason}\n- Key conversation points: {conversation_text[:200]}..."
+    
+    # Update document metadata
+    updated_doc = existing_doc.copy()
+    updated_doc['content'] = updated_content
+    updated_doc['updated_at'] = datetime.utcnow().isoformat()
+    updated_doc['description'] = f"Updated by {updating_agent.name} - {update_reason}"
+    
+    return updated_doc
 
 def determine_needed_documents(scenario, scenario_name, conversation_text):
     """Determine what types of documents would be helpful based on the scenario"""
