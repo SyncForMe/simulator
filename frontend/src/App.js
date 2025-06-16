@@ -3,6 +3,7 @@ import axios from 'axios';
 import { motion, useAnimationControls } from 'framer-motion';
 import AgentLibrary from './AgentLibrary';
 import HomePage from './HomePage';
+import AdminDashboard from './AdminDashboard';
 import './App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
