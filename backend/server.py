@@ -1024,7 +1024,7 @@ Respond with ONLY: YES, NO, or ABSTAIN followed by a brief 1-sentence reason."""
                     api_key=self.api_key,
                     session_id=f"voting_{agent.id}_{datetime.now().timestamp()}",
                     system_message=system_message
-                ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(100)
+                ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(235)
                 
                 prompt = f"""Conversation context:\n{conversation_context}\n\nProposal to vote on: {proposal}\n\nYour vote (YES/NO/ABSTAIN) and brief reason:"""
                 
