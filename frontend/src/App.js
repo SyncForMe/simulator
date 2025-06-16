@@ -5934,6 +5934,12 @@ function App() {
               autoExpand={autoExpandCurrentScenario}
             />
             
+            {/* File Center for Action-Oriented Agent Behavior - Positioned under Current Scenario */}
+            <div className="mt-6">
+              <FileCenter 
+                onRefresh={refreshAllData}
+              />
+            </div>
             
             <ControlPanel
               simulationState={simulationState}
@@ -5941,13 +5947,6 @@ function App() {
               onCreateAgent={handleCreateAgent}
               setShowFastForward={setShowFastForward}
             />
-            
-            {/* File Center for Action-Oriented Agent Behavior */}
-            <div className="mt-4">
-              <FileCenter 
-                onRefresh={refreshAllData}
-              />
-            </div>
           </div>
         </div>
       </main>
