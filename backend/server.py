@@ -3612,22 +3612,27 @@ async def debug_simple_conversation():
         if len(agents) < 2:
             return {"error": "Need at least 2 agents"}
         
+        # Create agent objects
         agent1 = Agent(**agents[0])
         agent2 = Agent(**agents[1])
         
         # Simple fallback responses
         messages = [
             {
+                "id": str(uuid.uuid4()),
                 "agent_id": agent1.id,
                 "agent_name": agent1.name,
                 "message": f"Hello, I'm {agent1.name}. Let's discuss the current scenario.",
-                "mood": "neutral"
+                "mood": "neutral",
+                "timestamp": datetime.utcnow()
             },
             {
+                "id": str(uuid.uuid4()),
                 "agent_id": agent2.id,
                 "agent_name": agent2.name,
                 "message": f"Hi {agent1.name}, I'm {agent2.name}. I agree we should analyze this situation carefully.",
-                "mood": "neutral"
+                "mood": "neutral",
+                "timestamp": datetime.utcnow()
             }
         ]
         
@@ -3644,15 +3649,18 @@ async def debug_simple_conversation():
             "language": "en"
         }
         
-        await db.conversations.insert_one(conversation_round)
+        # Insert into database
+        result = await db.conversations.insert_one(conversation_round)
         
         return {
             "success": True,
-            "conversation": conversation_round,
-            "message": "Simple conversation created successfully"
+            "message": "Simple conversation created successfully",
+            "conversation_id": conversation_round["id"],
+            "agents": [agent1.name, agent2.name]
         }
         
     except Exception as e:
+        logging.error(f"Debug conversation error: {e}")
         return {"error": str(e), "success": False}
 
 @api_router.post("/conversation/generate")
