@@ -12,6 +12,7 @@ import jwt
 from datetime import datetime, timedelta
 import statistics
 from conversation_generation_test import test_conversation_generation
+from dynamic_conversation_test import test_dynamic_conversation
 
 # Load environment variables from frontend/.env
 load_dotenv('/app/frontend/.env')
