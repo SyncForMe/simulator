@@ -5223,7 +5223,9 @@ function App() {
   // Fetch data functions
   const fetchAgents = async () => {
     try {
-      const response = await axios.get(`${API}/agents`);
+      const response = await axios.get(`${API}/agents`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setAgents(response.data);
     } catch (error) {
       console.error('Error fetching agents:', error);
