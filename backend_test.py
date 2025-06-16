@@ -1979,6 +1979,20 @@ def main():
         else:
             print(f"❌ {conversation_message}")
     
+    if dynamic_conversation_success:
+        print("✅ Enhanced dynamic conversation system is working correctly")
+        print("✅ Scenario repetition is eliminated after first few exchanges")
+        print("✅ Agents understand conversation progression through different phases")
+        print("✅ Conversations show dynamic topic building")
+        print("✅ Conversations display natural human-like patterns")
+        print("✅ Enhanced filtering successfully catches banned phrases")
+    else:
+        if isinstance(dynamic_conversation_message, dict) and "issues" in dynamic_conversation_message:
+            for issue in dynamic_conversation_message["issues"]:
+                print(f"❌ {issue}")
+        else:
+            print(f"❌ {dynamic_conversation_message}")
+    
     if enhanced_doc_success:
         print("✅ Enhanced document generation system is working correctly")
         print("✅ Quality gate properly allows document creation for substantive content")
