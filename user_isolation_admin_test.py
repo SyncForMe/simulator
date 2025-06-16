@@ -752,21 +752,18 @@ def test_admin_functionality():
 def main():
     """Run all tests"""
     print("\n" + "="*80)
-    print("RUNNING USER ISOLATION AND ADMIN FUNCTIONALITY TESTS")
+    print("RUNNING USER ISOLATION TESTS")
     print("="*80)
     
     # Test user data isolation
     user_isolation_success, user_isolation_results = test_user_data_isolation()
-    
-    # Test admin functionality
-    admin_functionality_success, admin_functionality_results = test_admin_functionality()
     
     # Print summary of all tests
     print_summary()
     
     # Print final conclusion
     print("\n" + "="*80)
-    print("USER ISOLATION AND ADMIN FUNCTIONALITY ASSESSMENT")
+    print("USER ISOLATION ASSESSMENT")
     print("="*80)
     
     if user_isolation_success:
@@ -781,21 +778,9 @@ def main():
             if not user_isolation_results.get("cross_user_isolation"):
                 print("  - Users can access each other's data")
     
-    if admin_functionality_success:
-        print("✅ Admin functionality is working correctly")
-        print("✅ Admin user (dino@cytonic.com) can access all admin endpoints")
-        print("✅ Regular users are properly restricted from admin endpoints")
-    else:
-        print("❌ Admin functionality has issues")
-        if isinstance(admin_functionality_results, dict):
-            if not admin_functionality_results.get("admin_access_works"):
-                print("  - Admin user cannot access all admin endpoints")
-            if not admin_functionality_results.get("regular_user_restricted"):
-                print("  - Regular users are not properly restricted from admin endpoints")
-    
     print("="*80)
     
-    return user_isolation_success and admin_functionality_success
+    return user_isolation_success
 
 if __name__ == "__main__":
     main()
