@@ -769,14 +769,23 @@ Scenario: {scenario}
             ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(150)
             
             user_message = UserMessage(text=prompt)
-            response = await chat.send_message(user_message)
-            await self.increment_usage()
             
-            # Validate response
-            if response and len(response.strip()) > 5:
-                return response.strip()
-            else:
-                return f"{agent.name}: I'm carefully considering this situation."
+            # Add timeout to prevent hanging
+            try:
+                response = await asyncio.wait_for(
+                    chat.send_message(user_message), 
+                    timeout=30.0
+                )
+                await self.increment_usage()
+                
+                # Validate response
+                if response and len(response.strip()) > 5:
+                    return response.strip()
+                else:
+                    return f"{agent.name}: I'm carefully considering this situation."
+            except asyncio.TimeoutError:
+                logging.error(f"LLM request timed out for {agent.name}")
+                return f"{agent.name}: I need more time to think about this complex situation."
                 
         except Exception as e:
             logging.error(f"LLM error for {agent.name}: {e}")
