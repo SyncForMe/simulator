@@ -100,6 +100,21 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Retested the complete authentication flow after the fix to the get_current_user function. Created a dedicated test script to verify the entire authentication process. The registration endpoint successfully creates new users and returns valid JWT tokens containing both user_id and sub (email) fields. The login endpoint correctly authenticates users and returns valid tokens. Most importantly, the tokens now work properly with protected endpoints - the GET /api/documents endpoint returns the expected data when accessed with a valid token. The GET /api/auth/me endpoint also works correctly, returning the user's data. The 'User not found' error has been resolved. The fix to the get_current_user function now properly looks up users by both user_id and email, ensuring that tokens work correctly regardless of which authentication method was used."
+        
+  - task: "User Data Isolation"
+    implemented: true
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for user data isolation"
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of user data isolation across all features. Created a dedicated test script to verify that each user can only access their own data. The document isolation is working correctly - each user can only see their own documents and cannot access documents belonging to other users. Cross-user access prevention is also working correctly - attempting to access another user's document returns a 404 Not Found error. However, there are issues with the new user experience - new users start with existing documents in their account instead of an empty list. The test showed that a newly registered user had access to 50 documents that should not be visible to them. This indicates a critical issue with user data isolation where documents are not properly associated with their owners. Additionally, the saved agents and conversations endpoints return 405 Method Not Allowed errors, suggesting these endpoints are not properly implemented or are using different HTTP methods than expected. Overall, while document isolation between existing users works correctly, the new user experience and some API endpoints have issues that need to be addressed to ensure complete user data isolation."
 
 metadata:
   created_by: "testing_agent"
