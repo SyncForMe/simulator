@@ -3770,9 +3770,12 @@ async def generate_conversation():
     return conversation_round
 
 @api_router.get("/conversations", response_model=List[ConversationRound])
-async def get_conversations():
-    """Get all conversation rounds"""
-    conversations = await db.conversations.find().sort("created_at", 1).to_list(1000)
+async def get_conversations(current_user: User = Depends(get_current_user)):
+    """Get conversation rounds for the authenticated user only"""
+    # Filter conversations by user_id to ensure data isolation
+    conversations = await db.conversations.find({
+        "user_id": current_user.id
+    }).sort("created_at", 1).to_list(1000)
     return [ConversationRound(**conv) for conv in conversations]
 
 @api_router.get("/relationships")
