@@ -4643,23 +4643,24 @@ async def get_documents(
 ):
     """Get documents from File Center with optional filtering"""
     try:
-        # Build query - include user's documents AND system-generated documents (empty user_id)
+        # Build query - only include user's own documents for complete isolation
         query = {
-            "$or": [
-                {"metadata.user_id": current_user.id},
-                {"metadata.user_id": ""},  # System-generated documents from conversations
-                {"metadata.user_id": {"$exists": False}}  # Documents without user_id field
-            ]
+            "metadata.user_id": current_user.id
         }
         
         if category:
             query["metadata.category"] = category
             
         if search:
-            query["$or"] = [
+            # Update search to work with the user filter
+            search_conditions = [
                 {"metadata.title": {"$regex": search, "$options": "i"}},
                 {"metadata.description": {"$regex": search, "$options": "i"}},
                 {"metadata.keywords": {"$in": [search]}}
+            ]
+            query["$and"] = [
+                {"metadata.user_id": current_user.id},
+                {"$or": search_conditions}
             ]
         
         # Get documents
