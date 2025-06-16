@@ -1006,14 +1006,20 @@ PROVIDE IMMEDIATE EXPERT ANALYSIS:
                     response_lower = response.lower()
                     has_banned_phrase = any(phrase in response_lower for phrase in banned_phrases)
                     
+                    # Check if this is a good answer to a question
+                    has_question_marker = "?" in context or any(q_word in context.lower() for q_word in ["asked you", "question:", "your assessment", "your take", "what's your", "how would you"])
+                    
                     if not has_banned_phrase:
+                        return response.strip()
+                    elif has_question_marker and not has_banned_phrase:
+                        # If answering a question, be more lenient with response requirements
                         return response.strip()
                     else:
                         # Generate a better fallback if banned phrases detected
                         logging.warning(f"Detected repetitive phrase in {agent.name}'s response, using fallback")
                 
                 # Generate intelligent fallback if response was poor or empty
-                return self._generate_intelligent_fallback(agent, context, scenario)
+                return self._generate_intelligent_fallback(agent, context, scenario, pending_questions if 'pending_questions' in locals() else [])
             except asyncio.TimeoutError:
                 logging.error(f"LLM request timed out for {agent.name}")
                 return self._generate_intelligent_fallback(agent, context, scenario)
