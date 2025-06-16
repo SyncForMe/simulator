@@ -2474,6 +2474,234 @@ async def login_user(user_credentials: UserLogin):
         logging.error(f"Error logging in user: {e}")
         raise HTTPException(status_code=500, detail="Login failed")
 
+# Admin Dashboard Endpoints
+@api_router.get("/admin/dashboard/stats")
+async def get_admin_dashboard_stats(current_user: User = Depends(get_admin_user)):
+    """Get comprehensive dashboard statistics for admin"""
+    try:
+        # Get total user count
+        total_users = await db.users.count_documents({})
+        
+        # Get user registrations in last 30 days
+        thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+        recent_users = await db.users.count_documents({
+            "created_at": {"$gte": thirty_days_ago}
+        })
+        
+        # Get total conversations
+        total_conversations = await db.conversations.count_documents({})
+        
+        # Get total documents
+        total_documents = await db.documents.count_documents({})
+        
+        # Get total agents created
+        total_agents = await db.agents.count_documents({})
+        
+        # Get total saved agents
+        total_saved_agents = await db.saved_agents.count_documents({})
+        
+        # Get active users (those who logged in in last 7 days)
+        seven_days_ago = datetime.utcnow() - timedelta(days=7)
+        active_users = await db.users.count_documents({
+            "last_login": {"$gte": seven_days_ago}
+        })
+        
+        return {
+            "overview": {
+                "total_users": total_users,
+                "recent_users": recent_users,
+                "active_users": active_users,
+                "total_conversations": total_conversations,
+                "total_documents": total_documents,
+                "total_agents": total_agents,
+                "total_saved_agents": total_saved_agents
+            }
+        }
+        
+    except Exception as e:
+        logging.error(f"Error getting admin dashboard stats: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get dashboard stats: {str(e)}")
+
+@api_router.get("/admin/users")
+async def get_admin_users(
+    limit: int = 50,
+    offset: int = 0,
+    current_user: User = Depends(get_admin_user)
+):
+    """Get list of all users with their activity data"""
+    try:
+        # Get users with pagination
+        users = await db.users.find({}).skip(offset).limit(limit).sort("created_at", -1).to_list(limit)
+        
+        # Get activity data for each user
+        user_data = []
+        for user in users:
+            user_id = user.get("id")
+            
+            # Count user's documents
+            doc_count = await db.documents.count_documents({"metadata.user_id": user_id})
+            
+            # Count user's saved agents
+            agent_count = await db.saved_agents.count_documents({"user_id": user_id})
+            
+            # Count user's conversations (approximate based on agents they created)
+            conversation_count = await db.conversations.count_documents({
+                "participants": {"$elemMatch": {"$regex": f".*{user_id}.*"}}
+            })
+            
+            user_info = {
+                "id": user_id,
+                "email": user["email"],
+                "name": user["name"],
+                "created_at": user["created_at"],
+                "last_login": user.get("last_login", user["created_at"]),
+                "auth_type": user.get("auth_type", "google"),
+                "is_active": user.get("is_active", True),
+                "stats": {
+                    "documents": doc_count,
+                    "saved_agents": agent_count,
+                    "conversations": conversation_count
+                }
+            }
+            user_data.append(user_info)
+        
+        return {
+            "users": user_data,
+            "pagination": {
+                "limit": limit,
+                "offset": offset,
+                "total": len(user_data)
+            }
+        }
+        
+    except Exception as e:
+        logging.error(f"Error getting admin users: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get users: {str(e)}")
+
+@api_router.get("/admin/user/{user_id}/details")
+async def get_admin_user_details(
+    user_id: str,
+    current_user: User = Depends(get_admin_user)
+):
+    """Get detailed information about a specific user"""
+    try:
+        # Get user basic info
+        user = await db.users.find_one({"id": user_id})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Get user's documents
+        documents = await db.documents.find(
+            {"metadata.user_id": user_id}
+        ).sort("metadata.created_at", -1).limit(10).to_list(10)
+        
+        # Get user's saved agents
+        saved_agents = await db.saved_agents.find(
+            {"user_id": user_id}
+        ).sort("created_at", -1).limit(10).to_list(10)
+        
+        # Get recent activity (simplified)
+        recent_documents = len(documents)
+        recent_agents = len(saved_agents)
+        
+        return {
+            "user": {
+                "id": user["id"],
+                "email": user["email"],
+                "name": user["name"],
+                "created_at": user["created_at"],
+                "last_login": user.get("last_login", user["created_at"]),
+                "auth_type": user.get("auth_type", "google"),
+                "is_active": user.get("is_active", True)
+            },
+            "activity": {
+                "recent_documents": recent_documents,
+                "recent_agents": recent_agents,
+                "total_documents": await db.documents.count_documents({"metadata.user_id": user_id}),
+                "total_saved_agents": await db.saved_agents.count_documents({"user_id": user_id})
+            },
+            "recent_documents": [
+                {
+                    "id": doc["id"],
+                    "title": doc["metadata"]["title"],
+                    "category": doc["metadata"]["category"],
+                    "created_at": doc["metadata"]["created_at"]
+                } for doc in documents
+            ],
+            "recent_agents": [
+                {
+                    "id": agent["id"],
+                    "name": agent["name"],
+                    "archetype": agent["archetype"],
+                    "created_at": agent["created_at"]
+                } for agent in saved_agents
+            ]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error getting user details: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get user details: {str(e)}")
+
+@api_router.get("/admin/activity/recent")
+async def get_admin_recent_activity(
+    hours: int = 24,
+    current_user: User = Depends(get_admin_user)
+):
+    """Get recent activity across the platform"""
+    try:
+        since_time = datetime.utcnow() - timedelta(hours=hours)
+        
+        # Get recent user registrations
+        recent_users = await db.users.find({
+            "created_at": {"$gte": since_time}
+        }).sort("created_at", -1).to_list(50)
+        
+        # Get recent documents
+        recent_documents = await db.documents.find({
+            "metadata.created_at": {"$gte": since_time}
+        }).sort("metadata.created_at", -1).to_list(50)
+        
+        # Get recent saved agents
+        recent_agents = await db.saved_agents.find({
+            "created_at": {"$gte": since_time}
+        }).sort("created_at", -1).to_list(50)
+        
+        return {
+            "recent_users": [
+                {
+                    "id": user["id"],
+                    "email": user["email"],
+                    "name": user["name"],
+                    "created_at": user["created_at"],
+                    "auth_type": user.get("auth_type", "google")
+                } for user in recent_users
+            ],
+            "recent_documents": [
+                {
+                    "id": doc["id"],
+                    "title": doc["metadata"]["title"],
+                    "category": doc["metadata"]["category"],
+                    "user_id": doc["metadata"]["user_id"],
+                    "created_at": doc["metadata"]["created_at"]
+                } for doc in recent_documents
+            ],
+            "recent_agents": [
+                {
+                    "id": agent["id"],
+                    "name": agent["name"],
+                    "archetype": agent["archetype"],
+                    "user_id": agent["user_id"],
+                    "created_at": agent["created_at"]
+                } for agent in recent_agents
+            ]
+        }
+        
+    except Exception as e:
+        logging.error(f"Error getting recent activity: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get recent activity: {str(e)}")
+
 # Saved Agents Endpoints
 @api_router.get("/saved-agents", response_model=List[SavedAgent])
 async def get_saved_agents(current_user: User = Depends(get_current_user)):
