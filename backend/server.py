@@ -4560,9 +4560,9 @@ async def generate_conversation():
         for msg in messages:
             conversation_text += f"{msg.agent_name}: {msg.message}\n"
         
-        # Analyze for action triggers
+        # Analyze for action triggers with conversation round
         trigger_result = await llm_manager.analyze_conversation_for_action_triggers(
-            conversation_text, agent_objects
+            conversation_text, agent_objects, conversation_round=conversation_count + 1
         )
         
         # If document should be created, get team consensus first
