@@ -4325,10 +4325,10 @@ async def toggle_auto_mode(request: AutoModeRequest):
 
 # Initialize Default AI Agents (Crypto Team)
 @api_router.post("/simulation/init-research-station")
-async def init_research_station():
-    """Initialize default crypto team AI agents with rich personalities and expertise"""
-    # Clear existing agents
-    await db.agents.delete_many({})
+async def init_research_station(current_user: User = Depends(get_current_user)):
+    """Initialize default crypto team AI agents with rich personalities and expertise for the current user"""
+    # Clear existing agents for this user only
+    await db.agents.delete_many({"user_id": current_user.id})
     
     # Create the crypto team agents
     agents_data = [
