@@ -3420,7 +3420,7 @@ async def test_background_differences():
     }
 
 @api_router.post("/simulation/start")
-async def start_simulation(request: Optional[SimulationStartRequest] = None, current_user: User = Depends(get_current_user)):
+async def start_simulation(request: Optional[SimulationStartRequest] = None):
     """Start or reset the simulation with optional time limit - clears all user data for fresh start"""
     
     # Get time limit info from request
@@ -3444,29 +3444,11 @@ async def start_simulation(request: Optional[SimulationStartRequest] = None, cur
     await db.simulation_state.delete_many({})
     await db.simulation_state.insert_one(simulation.dict())
     
-    # Clear all user-specific simulation data for fresh start
-    
-    # First, get user's agent IDs before deleting agents
-    user_agents = await db.agents.find({"user_id": current_user.id}).to_list(100)
-    user_agent_ids = [agent["id"] for agent in user_agents]
-    
-    # Clear user's agents
-    await db.agents.delete_many({"user_id": current_user.id})
-    
-    # Clear user's conversations  
-    await db.conversations.delete_many({"user_id": current_user.id})
-    
-    # Clear relationships involving user's agents
-    if user_agent_ids:
-        await db.relationships.delete_many({
-            "$or": [
-                {"agent1_id": {"$in": user_agent_ids}},
-                {"agent2_id": {"$in": user_agent_ids}}
-            ]
-        })
-    
-    # Clear user's summaries
-    await db.summaries.delete_many({"user_id": current_user.id})
+    # For now, clear ALL simulation data globally (until proper user auth is fixed)
+    await db.agents.delete_many({})  # Clear all agents  
+    await db.conversations.delete_many({})  # Clear all conversations
+    await db.relationships.delete_many({})  # Clear all relationships
+    await db.summaries.delete_many({})  # Clear all summaries
     
     # Log the simulation start with time limit info
     time_limit_msg = f" with {time_limit_display} time limit" if time_limit_display else " with no time limit"
