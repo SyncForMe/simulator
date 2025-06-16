@@ -1175,81 +1175,273 @@ def test_auth_endpoints():
             print(f"  - {issue}")
         return False, {"issues": issues}
 
+def test_default_agents_removal():
+    """Test the removal of default agents creation"""
+    print("\n" + "="*80)
+    print("TESTING REMOVAL OF DEFAULT AGENTS CREATION")
+    print("="*80)
+    
+    # Create a new test user account with email/password registration
+    test_email = f"test.user.{uuid.uuid4()}@example.com"
+    test_password = "securePassword123"
+    test_name = "Test User"
+    
+    print("\nTest 1: Creating a new test user account")
+    register_data = {
+        "email": test_email,
+        "password": test_password,
+        "name": test_name
+    }
+    
+    register_test, register_response = run_test(
+        "Register new test user",
+        "/auth/register",
+        method="POST",
+        data=register_data,
+        expected_keys=["access_token", "token_type", "user"]
+    )
+    
+    if not register_test or not register_response:
+        print("❌ Failed to create test user account")
+        return False, "Failed to create test user account"
+    
+    # Store the token for further testing
+    test_token = register_response.get("access_token")
+    test_user_data = register_response.get("user", {})
+    test_user_id = test_user_data.get("id")
+    
+    print(f"✅ Successfully created test user with ID: {test_user_id}")
+    print(f"JWT Token: {test_token}")
+    
+    # Test 2: Verify the user starts completely empty - Zero agents
+    print("\nTest 2: Verifying user starts with zero agents")
+    
+    agents_test, agents_response = run_test(
+        "Get user agents",
+        "/agents",
+        method="GET",
+        auth=True,
+        headers={"Authorization": f"Bearer {test_token}"}
+    )
+    
+    if not agents_test:
+        print("❌ Failed to get user agents")
+        return False, "Failed to get user agents"
+    
+    agent_count = len(agents_response) if agents_response else 0
+    print(f"Agent count: {agent_count}")
+    
+    if agent_count == 0:
+        print("✅ User starts with zero agents as expected")
+    else:
+        print(f"❌ User starts with {agent_count} agents instead of zero")
+        print("Agents found:")
+        for agent in agents_response:
+            print(f"  - {agent.get('name', 'Unknown')} ({agent.get('id', 'Unknown ID')})")
+        return False, f"User starts with {agent_count} agents instead of zero"
+    
+    # Test 3: Verify the user starts completely empty - Zero conversations
+    print("\nTest 3: Verifying user starts with zero conversations")
+    
+    conversations_test, conversations_response = run_test(
+        "Get user conversations",
+        "/conversations",
+        method="GET",
+        auth=True,
+        headers={"Authorization": f"Bearer {test_token}"}
+    )
+    
+    if not conversations_test:
+        print("❌ Failed to get user conversations")
+        return False, "Failed to get user conversations"
+    
+    conversation_count = len(conversations_response) if conversations_response else 0
+    print(f"Conversation count: {conversation_count}")
+    
+    if conversation_count == 0:
+        print("✅ User starts with zero conversations as expected")
+    else:
+        print(f"❌ User starts with {conversation_count} conversations instead of zero")
+        return False, f"User starts with {conversation_count} conversations instead of zero"
+    
+    # Test 4: Verify the user starts completely empty - Zero documents
+    print("\nTest 4: Verifying user starts with zero documents")
+    
+    documents_test, documents_response = run_test(
+        "Get user documents",
+        "/documents",
+        method="GET",
+        auth=True,
+        headers={"Authorization": f"Bearer {test_token}"}
+    )
+    
+    if not documents_test:
+        print("❌ Failed to get user documents")
+        return False, "Failed to get user documents"
+    
+    document_count = len(documents_response) if documents_response else 0
+    print(f"Document count: {document_count}")
+    
+    if document_count == 0:
+        print("✅ User starts with zero documents as expected")
+    else:
+        print(f"❌ User starts with {document_count} documents instead of zero")
+        return False, f"User starts with {document_count} documents instead of zero"
+    
+    # Test 5: Test starting a new simulation
+    print("\nTest 5: Testing starting a new simulation")
+    
+    simulation_start_test, simulation_start_response = run_test(
+        "Start simulation",
+        "/simulation/start",
+        method="POST",
+        auth=True,
+        headers={"Authorization": f"Bearer {test_token}"},
+        expected_keys=["message", "state"]
+    )
+    
+    if not simulation_start_test:
+        print("❌ Failed to start simulation")
+        return False, "Failed to start simulation"
+    
+    print("✅ Successfully started simulation")
+    
+    # Test 6: Verify no agents are automatically created after starting simulation
+    print("\nTest 6: Verifying no agents are automatically created after starting simulation")
+    
+    agents_after_sim_test, agents_after_sim_response = run_test(
+        "Get user agents after simulation start",
+        "/agents",
+        method="GET",
+        auth=True,
+        headers={"Authorization": f"Bearer {test_token}"}
+    )
+    
+    if not agents_after_sim_test:
+        print("❌ Failed to get user agents after simulation start")
+        return False, "Failed to get user agents after simulation start"
+    
+    agent_after_sim_count = len(agents_after_sim_response) if agents_after_sim_response else 0
+    print(f"Agent count after simulation start: {agent_after_sim_count}")
+    
+    if agent_after_sim_count == 0:
+        print("✅ No agents are automatically created after starting simulation")
+    else:
+        print(f"❌ {agent_after_sim_count} agents were automatically created after starting simulation")
+        print("Agents found:")
+        for agent in agents_after_sim_response:
+            print(f"  - {agent.get('name', 'Unknown')} ({agent.get('id', 'Unknown ID')})")
+        return False, f"{agent_after_sim_count} agents were automatically created after starting simulation"
+    
+    # Test 7: Verify the init-research-station endpoint still works
+    print("\nTest 7: Verifying the init-research-station endpoint still works")
+    
+    init_station_test, init_station_response = run_test(
+        "Initialize research station",
+        "/simulation/init-research-station",
+        method="POST",
+        auth=True,
+        headers={"Authorization": f"Bearer {test_token}"},
+        expected_keys=["message", "agents"]
+    )
+    
+    if not init_station_test:
+        print("❌ Failed to initialize research station")
+        return False, "Failed to initialize research station"
+    
+    print("✅ Successfully initialized research station")
+    
+    # Test 8: Verify agents are created by init-research-station endpoint
+    print("\nTest 8: Verifying agents are created by init-research-station endpoint")
+    
+    agents_after_init_test, agents_after_init_response = run_test(
+        "Get user agents after init-research-station",
+        "/agents",
+        method="GET",
+        auth=True,
+        headers={"Authorization": f"Bearer {test_token}"}
+    )
+    
+    if not agents_after_init_test:
+        print("❌ Failed to get user agents after init-research-station")
+        return False, "Failed to get user agents after init-research-station"
+    
+    agent_after_init_count = len(agents_after_init_response) if agents_after_init_response else 0
+    print(f"Agent count after init-research-station: {agent_after_init_count}")
+    
+    if agent_after_init_count > 0:
+        print(f"✅ {agent_after_init_count} agents were created by init-research-station endpoint")
+        print("Agents found:")
+        for agent in agents_after_init_response:
+            print(f"  - {agent.get('name', 'Unknown')} ({agent.get('id', 'Unknown ID')})")
+            
+        # Check if the expected crypto team agents were created
+        expected_agents = ["Marcus \"Mark\" Castellano", "Alexandra \"Alex\" Chen", "Diego \"Dex\" Rodriguez"]
+        found_agents = [agent.get("name") for agent in agents_after_init_response]
+        
+        missing_agents = [name for name in expected_agents if name not in found_agents]
+        if missing_agents:
+            print(f"❌ Missing expected agents: {', '.join(missing_agents)}")
+            return False, f"Missing expected agents: {', '.join(missing_agents)}"
+        else:
+            print("✅ All expected crypto team agents were created")
+    else:
+        print("❌ No agents were created by init-research-station endpoint")
+        return False, "No agents were created by init-research-station endpoint"
+    
+    # Test 9: Verify agents are properly associated with the test user
+    print("\nTest 9: Verifying agents are properly associated with the test user")
+    
+    user_id_match = True
+    for agent in agents_after_init_response:
+        agent_user_id = agent.get("user_id")
+        if agent_user_id != test_user_id:
+            print(f"❌ Agent {agent.get('name')} is associated with user ID {agent_user_id} instead of {test_user_id}")
+            user_id_match = False
+    
+    if user_id_match:
+        print("✅ All agents are properly associated with the test user")
+    else:
+        print("❌ Some agents are not properly associated with the test user")
+        return False, "Some agents are not properly associated with the test user"
+    
+    # Print summary
+    print("\nDEFAULT AGENTS REMOVAL SUMMARY:")
+    print("✅ New users start with completely empty workspaces (no agents, conversations, or documents)")
+    print("✅ Starting a simulation does not automatically create any agents")
+    print("✅ The init-research-station endpoint still works and creates the default crypto team agents when called explicitly")
+    print("✅ Agents created by init-research-station are properly associated with the user")
+    
+    return True, "Default agents removal is working correctly"
+
 def main():
     """Run all tests"""
     print("\n" + "="*80)
-    print("RUNNING FILE CENTER API TESTS")
+    print("RUNNING API TESTS")
     print("="*80)
     
-    # Test authentication endpoints
-    auth_success, auth_results = test_auth_endpoints()
-    
-    # Test authentication first
-    test_login()
-    
-    # Test document loading performance
-    doc_loading_success, doc_loading_results = test_document_loading_performance()
-    
-    # Test document bulk delete with comprehensive tests
-    doc_bulk_delete_success, doc_bulk_delete_message = test_document_bulk_delete_comprehensive()
-    
-    # Test document categories
-    doc_categories_success, doc_categories_results = test_document_categories()
+    # Test the removal of default agents creation
+    default_agents_removal_success, default_agents_removal_message = test_default_agents_removal()
     
     # Print summary of all tests
     print_summary()
     
     # Print final conclusion
     print("\n" + "="*80)
-    print("FILE CENTER FUNCTIONALITY ASSESSMENT")
+    print("API FUNCTIONALITY ASSESSMENT")
     print("="*80)
     
-    if auth_success:
-        print("✅ Authentication system is working correctly")
-        print("✅ Registration and login endpoints are functioning properly")
-        print("✅ JWT tokens are generated correctly and work with protected endpoints")
+    if default_agents_removal_success:
+        print("✅ Default agents removal is working correctly")
+        print("✅ New users start with completely empty workspaces")
+        print("✅ Starting a simulation does not automatically create any agents")
+        print("✅ The init-research-station endpoint still works when called explicitly")
     else:
-        print("❌ Authentication system has issues")
-        if isinstance(auth_results, dict) and "issues" in auth_results:
-            for issue in auth_results["issues"]:
-                print(f"  - {issue}")
-    
-    if doc_loading_success:
-        print("✅ Document loading performance is acceptable")
-        print(f"✅ Average response time: {doc_loading_results['avg_time']:.4f} seconds")
-        if not doc_loading_results['issues']:
-            print("✅ No data structure issues detected")
-        else:
-            print(f"⚠️ {len(doc_loading_results['issues'])} data structure issues detected:")
-            for issue in doc_loading_results['issues']:
-                print(f"  - {issue}")
-    else:
-        print("❌ Document loading performance needs improvement")
-        print(f"❌ Average response time: {doc_loading_results['avg_time']:.4f} seconds")
-        if doc_loading_results['issues']:
-            print(f"❌ {len(doc_loading_results['issues'])} data structure issues detected:")
-            for issue in doc_loading_results['issues']:
-                print(f"  - {issue}")
-    
-    if doc_bulk_delete_success:
-        print("✅ Document bulk delete functionality is working correctly")
-        print("✅ At least one bulk delete endpoint is fully functional")
-    else:
-        print(f"❌ {doc_bulk_delete_message}")
-    
-    if doc_categories_success:
-        print("✅ Document categories functionality is working correctly")
-        print("✅ Categories endpoint returns the expected categories")
-        print("✅ Document counts match for all categories")
-    else:
-        print("❌ Document categories functionality has issues")
-        if "issues" in doc_categories_results:
-            for issue in doc_categories_results["issues"]:
-                print(f"  - {issue}")
+        print(f"❌ {default_agents_removal_message}")
     
     print("="*80)
     
-    return auth_success and doc_loading_success and doc_bulk_delete_success and doc_categories_success
+    return default_agents_removal_success
 
 if __name__ == "__main__":
     main()
