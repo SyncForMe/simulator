@@ -733,13 +733,13 @@ Scenario: {scenario}
 
 Remember: You're an expert participating in a professional discussion. Contribute meaningfully based on your unique background and perspective."""
         
-        # Simplified prompts for fast conversation generation
+        # Enhanced prompts for better conversation quality
         if "In this conversation:" in context:
             # This agent is responding to others
-            prompt = f"{context}\n\nRespond as {agent.name} in 1-2 sentences."
+            prompt = f"{context}\n\nRespond naturally as {agent.name}. Address what others have said and contribute your expertise to the ongoing discussion. Draw from your background and experience."
         else:
             # This agent is speaking first
-            prompt = f"Start the conversation as {agent.name}. Share your perspective in 1-2 sentences."
+            prompt = f"Start the conversation as {agent.name}. Share your perspective on the scenario based on your expertise in {agent.expertise}. Offer insights that others can build upon."
         
         try:
             # Create chat instance with basic configuration
