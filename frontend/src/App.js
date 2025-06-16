@@ -4807,18 +4807,18 @@ const FileCenter = ({ onRefresh }) => {
               })()}
             </div>
 
-            {/* Content */}
-            <div className="p-6 overflow-y-auto max-h-[calc(95vh-200px)]">
+            {/* Content Area - Enhanced with better spacing and design */}
+            <div className="px-8 py-6 overflow-y-auto max-h-[calc(95vh-300px)]">
               {loading ? (
-                <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                  <p className="text-gray-600">Loading documents...</p>
+                <div className="text-center py-20">
+                  <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-6"></div>
+                  <p className="text-gray-600 text-lg">Loading documents...</p>
                 </div>
               ) : (filteredScenarios || []).length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-4">📄</div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">No Documents Found</h3>
-                  <p className="text-gray-600">
+                <div className="text-center py-20">
+                  <div className="text-8xl mb-6">📄</div>
+                  <h3 className="text-2xl font-semibold text-gray-800 mb-4">No Documents Found</h3>
+                  <p className="text-gray-600 text-lg max-w-md mx-auto">
                     {searchTerm || selectedCategory 
                       ? "Try adjusting your search criteria" 
                       : "Documents will appear here when your agents create them during conversations"
@@ -4826,66 +4826,81 @@ const FileCenter = ({ onRefresh }) => {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-8">
+                <div className="space-y-10">
                   {(filteredScenarios || []).map((scenario, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-6">
-                      <div className="flex items-center justify-between mb-6">
+                    <div key={index} className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-8 border border-gray-200">
+                      {/* Scenario Header */}
+                      <div className="flex items-center justify-between mb-8">
                         <div>
-                          <h3 className="text-xl font-bold text-gray-900">{scenario?.scenario_name || scenario?.scenario || 'Unknown Scenario'}</h3>
-                          <p className="text-gray-600">{(scenario?.documents || []).length} documents</p>
+                          <h3 className="text-2xl font-bold text-gray-900 mb-2">{scenario?.scenario_name || scenario?.scenario || 'Unknown Scenario'}</h3>
+                          <p className="text-gray-600 text-lg">{(scenario?.documents || []).length} documents available</p>
                         </div>
-                        <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                          Active Scenario
+                        <div className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-2 rounded-full text-sm font-medium shadow-lg">
+                          ✨ Active Scenario
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {/* Documents Grid */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         {(scenario?.documents || []).map((doc) => (
-                          <div key={doc.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow relative">
+                          <div key={doc.id} className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-300 relative group">
                             {/* Selection Checkbox */}
-                            <label className="absolute top-3 left-3 cursor-pointer">
+                            <label className="absolute top-4 left-4 cursor-pointer z-10">
                               <input
                                 type="checkbox"
                                 checked={selectedDocuments.has(doc?.id)}
                                 onChange={() => handleSelectDocument(doc?.id)}
-                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                                className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 focus:ring-2"
                               />
                             </label>
 
-                            <div className="flex justify-between items-start mb-3 ml-8">
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-gray-900 mb-2 truncate" title={doc?.title || 'Untitled'}>
-                                  {doc?.title || 'Untitled Document'}
-                                </h4>
-                                <div className={`inline-block text-xs px-2 py-1 rounded border ${getCategoryColor(doc?.category || 'Reference')}`}>
-                                  {doc?.category || 'Reference'}
-                                </div>
+                            {/* Document Header */}
+                            <div className="mb-4 pt-8">
+                              <h4 className="font-bold text-gray-900 mb-3 text-lg leading-tight" title={doc?.title || 'Untitled'}>
+                                {doc?.title || 'Untitled Document'}
+                              </h4>
+                              <div className={`inline-block text-sm px-3 py-1 rounded-full font-medium ${getCategoryColor(doc?.category || 'Reference')}`}>
+                                {doc?.category || 'Reference'}
                               </div>
                             </div>
 
-                            <p className="text-sm text-gray-600 mb-3 line-clamp-2 ml-8">
+                            {/* Description */}
+                            <p className="text-gray-600 mb-4 leading-relaxed">
                               {doc?.description || 'No description available'}
                             </p>
 
-                            <div className="text-xs text-gray-500 mb-3 ml-8">
-                              <div>By: {doc?.authors?.join(', ') || 'Unknown'}</div>
-                              <div>{formatDate(doc?.created_at || new Date().toISOString())}</div>
+                            {/* Metadata */}
+                            <div className="text-sm text-gray-500 mb-4 space-y-1">
+                              <div className="flex items-center space-x-2">
+                                <span className="font-medium">Authors:</span>
+                                <span>{doc?.authors?.join(', ') || 'Unknown'}</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <span className="font-medium">Created:</span>
+                                <span>{formatDate(doc?.created_at || new Date().toISOString())}</span>
+                              </div>
                             </div>
 
-                            <div className="bg-gray-50 p-2 rounded text-xs text-gray-600 mb-3 h-16 overflow-hidden ml-8">
-                              {doc?.preview || 'No preview available'}
+                            {/* Preview */}
+                            <div className="bg-gray-50 border border-gray-200 p-4 rounded-lg text-sm text-gray-700 mb-6 h-20 overflow-hidden">
+                              <div className="line-clamp-3">
+                                {doc?.preview || 'No preview available'}
+                              </div>
                             </div>
 
-                            <div className="flex space-x-2 ml-8">
+                            {/* Action Buttons */}
+                            <div className="flex space-x-3">
                               <button
                                 onClick={() => handleDocumentView(doc)}
-                                className="flex-1 bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 transition-colors"
+                                className="flex-1 bg-blue-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all duration-200 flex items-center justify-center space-x-2"
                               >
-                                👁 View
+                                <span>👁</span>
+                                <span>View Details</span>
                               </button>
                               <button
                                 onClick={() => handleDownloadDocument(doc)}
-                                className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition-colors"
+                                className="bg-green-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-all duration-200 flex items-center justify-center"
+                                title="Download Document"
                               >
                                 ⬇
                               </button>
