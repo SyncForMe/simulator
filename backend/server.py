@@ -883,11 +883,27 @@ PROVIDE IMMEDIATE EXPERT ANALYSIS:
                 )
                 await self.increment_usage()
                 
-                # Validate response
+                # Validate response and filter out repetitive content
                 if response and len(response.strip()) > 5:
-                    return response.strip()
-                else:
-                    return f"{agent.name}: I'm carefully considering this situation."
+                    # Check for banned repetitive phrases
+                    banned_phrases = [
+                        "good morning", "good afternoon", "good evening", 
+                        "i'm", "and i'm here to", "alright team", "alright everyone",
+                        "as an expert in", "this is concerning", "this is interesting", 
+                        "this is exciting", "let me share my perspective", "from my experience in"
+                    ]
+                    
+                    response_lower = response.lower()
+                    has_banned_phrase = any(phrase in response_lower for phrase in banned_phrases)
+                    
+                    if not has_banned_phrase:
+                        return response.strip()
+                    else:
+                        # Generate a better fallback if banned phrases detected
+                        logging.warning(f"Detected repetitive phrase in {agent.name}'s response, using fallback")
+                
+                # Generate intelligent fallback if response was poor or empty
+                return self._generate_intelligent_fallback(agent, context, scenario)
             except asyncio.TimeoutError:
                 logging.error(f"LLM request timed out for {agent.name}")
                 return f"{agent.name}: I need more time to think about this complex situation."
