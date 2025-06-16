@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import uuid
 import jwt
 from datetime import datetime, timedelta
+import subprocess
 
 # Load environment variables from frontend/.env
 load_dotenv('/app/frontend/.env')
