@@ -5539,11 +5539,15 @@ function App() {
       await axios.post(`${API}/simulation/start`, {
         time_limit_hours: config.timeLimit,
         time_limit_display: config.timeLimitDisplay
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       // Set the language for the simulation
       await axios.post(`${API}/simulation/set-language`, { 
         language: config.language 
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       // Automatically create the crypto team so users can start conversations immediately
