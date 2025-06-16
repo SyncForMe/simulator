@@ -4522,7 +4522,7 @@ async def init_research_station(current_user: User = Depends(get_current_user)):
             expertise=agent_data["expertise"],
             background=agent_data["background"],
             memory_summary=agent_data.get("memory_summary", ""),
-            user_id=current_user.id  # Associate with current user
+            user_id=""  # Global agents for simulation (no user association for now)
         )
         
         await db.agents.insert_one(agent.dict())
