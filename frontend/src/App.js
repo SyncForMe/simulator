@@ -6012,6 +6012,14 @@ function App() {
           }
         }}
       />
+
+      {/* Admin Dashboard */}
+      {showAdminDashboard && isAdmin && (
+        <AdminDashboard
+          token={token}
+          onClose={() => setShowAdminDashboard(false)}
+        />
+      )}
         </>
       )}
     </div>
