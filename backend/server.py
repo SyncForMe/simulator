@@ -3817,14 +3817,14 @@ async def generate_conversation(current_user: User = Depends(get_current_user)):
         # Update conversation_so_far for next agent
         conversation_so_far += f"{agent.name}: {response}\n"
     
-    # Create conversation round
+    # Create conversation round  
     conversation_round = ConversationRound(
         round_number=conversation_count + 1,
         time_period=f"Day {day} - {time_period}",
         scenario=scenario,
         scenario_name=scenario_name,
         messages=messages,
-        user_id=current_user.id  # Associate conversation with current user
+        user_id=""  # Empty for global simulation conversations (until auth is fixed)
     )
     
     await db.conversations.insert_one(conversation_round.dict())
