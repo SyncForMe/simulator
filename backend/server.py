@@ -647,38 +647,6 @@ class LLMManager:
 
     async def generate_agent_response(self, agent: Agent, scenario: str, other_agents: List[Agent], context: str = "", conversation_history: List = None, language_instruction: str = "Respond in English.", existing_documents: List = None, simulation_state: dict = None):
         """Generate a single agent response with better context and progression"""
-        
-        # TEMPORARY: Use fallbacks immediately to fix start simulation issue
-        # TODO: Re-enable LLM calls once API timeout issue is resolved
-        logging.warning(f"Using fallback response for {agent.name} due to LLM timeout issues")
-        
-        # Create varied fallback responses based on agent's background and current context
-        import random
-        
-        # Check if others have spoken (for more contextual fallbacks)
-        is_responding_to_others = "In this conversation:" in context
-        
-        # Generic fallback responses for any agent
-        if is_responding_to_others:
-            generic_responses = [
-                "I see your point. Let me build on that idea.",
-                "That's an interesting perspective. I'd like to add my thoughts.",
-                "I agree with the overall direction, though I have some concerns about implementation.",
-                "Good point. From my experience, we should also consider the practical implications.",
-                "I understand where you're coming from, but I think we need to look at this from another angle."
-            ]
-        else:
-            generic_responses = [
-                "Based on my analysis of the situation, I think we need to take a systematic approach.",
-                "This is a complex scenario that requires careful consideration of multiple factors.",
-                "From my perspective, the key issue here is how we balance different priorities.",
-                "I believe we should start by identifying the core challenges and opportunities.",
-                "My initial assessment suggests we need to gather more information before proceeding."
-            ]
-        
-        # Add agent-specific context to generic responses
-        selected_response = random.choice(generic_responses)
-        return f"{agent.name}: {selected_response}"
         other_agent_names = [a.name for a in other_agents if a.id != agent.id]
         others_text = f"Others present: {', '.join(other_agent_names)}" if other_agent_names else "You are alone"
         
