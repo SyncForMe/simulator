@@ -5552,10 +5552,7 @@ function App() {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Automatically create the crypto team so users can start conversations immediately
-      await axios.post(`${API}/simulation/init-research-station`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // Users start with empty workspace - no default agents created
       
       await refreshAllData();
       
