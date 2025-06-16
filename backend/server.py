@@ -78,6 +78,29 @@ class TokenResponse(BaseModel):
     token_type: str
     user: UserResponse
 
+# Email/Password Authentication Models
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=6)
+    name: str = Field(..., min_length=1)
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+# Enhanced User model for email/password auth
+class UserWithPassword(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str
+    name: str
+    picture: str = ""
+    google_id: str = ""  # Optional for email/password users
+    password_hash: str = ""  # For email/password users
+    auth_type: str = "google"  # "google" or "email"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    last_login: datetime = Field(default_factory=datetime.utcnow)
+    is_active: bool = True
+
 # Saved Agent Models
 class SavedAgent(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
