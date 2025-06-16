@@ -3690,7 +3690,13 @@ async def generate_conversation():
     ]
     
     for i, agent in enumerate(agent_objects):
-        message = f"{agent.name}: {topics[i % len(topics)]}"
+        message_text = topics[i % len(topics)]
+        message = ConversationMessage(
+            agent_name=agent.name,
+            agent_id=agent.id,
+            content=message_text,
+            timestamp=datetime.utcnow()
+        )
         messages.append(message)
     
     # Get conversation count for round numbering
