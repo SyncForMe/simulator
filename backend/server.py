@@ -3738,6 +3738,17 @@ async def generate_conversation():
             # First, try to generate response with real Gemini API
             print(f"🔥 DEBUG: Attempting Gemini API call for {agent.name}")
             
+            # Build rich conversation context so agent can reference what others said
+            if i == 0:
+                # First speaker - no previous context
+                conversation_context = f"You're starting the discussion about: {scenario}"
+            else:
+                # Build context from what others have said so far
+                conversation_context = "Here's what has been said so far:\n\n"
+                for j, msg in enumerate(messages):
+                    conversation_context += f"{msg.agent_name}: \"{msg.message}\"\n\n"
+                conversation_context += f"Now respond to what's been said above. Address specific points others made."
+            
             # Build conversation history in the format expected by generate_agent_response
             conversation_history_msgs = [{"agent_name": msg.agent_name, "content": msg.message} for msg in messages]
             
@@ -3745,7 +3756,7 @@ async def generate_conversation():
                 agent=agent,
                 scenario=scenario,
                 other_agents=[a for a in agent_objects if a.id != agent.id],
-                context=context,
+                context=conversation_context,  # Use our rich context instead of generic context
                 conversation_history=conversation_history_msgs,
                 language_instruction=language_instruction,
                 existing_documents=existing_documents,
