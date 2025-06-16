@@ -5577,9 +5577,12 @@ async def get_documents(
 ):
     """Get documents from File Center with optional filtering"""
     try:
-        # Build query - only include user's own documents for complete isolation
+        # Build query - include user's own documents AND global simulation documents
         query = {
-            "metadata.user_id": current_user.id
+            "$or": [
+                {"metadata.user_id": current_user.id},  # User's personal documents
+                {"user_id": ""}  # Global simulation documents (auto-generated)
+            ]
         }
         
         if category:
