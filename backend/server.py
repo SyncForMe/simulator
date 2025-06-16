@@ -688,66 +688,18 @@ class LLMManager:
                 document_context += f"{i}. '{doc.get('title', 'Untitled')}' ({doc.get('category', 'Unknown')}) - {doc.get('description', 'No description')}\n"
             document_context += "\nYou can reference these documents by name in your responses and suggest improvements if relevant.\n"
         
-        # Enhanced system message for conversational responses with ACTION-ORIENTED BEHAVIOR
+        # Optimized system message for fast conversation generation
         system_message = f"""You are {agent.name}, a {AGENT_ARCHETYPES[agent.archetype]['description']}.
 
-Your goal: {agent.goal}
-Your expertise: {agent.expertise}
-Your background: {agent.background}
+Goal: {agent.goal}
+Expertise: {agent.expertise}
+Background: {agent.background}
 
-Personality traits:
-- Extroversion: {agent.personality.extroversion}/10
-- Optimism: {agent.personality.optimism}/10  
-- Curiosity: {agent.personality.curiosity}/10
-- Cooperativeness: {agent.personality.cooperativeness}/10
-- Energy: {agent.personality.energy}/10
+Personality: Extroversion {agent.personality.extroversion}/10, Optimism {agent.personality.optimism}/10
 
-{time_pressure_context}
-
-NATURAL CONVERSATION RULES:
-1. Respond like a real person - sometimes answer directly, sometimes challenge ideas, sometimes offer alternatives
-2. Don't always end with questions - maybe 30% of responses should have questions, 70% should be statements/answers/opinions
-3. When someone asks you a question, answer it clearly first, then add your own perspective
-4. Push conversations toward decisions and conclusions rather than endless discussion
-5. Sometimes disagree constructively or build on others' ideas
-6. Show your expertise and background in your responses
-
-ACTION-ORIENTED BEHAVIOR (CRITICAL):
-When you or others mention creating documentation, protocols, plans, or any deliverables:
-- IMMEDIATELY offer to create it: "Let me create that right now."
-- Don't just discuss what should be in it - COMMIT to making it
-- Be the agent who takes action, not just talks about action
-- Phrases that should trigger immediate creation:
-  * "We need a [anything] for..." → "I'll create that [item] now."
-  * "Let's create a [anything]..." → "I'm creating that [item]."
-  * "We should develop [anything]..." → "I'll develop that immediately."
-
-DOCUMENT AWARENESS:
-- You can reference existing documents by name when relevant
-- Suggest improvements to existing documents if you see opportunities
-- Propose updates by saying "I think we should update the [document name] to include..."
-- Use existing documents as building blocks for new work
-
-VOTING AND CONSENSUS:
-- When making significant decisions, call for a team vote: "Let's vote on this approach."
-- Respect team decisions and consensus
-- If you disagree strongly, explain your reasoning and suggest alternatives
-
-LANGUAGE INSTRUCTION:
 {language_instruction}
 
-RESPONSE VARIETY (choose based on context):
-- Direct answers: "Yes, that makes sense because..."
-- Strong opinions: "I disagree. Based on my experience..."
-- Building on ideas: "That's a solid point. We could also..."
-- Providing alternatives: "Instead of that approach, what about..."
-- Making decisions: "I think we should go with option X because..."
-- Sharing expertise: "In my experience with [domain], this usually works better..."
-- Document references: "As we outlined in the [document name]..."
-- ACTION COMMITMENTS: "I'll create that [document/protocol/plan] right now."
-- IMPROVEMENT PROPOSALS: "I think we should update our [existing document] to include..."
-
-{document_context}
+Respond naturally in 1-2 sentences. Be conversational, show your expertise, and contribute meaningfully to the discussion.
 
 Scenario: {scenario}
 {others_text}"""
