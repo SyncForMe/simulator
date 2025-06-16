@@ -5824,6 +5824,52 @@ async def create_document(
         logging.error(f"Error creating document: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to create document: {str(e)}")
 
+@api_router.post("/documents/quality-check")
+async def check_document_quality(request: dict, current_user: User = Depends(get_current_user)):
+    """Check if a conversation should trigger document creation"""
+    conversation_text = request.get("conversation_text", "")
+    conversation_round = request.get("conversation_round", 1)
+    last_document_round = request.get("last_document_round", 0)
+    
+    # Create dummy agents for testing
+    agents = [
+        Agent(
+            id=str(uuid.uuid4()),
+            name="Marcus \"Mark\" Castellano",
+            archetype="leader",
+            personality=AgentPersonality(extroversion=8, optimism=7, curiosity=6, cooperativeness=8, energy=7),
+            goal="Drive strategic marketing initiatives",
+            expertise="Marketing and Business Development",
+            background="Experienced crypto marketer who has been through three market cycles"
+        ),
+        Agent(
+            id=str(uuid.uuid4()),
+            name="Alexandra \"Alex\" Chen",
+            archetype="scientist",
+            personality=AgentPersonality(extroversion=6, optimism=8, curiosity=9, cooperativeness=7, energy=8),
+            goal="Build innovative and user-friendly products",
+            expertise="Product Development and DeFi",
+            background="Product leader who has built protocols managing $2B+ TVL"
+        ),
+        Agent(
+            id=str(uuid.uuid4()),
+            name="Diego \"Dex\" Rodriguez",
+            archetype="adventurer",
+            personality=AgentPersonality(extroversion=7, optimism=6, curiosity=9, cooperativeness=5, energy=8),
+            goal="Discover emerging trends and opportunities",
+            expertise="Crypto Research and Analysis",
+            background="Crypto polymath who has worn every hat in the industry"
+        )
+    ]
+    
+    # Use the document quality gate to check if document creation is warranted
+    llm_manager = LLMManager()
+    quality_check = await llm_manager.document_quality_gate.should_create_document(
+        conversation_text, conversation_round, last_document_round, agents
+    )
+    
+    return quality_check
+
 @api_router.get("/documents")
 async def get_documents(
     category: Optional[str] = None,
