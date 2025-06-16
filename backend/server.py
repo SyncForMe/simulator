@@ -416,6 +416,7 @@ class Agent(BaseModel):
     memory_summary: str = ""  # Summary of important memories/developments
     avatar_url: str = ""  # URL to the agent's avatar image
     avatar_prompt: str = ""  # The prompt used to generate the avatar
+    user_id: str = ""  # Associate agent with user for data isolation
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class AgentCreate(BaseModel):
