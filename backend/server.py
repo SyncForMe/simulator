@@ -3689,12 +3689,15 @@ async def generate_conversation():
         "Based on my experience, I believe we need to approach this systematically."
     ]
     
+    moods = ["thoughtful", "engaged", "analytical"]
+    
     for i, agent in enumerate(agent_objects):
         message_text = topics[i % len(topics)]
         message = ConversationMessage(
             agent_name=agent.name,
             agent_id=agent.id,
-            content=message_text,
+            message=message_text,
+            mood=moods[i % len(moods)],
             timestamp=datetime.utcnow()
         )
         messages.append(message)
