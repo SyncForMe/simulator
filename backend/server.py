@@ -2139,13 +2139,25 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     """Get current user from JWT token"""
     try:
         payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        user_id: str = payload.get("sub")
-        if user_id is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        
+        # Try to get user_id first (for email/password auth), then fallback to sub (for Google auth)
+        user_id = payload.get("user_id")
+        user_email = payload.get("sub")
+        
+        if not user_id and not user_email:
+            raise HTTPException(status_code=401, detail="Invalid token: missing user identification")
+            
+    except JWTError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
     
-    user = await db.users.find_one({"id": user_id})
+    # Try to find user by ID first, then by email
+    user = None
+    if user_id:
+        user = await db.users.find_one({"id": user_id})
+    
+    if not user and user_email:
+        user = await db.users.find_one({"email": user_email})
+    
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
     
