@@ -40,6 +40,7 @@ GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
 JWT_SECRET = os.environ.get('JWT_SECRET')
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
+ADMIN_EMAIL = "dino@cytonic.com"  # Admin email for special privileges
 
 # Security
 security = HTTPBearer()
