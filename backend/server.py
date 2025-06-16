@@ -3564,6 +3564,36 @@ async def advance_time_period():
     
     return {"message": f"Advanced to {new_period}", "new_period": new_period}
 
+@api_router.get("/debug/agents")
+async def debug_agents():
+    """Debug endpoint to check agent loading"""
+    try:
+        agents = await db.agents.find().to_list(100)
+        agent_count = len(agents)
+        
+        if agent_count == 0:
+            return {"status": "no_agents", "count": 0}
+        
+        # Try to create agent objects
+        try:
+            agent_objects = [Agent(**agent) for agent in agents[:3]]  # Test first 3
+            return {
+                "status": "success", 
+                "count": agent_count,
+                "sample_agents": [
+                    {"name": a.name, "archetype": a.archetype} for a in agent_objects
+                ]
+            }
+        except Exception as e:
+            return {
+                "status": "agent_creation_error",
+                "count": agent_count,
+                "error": str(e),
+                "sample_agent_data": agents[0] if agents else None
+            }
+    except Exception as e:
+        return {"status": "database_error", "error": str(e)}
+
 @api_router.post("/conversation/generate")
 async def generate_conversation():
     """Generate a conversation round between agents with sequential responses and progression tracking"""
