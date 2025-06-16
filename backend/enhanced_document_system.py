@@ -533,6 +533,7 @@ class ProfessionalDocumentFormatter:
         # Enhanced content formatting with charts
         sections = content.split('\n\n')
         formatted_sections = []
+        chart_inserted = {chart['position']: False for chart in charts}  # Track which charts are inserted
         
         for section in sections:
             if not section.strip():
@@ -553,15 +554,28 @@ class ProfessionalDocumentFormatter:
                     
                     # Insert relevant chart after certain sections
                     for chart in charts:
-                        if ('budget' in line.lower() and chart['position'] == 'after_budget_section') or \
-                           ('timeline' in line.lower() and chart['position'] == 'after_timeline_section') or \
-                           ('risk' in line.lower() and chart['position'] == 'after_risk_section'):
+                        chart_position = chart['position']
+                        should_insert = False
+                        
+                        if not chart_inserted[chart_position]:  # Only insert if not already inserted
+                            if (('budget' in line.lower() or 'cost' in line.lower() or 'allocation' in line.lower()) and 
+                                chart_position == 'after_budget_section'):
+                                should_insert = True
+                            elif (('timeline' in line.lower() or 'schedule' in line.lower() or 'milestone' in line.lower()) and 
+                                  chart_position == 'after_timeline_section'):
+                                should_insert = True
+                            elif (('risk' in line.lower() or 'assessment' in line.lower()) and 
+                                  chart_position == 'after_risk_section'):
+                                should_insert = True
+                        
+                        if should_insert:
                             formatted_section += f'''
 <div class="chart-container">
     <div class="chart-title">{chart['title']}</div>
     <img src="data:image/png;base64,{chart['data']}" style="max-width: 100%; height: auto;" alt="{chart['title']}">
 </div>
 '''
+                            chart_inserted[chart_position] = True
                 
                 # Format subsections
                 elif line.startswith('###') or (line.count('.') == 1 and line.split('.')[0].isdigit()):
@@ -595,6 +609,16 @@ class ProfessionalDocumentFormatter:
                 formatted_section += '</ol>\n'
             
             formatted_sections.append(formatted_section)
+        
+        # Insert any charts that weren't placed in specific sections at the end
+        for chart in charts:
+            if not chart_inserted[chart['position']]:
+                formatted_sections.append(f'''
+<div class="chart-container">
+    <div class="chart-title">{chart['title']}</div>
+    <img src="data:image/png;base64,{chart['data']}" style="max-width: 100%; height: auto;" alt="{chart['title']}">
+</div>
+''')
         
         return '\n'.join(formatted_sections)
     
