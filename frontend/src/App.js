@@ -3818,6 +3818,103 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
   );
 };
 
+const UsageCard = ({ apiUsage }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
+      {/* Header - Always visible */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full p-4 text-left hover:bg-gray-50 transition-colors border-none bg-white"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="bg-green-100 p-2 rounded-lg">
+              <span className="text-green-600 text-lg">📊</span>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-800">Usage</h3>
+              <p className="text-sm text-gray-600">API requests and costs</p>
+            </div>
+          </div>
+          <svg 
+            className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+
+      {/* Expandable Content */}
+      {isExpanded && (
+        <div className="px-4 pb-4 border-t border-gray-100">
+          <div className="mt-4 space-y-4">
+            {/* Request Usage Bar */}
+            <div className="usage-section">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-gray-700">API Requests</span>
+                <span className="text-xs text-green-600 font-medium">Paid Tier</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div 
+                  className="bg-blue-500 h-3 rounded-full transition-all duration-300"
+                  style={{width: `${Math.min((apiUsage?.requests || 0) / 50000 * 100, 100)}%`}}
+                ></div>
+              </div>
+              <p className="text-sm mt-2 text-gray-600">
+                <span className="font-medium">{(apiUsage?.requests || 0).toLocaleString()}</span> / 50,000 requests
+              </p>
+              <p className="text-xs text-gray-500">
+                {Math.max(50000 - (apiUsage?.requests || 0), 0).toLocaleString()} remaining today
+              </p>
+            </div>
+
+            {/* Cost Tracking */}
+            <div className="cost-section">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-gray-700">Daily Cost</span>
+                <span className="text-xs text-green-600 font-medium">Budget: $10.00</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div 
+                  className="bg-green-500 h-3 rounded-full transition-all duration-300"
+                  style={{width: `${Math.min(((apiUsage?.requests || 0) * 0.0002) / 10 * 100, 100)}%`}}
+                ></div>
+              </div>
+              <p className="text-sm mt-2 text-gray-600">
+                <span className="font-medium">${((apiUsage?.requests || 0) * 0.0002).toFixed(4)}</span> / $10.00
+              </p>
+              <p className="text-xs text-gray-500">
+                Monthly estimate: ~${(((apiUsage?.requests || 0) * 0.0002) * 30).toFixed(2)}
+              </p>
+            </div>
+
+            {/* Additional Stats */}
+            <div className="stats-grid grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+              <div className="stat-item text-center p-3 bg-blue-50 rounded-lg">
+                <div className="text-lg font-bold text-blue-700">
+                  {((apiUsage?.requests || 0) / 50000 * 100).toFixed(1)}%
+                </div>
+                <div className="text-xs text-blue-600">Usage Rate</div>
+              </div>
+              <div className="stat-item text-center p-3 bg-green-50 rounded-lg">
+                <div className="text-lg font-bold text-green-700">
+                  ${(10 - ((apiUsage?.requests || 0) * 0.0002)).toFixed(2)}
+                </div>
+                <div className="text-xs text-green-600">Budget Left</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ControlPanel = ({ 
   simulationState, 
   apiUsage,
@@ -3839,48 +3936,6 @@ const ControlPanel = ({
         <p className="text-sm">
           <strong>Auto Time:</strong> {simulationState?.auto_time ? 'ON' : 'OFF'}
         </p>
-      </div>
-
-      <div className="api-usage mb-4 p-3 bg-gray-50 rounded">
-        <h4 className="font-semibold text-sm mb-2">📊 Daily Usage & Cost</h4>
-        
-        {/* Request Usage Bar */}
-        <div className="mb-3">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-gray-600">API Requests</span>
-            <span className="text-xs text-gray-600">Paid Tier</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
-            <div 
-              className="bg-blue-500 h-3 rounded-full"
-              style={{width: `${Math.min((apiUsage?.requests_used || 0) / 50000 * 100, 100)}%`}}
-            ></div>
-          </div>
-          <p className="text-xs mt-1">
-            {apiUsage?.requests_used || 0} / 50,000 requests
-            ({Math.max(50000 - (apiUsage?.requests_used || 0), 0).toLocaleString()} remaining)
-          </p>
-        </div>
-
-        {/* Cost Tracking */}
-        <div className="cost-tracking">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-gray-600">Estimated Daily Cost</span>
-            <span className="text-xs text-green-600">Budget: $10.00</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-green-500 h-2 rounded-full"
-              style={{width: `${Math.min(((apiUsage?.requests_used || 0) * 0.0002) / 10 * 100, 100)}%`}}
-            ></div>
-          </div>
-          <p className="text-xs mt-1 text-gray-600">
-            ${((apiUsage?.requests_used || 0) * 0.0002).toFixed(4)} / $10.00
-            <span className="ml-2 text-green-600">
-              (~${(((apiUsage?.requests_used || 0) * 0.0002) * 30).toFixed(2)}/month)
-            </span>
-          </p>
-        </div>
       </div>
 
       <div className="controls space-y-3">
