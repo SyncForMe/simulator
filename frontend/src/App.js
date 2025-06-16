@@ -5268,8 +5268,10 @@ function App() {
   const fetchConversations = async () => {
     try {
       console.log('Fetching conversations from:', `${API}/conversations`);
-      // Fetch simulation conversations (public, no auth required)
-      const response = await axios.get(`${API}/conversations`);
+      // Fetch user-specific simulation conversations (requires auth)
+      const response = await axios.get(`${API}/conversations`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       console.log('Conversations fetched successfully:', response.data.length, 'conversations');
       setConversations(response.data);
       
