@@ -3603,6 +3603,58 @@ async def debug_agents():
     except Exception as e:
         return {"status": "database_error", "error": str(e)}
 
+@api_router.post("/debug/simple-conversation")
+async def debug_simple_conversation():
+    """Simple conversation test without complex logic"""
+    try:
+        # Get just 2 agents
+        agents = await db.agents.find().limit(2).to_list(2)
+        if len(agents) < 2:
+            return {"error": "Need at least 2 agents"}
+        
+        agent1 = Agent(**agents[0])
+        agent2 = Agent(**agents[1])
+        
+        # Simple fallback responses
+        messages = [
+            {
+                "agent_id": agent1.id,
+                "agent_name": agent1.name,
+                "message": f"Hello, I'm {agent1.name}. Let's discuss the current scenario.",
+                "mood": "neutral"
+            },
+            {
+                "agent_id": agent2.id,
+                "agent_name": agent2.name,
+                "message": f"Hi {agent1.name}, I'm {agent2.name}. I agree we should analyze this situation carefully.",
+                "mood": "neutral"
+            }
+        ]
+        
+        # Save simple conversation
+        conversation_round = {
+            "id": str(uuid.uuid4()),
+            "round_number": 1,
+            "time_period": "morning",
+            "scenario": "Test scenario",
+            "scenario_name": "Debug Test",
+            "messages": messages,
+            "user_id": "",
+            "created_at": datetime.utcnow(),
+            "language": "en"
+        }
+        
+        await db.conversations.insert_one(conversation_round)
+        
+        return {
+            "success": True,
+            "conversation": conversation_round,
+            "message": "Simple conversation created successfully"
+        }
+        
+    except Exception as e:
+        return {"error": str(e), "success": False}
+
 @api_router.post("/conversation/generate")
 async def generate_conversation():
     """Generate a conversation round between agents with sequential responses and progression tracking"""
