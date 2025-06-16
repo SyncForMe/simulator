@@ -1043,7 +1043,7 @@ PROVIDE EXPERT ANALYSIS:
                 
                 # Validate response and filter out repetitive content
                 if response and len(response.strip()) > 5:
-                    # Check for banned repetitive phrases
+                    # Enhanced banned phrases detection for dynamic conversations
                     banned_phrases = [
                         # Time-based and introductory phrases
                         "good morning", "good afternoon", "good evening", "i'm", "my name is",
@@ -1057,30 +1057,42 @@ PROVIDE EXPERT ANALYSIS:
                         # Urgency and repetition
                         "we need to act urgently", "the situation requires immediate",
                         "this is urgent", "we must act now", "time is of the essence",
+                        "urgent action is needed", "we need to move quickly",
                         
-                        # Background restatements
+                        # Background restatements  
                         "as you know", "as mentioned earlier", "as discussed before",
                         "to reiterate", "as previously stated", "let me remind you",
+                        "the situation is", "the problem we're facing", "we're dealing with",
                         
                         # Generic team statements
                         "we need to work together", "collaboration is key",
-                        "teamwork makes the dream work", "let's all pitch in"
+                        "teamwork makes the dream work", "let's all pitch in",
+                        
+                        # Circular conversation killers
+                        "we need to address", "the situation requires", "we should consider",
+                        "it's important that we", "we must ensure that", "we need to make sure"
                     ]
                     
                     response_lower = response.lower()
+                    
+                    # Check for scenario repetition (more sophisticated)
+                    scenario_keywords = scenario.lower().split()[:5]  # First 5 words of scenario
+                    scenario_repetition = sum(1 for word in scenario_keywords if len(word) > 3 and word in response_lower)
+                    excessive_scenario_repeat = scenario_repetition >= 3  # More than 3 scenario keywords = repetition
+                    
                     has_banned_phrase = any(phrase in response_lower for phrase in banned_phrases)
                     
                     # Check if this is a good answer to a question
                     has_question_marker = "?" in context or any(q_word in context.lower() for q_word in ["asked you", "question:", "your assessment", "your take", "what's your", "how would you"])
                     
-                    if not has_banned_phrase:
+                    if not has_banned_phrase and not excessive_scenario_repeat:
                         return response.strip()
-                    elif has_question_marker and not has_banned_phrase:
+                    elif has_question_marker and not has_banned_phrase and not excessive_scenario_repeat:
                         # If answering a question, be more lenient with response requirements
                         return response.strip()
                     else:
-                        # Generate a better fallback if banned phrases detected
-                        logging.warning(f"Detected repetitive phrase in {agent.name}'s response, using fallback")
+                        # Generate a better fallback if banned phrases or excessive repetition detected
+                        logging.warning(f"Detected repetitive/banned content in {agent.name}'s response, using fallback")
                 
                 # Generate intelligent fallback if response was poor or empty
                 return self._generate_intelligent_fallback(agent, context, scenario, pending_questions if 'pending_questions' in locals() else [])
