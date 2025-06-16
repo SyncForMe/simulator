@@ -5758,16 +5758,27 @@ function App() {
 
   return (
     <div className="App min-h-screen bg-gray-100">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <ObserverLogo />
-            
-            <div className="flex items-center space-x-4">
-              {/* User Library & History (only show when authenticated) */}
-              {isAuthenticated && (
-                <>
-                  <SavedAgentsLibrary onCreateAgent={handleCreateAgent} />
+      {/* Show HomePage if user is not authenticated */}
+      {!isAuthenticated && (
+        <HomePage onAuthenticated={(token, user) => {
+          setToken(token);
+          setUser(user);
+        }} />
+      )}
+      
+      {/* Show main app if user is authenticated */}
+      {isAuthenticated && (
+        <>
+          <header className="bg-white shadow-sm border-b">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center py-4">
+                <ObserverLogo />
+                
+                <div className="flex items-center space-x-4">
+                  {/* User Library & History (only show when authenticated) */}
+                  {isAuthenticated && (
+                    <>
+                      <SavedAgentsLibrary onCreateAgent={handleCreateAgent} />
                   <ConversationHistoryViewer />
                 </>
               )}
