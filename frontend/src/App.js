@@ -5232,7 +5232,9 @@ function App() {
 
   const fetchConversations = async () => {
     try {
-      const response = await axios.get(`${API}/conversations`);
+      const response = await axios.get(`${API}/conversations`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setConversations(response.data);
       
       // Auto-save new conversations to user's history if authenticated
