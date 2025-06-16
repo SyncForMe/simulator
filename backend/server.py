@@ -3711,30 +3711,58 @@ async def generate_conversation():
     language_code = state.get("language", "en")
     language_instruction = language_instructions.get(language_code, language_instructions["en"])
     
-    # Create smart conversation generator for realistic, contextual responses
+    # Create smart conversation generator for fallbacks only
     conversation_gen = SmartConversationGenerator()
     
-    # Generate realistic messages based on agent personalities and scenario context
+    # Create LLM manager for real Gemini API calls
+    llm_manager = LLMManager()
+    
+    # Generate messages with REAL Gemini API calls first, fallback to smart responses if needed
     messages = []
     
     for i, agent in enumerate(agent_objects):
-        # Convert agent object to dict for the conversation generator
-        agent_dict = {
-            "name": agent.name,
-            "archetype": agent.archetype,
-            "expertise": agent.expertise,
-            "background": agent.background,
-            "personality": agent.personality.dict() if agent.personality else {}
-        }
-        
-        # Generate contextual response based on agent personality and conversation flow
-        message_text = conversation_gen.generate_contextual_response(
-            agent=agent_dict,
-            scenario=scenario,
-            scenario_name=scenario_name,
-            conversation_history=[{"agent_name": msg.agent_name, "message": msg.message} for msg in messages],
-            turn_number=i
-        )
+        try:
+            # First, try to generate response with real Gemini API
+            print(f"🔥 DEBUG: Attempting Gemini API call for {agent.name}")
+            
+            # Build conversation history in the format expected by generate_agent_response
+            conversation_history_msgs = [{"agent_name": msg.agent_name, "content": msg.message} for msg in messages]
+            
+            response = await llm_manager.generate_agent_response(
+                agent=agent,
+                scenario=scenario,
+                other_agents=[a for a in agent_objects if a.id != agent.id],
+                context=context,
+                conversation_history=conversation_history_msgs,
+                language_instruction=language_instruction,
+                existing_documents=existing_documents,
+                simulation_state=state
+            )
+            
+            # Clean up response - remove agent name prefix if present
+            message_text = response.replace(f"{agent.name}: ", "").strip()
+            print(f"✅ GEMINI API SUCCESS for {agent.name}: {message_text[:100]}...")
+            
+        except Exception as e:
+            print(f"❌ GEMINI API FAILED for {agent.name}: {str(e)[:100]}...")
+            
+            # Fall back to smart conversation generator
+            agent_dict = {
+                "name": agent.name,
+                "archetype": agent.archetype,
+                "expertise": agent.expertise,
+                "background": agent.background,
+                "personality": agent.personality.dict() if agent.personality else {}
+            }
+            
+            message_text = conversation_gen.generate_contextual_response(
+                agent=agent_dict,
+                scenario=scenario,
+                scenario_name=scenario_name,
+                conversation_history=[{"agent_name": msg.agent_name, "message": msg.message} for msg in messages],
+                turn_number=i
+            )
+            print(f"🔄 Using smart fallback for {agent.name}: {message_text[:100]}...")
         
         # Determine mood based on agent archetype and message content
         if agent.archetype == "optimist":
