@@ -242,6 +242,7 @@ test_plan:
     - "Simulation Workflow"
     - "Enhanced Document Generation System"
     - "Improved Conversation Generation System"
+    - "Enhanced Dynamic Conversation System"
   stuck_tasks:
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
     - "Admin Functionality"
