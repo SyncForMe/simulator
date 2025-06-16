@@ -1016,94 +1016,117 @@ Previous memory: {agent.memory_summary or 'None'}"""
         except Exception as e:
             logging.error(f"Error updating memory for {agent.name}: {e}")
 
-    async def analyze_conversation_for_action_triggers(self, conversation_text: str, agents: List[Agent]) -> ActionTriggerResult:
-        """Analyze conversation to detect if agents should create documents"""
+    async def analyze_conversation_for_action_triggers(self, conversation_text: str, agents: List[Agent], conversation_round: int = 1) -> ActionTriggerResult:
+        """Enhanced analysis with quality gates and thoughtful document creation"""
+        
+        # Check quality gate first
+        quality_check = await self.document_quality_gate.should_create_document(
+            conversation_text, conversation_round, self.last_document_round, agents
+        )
+        
+        if not quality_check["should_create"]:
+            logging.info(f"Document creation blocked: {quality_check['reason']}")
+            return ActionTriggerResult(
+                should_create_document=False,
+                reasoning=quality_check["reason"]
+            )
+        
         if not await self.can_make_request():
             return ActionTriggerResult(should_create_document=False)
         
-        # Action trigger phrases to detect (generic, not medical-specific)
-        trigger_phrases = [
-            "we need a protocol for",
-            "let's create a checklist",
-            "we should develop",
-            "let's draft",
-            "we need a reference guide",
-            "someone should research and document",
-            "we should create documentation",
-            "let's develop a procedure",
-            "we need guidelines for",
-            "someone should write up",
-            "we should document this",
-            "let's create a template",
-            "we need a plan for",
-            "let's make a framework",
-            "we should establish",
-            "let's build a system",
-            "we need standards for",
-            "let's create a manual",
-            "i'll create", 
-            "let me create",
-            "i'll develop",
-            "i'll draft",
-            "i'm creating",
-            "i'll work on",
-            "let me work on",
-            "i'll put together",
-            "let me put together",
-            "we need to create",
-            "let's put together",
-            "we should put together",
-            "we need documentation",
-            "let's document",
-            "we should document",
-            "create a document",
-            "make a document",
-            "write a document"
+        # Enhanced trigger detection - more thoughtful phrases
+        high_quality_triggers = [
+            "after thorough discussion, we need to",
+            "the team consensus is to create",
+            "we've agreed to formalize",
+            "following our analysis, we should document",
+            "it's time to create a comprehensive",
+            "we're ready to develop",
+            "let's formalize our decision in",
+            "we need to capture these conclusions",
+            "the team has decided to create",
+            "based on our thorough review",
+            "after careful consideration, let's create",
+            "we should document our final",
+            "let's put our agreed approach in writing",
+            "we need to formalize this into",
+            "time to create a detailed",
+            "let's develop a comprehensive",
+            "we should establish formal",
+            "our discussion points to the need for"
         ]
         
-        # Check if any trigger phrases are present
         conv_lower = conversation_text.lower()
-        found_triggers = [trigger for trigger in trigger_phrases if trigger in conv_lower]
+        found_triggers = [trigger for trigger in high_quality_triggers if trigger in conv_lower]
         
         if not found_triggers:
-            return ActionTriggerResult(should_create_document=False)
+            return ActionTriggerResult(
+                should_create_document=False,
+                reasoning="No thoughtful document creation triggers found - need more deliberate consensus"
+            )
         
-        # Use LLM to determine if this is a genuine creation trigger
-        system_message = """You are an expert at detecting when people in a conversation have agreed to create documentation, procedures, or deliverables.
+        # Enhanced LLM analysis for document necessity
+        system_message = """You are an expert at detecting when teams have reached GENUINE CONSENSUS after THOUGHTFUL DISCUSSION to create important documentation.
 
-Analyze the conversation and determine:
-1. Is there genuine consensus to CREATE something specific?
-2. What type of document should be created? (protocol/training/research/reference/plan)
-3. What should the document title be?
-4. Which specific phrase triggered this?
+Analyze this conversation with these STRICT criteria:
 
-Only respond YES if there's clear agreement to create something concrete, not just discussion about what might be needed.
-Work with ANY topic - business, tech, education, research, projects, etc. - not just medical contexts."""
+1. CONSENSUS QUALITY: Is there clear agreement from multiple participants?
+2. DISCUSSION DEPTH: Has the topic been thoroughly explored with different perspectives?
+3. CONCRETE CONTENT: Are there specific decisions, plans, or conclusions to document?
+4. URGENCY/IMPORTANCE: Is creating this document truly necessary and valuable?
+5. READINESS: Are the participants ready to commit to documented decisions?
 
+ONLY respond YES if:
+- Multiple people explicitly agree on creating something
+- The conversation shows deep thinking and analysis
+- There are concrete decisions/plans that need documentation
+- The document would provide real value to the team/organization
+
+For business/technical projects, look for:
+- Specific budget allocations or financial decisions
+- Clear timelines with milestones
+- Risk assessments with mitigation strategies
+- Technical specifications or requirements
+- Implementation plans with assigned responsibilities
+
+Document Types: protocol/implementation/budget/risk/technical/timeline/training/reference"""
+        
         try:
             chat = LlmChat(
                 api_key=self.api_key,
-                session_id=f"action_analysis_{datetime.now().timestamp()}",
+                session_id=f"enhanced_analysis_{datetime.now().timestamp()}",
                 system_message=system_message
-            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(200)
+            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(300)
             
-            prompt = f"""Conversation:\n{conversation_text}\n\n
-Should the participants create a document? If yes:
-- Document type: protocol/training/research/reference/plan
-- Title: [specific title based on conversation]
-- Trigger phrase: [exact phrase that triggered this]
-- Reasoning: [why this needs immediate creation]
+            prompt = f"""Conversation Analysis:
+{conversation_text}
 
-Format: YES|protocol|Emergency Cardiac Protocol|we need a protocol for|The team agreed to create..."""
+STRICT EVALUATION:
+1. Is there genuine consensus to CREATE something specific? (not just discuss)
+2. Has the team thoroughly analyzed the topic with multiple perspectives?
+3. Are there concrete decisions/plans that warrant documentation?
+4. Would creating this document provide significant value?
+
+If YES to all criteria:
+- Document type: [protocol/implementation/budget/risk/technical/timeline/training/reference]
+- Title: [specific, professional title reflecting concrete outcomes]
+- Trigger phrase: [exact phrase showing consensus]
+- Reasoning: [why this document is essential now]
+
+Format: YES|budget|Critical Investment Decision Framework|after careful consideration, let's create|The team reached consensus on $10M allocation with specific risk mitigation strategies requiring formal documentation
+
+If NO: Explain what's missing for document creation."""
 
             user_message = UserMessage(text=prompt)
             response = await chat.send_message(user_message)
             await self.increment_usage()
             
-            # Parse response
+            # Parse enhanced response
             if response.startswith("YES|"):
                 parts = response.split("|")
                 if len(parts) >= 5:
+                    self.last_document_round = conversation_round  # Update last document creation round
+                    logging.info(f"✅ QUALITY DOCUMENT APPROVED: {parts[2]} (Type: {parts[1]})")
                     return ActionTriggerResult(
                         should_create_document=True,
                         document_type=parts[1].strip(),
@@ -1112,10 +1135,14 @@ Format: YES|protocol|Emergency Cardiac Protocol|we need a protocol for|The team 
                         reasoning=parts[4].strip()
                     )
             
-            return ActionTriggerResult(should_create_document=False)
+            logging.info(f"❌ Document creation rejected: {response}")
+            return ActionTriggerResult(
+                should_create_document=False,
+                reasoning=f"LLM Analysis: {response}"
+            )
             
         except Exception as e:
-            logging.error(f"Error analyzing conversation for action triggers: {e}")
+            logging.error(f"Error in enhanced conversation analysis: {e}")
             return ActionTriggerResult(should_create_document=False)
 
     async def check_agent_voting_consensus(self, agents: List[Agent], proposal: str, conversation_context: str) -> dict:
