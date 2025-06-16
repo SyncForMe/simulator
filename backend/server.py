@@ -3174,7 +3174,8 @@ async def create_agent(agent_data: AgentCreate, current_user: User = Depends(get
         background=agent_data.background,
         memory_summary=agent_data.memory_summary,
         avatar_url=avatar_url,
-        avatar_prompt=agent_data.avatar_prompt
+        avatar_prompt=agent_data.avatar_prompt,
+        user_id=current_user.id  # Associate with current user
     )
     
     await db.agents.insert_one(agent.dict())
