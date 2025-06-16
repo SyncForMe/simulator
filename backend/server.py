@@ -605,7 +605,7 @@ class LLMManager:
                                 api_key=self.api_key,
                                 session_id=f"url_summary_{hash(url)}",
                                 system_message="Summarize web content into 2-3 key facts that would be relevant for an AI agent's memory. Focus on the most important information."
-                            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(235)
+                            ).with_model("gemini", "gemini-2.0-flash").with_max_tokens(150)
                             
                             user_message = UserMessage(text=f"Summarize this web content concisely:\n\n{url_content}")
                             summary = await chat.send_message(user_message)
