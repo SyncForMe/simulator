@@ -164,24 +164,48 @@ def test_login():
     """Login with test endpoint to get auth token"""
     global auth_token, test_user_id
     
-    test_login_test, test_login_response = run_test(
-        "Test Login Endpoint",
-        "/auth/test-login",
+    # Try using the email/password login first
+    login_data = {
+        "email": test_user_email,
+        "password": test_user_password
+    }
+    
+    login_test, login_response = run_test(
+        "Login with credentials",
+        "/auth/login",
         method="POST",
+        data=login_data,
         expected_keys=["access_token", "token_type", "user"]
     )
     
-    # Store the token for further testing if successful
-    if test_login_test and test_login_response:
-        auth_token = test_login_response.get("access_token")
-        user_data = test_login_response.get("user", {})
+    # If email/password login fails, try the test login endpoint
+    if not login_test or not login_response:
+        test_login_test, test_login_response = run_test(
+            "Test Login Endpoint",
+            "/auth/test-login",
+            method="POST",
+            expected_keys=["access_token", "token_type", "user"]
+        )
+        
+        # Store the token for further testing if successful
+        if test_login_test and test_login_response:
+            auth_token = test_login_response.get("access_token")
+            user_data = test_login_response.get("user", {})
+            test_user_id = user_data.get("id")
+            print(f"Test login successful. User ID: {test_user_id}")
+            print(f"JWT Token: {auth_token}")
+            return True
+        else:
+            print("Test login failed. Some tests may not work correctly.")
+            return False
+    else:
+        # Store the token from email/password login
+        auth_token = login_response.get("access_token")
+        user_data = login_response.get("user", {})
         test_user_id = user_data.get("id")
-        print(f"Test login successful. User ID: {test_user_id}")
+        print(f"Login successful. User ID: {test_user_id}")
         print(f"JWT Token: {auth_token}")
         return True
-    else:
-        print("Test login failed. Some tests may not work correctly.")
-        return False
 
 def test_document_creation(num_documents=5):
     """Create test documents across different categories"""
