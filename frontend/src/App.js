@@ -5786,18 +5786,103 @@ function App() {
   }, [autoTimers]);
 
   return (
-    <div className="App min-h-screen bg-gray-100">
-      {/* Show HomePage if user is not authenticated */}
-      {!isAuthenticated && (
-        <HomePage onAuthenticated={(token, user) => {
-          setToken(token);
-          setUser(user);
-        }} />
-      )}
-      
-      {/* Show main app if user is authenticated */}
-      {isAuthenticated && (
-        <>
+    <div className="modern-app">
+      {/* Modern Navigation */}
+      <nav className="nav-modern">
+        <div className="flex items-center space-x-8">
+          <ObserverLogo />
+          
+          <div className="flex items-center space-x-2">
+            {[
+              { id: 'home', label: '🏠 Simulation', icon: '🤖' },
+              { id: 'agents', label: '👥 Agent Library', icon: '📚' },
+              { id: 'admin', label: '⚙️ Admin', icon: '🛠️', adminOnly: true }
+            ].map((item) => {
+              if (item.adminOnly && (!user || !user.is_admin)) return null;
+              
+              return (
+                <motion.button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    activeTab === item.id
+                      ? 'bg-white/20 text-white shadow-lg'
+                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="mr-2">{item.icon}</span>
+                  {item.label}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          {user ? (
+            <UserProfile user={user} onLogout={logout} />
+          ) : (
+            <motion.button
+              onClick={() => setShowLoginModal(true)}
+              className="btn-premium btn-outline"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span>🔐</span>
+              Sign In
+            </motion.button>
+          )}
+        </div>
+
+        <LoginModal 
+          isOpen={showLoginModal} 
+          onClose={() => setShowLoginModal(false)} 
+        />
+      </nav>
+
+      <main className="container mx-auto px-4 py-8">
+        <AnimatePresence mode="wait">
+          {activeTab === 'home' && (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <HomePage />
+            </motion.div>
+          )}
+
+          {activeTab === 'agents' && (
+            <motion.div
+              key="agents"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AgentLibrary />
+            </motion.div>
+          )}
+
+          {activeTab === 'admin' && user?.is_admin && (
+            <motion.div
+              key="admin"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AdminDashboard />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
+    </div>
+  );
           <header className="bg-white shadow-sm border-b">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center py-4">
