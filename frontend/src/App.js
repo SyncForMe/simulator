@@ -5849,43 +5849,66 @@ function App() {
       </nav>
 
       <main className="container mx-auto px-4 py-8">
-        <AnimatePresence mode="wait">
-          {activeTab === 'home' && (
-            <motion.div
-              key="home"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <HomePage />
-            </motion.div>
-          )}
+        {/* Main App Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Column - Agent Profiles */}
+          <div className="lg:col-span-1">
+            <AgentProfilesManager 
+              agents={agents}
+              onDeleteAll={handleDeleteAllAgents}
+              onInitResearchStation={handleInitResearchStation}
+              onTestBackgrounds={handleTestBackgrounds}
+              onCreateAgent={handleCreateAgent}
+              onShowAgentLibrary={() => setShowAgentLibrary(true)}
+            />
+            
+            {simulationState && (
+              <SimulationStatus 
+                simulationState={simulationState}
+                onToggleAutoConversations={toggleAutoConversations}
+                onToggleAutoTime={toggleAutoTime}
+                onToggleFastForward={toggleFastForward}
+                onStopSimulation={stopSimulation}
+                showFastForward={showFastForward}
+              />
+            )}
+          </div>
 
-          {activeTab === 'agents' && (
-            <motion.div
-              key="agents"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <AgentLibrary />
-            </motion.div>
-          )}
+          {/* Middle Column - Conversation & Scenario */}
+          <div className="lg:col-span-2 space-y-6">
+            {currentScenario && (
+              <CurrentScenarioCard currentScenario={currentScenario} autoExpand={true} />
+            )}
+            
+            <ScenarioInput onSetScenario={handleSetScenario} currentScenario={currentScenario} onScenarioCollapse={handleScenarioCollapse} />
+            
+            <ConversationGenerator 
+              onConversationGenerated={handleConversationGenerated}
+              agents={agents}
+              onAgentAdded={handleAgentAdded}
+              currentScenario={currentScenario}
+            />
+            
+            <ConversationDisplay 
+              conversations={conversations}
+              onConversationSelect={handleConversationSelect}
+              selectedConversationId={selectedConversationId}
+            />
+          </div>
 
-          {activeTab === 'admin' && user?.is_admin && (
-            <motion.div
-              key="admin"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <AdminDashboard />
-            </motion.div>
-          )}
-        </AnimatePresence>
+          {/* Right Column - Documents & Translation */}
+          <div className="lg:col-span-1">
+            <DocumentsManager 
+              documents={documents}
+              onNewDocument={handleNewDocument}
+              onDocumentDeleted={handleDocumentDeleted}
+              token={token}
+              onDocumentUpdated={() => loadDocuments()}
+            />
+            
+            <TranslationInterface />
+          </div>
+        </div>
       </main>
     </div>
   );
