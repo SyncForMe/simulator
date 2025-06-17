@@ -501,7 +501,6 @@ const LoginModal = ({ isOpen, onClose }) => {
     localStorage.setItem('oauth_state', googleAuthUrl.searchParams.get('state'));
     window.location.href = googleAuthUrl.toString();
   };
-  };
 
   const handleAuthSuccess = async (code) => {
     try {
