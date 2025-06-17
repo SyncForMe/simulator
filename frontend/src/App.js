@@ -5459,7 +5459,7 @@ function App() {
     setShowFastForward(!showFastForward);
   };
 
-  // Functions for the modern interface
+  const stopSimulation = async () => {
     await handlePauseSimulation();
   };
 
