@@ -475,9 +475,6 @@ const LoginModal = ({ isOpen, onClose }) => {
     }
     setLoginLoading(false);
   };
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loginMode, setLoginMode] = useState('email'); // 'email' or 'oauth'
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
