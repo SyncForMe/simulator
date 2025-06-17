@@ -2024,7 +2024,7 @@ def main():
     
     print("="*80)
     
-    return conversation_success and enhanced_doc_success and dynamic_conversation_success
+    return conversation_success and enhanced_doc_success and dynamic_conversation_success and natural_expertise_success
 
 if __name__ == "__main__":
     main()
