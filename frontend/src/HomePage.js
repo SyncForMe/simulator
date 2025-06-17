@@ -32,13 +32,24 @@ const HomePage = ({ onAuthenticated }) => {
         ? { email: formData.email, password: formData.password }
         : { email: formData.email, password: formData.password, name: formData.name };
 
+      console.log('🔍 LOGIN DEBUG: Attempting login with:', {
+        endpoint: `${API}${endpoint}`,
+        email: payload.email,
+        password: payload.password ? '***' : 'empty'
+      });
+
       const response = await axios.post(`${API}${endpoint}`, payload);
+      
+      console.log('✅ LOGIN SUCCESS:', response.data);
       
       // Call parent callback to update authentication state
       onAuthenticated(response.data.access_token, response.data.user);
       
     } catch (error) {
-      console.error('Authentication error:', error);
+      console.error('❌ AUTHENTICATION ERROR:', error);
+      console.error('Error response:', error.response);
+      console.error('Error data:', error.response?.data);
+      
       if (error.response?.data?.detail) {
         setError(error.response.data.detail);
       } else {
