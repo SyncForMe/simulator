@@ -481,7 +481,6 @@ const LoginModal = ({ isOpen, onClose }) => {
     setError('');
     
     console.log('Google Client ID:', GOOGLE_CLIENT_ID);
-    console.log('Google Client ID:', GOOGLE_CLIENT_ID);
     
     if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID.includes('undefined')) {
       alert('Google Client ID not configured properly. Please check environment variables.');
@@ -489,7 +488,6 @@ const LoginModal = ({ isOpen, onClose }) => {
       return;
     }
     
-    // Use the main domain as redirect URI (simpler for hosting platforms)
     const redirectUri = window.location.origin;
     const googleAuthUrl = new URL('https://accounts.google.com/oauth/authorize');
     
@@ -500,28 +498,9 @@ const LoginModal = ({ isOpen, onClose }) => {
     googleAuthUrl.searchParams.set('access_type', 'offline');
     googleAuthUrl.searchParams.set('state', Math.random().toString(36).substring(2, 15));
 
-    // Debug: Log the OAuth URL
-    console.log('OAuth URL:', googleAuthUrl.toString());
-    console.log('Redirect URI:', redirectUri);
-    
-    // Store the state for verification
     localStorage.setItem('oauth_state', googleAuthUrl.searchParams.get('state'));
-    
-    // Show confirmation dialog with debug info
-    const confirm = window.confirm(
-      `Debug Info:\n` +
-      `Client ID: ${GOOGLE_CLIENT_ID}\n` +
-      `Redirect URI: ${redirectUri}\n\n` +
-      `Continue to Google login?`
-    );
-    
-    if (!confirm) {
-      setLoginLoading(false);
-      return;
-    }
-    
-    // Redirect to Google OAuth
     window.location.href = googleAuthUrl.toString();
+  };
   };
 
   const handleAuthSuccess = async (code) => {
