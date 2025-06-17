@@ -119,6 +119,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Retested the complete authentication flow after the fix to the get_current_user function. Created a dedicated test script to verify the entire authentication process. The registration endpoint successfully creates new users and returns valid JWT tokens containing both user_id and sub (email) fields. The login endpoint correctly authenticates users and returns valid tokens. Most importantly, the tokens now work properly with protected endpoints - the GET /api/documents endpoint returns the expected data when accessed with a valid token. The GET /api/auth/me endpoint also works correctly, returning the user's data. The 'User not found' error has been resolved. The fix to the get_current_user function now properly looks up users by both user_id and email, ensuring that tokens work correctly regardless of which authentication method was used."
+        -working: true
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of the authentication system. The email/password login with dino@cytonic.com/Observerinho8 works correctly - the endpoint returns a valid JWT token with the required user_id and sub fields. The test-login endpoint (Continue as Guest functionality) also works correctly, providing a valid JWT token. JWT validation is working properly - valid tokens are accepted, while invalid or expired tokens are correctly rejected. The GET /api/auth/me endpoint works correctly, returning the user's profile data. However, there's an issue with the GET /api/documents endpoint, which returns a 500 error with 'Failed to get documents: 'metadata'' message when accessed with a valid token. This suggests an issue with the document retrieval functionality rather than with the authentication system itself."
         
   - task: "User Data Isolation"
     implemented: true
