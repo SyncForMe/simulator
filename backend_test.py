@@ -1955,6 +1955,9 @@ def main():
     # Test the enhanced dynamic conversation system
     dynamic_conversation_success, dynamic_conversation_message = test_dynamic_conversation(API_URL, auth_token, run_test)
     
+    # Test the natural expertise demonstration system
+    natural_expertise_success, natural_expertise_message = test_natural_expertise(API_URL, auth_token, run_test)
+    
     # Test the enhanced document generation system
     enhanced_doc_success, enhanced_doc_message = test_enhanced_document_generation()
     
