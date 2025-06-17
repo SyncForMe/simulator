@@ -1,9 +1,10 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import axios from 'axios';
-import { motion, useAnimationControls } from 'framer-motion';
+import { motion, useAnimationControls, AnimatePresence } from 'framer-motion';
 import AgentLibrary from './AgentLibrary';
 import HomePage from './HomePage';
 import AdminDashboard from './AdminDashboard';
+import './ModernApp.css';
 import './App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
