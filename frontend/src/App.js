@@ -5063,9 +5063,6 @@ function App() {
   const [showFastForward, setShowFastForward] = useState(false);
   const [editingAgent, setEditingAgent] = useState(null);
   const [archetypes, setArchetypes] = useState({});
-  const [currentScenario, setCurrentScenario] = useState('');
-  const [documents, setDocuments] = useState([]);
-  const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [showAgentLibrary, setShowAgentLibrary] = useState(false);
   const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(() => {
