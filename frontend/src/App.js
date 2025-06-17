@@ -5909,7 +5909,7 @@ function App() {
             />
             
             {simulationState && (
-              <SimulationStatus 
+              <SimulationStatusBar 
                 simulationState={simulationState}
                 onToggleAutoConversations={toggleAutoConversations}
                 onToggleAutoTime={toggleAutoTime}
