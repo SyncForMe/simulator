@@ -476,8 +476,11 @@ const LoginModal = ({ isOpen, onClose }) => {
     setLoginLoading(false);
   };
 
+  const handleGoogleLogin = () => {
+    setLoginLoading(true);
+    setError('');
     
-    // Debug: Check if Client ID is loaded
+    console.log('Google Client ID:', GOOGLE_CLIENT_ID);
     console.log('Google Client ID:', GOOGLE_CLIENT_ID);
     
     if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID.includes('undefined')) {
