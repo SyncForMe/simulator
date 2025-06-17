@@ -5459,6 +5459,25 @@ function App() {
     setShowFastForward(!showFastForward);
   };
 
+  // Functions for the modern interface
+  const toggleAutoConversations = async () => {
+    await handleToggleAuto({
+      auto_conversations: !simulationState?.auto_conversations,
+      auto_time: simulationState?.auto_time || false
+    });
+  };
+
+  const toggleAutoTime = async () => {
+    await handleToggleAuto({
+      auto_conversations: simulationState?.auto_conversations || false,
+      auto_time: !simulationState?.auto_time
+    });
+  };
+
+  const toggleFastForward = async () => {
+    setShowFastForward(!showFastForward);
+  };
+
   const stopSimulation = async () => {
     await handlePauseSimulation();
   };
