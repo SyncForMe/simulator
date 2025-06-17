@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import axios from 'axios';
 import { motion, useAnimationControls, AnimatePresence } from 'framer-motion';
 import AgentLibrary from './AgentLibrary';
-import HomePage from './HomePage';
+import ModernHomePage from './ModernHomePage';
 import AdminDashboard from './AdminDashboard';
 import './ModernApp.css';
 
