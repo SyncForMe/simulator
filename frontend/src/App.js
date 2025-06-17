@@ -18,6 +18,105 @@ console.log('Environment variables loaded:', {
   NODE_ENV: process.env.NODE_ENV
 });
 
+// Authentication Context - MOVED TO TOP
+const AuthContext = createContext();
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    // Initialize token from localStorage
+    const savedToken = localStorage.getItem('auth_token');
+    if (savedToken) {
+      setToken(savedToken);
+      checkAuthStatus(savedToken);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const checkAuthStatus = async (authToken) => {
+    try {
+      const response = await axios.get(`${API}/auth/me`, {
+        headers: { Authorization: `Bearer ${authToken}` }
+      });
+      setUser(response.data);
+    } catch (error) {
+      // Token is invalid, remove it
+      console.log('Token validation failed, logging out');
+      localStorage.removeItem('auth_token');
+      setToken(null);
+      setUser(null);
+    }
+    setLoading(false);
+  };
+
+  const login = async (googleCredential) => {
+    try {
+      const response = await axios.post(`${API}/auth/google`, {
+        credential: googleCredential
+      });
+      
+      const { access_token, user: userData } = response.data;
+      
+      // Store token and user data
+      localStorage.setItem('auth_token', access_token);
+      setToken(access_token);
+      setUser(userData);
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Login error:', error);
+      return { success: false, error: error.response?.data?.detail || 'Login failed' };
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('auth_token');
+    setToken(null);
+    setUser(null);
+  };
+
+  const value = {
+    user,
+    loading,
+    login,
+    logout,
+    token,
+    isAuthenticated: !!user,
+    setUser,
+    setToken
+  };
+
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
 // Enhanced VoiceInput Component for any text field
 const VoiceInput = ({ 
   onTextUpdate, 
