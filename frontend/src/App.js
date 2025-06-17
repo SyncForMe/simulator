@@ -5068,11 +5068,6 @@ function App() {
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [showAgentLibrary, setShowAgentLibrary] = useState(false);
   const [showAdminDashboard, setShowAdminDashboard] = useState(false);
-  const [currentScenario, setCurrentScenario] = useState('');
-  const [documents, setDocuments] = useState([]);
-  const [selectedConversationId, setSelectedConversationId] = useState(null);
-  const [showAgentLibrary, setShowAgentLibrary] = useState(false);
-  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(() => {
     // Load saved language from localStorage or default to 'en'
     return localStorage.getItem('selectedLanguage') || 'en';
@@ -5082,9 +5077,7 @@ function App() {
     // Load saved audio preference from localStorage or default to true
     return localStorage.getItem('audioNarrativeEnabled') !== 'false';
   });
-  const [showAgentLibrary, setShowAgentLibrary] = useState(false);
   const [autoExpandCurrentScenario, setAutoExpandCurrentScenario] = useState(false);
-  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
 
   // Check if current user is admin
   const isAdmin = user && user.email && user.email.toLowerCase() === 'dino@cytonic.com';
