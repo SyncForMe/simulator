@@ -5786,6 +5786,11 @@ function App() {
     };
   }, [autoTimers]);
 
+  // Show login page if not authenticated
+  if (!isAuthenticated) {
+    return <HomePage />;
+  }
+
   return (
     <div className="modern-app">
       {/* Modern Navigation */}
