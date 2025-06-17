@@ -6233,13 +6233,28 @@ async def get_documents(
         # Convert to response format
         documents = []
         for doc in docs:
-            doc_response = DocumentResponse(
-                id=doc["id"],
-                metadata=DocumentMetadata(**doc["metadata"]),
-                content=doc["content"],
-                preview=doc["content"][:200] + "..." if len(doc["content"]) > 200 else doc["content"]
-            )
-            documents.append(doc_response)
+            try:
+                # Safely access metadata and content with defaults
+                metadata = doc.get("metadata", {})
+                if not metadata:
+                    # Skip documents without proper metadata
+                    logging.warning(f"Document {doc.get('id', 'unknown')} has no metadata, skipping")
+                    continue
+                    
+                content = doc.get("content", "")
+                doc_id = doc.get("id", str(doc.get("_id", "")))
+                
+                doc_response = DocumentResponse(
+                    id=doc_id,
+                    metadata=DocumentMetadata(**metadata),
+                    content=content,
+                    preview=content[:200] + "..." if len(content) > 200 else content
+                )
+                documents.append(doc_response)
+            except Exception as doc_error:
+                logging.error(f"Error processing document {doc.get('id', 'unknown')}: {doc_error}")
+                # Skip malformed documents instead of failing the entire request
+                continue
         
         return documents
         
