@@ -6145,15 +6145,4 @@ function App() {
   );
 }
 
-// Wrap App with AuthProvider and Error Boundary
-const AppWithAuth = () => {
-  return (
-    <div>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </div>
-  );
-};
-
-export default AppWithAuth;
+export default App;
