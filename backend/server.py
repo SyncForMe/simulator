@@ -1153,24 +1153,39 @@ PROVIDE EXPERT ANALYSIS:
         # Check if there are questions to answer
         has_questions = pending_questions and len(pending_questions) > 0
         
-        # If there are questions, prioritize answering them
+        # If there are questions, prioritize answering them with domain expertise
         if has_questions:
             question_info = pending_questions[0]
             question_text = question_info['question'].lower()
             
             # Generate expert answer based on the question type and agent expertise
             if agent.archetype == "scientist" and ("quantum" in question_text or "technical" in question_text or "research" in question_text):
-                return f"Based on my quantum physics research, I'd estimate this requires advanced error correction protocols. The technical feasibility depends on maintaining coherence for at least 100 microseconds."
+                return f"The quantum error correction protocols require coherence times exceeding 100 microseconds. We'll need at least T1 relaxation times of 500 microseconds for stable gate operations."
             elif agent.archetype == "leader" and ("timeline" in question_text or "project" in question_text or "manage" in question_text):
-                return f"From my project management experience, I'd recommend a 6-month timeline with three key milestones. We need to account for integration delays and stakeholder approvals."
+                return f"The critical path analysis indicates 18 months minimum. We'll need milestone dependencies mapped and resource allocation matrices finalized before Phase 2 kickoff."
             elif agent.archetype == "skeptic" and ("risk" in question_text or "concern" in question_text or "problem" in question_text):
-                return f"The main risk I see is resource constraints and potential scope creep. I recommend we establish clear boundaries and contingency plans upfront."
+                return f"The primary risk vectors include scope creep and resource constraints. I recommend establishing vulnerability assessments and mitigation strategies with defined risk appetite thresholds."
             elif "budget" in question_text or "cost" in question_text:
-                return f"Based on similar projects, I'd estimate $2-4M with 30% contingency. The key cost drivers will be specialized equipment and expert personnel."
+                if "quantum" in agent.expertise.lower():
+                    return f"Quantum hardware costs run $2-4M for dilution refrigeration systems alone. Add $500K for control electronics and another $1M for error correction overhead."
+                elif "project" in agent.expertise.lower():
+                    return f"Based on resource allocation models, we're looking at $3.5M with 25% contingency. Working capital requirements will spike during Phase 2 implementation."
+                else:
+                    return f"The DCF analysis shows $2-4M investment with 18-month payback. Key cost drivers are specialized equipment and expert personnel acquisition."
             elif "feasible" in question_text or "possible" in question_text:
-                return f"Yes, it's technically feasible but we need to address the scaling challenges. I recommend starting with a proof of concept to validate our assumptions."
+                if "quantum" in agent.expertise.lower():
+                    return f"Technically feasible but challenging. Decoherence rates need to drop below 0.1% for viable cryptographic applications. Current fidelity thresholds are marginal."
+                else:
+                    return f"Market validation suggests strong feasibility. Customer acquisition costs are reasonable and scalability metrics look promising for enterprise deployment."
             else:
-                return f"Good question. Based on my {agent.expertise.lower()} background, I think the key factor is stakeholder alignment and clear success criteria."
+                if "quantum" in agent.expertise.lower():
+                    return f"The quantum superposition states need stabilization. I recommend implementing error correction protocols with entanglement purification for cryptographic applications."
+                elif "project" in agent.expertise.lower():
+                    return f"We need stakeholder alignment and clear deliverable acceptance criteria. The scope definition requires refinement before resource commitment."
+                elif "risk" in agent.expertise.lower():
+                    return f"The threat landscape requires comprehensive assessment. I suggest probability matrices and exposure calculations before proceeding with deployment."
+                else:
+                    return f"The value proposition is solid but market penetration strategy needs refinement. Customer segmentation and competitive differentiation are key success factors."
         
         # Solution-focused responses based on archetype
         if agent.archetype == "leader":
