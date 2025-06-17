@@ -391,8 +391,6 @@ const ObserverLogo = () => {
   );
 };
 
-// Authentication Context
-
 const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
