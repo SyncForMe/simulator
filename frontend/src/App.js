@@ -617,9 +617,35 @@ const LoginModal = ({ isOpen, onClose }) => {
         </div>
         
         <div className="text-center mb-6">
-          <p className="text-gray-600 mb-4">
-            Sign in with your Google account to save your agents and conversation history.
+          <p className="text-gray-600 mb-6">
+            Choose your preferred sign-in method.
           </p>
+          
+          {/* Login Mode Toggle */}
+          <div className="mb-6">
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setLoginMode('email')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                  loginMode === 'email'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                📧 Email & Password
+              </button>
+              <button
+                onClick={() => setLoginMode('oauth')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                  loginMode === 'oauth'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                🌐 OAuth & Test
+              </button>
+            </div>
+          </div>
           
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded mb-4 text-sm">
