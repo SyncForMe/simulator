@@ -273,8 +273,20 @@ metadata:
   test_sequence: 2
   run_ui: false
 
-test_plan:
-  current_focus:
+  - task: "Enhanced Random Scenario Generation"
+    implemented: false
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for enhanced random scenario generation"
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted testing of the random scenario generation functionality. The GET /api/simulation/random-scenario endpoint returns a 404 Not Found error, suggesting it's not implemented or has a different path. This prevents verification of the enhanced random scenario generation feature that was supposed to create ultra-detailed scenarios with rich context. The feature appears to be not implemented yet or is accessible through a different endpoint than expected. Further investigation is needed to determine the correct endpoint or to implement this feature."
     - "Document Loading Performance"
     - "Bulk Delete Functionality"
     - "Document Count Verification"
