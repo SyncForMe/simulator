@@ -5058,6 +5058,7 @@ function App() {
   const [apiUsage, setApiUsage] = useState(null);
   const [summaries, setSummaries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('home');
   const [autoTimers, setAutoTimers] = useState({ conversation: null, time: null });
   const [showFastForward, setShowFastForward] = useState(false);
   const [editingAgent, setEditingAgent] = useState(null);
