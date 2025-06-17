@@ -275,6 +275,7 @@ test_plan:
     - "Improved Conversation Generation System"
     - "Enhanced Dynamic Conversation System"
     - "Natural Expertise Demonstration System"
+    - "Enhanced Random Scenario Generation"
   stuck_tasks:
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
     - "Admin Functionality"
