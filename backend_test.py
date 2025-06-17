@@ -2009,6 +2009,19 @@ def main():
         else:
             print(f"❌ {enhanced_doc_message}")
     
+    if natural_expertise_success:
+        print("✅ Natural expertise demonstration system is working correctly")
+        print("✅ Agents never mention their background explicitly")
+        print("✅ Agents naturally demonstrate expertise through terminology")
+        print("✅ Agents use professional communication patterns")
+        print("✅ Agents favor implicit expertise over explicit credentials")
+    else:
+        if isinstance(natural_expertise_message, dict) and "issues" in natural_expertise_message:
+            for issue in natural_expertise_message["issues"]:
+                print(f"❌ {issue}")
+        else:
+            print(f"❌ {natural_expertise_message}")
+    
     print("="*80)
     
     return conversation_success and enhanced_doc_success and dynamic_conversation_success
