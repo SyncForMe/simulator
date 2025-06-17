@@ -438,6 +438,43 @@ const LoginModal = ({ isOpen, onClose }) => {
   const { login, setUser, setToken } = useAuth();
   const [loginLoading, setLoginLoading] = useState(false);
   const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginMode, setLoginMode] = useState('email'); // 'email' or 'oauth'
+
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError('Please enter both email and password');
+      return;
+    }
+
+    setLoginLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post(`${API}/auth/login`, {
+        email: email,
+        password: password
+      });
+
+      const { access_token, user: userData } = response.data;
+      
+      localStorage.setItem('auth_token', access_token);
+      setToken(access_token);
+      setUser(userData);
+      
+      onClose();
+      setTimeout(() => {
+        alert('✅ Login successful! Welcome back.');
+      }, 500);
+      
+    } catch (err) {
+      console.error('Email login error:', err);
+      setError(err.response?.data?.detail || 'Login failed. Please check your email and password.');
+    }
+    setLoginLoading(false);
+  };
 
   const handleGoogleLogin = () => {
     setLoginLoading(true);
