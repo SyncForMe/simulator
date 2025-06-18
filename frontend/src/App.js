@@ -6034,6 +6034,7 @@ function App() {
             onClose={() => setActiveTab('home')}
             onAgentCreated={handleCreateAgent}
             onSaveAgent={handleSaveAgent}
+            onAddAgent={handleCreateAgent}
           />
         ) : activeTab === 'admin' ? (
           <AdminDashboard />
