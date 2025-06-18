@@ -1323,6 +1323,45 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
             </div>
           )}
           
+          {loading && (
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mt-2">
+              <div className="text-purple-700 text-sm">📝 Processing your scenario...</div>
+            </div>
+          )}
+          
+          {justSubmitted && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
+              <div className="text-green-700 text-sm">✅ Scenario has been successfully applied!</div>
+            </div>
+          )}
+          
+          {isTranscribing && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-2">
+              <div className="text-yellow-700 text-sm">🔄 Converting speech to text...</div>
+            </div>
+          )}
+
+          {/* Display uploaded files */}
+          {showUploadedFiles && uploadedFiles.length > 0 && (
+            <div className="border-t pt-3 mt-3">
+              <div className="text-sm font-medium text-gray-700 mb-2">Uploaded Files:</div>
+              <div className="space-y-1">
+                {uploadedFiles.map((file) => (
+                  <div key={file.id} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                    <span className="text-sm text-gray-600">{file.name}</span>
+                    <button
+                      onClick={() => removeFile(file.id)}
+                      className="text-red-500 hover:text-red-700 text-xs"
+                      title="Remove file"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
           {uploadError && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
               <div className="flex items-start space-x-2">
