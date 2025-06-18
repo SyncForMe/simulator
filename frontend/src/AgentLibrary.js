@@ -1804,12 +1804,19 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 agent-grid">
                       {currentCategory.agents.map((agent) => (
                         <div key={agent.id} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow relative">
-                          {/* Green "added" badge in top right */}
+                          {/* Green "added" badge and red X in top right */}
                           {addedAgents.has(agent.id) && (
-                            <div className="absolute top-2 right-2 z-10">
+                            <div className="absolute top-2 right-2 z-10 flex items-center space-x-1">
                               <div className="bg-transparent border border-green-500 text-green-600 text-xs font-medium px-2 py-1 rounded-full">
                                 added
                               </div>
+                              <button
+                                onClick={() => handleRemoveAgent(agent)}
+                                className="bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                                title="Remove agent"
+                              >
+                                ×
+                              </button>
                             </div>
                           )}
                           <div className="p-4">
