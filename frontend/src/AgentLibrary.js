@@ -1858,14 +1858,97 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
 
             {/* Main Content */}
             <div className="flex-1 p-6 overflow-y-auto">
-              {!selectedCategory ? (
-                // Categories View
+              {selectedQuickTeam ? (
+                // Quick Team View
                 <div>
                   <h3 className="text-xl font-bold text-gray-800 mb-6">
-                    {currentSector.icon} {currentSector.name}
+                    {quickTeams[selectedQuickTeam].icon} {quickTeams[selectedQuickTeam].name}
+                  </h3>
+                  <p className="text-gray-600 mb-6">{quickTeams[selectedQuickTeam].description}</p>
+                  
+                  <div className="mb-6">
+                    <button
+                      onClick={() => {
+                        quickTeams[selectedQuickTeam].agents.forEach(agent => handleAddAgent(agent));
+                      }}
+                      className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium"
+                    >
+                      Add Entire Team ({quickTeams[selectedQuickTeam].agents.length} agents)
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {quickTeams[selectedQuickTeam].agents.map((agent, index) => (
+                      <div key={`${selectedQuickTeam}-${index}`} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all relative">
+                        {/* Green "added" badge and red X in top right */}
+                        {addedAgents.has(agent.id) && (
+                          <div className="absolute top-2 right-2 z-10 flex items-center space-x-1">
+                            <div className="bg-transparent border border-green-500 text-green-600 text-xs font-medium px-2 py-1 rounded-full">
+                              added
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveAgent(agent);
+                              }}
+                              className="bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                              title="Remove agent"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        )}
+                        
+                        <div className="flex items-start space-x-3">
+                          <OptimizedAvatar 
+                            src={agent.avatar} 
+                            alt={agent.name}
+                            className="w-12 h-12 rounded-full object-cover flex-shrink-0 agent-avatar"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-medium text-gray-800 truncate">{agent.name}</h4>
+                            <p className="text-xs text-gray-600 mb-2">{agent.title}</p>
+                            <p className="text-xs text-gray-500 mb-3 line-clamp-2">"{agent.goal}"</p>
+                            <div className="flex space-x-1">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedAgentDetails(agent);
+                                }}
+                                className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200 transition-colors"
+                              >
+                                View Details
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAddAgent(agent);
+                                }}
+                                disabled={addingAgents.has(agent.id)}
+                                className={`text-xs px-2 py-1 rounded transition-colors ${
+                                  addedAgents.has(agent.id)
+                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                                }`}
+                              >
+                                {addingAgents.has(agent.id) ? 'Adding...' : 
+                                 addedAgents.has(agent.id) ? 'Add Again' : 'Add Agent'}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : selectedSector && !selectedCategory ? (
+                // Sector Categories View  
+                <div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-6">
+                    {sectors[selectedSector].icon} {sectors[selectedSector].name}
                   </h3>
                   <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {Object.entries(currentSector.categories).map(([key, category]) => (
+                    {Object.entries(sectors[selectedSector].categories).map(([key, category]) => (
                       <button
                         key={key}
                         onClick={() => setSelectedCategory(key)}
@@ -1884,7 +1967,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                     ))}
                   </div>
                 </div>
-              ) : (
+              ) : selectedCategory ? (
                 // Agents View
                 <div>
                   <div className="flex items-center mb-6">
