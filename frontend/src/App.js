@@ -6103,6 +6103,8 @@ function App() {
             {/* Translation functionality will be added later */}
           </div>
         </div>
+        </>
+        )}
       </main>
     </div>
   );
