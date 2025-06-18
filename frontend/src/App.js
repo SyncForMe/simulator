@@ -6088,7 +6088,7 @@ function App() {
           <div className="lg:col-span-1">
             <FileCenter />
             
-            <TranslationInterface />
+            {/* Translation functionality will be added later */}
           </div>
         </div>
       </main>
