@@ -6076,10 +6076,11 @@ function App() {
               )}
             </div>
             
-            <ConversationDisplay 
+            <ConversationViewer 
               conversations={conversations}
-              onConversationSelect={handleConversationSelect}
-              selectedConversationId={selectedConversationId}
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+              audioNarrativeEnabled={audioNarrativeEnabled}
             />
           </div>
 
