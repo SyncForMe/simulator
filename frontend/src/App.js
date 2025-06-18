@@ -5736,9 +5736,14 @@ function App() {
       const timeLimitInfo = config.timeLimit ? `\nTime Limit: ${config.timeLimitDisplay}` : '\nTime Limit: Unlimited';
       alert(`✅ Simulation started!\nLanguage: ${langName}\nAudio Narration: ${audioStatus}${timeLimitInfo}`);
       
+      // Close the configuration modal
+      setShowPreConfigModal(false);
+      
     } catch (error) {
       console.error('Error starting simulation:', error);
       alert('Failed to start simulation. Please try again.');
+      // Close modal even on error
+      setShowPreConfigModal(false);
     }
     setLoading(false);
   };
