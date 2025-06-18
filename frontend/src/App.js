@@ -5289,7 +5289,8 @@ function App() {
       console.log('Agent created successfully:', response.data);
       await refreshAllData();
       
-      // Agent created successfully - no popup needed, button will show "✅ Added"
+      // Return success indicator for AgentLibrary
+      return { success: true };
     } catch (error) {
       console.error('Error creating agent:', error);
       console.error('Error details:', error.response?.data);
