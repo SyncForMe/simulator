@@ -1761,17 +1761,51 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
         businessAgents[Math.floor(Math.random() * businessAgents.length)],
         businessAgents[Math.floor(Math.random() * businessAgents.length)]
       ].filter(Boolean);
-    } else if (teamType === 'decision') {
-      // Decision team: 1 mediator, 1 skeptic, 1 optimist
-      const mediators = allAgents.filter(agent => agent.archetype === 'mediator');
-      const skeptics = allAgents.filter(agent => agent.archetype === 'skeptic');
-      const optimists = allAgents.filter(agent => agent.archetype === 'optimist');
+    } else if (teamType === 'crypto') {
+      // Crypto team: blockchain, DeFi, and crypto-focused agents
+      const cryptoKeywords = ['blockchain', 'crypto', 'defi', 'bitcoin', 'ethereum', 'trading', 'fintech', 'investment', 'financial', 'technology'];
+      const cryptoAgents = allAgents.filter(agent => 
+        cryptoKeywords.some(keyword => 
+          agent.expertise?.toLowerCase().includes(keyword) ||
+          agent.background?.toLowerCase().includes(keyword) ||
+          agent.goal?.toLowerCase().includes(keyword) ||
+          (agent.expertise?.toLowerCase().includes('finance') && agent.expertise?.toLowerCase().includes('technology')) ||
+          (agent.archetype === 'leader' && agent.expertise?.toLowerCase().includes('finance'))
+        )
+      );
       
-      newTeam = [
-        mediators.length > 0 ? mediators[Math.floor(Math.random() * mediators.length)] : allAgents[Math.floor(Math.random() * allAgents.length)],
-        skeptics.length > 0 ? skeptics[Math.floor(Math.random() * skeptics.length)] : allAgents[Math.floor(Math.random() * allAgents.length)],
-        optimists.length > 0 ? optimists[Math.floor(Math.random() * optimists.length)] : allAgents[Math.floor(Math.random() * allAgents.length)]
-      ].filter(Boolean);
+      // If we have crypto-specific agents, use them. Otherwise, use finance and tech agents
+      if (cryptoAgents.length >= 3) {
+        newTeam = [
+          cryptoAgents[Math.floor(Math.random() * cryptoAgents.length)],
+          cryptoAgents[Math.floor(Math.random() * cryptoAgents.length)],
+          cryptoAgents[Math.floor(Math.random() * cryptoAgents.length)]
+        ];
+      } else {
+        // Fallback: get finance and technology agents
+        const financeAgents = allAgents.filter(agent => 
+          agent.expertise?.toLowerCase().includes('finance') ||
+          agent.expertise?.toLowerCase().includes('investment') ||
+          agent.expertise?.toLowerCase().includes('trading')
+        );
+        const techAgents = allAgents.filter(agent => 
+          agent.expertise?.toLowerCase().includes('technology') ||
+          agent.expertise?.toLowerCase().includes('software') ||
+          agent.expertise?.toLowerCase().includes('engineering')
+        );
+        
+        newTeam = [
+          financeAgents.length > 0 ? financeAgents[Math.floor(Math.random() * financeAgents.length)] : allAgents[Math.floor(Math.random() * allAgents.length)],
+          techAgents.length > 0 ? techAgents[Math.floor(Math.random() * techAgents.length)] : allAgents[Math.floor(Math.random() * allAgents.length)],
+          cryptoAgents.length > 0 ? cryptoAgents[Math.floor(Math.random() * cryptoAgents.length)] : 
+            financeAgents.length > 0 ? financeAgents[Math.floor(Math.random() * financeAgents.length)] : allAgents[Math.floor(Math.random() * allAgents.length)]
+        ];
+      }
+      
+      // Remove duplicates
+      newTeam = newTeam.filter((agent, index, self) => 
+        index === self.findIndex(a => a.id === agent.id)
+      );
     }
 
     // Fill up to 3 agents if we don't have enough
