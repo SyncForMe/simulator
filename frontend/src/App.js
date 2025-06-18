@@ -1302,7 +1302,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                 </button>
               )}
             </div>
-        </div>
+          </div>
           
           {/* Enhanced Status Messages */}
           {isRecording && (
