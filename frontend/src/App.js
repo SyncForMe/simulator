@@ -5179,6 +5179,11 @@ function App() {
     ? `${simulationState.scenario_name}: ${simulationState.scenario}`
     : simulationState?.scenario || null;
 
+  // Get current scenario from simulation state
+  const currentScenario = simulationState?.scenario_name 
+    ? `${simulationState.scenario_name}: ${simulationState.scenario}`
+    : simulationState?.scenario || null;
+
   const handleTestBackgrounds = async () => {
     setLoading(true);
     try {
