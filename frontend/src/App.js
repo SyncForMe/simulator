@@ -6218,8 +6218,10 @@ function App() {
             />
           </div>
 
-          {/* Right Column - Documents & Translation */}
-          <div className="lg:col-span-1">
+          {/* Right Column - Custom Scenario & Documents */}
+          <div className="lg:col-span-1 space-y-6">
+            <ScenarioInput onSetScenario={handleSetScenario} currentScenario={currentScenario} onScenarioCollapse={handleScenarioCollapse} />
+            
             <FileCenter />
             
             {/* Translation functionality will be added later */}
