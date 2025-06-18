@@ -1857,9 +1857,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                               onClick={() => handleAddAgent(agent)}
                               disabled={addingAgents.has(agent.id)}
                               className={`w-full py-2 px-3 rounded text-xs font-medium transition-colors ${
-                                addedAgents.has(agent.id)
-                                  ? 'bg-green-100 text-green-800 border border-green-200'
-                                  : addingAgents.has(agent.id)
+                                addingAgents.has(agent.id)
                                   ? 'bg-gray-300 text-gray-500'
                                   : 'bg-purple-600 text-white hover:bg-purple-700'
                               }`}
