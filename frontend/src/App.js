@@ -6027,8 +6027,20 @@ function App() {
       </nav>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Main App Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Conditional Tab Content */}
+        {activeTab === 'agents' ? (
+          <AgentLibrary 
+            isOpen={true}
+            onClose={() => setActiveTab('home')}
+            onAgentCreated={handleAgentCreated}
+            onSaveAgent={handleSaveAgent}
+          />
+        ) : activeTab === 'admin' ? (
+          <AdminDashboard />
+        ) : (
+          <>
+            {/* Main App Content - Home/Simulation Tab */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - Agent Profiles */}
           <div className="lg:col-span-1">
             <AgentProfilesManager 
