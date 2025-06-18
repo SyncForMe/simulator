@@ -3204,6 +3204,7 @@ const ConversationViewer = ({ conversations, selectedLanguage, onLanguageChange,
 
 const PreConversationConfigModal = ({ isOpen, onClose, onStartWithConfig }) => {
   const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [selectedTimeline, setSelectedTimeline] = useState('1week');
   const [audioNarrative, setAudioNarrative] = useState(true);
   const [saving, setSaving] = useState(false);
   
