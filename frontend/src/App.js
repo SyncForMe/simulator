@@ -6079,12 +6079,11 @@ function App() {
             
             {/* Start New Simulation Button */}
             <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg shadow-md p-4 border-2 border-green-200">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">🆕 Reset & Configure</h3>
               <button
                 onClick={handleStartSimulation}
                 className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-3 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all font-bold shadow-lg"
               >
-                🚀 Start New Simulation
+                Start New Simulation
               </button>
               <p className="text-xs text-gray-600 mt-2 text-center">
                 Resets all conversations and opens configuration modal
