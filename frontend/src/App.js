@@ -5409,6 +5409,9 @@ function App() {
       await fetchAgents();
       console.log('🔄 Agents refreshed, current count:', agents.length);
       
+      // Switch to home tab to show the agent profiles
+      setActiveTab('home');
+      
       // Return success indicator for AgentLibrary
       return { success: true };
     } catch (error) {
