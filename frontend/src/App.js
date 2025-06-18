@@ -5283,9 +5283,28 @@ function App() {
 
   const handleCreateAgent = async (agentData) => {
     try {
-      console.log('Creating agent:', agentData);
+      // Check for existing agents with the same base name and add numbering
+      const existingAgents = agents.filter(agent => 
+        agent.name.startsWith(agentData.name.split(' (')[0]) // Remove any existing numbering
+      );
+      
+      let finalAgentData = { ...agentData };
+      if (existingAgents.length > 0) {
+        // Find the highest number used
+        let highestNum = 1;
+        existingAgents.forEach(agent => {
+          const match = agent.name.match(/\((\d+)\)$/);
+          if (match) {
+            highestNum = Math.max(highestNum, parseInt(match[1]));
+          }
+        });
+        // Add the next number
+        finalAgentData.name = `${agentData.name} (${highestNum + 1})`;
+      }
+      
+      console.log('Creating agent:', finalAgentData);
       console.log('API URL:', `${API}/agents`);
-      const response = await axios.post(`${API}/agents`, agentData);
+      const response = await axios.post(`${API}/agents`, finalAgentData);
       console.log('Agent created successfully:', response.data);
       await refreshAllData();
       
@@ -5296,6 +5315,18 @@ function App() {
       console.error('Error details:', error.response?.data);
       alert('Failed to create agent. Please try again.');
       throw error;
+    }
+  };
+
+  const handleRemoveAgent = async (agentId) => {
+    try {
+      await axios.delete(`${API}/agents/${agentId}`);
+      await refreshAllData();
+      return { success: true };
+    } catch (error) {
+      console.error('Error removing agent:', error);
+      alert('Failed to remove agent. Please try again.');
+      return { success: false };
     }
   };
 
