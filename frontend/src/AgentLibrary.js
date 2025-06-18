@@ -1720,26 +1720,45 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
           <div className="flex h-[600px]">
             {/* Sidebar */}
             <div className="w-64 bg-gray-50 border-r p-4">
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">SECTORS</h3>
-              <div className="space-y-2">
-                {Object.entries(sectors).map(([key, sector]) => (
-                  <button
-                    key={key}
-                    onClick={() => {
-                      setSelectedSector(key);
-                      setSelectedCategory(null);
-                    }}
-                    className={`w-full text-left p-3 rounded-lg transition-colors ${
-                      selectedSector === key
-                        ? 'bg-purple-100 text-purple-800 border-l-4 border-purple-600'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <span className="text-lg mr-2">{sector.icon}</span>
-                    {sector.name}
-                  </button>
-                ))}
+              {/* SECTORS header with expandable button */}
+              <div 
+                className="flex justify-between items-center cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-colors mb-4"
+                onClick={() => setIsSectorsExpanded(!isSectorsExpanded)}
+              >
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">SECTORS</h3>
+                <button
+                  type="button"
+                  className="text-gray-500 hover:text-gray-700 transition-transform duration-200"
+                  style={{ transform: isSectorsExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
               </div>
+              
+              {/* Sectors list - conditionally rendered */}
+              {isSectorsExpanded && (
+                <div className="space-y-2">
+                  {Object.entries(sectors).map(([key, sector]) => (
+                    <button
+                      key={key}
+                      onClick={() => {
+                        setSelectedSector(key);
+                        setSelectedCategory(null);
+                      }}
+                      className={`w-full text-left p-3 rounded-lg transition-colors ${
+                        selectedSector === key
+                          ? 'bg-purple-100 text-purple-800 border-l-4 border-purple-600'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span className="text-lg mr-2">{sector.icon}</span>
+                      {sector.name}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Main Content */}
