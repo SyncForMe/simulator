@@ -5942,9 +5942,26 @@ function App() {
   // Handle authentication success from HomePage
   const handleAuthentication = (accessToken, userData) => {
     console.log('🎉 Authentication successful, setting user data:', userData);
-    localStorage.setItem('auth_token', accessToken);
-    setToken(accessToken);
-    setUser(userData);
+    
+    // Defensive checks to prevent null property errors
+    if (!accessToken || typeof accessToken !== 'string') {
+      console.error('❌ Invalid access token received:', accessToken);
+      return;
+    }
+    
+    if (!userData || typeof userData !== 'object') {
+      console.error('❌ Invalid user data received:', userData);
+      return;
+    }
+    
+    try {
+      localStorage.setItem('auth_token', accessToken);
+      setToken(accessToken);
+      setUser(userData);
+      console.log('✅ Authentication state updated successfully');
+    } catch (error) {
+      console.error('❌ Error setting authentication state:', error);
+    }
   };
 
   // Show login page if not authenticated
