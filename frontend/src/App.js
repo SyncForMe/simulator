@@ -6189,6 +6189,7 @@ function App() {
               onInitResearchStation={handleInitResearchStation}
               onTestBackgrounds={handleTestBackgrounds}
               onCreateAgent={handleCreateAgent}
+              onDeleteAgent={handleDeleteAgent}
               onShowAgentLibrary={() => setShowAgentLibrary(true)}
             />
             
