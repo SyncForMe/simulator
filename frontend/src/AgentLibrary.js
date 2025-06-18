@@ -2074,10 +2074,10 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                     </div>
                   ) : (
                     <div className="text-center py-12">
-                      <div className="text-6xl mb-4">{currentCategory.icon}</div>
+                      <div className="text-6xl mb-4">{sectors[selectedSector].categories[selectedCategory].icon}</div>
                       <h4 className="text-xl font-bold text-gray-800 mb-2">Agents Coming Soon</h4>
                       <p className="text-gray-600 max-w-md mx-auto">
-                        We're working on adding professional agents for {currentCategory.name}. 
+                        We're working on adding professional agents for {sectors[selectedSector].categories[selectedCategory].name}. 
                         Check back soon for expertly crafted profiles in this category.
                       </p>
                     </div>
