@@ -1407,38 +1407,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
               </div>
             </div>
           )}
-          
-          {voiceError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
-              <div className="flex items-start space-x-2">
-                <span className="text-red-600 text-sm">⚠️</span>
-                <div>
-                  <div className="text-red-700 font-semibold text-sm">Voice Input Error</div>
-                  <div className="text-red-600 text-xs">{voiceError}</div>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {justSubmitted && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-2 mt-2">
-              <p className="text-green-700 text-sm flex items-center space-x-2">
-                <span>✅</span>
-                <span>Scenario applied successfully! Text will clear in a moment...</span>
-              </p>
-            </div>
-          )}
-          
-          {isTranscribing && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mt-2">
-              <p className="text-blue-700 text-xs flex items-center space-x-2">
-                <span>🔄</span>
-                <span>Transcribing audio... Please wait.</span>
-              </p>
-            </div>
-          )}
-        </div>
-        
+
         <div className="space-y-2">
           <button
             type="submit"
