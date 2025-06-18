@@ -1670,7 +1670,24 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
       const newSet = new Set(prev);
       newSet.delete(agent.id);
       return newSet;
-    });
+  };
+
+  const handleRemoveAgent = async (agent) => {
+    if (!onRemoveAgent) return;
+    
+    try {
+      const result = await onRemoveAgent(agent.id);
+      if (result && result.success) {
+        setAddedAgents(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(agent.id);
+          return newSet;
+        });
+        console.log('Agent removed successfully');
+      }
+    } catch (error) {
+      console.error('Error removing agent:', error);
+    }
   };
 
   const currentSector = sectors[selectedSector];
