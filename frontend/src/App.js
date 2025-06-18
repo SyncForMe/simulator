@@ -1418,7 +1418,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
             {randomLoading ? "Generating & Applying..." : "Random Scenario"}
           </button>
         </div>
-          </form>
+        </form>
         </div>
       )}
     </div>
