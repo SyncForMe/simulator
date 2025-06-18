@@ -6087,7 +6087,7 @@ function App() {
           {/* Right Column - Documents & Translation */}
           <div className="lg:col-span-1">
             <FileCenter 
-              onRefresh={() => loadDocuments()}
+              onRefresh={() => fetchScenarioDocuments(true)}
             />
             
             <TranslationInterface />
