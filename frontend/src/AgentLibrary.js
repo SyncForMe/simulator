@@ -1719,78 +1719,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
           <div className="flex h-[600px]">
             {/* Sidebar */}
             <div className="w-64 bg-gray-50 border-r p-4">
-              {/* Quick Team Builder Section */}
-              <div className="mb-6">
-                <div 
-                  className="flex justify-between items-center cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-colors"
-                  onClick={() => setIsQuickTeamBuilderExpanded(!isQuickTeamBuilderExpanded)}
-                >
-                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">⚡ Quick Team Builder</h3>
-                  <button
-                    type="button"
-                    className="text-gray-500 hover:text-gray-700 transition-transform duration-200"
-                    style={{ transform: isQuickTeamBuilderExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                </div>
-                
-                {isQuickTeamBuilderExpanded && (
-                  <div className="mt-3 space-y-2">
-                    <button
-                      onClick={() => {
-                        // Add a diverse research team
-                        const researchTeam = [
-                          healthcareCategories.medical.agents[0], // Dr. Sarah Chen - Scientist
-                          healthcareCategories.pharmaceutical.agents[1], // Dr. Amanda Wilson - Optimist
-                          healthcareCategories.medical.agents[1] // Dr. Marcus Rodriguez - Leader
-                        ];
-                        researchTeam.forEach(agent => handleAddAgent(agent));
-                      }}
-                      className="w-full text-left p-2 text-xs bg-blue-50 hover:bg-blue-100 rounded border border-blue-200 transition-colors"
-                    >
-                      🔬 <strong>Research Team</strong><br/>
-                      <span className="text-gray-600">Scientist, Optimist, Leader</span>
-                    </button>
-                    
-                    <button
-                      onClick={() => {
-                        // Add a business strategy team
-                        const businessTeam = [
-                          technologyCategories.softwareEngineering.agents[0], // Tech leader
-                          financeCategories.consulting.agents[0], // Business strategist
-                          technologyCategories.ai.agents[1] // Innovation optimist
-                        ];
-                        businessTeam.forEach(agent => handleAddAgent(agent));
-                      }}
-                      className="w-full text-left p-2 text-xs bg-green-50 hover:bg-green-100 rounded border border-green-200 transition-colors"
-                    >
-                      💼 <strong>Business Team</strong><br/>
-                      <span className="text-gray-600">Strategist, Consultant, Innovator</span>
-                    </button>
-                    
-                    <button
-                      onClick={() => {
-                        // Add a balanced decision team
-                        const decisionTeam = [
-                          healthcareCategories.medical.agents[2], // Dr. Katherine Vale - Mediator
-                          financeCategories.riskManagement.agents[0], // Risk analyst - Skeptic
-                          technologyCategories.ai.agents[1] // Innovation optimist
-                        ];
-                        decisionTeam.forEach(agent => handleAddAgent(agent));
-                      }}
-                      className="w-full text-left p-2 text-xs bg-purple-50 hover:bg-purple-100 rounded border border-purple-200 transition-colors"
-                    >
-                      ⚖️ <strong>Decision Team</strong><br/>
-                      <span className="text-gray-600">Mediator, Skeptic, Optimist</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">🏭 Industry Sectors</h3>
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">SECTORS</h3>
               <div className="space-y-2">
                 {Object.entries(sectors).map(([key, sector]) => (
                   <button
