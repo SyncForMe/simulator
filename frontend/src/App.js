@@ -3596,15 +3596,25 @@ const AgentProfilesManager = ({
   onTestBackgrounds,
   onShowAgentLibrary 
 }) => {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
   const handleDeleteAll = () => {
     if (agents.length === 0) return;
-    
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ALL ${agents.length} agents?\n\nThis action cannot be undone and will remove all agents from conversations.`
-    );
-    
-    if (confirmed) {
-      onDeleteAll();
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteAll = () => {
+    setShowDeleteConfirm(false);
+    onDeleteAll();
+  };
+
+  const handleDeleteAgent = async (agentId, agentName) => {
+    try {
+      await axios.delete(`${API}/agents/${agentId}`);
+      await fetchAgents(); // Refresh the agents list
+    } catch (error) {
+      console.error('Error deleting agent:', error);
+      alert('Failed to delete agent. Please try again.');
     }
   };
 
