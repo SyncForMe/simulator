@@ -5508,7 +5508,7 @@ function App() {
         await axios.delete(`${API}/agents/${agent.id}`);
       }
       await refreshAllData();
-      alert(`✅ All ${agents.length} agents have been deleted successfully.`);
+      // No alert - silent success
     } catch (error) {
       console.error('Error deleting all agents:', error);
       alert('Failed to delete all agents. Please try again.');
