@@ -6200,8 +6200,6 @@ function App() {
             </div>
           </div>
         )}
-        </>
-        )}
 
         {/* Pre-Configuration Modal */}
         {showPreConfigModal && (
