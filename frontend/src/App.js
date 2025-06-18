@@ -5174,6 +5174,11 @@ function App() {
   // Check if current user is admin
   const isAdmin = user && user.email && user.email.toLowerCase() === 'dino@cytonic.com';
 
+  // Get current scenario from simulation state
+  const currentScenario = simulationState?.scenario_name 
+    ? `${simulationState.scenario_name}: ${simulationState.scenario}`
+    : simulationState?.scenario || null;
+
   const handleTestBackgrounds = async () => {
     setLoading(true);
     try {
