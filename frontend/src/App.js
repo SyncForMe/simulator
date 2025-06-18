@@ -6260,6 +6260,79 @@ function App() {
             </div>
           </div>
         )}
+
+        {/* Pre-Configuration Modal */}
+        {showPreConfigModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h2 className="text-xl font-bold text-gray-800 mb-4">🚀 Start New Simulation</h2>
+              <p className="text-gray-600 mb-6">Configure your simulation settings</p>
+              
+              <div className="space-y-4">
+                {/* Language Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                  <select 
+                    value={selectedLanguage}
+                    onChange={(e) => setSelectedLanguage(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                  </select>
+                </div>
+
+                {/* Voice Coverage */}
+                <div>
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={audioNarrativeEnabled}
+                      onChange={(e) => setAudioNarrativeEnabled(e.target.checked)}
+                      className="rounded"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Enable voice narration</span>
+                  </label>
+                </div>
+
+                {/* Timeline Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Timeline</label>
+                  <select 
+                    value={selectedTimeline}
+                    onChange={(e) => setSelectedTimeline(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="1week">1 Week</option>
+                    <option value="4weeks">4 Weeks</option>
+                    <option value="infinite">Infinite</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex space-x-3 mt-6">
+                <button
+                  onClick={() => setShowPreConfigModal(false)}
+                  className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleStartWithConfig({
+                    language: selectedLanguage,
+                    audioNarrative: audioNarrativeEnabled,
+                    timeline: selectedTimeline
+                  })}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Start Simulation
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
