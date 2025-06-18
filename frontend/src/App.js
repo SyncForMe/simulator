@@ -5904,9 +5904,17 @@ function App() {
     };
   }, [autoTimers]);
 
+  // Handle authentication success from HomePage
+  const handleAuthentication = (accessToken, userData) => {
+    console.log('🎉 Authentication successful, setting user data:', userData);
+    localStorage.setItem('auth_token', accessToken);
+    setToken(accessToken);
+    setUser(userData);
+  };
+
   // Show login page if not authenticated
   if (!isAuthenticated) {
-    return <HomePage />;
+    return <HomePage onAuthenticated={handleAuthentication} />;
   }
 
   return (
