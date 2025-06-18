@@ -5165,6 +5165,10 @@ function App() {
     // Load saved language from localStorage or default to 'en'
     return localStorage.getItem('selectedLanguage') || 'en';
   });
+  const [selectedTimeline, setSelectedTimeline] = useState(() => {
+    // Load saved timeline from localStorage or default to '1week'
+    return localStorage.getItem('selectedTimeline') || '1week';
+  });
   const [showPreConfigModal, setShowPreConfigModal] = useState(false);
   const [audioNarrativeEnabled, setAudioNarrativeEnabled] = useState(() => {
     // Load saved audio preference from localStorage or default to true
