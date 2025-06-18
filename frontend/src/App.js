@@ -6043,12 +6043,21 @@ function App() {
             
             <ScenarioInput onSetScenario={handleSetScenario} currentScenario={currentScenario} onScenarioCollapse={handleScenarioCollapse} />
             
-            <ConversationGenerator 
-              onConversationGenerated={handleConversationGenerated}
-              agents={agents}
-              onAgentAdded={handleAgentAdded}
-              currentScenario={currentScenario}
-            />
+            {/* Simple Conversation Generation Button */}
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <button
+                onClick={handleGenerateConversation}
+                disabled={loading || agents.length < 2}
+                className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              >
+                {loading ? 'Generating...' : '🗣️ Generate Conversation'}
+              </button>
+              {agents.length < 2 && (
+                <p className="text-sm text-gray-500 mt-2 text-center">
+                  Add at least 2 agents to generate conversations
+                </p>
+              )}
+            </div>
             
             <ConversationDisplay 
               conversations={conversations}
