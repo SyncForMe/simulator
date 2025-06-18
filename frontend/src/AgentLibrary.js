@@ -1470,7 +1470,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   if (!isOpen) return null;
 
   const { user } = useAuth();
-  const [selectedSector, setSelectedSector] = useState('healthcare');
+  const [selectedSector, setSelectedSector] = useState(null); // Changed to null to show nothing by default
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAgentDetails, setSelectedAgentDetails] = useState(null);
   const [addingAgents, setAddingAgents] = useState(new Set());
@@ -1479,6 +1479,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   const [imageLoadingStates, setImageLoadingStates] = useState(new Map());
   const [isSectorsExpanded, setIsSectorsExpanded] = useState(true);
   const [isQuickTeamBuildersExpanded, setIsQuickTeamBuildersExpanded] = useState(false);
+  const [selectedQuickTeam, setSelectedQuickTeam] = useState(null); // New state for quick team selection
   const timeoutRefs = useRef(new Map());
 
   // Simple service worker registration for caching
