@@ -1657,24 +1657,6 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
       
       if (result && result.success) {
         setAddedAgents(prev => new Set(prev).add(agent.id));
-        
-        // Clear any existing timeout for this agent
-        if (timeoutRefs.current.has(agent.id)) {
-          clearTimeout(timeoutRefs.current.get(agent.id));
-        }
-        
-        // Set timeout to remove the "Added" status after 3 seconds
-        const timeoutId = setTimeout(() => {
-          setAddedAgents(prev => {
-            const newSet = new Set(prev);
-            newSet.delete(agent.id);
-            return newSet;
-          });
-          timeoutRefs.current.delete(agent.id);
-        }, 3000);
-        
-        timeoutRefs.current.set(agent.id, timeoutId);
-        
         console.log('Agent added successfully:', result.message);
       } else {
         console.error('Failed to add agent:', result?.message || 'Unknown error');
