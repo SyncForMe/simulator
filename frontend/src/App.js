@@ -1413,7 +1413,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
             disabled={loading || justSubmitted || randomLoading || isRecording || isTranscribing}
             className="w-full bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 disabled:opacity-50 transition-colors"
           >
-            {randomLoading ? "Generating & Applying..." : "🎲 Random Scenario"}
+            {randomLoading ? "Generating & Applying..." : "Random Scenario"}
           </button>
         </div>
           </form>
