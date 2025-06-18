@@ -3594,7 +3594,8 @@ const AgentProfilesManager = ({
   onCreateAgent, 
   onInitResearchStation, 
   onTestBackgrounds,
-  onShowAgentLibrary 
+  onShowAgentLibrary,
+  onDeleteAgent // Add this prop
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -3606,16 +3607,6 @@ const AgentProfilesManager = ({
   const confirmDeleteAll = () => {
     setShowDeleteConfirm(false);
     onDeleteAll();
-  };
-
-  const handleDeleteAgent = async (agentId, agentName) => {
-    try {
-      await axios.delete(`${API}/agents/${agentId}`);
-      await fetchAgents(); // Refresh the agents list
-    } catch (error) {
-      console.error('Error deleting agent:', error);
-      alert('Failed to delete agent. Please try again.');
-    }
   };
 
   return (
