@@ -416,13 +416,15 @@ const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
             <span className="text-blue-600">📋</span>
             <h3 className="text-md font-semibold text-gray-800">Current Scenario</h3>
           </div>
-          <div className="flex items-center">
-            <span className={`text-gray-400 text-lg transition-transform duration-200 ${
-              isExpanded ? 'rotate-180' : 'rotate-0'
-            }`}>
-              ▼
-            </span>
-          </div>
+          <button
+            type="button"
+            className="text-gray-500 hover:text-gray-700 transition-transform duration-200"
+            style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
         </div>
       </button>
       
