@@ -1278,31 +1278,31 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
               <span>{uploading ? 'Uploading...' : 'Attach files'}</span>
             </label>
 
-              {/* View uploaded files button */}
-              {uploadedFiles.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setShowUploadedFiles(!showUploadedFiles)}
-                  className="w-6 h-6 text-blue-600 hover:text-blue-800 transition-colors flex items-center justify-center"
-                  title={`View uploaded files (${uploadedFiles.length})`}
-                >
-                  <span className="text-xs font-bold">{uploadedFiles.length}</span>
-                </button>
-              )}
-              
-              {scenario.trim() && (
-                <button
-                  type="button"
-                  onClick={clearScenario}
-                  disabled={loading || justSubmitted || randomLoading || isRecording}
-                  className="w-6 h-6 bg-gray-500 hover:bg-gray-600 disabled:opacity-50 text-white rounded transition-colors flex items-center justify-center"
-                  title="Clear text"
-                >
-                  <span className="text-xs">🗑️</span>
-                </button>
-              )}
-            </div>
+            {/* View uploaded files button */}
+            {uploadedFiles.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowUploadedFiles(!showUploadedFiles)}
+                className="w-6 h-6 text-blue-600 hover:text-blue-800 transition-colors flex items-center justify-center"
+                title={`View uploaded files (${uploadedFiles.length})`}
+              >
+                <span className="text-xs font-bold">{uploadedFiles.length}</span>
+              </button>
+            )}
+            
+            {scenario.trim() && (
+              <button
+                type="button"
+                onClick={clearScenario}
+                disabled={loading || justSubmitted || randomLoading || isRecording}
+                className="w-6 h-6 bg-gray-500 hover:bg-gray-600 disabled:opacity-50 text-white rounded transition-colors flex items-center justify-center"
+                title="Clear text"
+              >
+                <span className="text-xs">🗑️</span>
+              </button>
+            )}
           </div>
+        </div>
           
           {/* Enhanced Status Messages */}
           {isRecording && (
