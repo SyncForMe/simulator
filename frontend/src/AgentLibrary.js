@@ -1857,12 +1857,10 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                                   : 'bg-purple-600 text-white hover:bg-purple-700'
                               }`}
                             >
-                              {addedAgents.has(agent.id) 
-                                ? 'Added' 
-                                : addingAgents.has(agent.id) 
-                                ? 'Adding...' 
+                              {addingAgents.has(agent.id) 
+                                ? 'Adding...'
                                 : addedAgents.has(agent.id) 
-                                ? 'Add Again'
+                                ? 'Added' 
                                 : 'Add Agent'
                               }
                             </button>
