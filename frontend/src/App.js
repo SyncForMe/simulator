@@ -5318,14 +5318,8 @@ function App() {
     }
   };
 
-  const handleRemoveAgent = async (libraryAgentId) => {
+  const handleRemoveAgent = async (libraryAgent) => {
     try {
-      // Find the actual database agent that was created from this library agent
-      const libraryAgent = findAgentInLibrary(libraryAgentId);
-      if (!libraryAgent) {
-        return { success: false };
-      }
-      
       // Find all agents in the database that match this library agent's name (including numbered versions)
       const baseName = libraryAgent.name.split(' (')[0]; // Remove any existing numbering
       const agentsToRemove = agents.filter(agent => 
@@ -5346,13 +5340,6 @@ function App() {
       alert('Failed to remove agent. Please try again.');
       return { success: false };
     }
-  };
-
-  // Helper function to find agent in library
-  const findAgentInLibrary = (libraryAgentId) => {
-    // This would need to search through the library structure
-    // For now, return null since we don't have direct access to library data here
-    return null;
   };
 
   const handleDeleteAgent = async (agentId, agentName) => {
