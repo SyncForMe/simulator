@@ -5730,12 +5730,6 @@ function App() {
       
       await refreshAllData();
       
-      // Show success message with configuration details
-      const langName = config.language === 'en' ? 'English' : config.language;
-      const audioStatus = config.audioNarrative ? 'enabled' : 'disabled';
-      const timeLimitInfo = config.timeLimit ? `\nTime Limit: ${config.timeLimitDisplay}` : '\nTime Limit: Unlimited';
-      alert(`✅ Simulation started!\nLanguage: ${langName}\nAudio Narration: ${audioStatus}${timeLimitInfo}`);
-      
       // Close the configuration modal
       setShowPreConfigModal(false);
       
