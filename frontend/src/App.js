@@ -6086,12 +6086,8 @@ function App() {
 
           {/* Right Column - Documents & Translation */}
           <div className="lg:col-span-1">
-            <DocumentsManager 
-              documents={documents}
-              onNewDocument={handleNewDocument}
-              onDocumentDeleted={handleDocumentDeleted}
-              token={token}
-              onDocumentUpdated={() => loadDocuments()}
+            <FileCenter 
+              onRefresh={() => loadDocuments()}
             />
             
             <TranslationInterface />
