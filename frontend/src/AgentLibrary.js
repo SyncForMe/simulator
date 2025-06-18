@@ -1866,20 +1866,27 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                   </h3>
                   <p className="text-gray-600 mb-6">{quickTeams[selectedQuickTeam].description}</p>
                   
-                  <div className="mb-6">
+                  <div className="mb-6 flex space-x-3">
                     <button
                       onClick={() => {
                         quickTeams[selectedQuickTeam].agents.forEach(agent => handleAddAgent(agent));
                       }}
                       className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium"
                     >
-                      Add Entire Team ({quickTeams[selectedQuickTeam].agents.length} agents)
+                      Add Team
+                    </button>
+                    <button
+                      onClick={() => generateNewQuickTeam(selectedQuickTeam)}
+                      className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 font-medium flex items-center space-x-2"
+                    >
+                      <span>🎲</span>
+                      <span>Roll the Dice</span>
                     </button>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 agent-grid">
                     {quickTeams[selectedQuickTeam].agents.map((agent, index) => (
-                      <div key={`${selectedQuickTeam}-${index}`} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all relative">
+                      <div key={`${selectedQuickTeam}-${index}`} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow relative">
                         {/* Green "added" badge and red X in top right */}
                         {addedAgents.has(agent.id) && (
                           <div className="absolute top-2 right-2 z-10 flex items-center space-x-1">
@@ -1891,51 +1898,80 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                                 e.stopPropagation();
                                 handleRemoveAgent(agent);
                               }}
-                              className="bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                              className="bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
                               title="Remove agent"
                             >
                               ×
                             </button>
                           </div>
                         )}
-                        
-                        <div className="flex items-start space-x-3">
-                          <OptimizedAvatar 
-                            src={agent.avatar} 
-                            alt={agent.name}
-                            className="w-12 h-12 rounded-full object-cover flex-shrink-0 agent-avatar"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-medium text-gray-800 truncate">{agent.name}</h4>
-                            <p className="text-xs text-gray-600 mb-2">{agent.title}</p>
-                            <p className="text-xs text-gray-500 mb-3 line-clamp-2">"{agent.goal}"</p>
-                            <div className="flex space-x-1">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedAgentDetails(agent);
-                                }}
-                                className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded hover:bg-purple-200 transition-colors"
-                              >
-                                View Details
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleAddAgent(agent);
-                                }}
-                                disabled={addingAgents.has(agent.id)}
-                                className={`text-xs px-2 py-1 rounded transition-colors ${
-                                  addedAgents.has(agent.id)
-                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                                }`}
-                              >
-                                {addingAgents.has(agent.id) ? 'Adding...' : 
-                                 addedAgents.has(agent.id) ? 'Add Again' : 'Add Agent'}
-                              </button>
+                        <div className="p-4">
+                          <div className="flex items-start space-x-3">
+                            <img
+                              src={agent.avatar}
+                              alt={agent.name}
+                              className="w-12 h-12 rounded-full object-cover"
+                              loading="eager"
+                              style={{
+                                imageRendering: 'crisp-edges',
+                              }}
+                              onError={(e) => {
+                                e.target.src = `data:image/svg+xml,${encodeURIComponent(`
+                                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="24" cy="24" r="24" fill="#E5E7EB"/>
+                                    <circle cx="24" cy="20" r="8" fill="#9CA3AF"/>
+                                    <path d="M8 42c0-8.837 7.163-16 16-16s16 7.163 16 16" fill="#9CA3AF"/>
+                                  </svg>
+                                `)}`;
+                              }}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-gray-900 text-sm">{agent.name}</h4>
+                              <p className="text-xs text-gray-600 mt-1">{agent.archetypeDisplay || agent.archetype}</p>
                             </div>
                           </div>
+                          
+                          <div className="mt-3">
+                            <div className="mb-2">
+                              <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">ARCHETYPE</span>
+                              <p className="text-xs text-gray-600 mt-1">{agent.archetypeDisplay || agent.archetype}</p>
+                            </div>
+                            
+                            <div className="mb-2">
+                              <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">GOAL</span>
+                              <p className="text-xs text-gray-600 mt-1 line-clamp-2">{agent.goal}</p>
+                            </div>
+                            
+                            <div className="mb-3">
+                              <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">EXPERTISE</span>
+                              <p className="text-xs text-gray-600 mt-1 line-clamp-2">{agent.expertise}</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="px-4 pb-4 space-y-2">
+                          <button
+                            onClick={() => setSelectedAgentDetails(agent)}
+                            className="w-full border border-blue-500 text-blue-600 py-2 px-3 rounded text-xs font-medium hover:bg-blue-50 transition-colors"
+                          >
+                            🔍 View Full Details
+                          </button>
+                          <button
+                            onClick={() => handleAddAgent(agent)}
+                            disabled={addingAgents.has(agent.id)}
+                            className={`w-full py-2 px-3 rounded text-xs font-medium transition-colors ${
+                              addingAgents.has(agent.id)
+                                ? 'bg-gray-300 text-gray-500'
+                                : 'bg-purple-600 text-white hover:bg-purple-700'
+                            }`}
+                          >
+                            {addingAgents.has(agent.id) 
+                              ? 'Adding...'
+                              : addedAgents.has(agent.id) 
+                              ? 'Add Again' 
+                              : 'Add Agent'
+                            }
+                          </button>
                         </div>
                       </div>
                     ))}
