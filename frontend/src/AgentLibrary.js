@@ -1501,14 +1501,14 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
         technologyCategories.aiMachineLearning.agents[1] // Innovation optimist
       ]
     },
-    decision: {
-      name: "Decision Team",
-      icon: "⚖️", 
-      description: "Mediator, Skeptic, Optimist",
+    crypto: {
+      name: "Crypto Team",
+      icon: "₿", 
+      description: "Blockchain Expert, DeFi Specialist, Crypto Analyst",
       agents: [
-        healthcareCategories.medical.agents[2], // Dr. Katherine Vale - Mediator
-        financeCategories.riskManagement.agents[0], // Risk analyst - Skeptic
-        technologyCategories.aiMachineLearning.agents[1] // Innovation optimist
+        financeCategories.investmentBanking.agents[1], // Marcus Goldman - Finance expert who can handle crypto
+        technologyCategories.softwareEngineering.agents[1], // Tech expert for blockchain
+        financeCategories.riskManagement.agents[1] // Risk expert for crypto analysis
       ]
     }
   });
