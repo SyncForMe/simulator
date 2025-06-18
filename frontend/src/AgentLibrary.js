@@ -1760,9 +1760,9 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                       onClick={() => {
                         // Add a business strategy team
                         const businessTeam = [
-                          technologySectors.softwareEngineering.agents[0], // Tech leader
-                          financeSectors.consulting.agents[0], // Business strategist
-                          technologySectors.ai.agents[1] // Innovation optimist
+                          technologyCategories.softwareEngineering.agents[0], // Tech leader
+                          financeCategories.consulting.agents[0], // Business strategist
+                          technologyCategories.ai.agents[1] // Innovation optimist
                         ];
                         businessTeam.forEach(agent => handleAddAgent(agent));
                       }}
@@ -1777,8 +1777,8 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                         // Add a balanced decision team
                         const decisionTeam = [
                           healthcareCategories.medical.agents[2], // Dr. Katherine Vale - Mediator
-                          financeSectors.riskManagement.agents[0], // Risk analyst - Skeptic
-                          technologySectors.ai.agents[1] // Innovation optimist
+                          financeCategories.riskManagement.agents[0], // Risk analyst - Skeptic
+                          technologyCategories.ai.agents[1] // Innovation optimist
                         ];
                         decisionTeam.forEach(agent => handleAddAgent(agent));
                       }}
