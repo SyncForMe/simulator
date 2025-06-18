@@ -6194,7 +6194,7 @@ function App() {
           {/* Middle Column - Conversation & Scenario */}
           <div className="lg:col-span-2 space-y-6">
             {currentScenario && (
-              <CurrentScenarioCard currentScenario={currentScenario} autoExpand={true} />
+              <CurrentScenarioCard currentScenario={currentScenario} />
             )}
             
             <ConversationViewer 
