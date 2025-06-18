@@ -1482,6 +1482,40 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   const [selectedQuickTeam, setSelectedQuickTeam] = useState(null); // New state for quick team selection
   const timeoutRefs = useRef(new Map());
 
+  // Quick Team definitions
+  const quickTeams = {
+    research: {
+      name: "Research Team",
+      icon: "🔬",
+      description: "Scientist, Optimist, Leader",
+      agents: [
+        healthcareCategories.medical.agents[0], // Dr. Sarah Chen - Scientist
+        healthcareCategories.pharmaceutical.agents[1], // Dr. Amanda Wilson - Optimist
+        healthcareCategories.medical.agents[1] // Dr. Marcus Rodriguez - Leader
+      ]
+    },
+    business: {
+      name: "Business Team", 
+      icon: "💼",
+      description: "Strategist, Consultant, Innovator",
+      agents: [
+        technologyCategories.softwareEngineering.agents[0], // Tech leader
+        financeCategories.investmentBanking.agents[0], // Business strategist
+        technologyCategories.aiMachineLearning.agents[1] // Innovation optimist
+      ]
+    },
+    decision: {
+      name: "Decision Team",
+      icon: "⚖️", 
+      description: "Mediator, Skeptic, Optimist",
+      agents: [
+        healthcareCategories.medical.agents[2], // Dr. Katherine Vale - Mediator
+        financeCategories.riskManagement.agents[0], // Risk analyst - Skeptic
+        technologyCategories.aiMachineLearning.agents[1] // Innovation optimist
+      ]
+    }
+  };
+
   // Simple service worker registration for caching
   useEffect(() => {
     if ('serviceWorker' in navigator) {
