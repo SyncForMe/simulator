@@ -5175,6 +5175,11 @@ function App() {
   const isAdmin = user && user.email && user.email.toLowerCase() === 'dino@cytonic.com';
 
   // Get current scenario from simulation state
+  const currentScenarioText = simulationState?.scenario_name 
+    ? `${simulationState.scenario_name}: ${simulationState.scenario}`
+    : simulationState?.scenario || null;
+
+  // Get current scenario from simulation state
   const currentScenario = simulationState?.scenario_name 
     ? `${simulationState.scenario_name}: ${simulationState.scenario}`
     : simulationState?.scenario || null;
