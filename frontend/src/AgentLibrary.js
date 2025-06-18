@@ -1478,6 +1478,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [imageLoadingStates, setImageLoadingStates] = useState(new Map());
   const [isSectorsExpanded, setIsSectorsExpanded] = useState(true);
+  const [isQuickTeamBuildersExpanded, setIsQuickTeamBuildersExpanded] = useState(false);
   const timeoutRefs = useRef(new Map());
 
   // Simple service worker registration for caching
