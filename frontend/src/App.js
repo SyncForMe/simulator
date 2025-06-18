@@ -416,6 +416,13 @@ const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
             <span className="text-blue-600">📋</span>
             <h3 className="text-md font-semibold text-gray-800">Current Scenario</h3>
           </div>
+          <div className="flex items-center">
+            <span className={`text-gray-400 text-lg transition-transform duration-200 ${
+              isExpanded ? 'rotate-180' : 'rotate-0'
+            }`}>
+              ▼
+            </span>
+          </div>
         </div>
       </button>
       
