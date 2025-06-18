@@ -6073,18 +6073,24 @@ function App() {
             
             <ScenarioInput onSetScenario={handleSetScenario} currentScenario={currentScenario} onScenarioCollapse={handleScenarioCollapse} />
             
-            {/* Simple Conversation Generation Button */}
-            <div className="bg-white rounded-lg shadow-md p-4">
+            {/* Simulation Start Button */}
+            <div className="bg-white rounded-lg shadow-md p-6 border-2 border-blue-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">🚀 Start Simulation</h3>
               <button
                 onClick={handleGenerateConversation}
                 disabled={loading || agents.length < 2}
-                className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold text-lg shadow-lg"
               >
-                {loading ? 'Generating...' : '🗣️ Generate Conversation'}
+                {loading ? '⏳ Generating Conversation...' : '▶️ Start AI Team Discussion'}
               </button>
               {agents.length < 2 && (
-                <p className="text-sm text-gray-500 mt-2 text-center">
-                  Add at least 2 agents to generate conversations
+                <p className="text-sm text-gray-600 mt-3 text-center bg-yellow-50 p-2 rounded border">
+                  ⚠️ Add at least 2 agents to start the simulation
+                </p>
+              )}
+              {agents.length >= 2 && (
+                <p className="text-sm text-green-600 mt-3 text-center bg-green-50 p-2 rounded border">
+                  ✅ Ready to start! {agents.length} agents will participate
                 </p>
               )}
             </div>
