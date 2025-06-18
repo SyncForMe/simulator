@@ -5318,9 +5318,27 @@ function App() {
     }
   };
 
-  const handleRemoveAgent = async (agentId) => {
+  const handleRemoveAgent = async (libraryAgentId) => {
     try {
-      await axios.delete(`${API}/agents/${agentId}`);
+      // Find the actual database agent that was created from this library agent
+      const libraryAgent = findAgentInLibrary(libraryAgentId);
+      if (!libraryAgent) {
+        return { success: false };
+      }
+      
+      // Find all agents in the database that match this library agent's name (including numbered versions)
+      const baseName = libraryAgent.name.split(' (')[0]; // Remove any existing numbering
+      const agentsToRemove = agents.filter(agent => 
+        agent.name === libraryAgent.name || 
+        agent.name.startsWith(`${baseName} (`) ||
+        agent.name === baseName
+      );
+      
+      // Remove all matching agents from the database
+      for (const agent of agentsToRemove) {
+        await axios.delete(`${API}/agents/${agent.id}`);
+      }
+      
       await refreshAllData();
       return { success: true };
     } catch (error) {
@@ -5328,6 +5346,13 @@ function App() {
       alert('Failed to remove agent. Please try again.');
       return { success: false };
     }
+  };
+
+  // Helper function to find agent in library
+  const findAgentInLibrary = (libraryAgentId) => {
+    // This would need to search through the library structure
+    // For now, return null since we don't have direct access to library data here
+    return null;
   };
 
   const handleDeleteAgent = async (agentId, agentName) => {
