@@ -392,18 +392,26 @@ const ObserverLogo = () => {
 };
 
 const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false); // Default to collapsed
 
-  // Auto-expand when autoExpand prop is true
-  useEffect(() => {
-    if (autoExpand) {
-      setIsExpanded(true);
-    }
-  }, [autoExpand]);
+  // Don't auto-expand by default, let user control it
+  // Removed auto-expand functionality to keep it collapsed by default
 
   if (!currentScenario) {
     return null;
   }
+
+  // Extract scenario title (before the colon) for collapsed state
+  const getScenarioTitle = () => {
+    const colonIndex = currentScenario.indexOf(':');
+    if (colonIndex > 0) {
+      return currentScenario.substring(0, colonIndex).trim();
+    }
+    // Fallback: use first 50 characters if no colon
+    return currentScenario.length > 50 
+      ? currentScenario.substring(0, 50).trim() + '...'
+      : currentScenario.trim();
+  };
 
   return (
     <div className="current-scenario-card bg-white rounded-lg shadow-md mb-4 overflow-hidden">
@@ -414,7 +422,9 @@ const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-blue-600">📋</span>
-            <h3 className="text-md font-semibold text-gray-800">Current Scenario</h3>
+            <h3 className="text-md font-semibold text-gray-800">
+              {isExpanded ? 'Current Scenario' : getScenarioTitle()}
+            </h3>
           </div>
           <button
             type="button"
