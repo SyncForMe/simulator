@@ -6063,6 +6063,7 @@ function App() {
             onAgentCreated={handleCreateAgent}
             onSaveAgent={handleSaveAgent}
             onAddAgent={handleCreateAgent}
+            onRemoveAgent={handleRemoveAgent}
           />
         ) : activeTab === 'admin' ? (
           <AdminDashboard />
