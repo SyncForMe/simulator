@@ -1865,14 +1865,14 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                   
                   <button
                     onClick={() => {
-                      setSelectedQuickTeam('decision');
+                      setSelectedQuickTeam('crypto');
                       setSelectedSector(null);
                       setSelectedCategory(null);
                     }}
                     className="w-full text-left p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
                   >
-                    <span className="text-lg mr-2">⚖️</span>
-                    Decision Team
+                    <span className="text-lg mr-2">₿</span>
+                    Crypto Team
                   </button>
                 </div>
               )}
