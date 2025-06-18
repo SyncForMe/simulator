@@ -1671,6 +1671,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
       newSet.delete(agent.id);
       return newSet;
     });
+  };
 
   const handleRemoveAgent = async (agent) => {
     if (!onRemoveAgent) return;
