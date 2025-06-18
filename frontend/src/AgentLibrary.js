@@ -1978,13 +1978,13 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                       ← Back
                     </button>
                     <h3 className="text-xl font-bold text-gray-800">
-                      {currentCategory.icon} {currentCategory.name}
+                      {sectors[selectedSector].categories[selectedCategory].icon} {sectors[selectedSector].categories[selectedCategory].name}
                     </h3>
                   </div>
 
-                  {currentCategory.agents.length > 0 ? (
+                  {sectors[selectedSector].categories[selectedCategory].agents.length > 0 ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 agent-grid">
-                      {currentCategory.agents.map((agent) => (
+                      {sectors[selectedSector].categories[selectedCategory].agents.map((agent) => (
                         <div key={agent.id} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow relative">
                           {/* Green "added" badge and red X in top right */}
                           {addedAgents.has(agent.id) && (
