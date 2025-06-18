@@ -1672,6 +1672,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
       return newSet;
     });
   };
+  };
 
   const handleRemoveAgent = async (agent) => {
     if (!onRemoveAgent) return;
