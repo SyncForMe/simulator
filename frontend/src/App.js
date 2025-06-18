@@ -5289,15 +5289,7 @@ function App() {
       console.log('Agent created successfully:', response.data);
       await refreshAllData();
       
-      // Create a more informative success message
-      let avatarMessage = '';
-      if (agentData.avatar_url) {
-        avatarMessage = ' Preview image used as avatar.';
-      } else if (agentData.avatar_prompt) {
-        avatarMessage = ' Avatar generated from prompt.';
-      }
-      
-      alert(`✅ Agent "${agentData.name}" created successfully!${avatarMessage}`);
+      // Agent created successfully - no popup needed, button will show "✅ Added"
     } catch (error) {
       console.error('Error creating agent:', error);
       console.error('Error details:', error.response?.data);
