@@ -1468,13 +1468,12 @@ const sectors = {
 const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   // Don't render if not open
   if (!isOpen) return null;
-  const { token } = useAuth();
+
+  const { user } = useAuth();
   const [selectedSector, setSelectedSector] = useState('healthcare');
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAgentDetails, setSelectedAgentDetails] = useState(null);
   const [addingAgents, setAddingAgents] = useState(new Set());
-  const [isQuickTeamBuilderExpanded, setIsQuickTeamBuilderExpanded] = useState(false);
-  const [collapsedCategories, setCollapsedCategories] = useState(new Set());
   const [addedAgents, setAddedAgents] = useState(new Set());
   const [loadedImages, setLoadedImages] = useState(new Set());
   const [imageLoadingStates, setImageLoadingStates] = useState(new Map());
