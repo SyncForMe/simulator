@@ -1277,7 +1277,6 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
               )}
               <span>{uploading ? 'Uploading...' : 'Attach files'}</span>
             </label>
-          </div>
 
               {/* View uploaded files button */}
               {uploadedFiles.length > 0 && (
@@ -1303,7 +1302,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                 </button>
               )}
             </div>
-          </div>
+        </div>
           
           {/* Enhanced Status Messages */}
           {isRecording && (
