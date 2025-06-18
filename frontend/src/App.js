@@ -422,29 +422,71 @@ const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
       {isExpanded && (
         <div className="px-4 pb-4 border-t border-gray-100">
           <div className="mt-3 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-            <div className="scenario-content text-gray-700 leading-relaxed space-y-3">
-              {currentScenario.split('. ').map((sentence, index) => {
-                const trimmedSentence = sentence.trim();
-                if (!trimmedSentence) return null;
+            <div className="scenario-content text-gray-700 leading-relaxed space-y-4">
+              {(() => {
+                // Split scenario at the first colon to separate title from content
+                const colonIndex = currentScenario.indexOf(':');
                 
-                // Add period back if it was removed by split
-                const formattedSentence = trimmedSentence.endsWith('.') ? trimmedSentence : trimmedSentence + '.';
-                
-                // Check if this looks like a title (first sentence or short sentence)
-                const isTitle = index === 0 || formattedSentence.length < 80;
-                
-                // Check for sentences that should be bold (containing numbers, percentages, or key terms)
-                const shouldBeBold = /(\$[\d,]+|\d+%|\d+ million|\d+ billion|CEO|emergency|crisis|investigation|lawsuit)/i.test(formattedSentence);
-                
-                return (
-                  <p key={index} className={`
-                    ${isTitle ? 'text-lg font-bold text-gray-900 mb-2' : 'text-sm mb-1'}
-                    ${shouldBeBold && !isTitle ? 'font-semibold text-gray-800' : ''}
-                  `}>
-                    {formattedSentence}
-                  </p>
-                );
-              })}
+                if (colonIndex > 0) {
+                  // Extract title and content
+                  const title = currentScenario.substring(0, colonIndex).trim();
+                  const content = currentScenario.substring(colonIndex + 1).trim();
+                  
+                  return (
+                    <>
+                      {/* Scenario Title */}
+                      <h2 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
+                        {title}
+                      </h2>
+                      
+                      {/* Scenario Content */}
+                      <div className="space-y-2">
+                        {content.split('. ').map((sentence, index) => {
+                          const trimmedSentence = sentence.trim();
+                          if (!trimmedSentence) return null;
+                          
+                          // Add period back if it was removed by split
+                          const formattedSentence = trimmedSentence.endsWith('.') ? trimmedSentence : trimmedSentence + '.';
+                          
+                          // Check for sentences that should be bold (containing numbers, percentages, or key terms)
+                          const shouldBeBold = /(\$[\d,]+|\d+%|\d+ million|\d+ billion|CEO|emergency|crisis|investigation|lawsuit)/i.test(formattedSentence);
+                          
+                          return (
+                            <p key={index} className={`text-sm leading-relaxed ${
+                              shouldBeBold ? 'font-semibold text-gray-800' : 'text-gray-700'
+                            }`}>
+                              {formattedSentence}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                } else {
+                  // Fallback for scenarios without colons
+                  return (
+                    <div className="space-y-2">
+                      {currentScenario.split('. ').map((sentence, index) => {
+                        const trimmedSentence = sentence.trim();
+                        if (!trimmedSentence) return null;
+                        
+                        const formattedSentence = trimmedSentence.endsWith('.') ? trimmedSentence : trimmedSentence + '.';
+                        const isTitle = index === 0;
+                        const shouldBeBold = /(\$[\d,]+|\d+%|\d+ million|\d+ billion|CEO|emergency|crisis|investigation|lawsuit)/i.test(formattedSentence);
+                        
+                        return (
+                          <p key={index} className={`
+                            ${isTitle ? 'text-xl font-bold text-gray-900 mb-3' : 'text-sm mb-1'}
+                            ${shouldBeBold && !isTitle ? 'font-semibold text-gray-800' : 'text-gray-700'}
+                          `}>
+                            {formattedSentence}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  );
+                }
+              })()}
             </div>
           </div>
         </div>
