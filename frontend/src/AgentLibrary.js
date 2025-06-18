@@ -1465,7 +1465,7 @@ const sectors = {
   }
 };
 
-const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
+const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   // Don't render if not open
   if (!isOpen) return null;
   const { token } = useAuth();
