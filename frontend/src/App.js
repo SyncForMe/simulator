@@ -5194,6 +5194,21 @@ function App() {
     }
   }, []);
 
+  // Add error handling to prevent crashes
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('error', (event) => {
+        console.error('🚨 Window Error:', event.error);
+        console.error('🚨 Error details:', {
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno
+        });
+      });
+    }
+  }, []);
+
   const handleTestBackgrounds = async () => {
     setLoading(true);
     try {
