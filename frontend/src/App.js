@@ -955,7 +955,23 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
       setUploadError('Failed to upload files. Please try again.');
     }
     
-    setUploading(false);
+  };
+
+  const removeFile = async (fileId) => {
+    try {
+      await axios.delete(`${API}/scenario/uploads/${fileId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Refresh uploaded files list
+      const updatedResponse = await axios.get(`${API}/scenario/uploads`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUploadedFiles(updatedResponse.data);
+    } catch (error) {
+      console.error('Error removing file:', error);
+      setUploadError('Failed to remove file. Please try again.');
+    }
   };
 
   const startRecording = async () => {
