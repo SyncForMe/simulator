@@ -1218,8 +1218,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                 <button
                   type="button"
                   onClick={startRecording}
-                  disabled={loading || justSubmitted || randomLoading}
-                  className="w-6 h-6 text-gray-600 hover:text-gray-800 disabled:opacity-50 transition-colors flex items-center justify-center"
+                  className="w-6 h-6 text-gray-600 hover:text-gray-800 transition-colors flex items-center justify-center"
                   title="Voice input"
                 >
                   <svg
@@ -1250,31 +1249,35 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                   </svg>
                 </button>
               )}
-
-              {/* Upload button */}
-              <label className="w-6 h-6 text-gray-600 hover:text-gray-800 disabled:opacity-50 transition-colors flex items-center justify-center cursor-pointer" title="Upload files">
-                <input
-                  type="file"
-                  multiple
-                  accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg,.gif"
-                  onChange={handleFileUpload}
-                  disabled={loading || justSubmitted || randomLoading || uploading}
-                  className="hidden"
-                />
-                {uploading ? (
-                  <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-full h-full"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-                    <path d="M12,11L16,15H13V19H11V15H8L12,11Z"/>
-                  </svg>
-                )}
-              </label>
+            </div>
+          </div>
+          
+          {/* Attachment Upload - Moved beneath textarea */}
+          <div className="mt-2 flex items-center space-x-2">
+            <label className="flex items-center space-x-1 text-gray-600 hover:text-gray-800 transition-colors cursor-pointer text-sm" title="Upload files">
+              <input
+                type="file"
+                multiple
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg,.gif"
+                onChange={handleFileUpload}
+                disabled={loading || justSubmitted || randomLoading || uploading}
+                className="hidden"
+              />
+              {uploading ? (
+                <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-4 h-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 0 1 5 0v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5a2.5 2.5 0 0 0 5 0V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.31 2.69 6 6 6s6-2.69 6-6V6h-2.5z"/>
+                </svg>
+              )}
+              <span>{uploading ? 'Uploading...' : 'Attach files'}</span>
+            </label>
+          </div>
 
               {/* View uploaded files button */}
               {uploadedFiles.length > 0 && (
