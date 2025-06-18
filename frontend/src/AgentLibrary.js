@@ -1850,7 +1850,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                               }`}
                             >
                               {addedAgents.has(agent.id) 
-                                ? '✅ Added' 
+                                ? 'Added' 
                                 : addingAgents.has(agent.id) 
                                 ? 'Adding...' 
                                 : 'Add Agent'
