@@ -6042,6 +6042,62 @@ function App() {
 
 // Wrap App with AuthProvider and Error Boundary
 const AppWithAuth = () => {
+  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const handleError = (error, errorInfo) => {
+      console.error('🚨 App Error:', error);
+      console.error('🚨 Error Info:', errorInfo);
+      setHasError(true);
+      setError(error);
+    };
+
+    window.addEventListener('error', (event) => {
+      console.error('🚨 Global Error:', event.error);
+      setHasError(true);
+      setError(event.error);
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('🚨 Unhandled Promise Rejection:', event.reason);
+      setHasError(true);
+      setError(event.reason);
+    });
+  }, []);
+
+  if (hasError) {
+    return (
+      <div style={{ 
+        padding: '20px', 
+        backgroundColor: '#fee', 
+        border: '1px solid #fcc',
+        margin: '20px',
+        borderRadius: '8px'
+      }}>
+        <h2>⚠️ Application Error</h2>
+        <p>Something went wrong. Please check the console for details.</p>
+        <pre style={{ backgroundColor: '#f5f5f5', padding: '10px', fontSize: '12px' }}>
+          {error?.toString()}
+        </pre>
+        <button 
+          onClick={() => window.location.reload()}
+          style={{ 
+            backgroundColor: '#007cba', 
+            color: 'white', 
+            padding: '10px 20px', 
+            border: 'none', 
+            borderRadius: '4px',
+            cursor: 'pointer',
+            marginTop: '10px'
+          }}
+        >
+          Reload Page
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <AuthProvider>
