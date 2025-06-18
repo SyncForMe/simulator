@@ -6032,7 +6032,7 @@ function App() {
           <AgentLibrary 
             isOpen={true}
             onClose={() => setActiveTab('home')}
-            onAgentCreated={handleAgentCreated}
+            onAgentCreated={handleCreateAgent}
             onSaveAgent={handleSaveAgent}
           />
         ) : activeTab === 'admin' ? (
