@@ -1778,13 +1778,9 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                 <div className="space-y-2 mb-6">
                   <button
                     onClick={() => {
-                      // Add a diverse research team
-                      const researchTeam = [
-                        healthcareCategories.medical.agents[0], // Dr. Sarah Chen - Scientist
-                        healthcareCategories.pharmaceutical.agents[1], // Dr. Amanda Wilson - Optimist
-                        healthcareCategories.medical.agents[1] // Dr. Marcus Rodriguez - Leader
-                      ];
-                      researchTeam.forEach(agent => handleAddAgent(agent));
+                      setSelectedQuickTeam('research');
+                      setSelectedSector(null);
+                      setSelectedCategory(null);
                     }}
                     className="w-full text-left p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
                   >
@@ -1794,13 +1790,9 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                   
                   <button
                     onClick={() => {
-                      // Add a business strategy team
-                      const businessTeam = [
-                        technologyCategories.softwareEngineering.agents[0], // Tech leader
-                        financeCategories.investmentBanking.agents[0], // Business strategist
-                        technologyCategories.aiMachineLearning.agents[1] // Innovation optimist
-                      ];
-                      businessTeam.forEach(agent => handleAddAgent(agent));
+                      setSelectedQuickTeam('business');
+                      setSelectedSector(null);
+                      setSelectedCategory(null);
                     }}
                     className="w-full text-left p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
                   >
@@ -1810,13 +1802,9 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                   
                   <button
                     onClick={() => {
-                      // Add a balanced decision team
-                      const decisionTeam = [
-                        healthcareCategories.medical.agents[2], // Dr. Katherine Vale - Mediator
-                        financeCategories.riskManagement.agents[0], // Risk analyst - Skeptic
-                        technologyCategories.aiMachineLearning.agents[1] // Innovation optimist
-                      ];
-                      decisionTeam.forEach(agent => handleAddAgent(agent));
+                      setSelectedQuickTeam('decision');
+                      setSelectedSector(null);
+                      setSelectedCategory(null);
                     }}
                     className="w-full text-left p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
                   >
