@@ -1480,10 +1480,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   const [isSectorsExpanded, setIsSectorsExpanded] = useState(true);
   const [isQuickTeamBuildersExpanded, setIsQuickTeamBuildersExpanded] = useState(false);
   const [selectedQuickTeam, setSelectedQuickTeam] = useState(null); // New state for quick team selection
-  const timeoutRefs = useRef(new Map());
-
-  // Quick Team definitions
-  const quickTeams = {
+  const [quickTeams, setQuickTeams] = useState({
     research: {
       name: "Research Team",
       icon: "🔬",
@@ -1514,7 +1511,8 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
         technologyCategories.aiMachineLearning.agents[1] // Innovation optimist
       ]
     }
-  };
+  });
+  const timeoutRefs = useRef(new Map());
 
   // Simple service worker registration for caching
   useEffect(() => {
