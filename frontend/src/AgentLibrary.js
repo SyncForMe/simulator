@@ -1840,6 +1840,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                       onClick={() => {
                         setSelectedSector(key);
                         setSelectedCategory(null);
+                        setSelectedQuickTeam(null); // Clear quick team selection
                       }}
                       className={`w-full text-left p-3 rounded-lg transition-colors ${
                         selectedSector === key
