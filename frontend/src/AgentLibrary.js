@@ -1729,6 +1729,71 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
     }
   };
 
+  // Function to generate new quick teams with random agents
+  const generateNewQuickTeam = (teamType) => {
+    const allAgents = [
+      ...Object.values(healthcareCategories).flatMap(cat => cat.agents),
+      ...Object.values(financeCategories).flatMap(cat => cat.agents),
+      ...Object.values(technologyCategories).flatMap(cat => cat.agents)
+    ];
+
+    let newTeam = [];
+    if (teamType === 'research') {
+      // Research team: 1 scientist, 1 optimist, 1 leader
+      const scientists = allAgents.filter(agent => agent.archetype === 'scientist');
+      const optimists = allAgents.filter(agent => agent.archetype === 'optimist');
+      const leaders = allAgents.filter(agent => agent.archetype === 'leader');
+      
+      newTeam = [
+        scientists[Math.floor(Math.random() * scientists.length)],
+        optimists[Math.floor(Math.random() * optimists.length)],
+        leaders[Math.floor(Math.random() * leaders.length)]
+      ].filter(Boolean);
+    } else if (teamType === 'business') {
+      // Business team: varied business-oriented agents
+      const businessAgents = allAgents.filter(agent => 
+        agent.expertise?.toLowerCase().includes('business') ||
+        agent.expertise?.toLowerCase().includes('finance') ||
+        agent.expertise?.toLowerCase().includes('strategy') ||
+        agent.archetype === 'leader'
+      );
+      
+      newTeam = [
+        businessAgents[Math.floor(Math.random() * businessAgents.length)],
+        businessAgents[Math.floor(Math.random() * businessAgents.length)],
+        businessAgents[Math.floor(Math.random() * businessAgents.length)]
+      ].filter(Boolean);
+    } else if (teamType === 'decision') {
+      // Decision team: 1 mediator, 1 skeptic, 1 optimist
+      const mediators = allAgents.filter(agent => agent.archetype === 'mediator');
+      const skeptics = allAgents.filter(agent => agent.archetype === 'skeptic');
+      const optimists = allAgents.filter(agent => agent.archetype === 'optimist');
+      
+      newTeam = [
+        mediators.length > 0 ? mediators[Math.floor(Math.random() * mediators.length)] : allAgents[Math.floor(Math.random() * allAgents.length)],
+        skeptics.length > 0 ? skeptics[Math.floor(Math.random() * skeptics.length)] : allAgents[Math.floor(Math.random() * allAgents.length)],
+        optimists.length > 0 ? optimists[Math.floor(Math.random() * optimists.length)] : allAgents[Math.floor(Math.random() * allAgents.length)]
+      ].filter(Boolean);
+    }
+
+    // Fill up to 3 agents if we don't have enough
+    while (newTeam.length < 3) {
+      const randomAgent = allAgents[Math.floor(Math.random() * allAgents.length)];
+      if (!newTeam.find(agent => agent.id === randomAgent.id)) {
+        newTeam.push(randomAgent);
+      }
+    }
+
+    // Update the quick team with new agents
+    setQuickTeams(prev => ({
+      ...prev,
+      [teamType]: {
+        ...prev[teamType],
+        agents: newTeam
+      }
+    }));
+  };
+
   const currentSector = sectors[selectedSector];
   const currentCategory = selectedCategory ? currentSector.categories[selectedCategory] : null;
 
