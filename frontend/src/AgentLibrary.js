@@ -1751,10 +1751,10 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                       ];
                       researchTeam.forEach(agent => handleAddAgent(agent));
                     }}
-                    className="w-full text-left p-2 text-xs bg-blue-50 hover:bg-blue-100 rounded border border-blue-200 transition-colors"
+                    className="w-full text-left p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
                   >
-                    🔬 <strong>Research Team</strong><br/>
-                    <span className="text-gray-600">Scientist, Optimist, Leader</span>
+                    <span className="text-lg mr-2">🔬</span>
+                    Research Team
                   </button>
                   
                   <button
@@ -1767,10 +1767,10 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                       ];
                       businessTeam.forEach(agent => handleAddAgent(agent));
                     }}
-                    className="w-full text-left p-2 text-xs bg-green-50 hover:bg-green-100 rounded border border-green-200 transition-colors"
+                    className="w-full text-left p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
                   >
-                    💼 <strong>Business Team</strong><br/>
-                    <span className="text-gray-600">Strategist, Consultant, Innovator</span>
+                    <span className="text-lg mr-2">💼</span>
+                    Business Team
                   </button>
                   
                   <button
@@ -1783,10 +1783,10 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
                       ];
                       decisionTeam.forEach(agent => handleAddAgent(agent));
                     }}
-                    className="w-full text-left p-2 text-xs bg-purple-50 hover:bg-purple-100 rounded border border-purple-200 transition-colors"
+                    className="w-full text-left p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100"
                   >
-                    ⚖️ <strong>Decision Team</strong><br/>
-                    <span className="text-gray-600">Mediator, Skeptic, Optimist</span>
+                    <span className="text-lg mr-2">⚖️</span>
+                    Decision Team
                   </button>
                 </div>
               )}
