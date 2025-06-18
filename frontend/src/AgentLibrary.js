@@ -1786,7 +1786,15 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                   {currentCategory.agents.length > 0 ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 agent-grid">
                       {currentCategory.agents.map((agent) => (
-                        <div key={agent.id} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                        <div key={agent.id} className="bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow relative">
+                          {/* Green "added" badge in top right */}
+                          {addedAgents.has(agent.id) && (
+                            <div className="absolute top-2 right-2 z-10">
+                              <div className="bg-transparent border border-green-500 text-green-600 text-xs font-medium px-2 py-1 rounded-full">
+                                added
+                              </div>
+                            </div>
+                          )}
                           <div className="p-4">
                             <div className="flex items-start space-x-3">
                               <img
