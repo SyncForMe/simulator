@@ -1677,7 +1677,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
     if (!onRemoveAgent) return;
     
     try {
-      const result = await onRemoveAgent(agent.id);
+      const result = await onRemoveAgent(agent); // Pass full agent object
       if (result && result.success) {
         setAddedAgents(prev => {
           const newSet = new Set(prev);
