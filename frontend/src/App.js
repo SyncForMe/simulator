@@ -6120,12 +6120,9 @@ function App() {
 
           {/* Right Column - Documents & Translation */}
           <div className="lg:col-span-1">
-            <FileCenter />
-            
-            {/* Translation functionality will be added later */}
+              </div>
+            </div>
           </div>
-        </div>
-        </>
         )}
 
         {/* Pre-Configuration Modal */}
