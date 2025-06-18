@@ -6175,8 +6175,6 @@ function App() {
               <CurrentScenarioCard currentScenario={currentScenario} autoExpand={true} />
             )}
             
-            <ScenarioInput onSetScenario={handleSetScenario} currentScenario={currentScenario} onScenarioCollapse={handleScenarioCollapse} />
-            
             {/* Start New Simulation Button */}
             <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg shadow-md p-4 border-2 border-green-200">
               <button
