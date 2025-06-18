@@ -421,10 +421,31 @@ const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
       
       {isExpanded && (
         <div className="px-4 pb-4 border-t border-gray-100">
-          <div className="mt-3 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-            <p className="text-sm text-gray-700 leading-relaxed">
-              {currentScenario}
-            </p>
+          <div className="mt-3 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+            <div className="scenario-content text-gray-700 leading-relaxed space-y-3">
+              {currentScenario.split('. ').map((sentence, index) => {
+                const trimmedSentence = sentence.trim();
+                if (!trimmedSentence) return null;
+                
+                // Add period back if it was removed by split
+                const formattedSentence = trimmedSentence.endsWith('.') ? trimmedSentence : trimmedSentence + '.';
+                
+                // Check if this looks like a title (first sentence or short sentence)
+                const isTitle = index === 0 || formattedSentence.length < 80;
+                
+                // Check for sentences that should be bold (containing numbers, percentages, or key terms)
+                const shouldBeBold = /(\$[\d,]+|\d+%|\d+ million|\d+ billion|CEO|emergency|crisis|investigation|lawsuit)/i.test(formattedSentence);
+                
+                return (
+                  <p key={index} className={`
+                    ${isTitle ? 'text-lg font-bold text-gray-900 mb-2' : 'text-sm mb-1'}
+                    ${shouldBeBold && !isTitle ? 'font-semibold text-gray-800' : ''}
+                  `}>
+                    {formattedSentence}
+                  </p>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
