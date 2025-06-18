@@ -1884,7 +1884,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent }) => {
                               {addingAgents.has(agent.id) 
                                 ? 'Adding...'
                                 : addedAgents.has(agent.id) 
-                                ? 'Added' 
+                                ? 'Add Again' 
                                 : 'Add Agent'
                               }
                             </button>
