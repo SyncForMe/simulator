@@ -5374,17 +5374,20 @@ function App() {
         finalAgentData.name = `${agentData.name} (${highestNum + 1})`;
       }
       
-      console.log('Creating agent:', finalAgentData);
-      console.log('API URL:', `${API}/agents`);
+      console.log('🎯 Creating agent:', finalAgentData);
+      console.log('🎯 API URL:', `${API}/agents`);
       const response = await axios.post(`${API}/agents`, finalAgentData);
-      console.log('Agent created successfully:', response.data);
-      await refreshAllData();
+      console.log('✅ Agent created successfully:', response.data);
+      
+      // Refresh agents immediately
+      await fetchAgents();
+      console.log('🔄 Agents refreshed, current count:', agents.length);
       
       // Return success indicator for AgentLibrary
       return { success: true };
     } catch (error) {
-      console.error('Error creating agent:', error);
-      console.error('Error details:', error.response?.data);
+      console.error('❌ Error creating agent:', error);
+      console.error('❌ Error details:', error.response?.data);
       alert('Failed to create agent. Please try again.');
       throw error;
     }
