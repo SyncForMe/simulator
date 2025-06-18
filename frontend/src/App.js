@@ -6182,6 +6182,13 @@ function App() {
               <CurrentScenarioCard currentScenario={currentScenario} autoExpand={true} />
             )}
             
+            <ConversationViewer 
+              conversations={conversations}
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+              audioNarrativeEnabled={audioNarrativeEnabled}
+            />
+            
             {/* Start New Simulation Button */}
             <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg shadow-md p-4 border-2 border-green-200">
               <button
@@ -6216,13 +6223,6 @@ function App() {
                 </p>
               )}
             </div>
-            
-            <ConversationViewer 
-              conversations={conversations}
-              selectedLanguage={selectedLanguage}
-              onLanguageChange={handleLanguageChange}
-              audioNarrativeEnabled={audioNarrativeEnabled}
-            />
           </div>
 
           {/* Right Column - Custom Scenario & Documents */}
