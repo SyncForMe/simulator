@@ -573,7 +573,6 @@ const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
     </div>
   );
 };
-};
 
 
 
