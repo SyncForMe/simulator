@@ -7318,6 +7318,184 @@ async def delete_documents_bulk(
         logging.error(f"Error deleting documents: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete documents: {str(e)}")
 
+@api_router.get("/analytics/comprehensive")
+async def get_comprehensive_analytics(current_user: User = Depends(get_current_user)):
+    """Get comprehensive analytics for the authenticated user"""
+    try:
+        user_id = current_user.id
+        
+        # Get date ranges
+        today = datetime.utcnow()
+        thirty_days_ago = today - timedelta(days=30)
+        seven_days_ago = today - timedelta(days=7)
+        
+        # 1. Conversation Analytics
+        total_conversations = await db.conversation_history.count_documents({"user_id": user_id})
+        conversations_this_week = await db.conversation_history.count_documents({
+            "user_id": user_id,
+            "timestamp": {"$gte": seven_days_ago}
+        })
+        conversations_this_month = await db.conversation_history.count_documents({
+            "user_id": user_id,
+            "timestamp": {"$gte": thirty_days_ago}
+        })
+        
+        # 2. Agent Analytics
+        total_agents = await db.saved_agents.count_documents({"user_id": user_id})
+        agents_this_week = await db.saved_agents.count_documents({
+            "user_id": user_id,
+            "created_at": {"$gte": seven_days_ago}
+        })
+        
+        # 3. Document Analytics
+        total_documents = await db.documents.count_documents({"user_id": user_id})
+        documents_this_week = await db.documents.count_documents({
+            "user_id": user_id,
+            "created_at": {"$gte": seven_days_ago}
+        })
+        
+        # 4. Daily activity over last 30 days
+        daily_activity = []
+        for i in range(30):
+            day = thirty_days_ago + timedelta(days=i)
+            day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
+            day_end = day_start + timedelta(days=1)
+            
+            conversations_count = await db.conversation_history.count_documents({
+                "user_id": user_id,
+                "timestamp": {"$gte": day_start, "$lt": day_end}
+            })
+            
+            daily_activity.append({
+                "date": day.strftime("%Y-%m-%d"),
+                "conversations": conversations_count
+            })
+        
+        # 5. Agent usage statistics
+        agent_usage = []
+        saved_agents = await db.saved_agents.find({"user_id": user_id}).to_list(length=100)
+        for agent in saved_agents:
+            usage_count = agent.get("usage_count", 0)
+            agent_usage.append({
+                "name": agent.get("name", "Unknown"),
+                "usage_count": usage_count,
+                "archetype": agent.get("archetype", "unknown")
+            })
+        
+        # Sort by usage
+        agent_usage.sort(key=lambda x: x["usage_count"], reverse=True)
+        
+        # 6. Scenario distribution
+        scenarios_pipeline = [
+            {"$match": {"user_id": user_id}},
+            {"$group": {"_id": "$scenario_name", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}},
+            {"$limit": 10}
+        ]
+        
+        scenario_distribution = []
+        async for doc in db.conversation_history.aggregate(scenarios_pipeline):
+            scenario_distribution.append({
+                "scenario": doc["_id"] or "Unnamed Scenario",
+                "count": doc["count"]
+            })
+        
+        # 7. API usage over time
+        api_usage_pipeline = [
+            {"$match": {"date": {"$gte": thirty_days_ago.strftime("%Y-%m-%d")}}},
+            {"$sort": {"date": 1}}
+        ]
+        
+        api_usage_history = []
+        async for doc in db.api_usage.aggregate(api_usage_pipeline):
+            api_usage_history.append({
+                "date": doc["date"],
+                "requests": doc.get("requests_used", 0)
+            })
+        
+        # 8. Current API status
+        current_usage = await llm_manager.get_usage_today()
+        
+        return {
+            "summary": {
+                "total_conversations": total_conversations,
+                "conversations_this_week": conversations_this_week,
+                "conversations_this_month": conversations_this_month,
+                "total_agents": total_agents,
+                "agents_this_week": agents_this_week,
+                "total_documents": total_documents,
+                "documents_this_week": documents_this_week
+            },
+            "daily_activity": daily_activity,
+            "agent_usage": agent_usage[:10],  # Top 10 most used agents
+            "scenario_distribution": scenario_distribution,
+            "api_usage": {
+                "current_usage": current_usage,
+                "max_requests": llm_manager.max_daily_requests,
+                "remaining": llm_manager.max_daily_requests - current_usage,
+                "history": api_usage_history
+            },
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logging.error(f"Error getting comprehensive analytics: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get analytics: {str(e)}")
+
+@api_router.get("/analytics/weekly-summary")
+async def get_weekly_summary(current_user: User = Depends(get_current_user)):
+    """Get weekly analytics summary"""
+    try:
+        user_id = current_user.id
+        today = datetime.utcnow()
+        seven_days_ago = today - timedelta(days=7)
+        
+        # Get weekly counts
+        conversations_count = await db.conversation_history.count_documents({
+            "user_id": user_id,
+            "timestamp": {"$gte": seven_days_ago}
+        })
+        
+        agents_created = await db.saved_agents.count_documents({
+            "user_id": user_id,
+            "created_at": {"$gte": seven_days_ago}
+        })
+        
+        documents_created = await db.documents.count_documents({
+            "user_id": user_id,
+            "created_at": {"$gte": seven_days_ago}
+        })
+        
+        # Get most active days
+        daily_counts = {}
+        for i in range(7):
+            day = seven_days_ago + timedelta(days=i)
+            day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
+            day_end = day_start + timedelta(days=1)
+            
+            count = await db.conversation_history.count_documents({
+                "user_id": user_id,
+                "timestamp": {"$gte": day_start, "$lt": day_end}
+            })
+            
+            daily_counts[day.strftime("%A")] = count
+        
+        most_active_day = max(daily_counts, key=daily_counts.get) if daily_counts else "No activity"
+        
+        return {
+            "period": "Last 7 days",
+            "conversations": conversations_count,
+            "agents_created": agents_created,
+            "documents_created": documents_created,
+            "most_active_day": most_active_day,
+            "daily_breakdown": daily_counts,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logging.error(f"Error getting weekly summary: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get weekly summary: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
