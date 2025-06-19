@@ -270,26 +270,36 @@ const VoiceInput = ({
         }`}
         whileHover={!disabled && !isProcessing && !isDisabledDueToAuth ? { scale: 1.1 } : {}}
         whileTap={!disabled && !isProcessing && !isDisabledDueToAuth ? { scale: 0.95 } : {}}
-        title={isDisabledDueToAuth ? "Voice input requires authentication - click 'Continue as Guest' to enable" : `Voice input for ${fieldType}`}>
+        title={isDisabledDueToAuth ? "Voice input requires authentication - click 'Continue as Guest' to enable" : `Voice input for ${fieldType}`}
+      >
         {!isRecording && !isProcessing ? (
-        <button
-          type="button"
-          onClick={stopRecording}
-          className={`${sizeClasses[size]} text-red-600 hover:text-red-700 transition-colors animate-pulse flex items-center justify-center`}
-          title="Stop recording"
-        >
-          <MicrophoneIcon className="w-full h-full" />
-        </button>
-      ) : (
-        <button
-          type="button"
-          disabled={true}
-          className={`${sizeClasses[size]} text-gray-400 flex items-center justify-center`}
-          title="Processing..."
-        >
-          <MicrophoneIcon className="w-full h-full" />
-        </button>
-      )}
+          <MicrophoneIcon className="w-4 h-4" />
+        ) : isRecording ? (
+          <motion.div
+            initial={{ scale: 1 }}
+            animate={{ 
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              stiffness: 60,
+              damping: 20
+            }}
+            className="w-4 h-4"
+          >
+            <MicrophoneIcon className="w-full h-full" />
+          </motion.div>
+        ) : (
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="w-4 h-4"
+          >
+            <div className="w-full h-full border-2 border-white border-t-transparent rounded-full"></div>
+          </motion.div>
+        )}
+      </motion.button>
       
       {error && (
         <div className="absolute top-full left-0 mt-1 bg-red-100 text-red-700 text-xs px-2 py-1 rounded shadow-lg z-10 whitespace-nowrap">
