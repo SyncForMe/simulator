@@ -1656,7 +1656,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                 💡 Agents will use these files for context and reference during conversations.
               </div>
             </div>
-          )}
+          )
 
         <div className="space-y-2">
           <button
