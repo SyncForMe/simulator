@@ -7943,6 +7943,13 @@ function App() {
         onFastForward={handleFastForward}
       />
 
+      {/* Fast Forward Modal */}
+      <FastForwardModal 
+        isOpen={showFastForward}
+        onClose={() => setShowFastForward(false)}
+        onFastForward={handleFastForward}
+      />
+
       {/* Analytics Modal */}
       {showAnalyticsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
