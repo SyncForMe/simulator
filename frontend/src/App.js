@@ -7075,18 +7075,22 @@ function App() {
 
   // Handle other account modals
   const handleOpenProfile = () => {
+    console.log('🔍 Profile modal handler called');
     setShowProfileModal(true);
   };
 
   const handleOpenPreferences = () => {
+    console.log('🔍 Preferences modal handler called');
     setShowPreferencesModal(true);
   };
 
   const handleOpenHelp = () => {
+    console.log('🔍 Help modal handler called');
     setShowHelpModal(true);
   };
 
   const handleOpenFeedback = () => {
+    console.log('🔍 Feedback modal handler called');
     setShowFeedbackModal(true);
   };
 
