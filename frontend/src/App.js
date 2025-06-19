@@ -5682,6 +5682,279 @@ const ChatHistory = () => {
   );
 };
 
+const FileCenterPage = () => {
+  const { user, token } = useAuth();
+  const [scenarioDocuments, setScenarioDocuments] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDocuments, setSelectedDocuments] = useState(new Set());
+  const [selectAll, setSelectAll] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  
+  const categories = ["Protocol", "Training", "Research", "Equipment", "Budget", "Reference"];
+
+  const fetchScenarioDocuments = async (forceRefresh = false) => {
+    if (!token) return;
+    
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/documents`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      const documents = response.data || [];
+      const validDocuments = documents.filter(doc => 
+        doc && typeof doc === 'object' && doc.id
+      ).map(doc => ({
+        ...doc,
+        title: doc.title || 'Untitled Document',
+        content: doc.content || '',
+        scenario_name: doc.scenario_name || 'General',
+        category: doc.category || 'Reference'
+      }));
+      
+      setScenarioDocuments(validDocuments);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      if (error.response?.status === 404) {
+        setScenarioDocuments([]);
+      }
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteDocuments = async (documentIds) => {
+    if (!token || !documentIds.length) return;
+    
+    setDeleting(true);
+    try {
+      for (const id of documentIds) {
+        await axios.delete(`${API}/documents/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      await fetchScenarioDocuments(true);
+      setSelectedDocuments(new Set());
+      setSelectAll(false);
+    } catch (error) {
+      console.error('Error deleting documents:', error);
+      alert('Failed to delete some documents. Please try again.');
+    }
+    setDeleting(false);
+  };
+
+  useEffect(() => {
+    fetchScenarioDocuments();
+  }, [token]);
+
+  const filteredDocuments = scenarioDocuments.filter(doc => {
+    const matchesSearch = searchTerm === "" || 
+      doc.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.scenario_name?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === "" || doc.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
+
+  const groupedDocuments = filteredDocuments.reduce((acc, doc) => {
+    const scenario = doc.scenario_name || 'General';
+    if (!acc[scenario]) {
+      acc[scenario] = [];
+    }
+    acc[scenario].push(doc);
+    return acc;
+  }, {});
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center py-20">
+            <div className="text-6xl mb-6">🔒</div>
+            <h2 className="text-2xl font-bold text-white mb-4">Sign In Required</h2>
+            <p className="text-white/80">Please sign in to access your team's documents.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">📁 File Center</h1>
+          <p className="text-white/80">Documents organized by simulation scenario</p>
+        </div>
+
+        {/* Controls */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            {/* Search and Filter */}
+            <div className="flex flex-col sm:flex-row gap-4 flex-1">
+              <input
+                type="text"
+                placeholder="Search documents..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">All Categories</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center space-x-4">
+              {selectedDocuments.size > 0 && (
+                <button
+                  onClick={() => handleDeleteDocuments(Array.from(selectedDocuments))}
+                  disabled={deleting}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-medium disabled:opacity-50"
+                >
+                  {deleting ? 'Deleting...' : `Delete Selected (${selectedDocuments.size})`}
+                </button>
+              )}
+              <button
+                onClick={() => fetchScenarioDocuments(true)}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium disabled:opacity-50"
+              >
+                {loading ? '⏳ Loading...' : '🔄 Refresh'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <div className="text-4xl mb-4">⏳</div>
+            <p className="text-gray-600">Loading documents...</p>
+          </div>
+        ) : Object.keys(groupedDocuments).length === 0 ? (
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <div className="text-6xl mb-6">📭</div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">No Documents Found</h3>
+            <p className="text-gray-600">
+              {searchTerm || selectedCategory ? 'No documents match your search criteria.' : 'Run some simulations to generate documents!'}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {Object.entries(groupedDocuments).map(([scenarioName, documents]) => (
+              <div key={scenarioName} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                {/* Scenario Header */}
+                <div className="bg-gray-50 p-4 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-gray-800 text-lg">{scenarioName}</h3>
+                    <span className="text-sm text-gray-600">{documents.length} document(s)</span>
+                  </div>
+                </div>
+
+                {/* Documents Grid */}
+                <div className="p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {documents.map((doc) => (
+                      <div key={doc.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              checked={selectedDocuments.has(doc.id)}
+                              onChange={() => {
+                                const newSelected = new Set(selectedDocuments);
+                                if (newSelected.has(doc.id)) {
+                                  newSelected.delete(doc.id);
+                                } else {
+                                  newSelected.add(doc.id);
+                                }
+                                setSelectedDocuments(newSelected);
+                              }}
+                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            />
+                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{doc.category}</span>
+                          </div>
+                          <button
+                            onClick={() => handleDeleteDocuments([doc.id])}
+                            className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+                            title="Delete document"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                        
+                        <h4 className="font-semibold text-gray-800 mb-2 line-clamp-2">{doc.title}</h4>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-3">{doc.content?.substring(0, 150)}{doc.content?.length > 150 ? '...' : ''}</p>
+                        
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>{new Date(doc.created_at).toLocaleDateString()}</span>
+                          <button
+                            onClick={() => {
+                              setSelectedDocument(doc);
+                              setShowDocumentModal(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-800 font-medium"
+                          >
+                            View Full
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Document Modal */}
+        {showDocumentModal && selectedDocument && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800">{selectedDocument.title}</h3>
+                    <p className="text-sm text-gray-600">{selectedDocument.scenario_name} • {selectedDocument.category}</p>
+                  </div>
+                  <button
+                    onClick={() => setShowDocumentModal(false)}
+                    className="text-gray-500 hover:text-gray-700 text-2xl"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+              <div className="p-6 overflow-y-auto max-h-[70vh]">
+                <div 
+                  className="prose max-w-none"
+                  dangerouslySetInnerHTML={{ __html: selectedDocument.content }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 function App() {
   // Handle OAuth callback
   useEffect(() => {
