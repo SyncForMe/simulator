@@ -7035,8 +7035,6 @@ function App() {
           <div className="lg:col-span-1 space-y-6">
             <ScenarioInput onSetScenario={handleSetScenario} currentScenario={currentScenario} onScenarioCollapse={handleScenarioCollapse} />
             
-            <FileCenter />
-            
             {/* Translation functionality will be added later */}
           </div>
         </div>
