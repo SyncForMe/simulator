@@ -66,33 +66,51 @@ def test_generate_profile_avatar(token):
         return False
     
     url = f"{API_URL}/auth/generate-profile-avatar"
-    headers = {"Authorization": f"Bearer {token}"}
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json"
+    }
     
     # Test data
     data = {
         "prompt": "creative artist with glasses",
-        "name": "User"
+        "name": "Test User"
     }
     
     print(f"Request URL: {url}")
     print(f"Request Headers: {headers}")
     print(f"Request Data: {json.dumps(data, indent=2)}")
     
-    response = requests.post(url, json=data, headers=headers)
-    
-    print(f"Response Status Code: {response.status_code}")
-    
+    # Make the request and capture detailed information
     try:
-        response_data = response.json()
-        print(f"Response Data: {json.dumps(response_data, indent=2)}")
-    except json.JSONDecodeError:
-        print(f"Response is not JSON: {response.text}")
-    
-    if response.status_code == 200:
-        print("✅ Profile avatar generation successful")
-        return True
-    else:
-        print(f"❌ Profile avatar generation failed with status code: {response.status_code}")
+        response = requests.post(url, json=data, headers=headers)
+        
+        print(f"Response Status Code: {response.status_code}")
+        print(f"Response Headers: {dict(response.headers)}")
+        
+        try:
+            response_data = response.json()
+            print(f"Response Data: {json.dumps(response_data, indent=2)}")
+        except json.JSONDecodeError:
+            print(f"Response is not JSON: {response.text}")
+        
+        if response.status_code == 200:
+            print("✅ Profile avatar generation successful")
+            if response_data and "avatar_url" in response_data:
+                print(f"Avatar URL: {response_data['avatar_url']}")
+                # Try to access the avatar URL to verify it's valid
+                avatar_response = requests.head(response_data['avatar_url'])
+                print(f"Avatar URL status code: {avatar_response.status_code}")
+                if avatar_response.status_code == 200:
+                    print("✅ Avatar URL is valid and accessible")
+                else:
+                    print("⚠️ Avatar URL returned non-200 status code")
+            return True
+        else:
+            print(f"❌ Profile avatar generation failed with status code: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"❌ Exception during request: {str(e)}")
         return False
 
 if __name__ == "__main__":
