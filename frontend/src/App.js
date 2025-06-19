@@ -7,6 +7,7 @@ import { ProfileSettingsModal, PreferencesModal, HelpSupportModal, FeedbackModal
 import HomePage from './HomePage';
 import AgentLibrary from './AgentLibrary';
 import AdminDashboard from './AdminDashboard';
+import AccountModals from './ModalFix';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
