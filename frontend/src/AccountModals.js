@@ -122,8 +122,8 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
       if (response.data && response.data.success) {
         alert('✅ Profile updated successfully!');
         onClose();
-        // Optionally trigger a page refresh to update user data
-        window.location.reload();
+        // Don't reload the page to avoid potential null reference errors
+        // window.location.reload();
       } else {
         console.error('🔍 Save failed - no success in response:', response.data);
         alert('❌ Failed to save profile. Please try again.');
