@@ -807,8 +807,6 @@ const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
       />
     </div>
   );
-    </div>
-  );
 };
 
 
