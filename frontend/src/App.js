@@ -6228,6 +6228,9 @@ function App() {
   const [showObserverCard, setShowObserverCard] = useState(false);
   const [observerMessage, setObserverMessage] = useState('');
   const [observerMessages, setObserverMessages] = useState([]);
+  const [showObserverCard, setShowObserverCard] = useState(false);
+  const [observerMessage, setObserverMessage] = useState('');
+  const [observerMessages, setObserverMessages] = useState([]);
 
   // Check if current user is admin
   const isAdmin = user && user.email && user.email.toLowerCase() === 'dino@cytonic.com';
