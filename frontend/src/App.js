@@ -7050,6 +7050,27 @@ function App() {
     }
   };
 
+  // Handle analytics modal
+  const handleOpenAnalytics = async () => {
+    try {
+      setAnalyticsLoading(true);
+      setShowAnalyticsModal(true);
+      
+      const response = await axios.get(`${API}/analytics/comprehensive`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      setAnalyticsData(response.data);
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+      alert(`Failed to load analytics: ${error.response?.data?.detail || error.message}`);
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  };
+
   // Show login page if not authenticated
   if (!isAuthenticated) {
     return <HomePage onAuthenticated={handleAuthentication} />;
