@@ -229,9 +229,11 @@ const VoiceInput = ({
       });
 
       if (response.data.success && response.data.text) {
+        console.log('Agent voice input successful:', response.data.text);
         onTextUpdate(response.data.text);
         setError(""); // Clear any previous errors
       } else {
+        console.log('No text in agent voice response:', response.data);
         setError("No speech detected");
       }
 
