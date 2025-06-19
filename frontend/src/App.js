@@ -985,6 +985,12 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
   };
 
   const startRecording = async () => {
+    // Check authentication and provide helpful feedback
+    if (!token) {
+      alert('🎤 Voice input requires authentication.\n\nPlease use "Continue as Guest" button in the top navigation to enable voice input for scenario creation.');
+      return;
+    }
+    
     try {
       setVoiceError("");
       
@@ -1027,11 +1033,11 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
     } catch (error) {
       console.error('Error starting recording:', error);
       if (error.name === 'NotAllowedError') {
-        setVoiceError("Microphone access denied. Please allow microphone access in your browser settings.");
+        setVoiceError("🎤 Microphone access denied. Please click the microphone icon in your browser's address bar and allow access, then try again.");
       } else if (error.name === 'NotFoundError') {
-        setVoiceError("No microphone found. Please check your microphone connection.");
+        setVoiceError("🎤 No microphone found. Please check your microphone connection and try again.");
       } else {
-        setVoiceError("Failed to start recording. Please try again.");
+        setVoiceError("🎤 Failed to start recording: " + error.message);
       }
     }
   };
