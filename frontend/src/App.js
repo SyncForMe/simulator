@@ -6952,40 +6952,22 @@ function App() {
     }
   };
 
-  const handleSendObserverMessage = async (message) => {
+  // Fast Forward functionality
+  const [showFastForwardModal, setShowFastForwardModal] = useState(false);
+  
+  const handleFastForward = async (targetDays, conversationsPerPeriod) => {
     try {
-      const messageToSend = message || observerMessage;
-      if (!messageToSend.trim()) return;
-      
-      // Add user message to local state immediately
-      setObserverMessages(prev => [...prev, {
-        isUser: true,
-        message: messageToSend,
-        timestamp: new Date().toLocaleTimeString()
-      }]);
-      
-      // Clear input
-      setObserverMessage('');
-      
-      const response = await axios.post(`${API}/observer/send-message`, { 
-        observer_message: messageToSend 
+      const response = await axios.post(`${API}/simulation/fast-forward`, {
+        target_days: targetDays,
+        conversations_per_period: conversationsPerPeriod
       });
       
-      // Add agent responses to local state
-      if (response.data.agent_responses && response.data.agent_responses.messages) {
-        const agentMessages = response.data.agent_responses.messages.map(msg => ({
-          isUser: false,
-          message: `${msg.agent_name}: ${msg.message}`,
-          timestamp: new Date().toLocaleTimeString()
-        }));
-        
-        setObserverMessages(prev => [...prev, ...agentMessages]);
-      }
-      
+      alert(`✅ Successfully fast-forwarded ${targetDays} days! Generated ${response.data.conversations_generated} conversations.`);
+      setShowFastForwardModal(false);
       await refreshAllData();
     } catch (error) {
-      console.error('Error sending observer message:', error);
-      alert('Error sending message. Make sure simulation is running and agents are available.');
+      console.error('Error during fast forward:', error);
+      alert('Error during fast forward: ' + (error.response?.data?.detail || error.message));
     }
   };
 
