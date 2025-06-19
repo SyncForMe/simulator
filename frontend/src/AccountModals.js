@@ -68,20 +68,6 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
     try {
       console.log('🔍 Making API call to:', `${API}/auth/generate-profile-avatar`);
       
-      // For testing purposes, simulate a successful response
-      setTimeout(() => {
-        console.log('🔍 Simulating successful avatar generation');
-        setProfilePicture('https://ui-avatars.com/api/?name=' + encodeURIComponent(formData.name || 'User') + '&background=random');
-        setAvatarPrompt('');
-        setShowPictureOptions(false);
-        console.log('🔍 Avatar updated successfully!');
-        setIsGenerating(false);
-      }, 2000);
-      
-      return;
-      
-      // Actual API call (commented out for testing)
-      /*
       const response = await axios.post(`${API}/auth/generate-profile-avatar`, {
         prompt: avatarPrompt,
         name: formData.name || 'User'
@@ -99,12 +85,11 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
         setShowPictureOptions(false);
         console.log('🔍 Avatar updated successfully!');
       }
-      */
     } catch (error) {
       console.error('🔍 Error generating avatar:', error);
       alert('Failed to generate avatar. Please try again.');
     } finally {
-      // setIsGenerating(false); // Moved to the setTimeout for testing
+      setIsGenerating(false);
     }
   };
 
