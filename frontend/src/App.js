@@ -5521,14 +5521,20 @@ const ChatHistory = () => {
                                   </div>
                                   
                                   {/* Show first few messages */}
-                                  {conversation.messages && conversation.messages.length > 0 && (
+                                  {conversation.messages && Array.isArray(conversation.messages) && conversation.messages.length > 0 && (
                                     <div className="space-y-2 max-h-40 overflow-y-auto">
-                                      {conversation.messages.slice(0, 3).map((message, idx) => (
-                                        <div key={idx} className="text-sm">
-                                          <span className="font-semibold text-gray-700">{message.agent_name}:</span>
-                                          <span className="text-gray-600 ml-2">{message.content.substring(0, 150)}{message.content.length > 150 ? '...' : ''}</span>
-                                        </div>
-                                      ))}
+                                      {conversation.messages.slice(0, 3).map((message, idx) => {
+                                        if (!message || !message.agent_name || !message.content) return null;
+                                        
+                                        return (
+                                          <div key={idx} className="text-sm">
+                                            <span className="font-semibold text-gray-700">{message.agent_name}:</span>
+                                            <span className="text-gray-600 ml-2">
+                                              {message.content.substring(0, 150)}{message.content.length > 150 ? '...' : ''}
+                                            </span>
+                                          </div>
+                                        );
+                                      }).filter(Boolean)}
                                       {conversation.messages.length > 3 && (
                                         <p className="text-xs text-gray-500 italic">...and {conversation.messages.length - 3} more messages</p>
                                       )}
