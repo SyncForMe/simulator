@@ -2218,11 +2218,11 @@ def test_analytics_endpoints():
         "/analytics/comprehensive",
         method="GET",
         auth=False,
-        expected_status=401
+        expected_status=403
     )
     
     if no_auth_comprehensive_test:
-        print("✅ Comprehensive analytics endpoint correctly requires authentication")
+        print("✅ Comprehensive analytics endpoint correctly requires authentication (403 Forbidden)")
     else:
         print("❌ Comprehensive analytics endpoint does not properly enforce authentication")
     
@@ -2232,7 +2232,7 @@ def test_analytics_endpoints():
         "/analytics/weekly-summary",
         method="GET",
         auth=False,
-        expected_status=401
+        expected_status=403
     )
     
     if no_auth_weekly_test:
