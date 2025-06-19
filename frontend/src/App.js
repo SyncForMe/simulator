@@ -153,7 +153,7 @@ const VoiceInput = ({
 
   const startRecording = async () => {
     // Check authentication and provide helpful feedback
-    if (!token || isDisabledDueToAuth) {
+    if (!token) {
       alert('🎤 Voice input requires authentication.\n\nPlease use "Continue as Guest" button in the top navigation to enable voice input for testing.');
       return;
     }
@@ -162,7 +162,12 @@ const VoiceInput = ({
       setError("");
       
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: true 
+        audio: {
+          sampleRate: 16000,
+          channelCount: 1,
+          echoCancellation: true,
+          noiseSuppression: true
+        } 
       });
       
       const mediaRecorder = new MediaRecorder(stream);
@@ -192,7 +197,7 @@ const VoiceInput = ({
       } else if (error.name === 'NotFoundError') {
         setError("No microphone found");
       } else {
-        setError("Recording failed");
+        setError("Recording failed: " + error.message);
       }
     }
   };
