@@ -1949,6 +1949,21 @@ def main():
     # Test login first to get auth token
     test_login()
     
+    # Run basic API health check
+    basic_api_health_result, basic_api_health_message = test_basic_api_health()
+    
+    # Test simulation features
+    simulation_features_result, simulation_features_message = test_simulation_features()
+    
+    # Test translation features
+    translation_features_result, translation_features_message = test_translation_features()
+    
+    # Test avatar generation
+    avatar_generation_result, avatar_generation_message = test_avatar_generation()
+    
+    # Test admin functionality
+    admin_functionality_result, admin_functionality_message = test_admin_functionality()
+    
     # Test the improved conversation generation system
     conversation_success, conversation_message = test_conversation_generation(API_URL, auth_token, run_test)
     
@@ -1957,6 +1972,37 @@ def main():
     
     # Test the natural expertise demonstration system
     natural_expertise_success, natural_expertise_message = test_natural_expertise(API_URL, auth_token, run_test)
+    
+    # Print summary
+    print("\n" + "="*80)
+    print("TEST SUMMARY")
+    print("="*80)
+    
+    print(f"Basic API Health Check: {'✅ PASSED' if basic_api_health_result else '❌ FAILED'}")
+    print(f"Simulation Features: {'✅ PASSED' if simulation_features_result else '❌ FAILED'}")
+    print(f"Translation Features: {'✅ PASSED' if translation_features_result else '❌ FAILED'}")
+    print(f"Avatar Generation: {'✅ PASSED' if avatar_generation_result else '❌ FAILED'}")
+    print(f"Admin Functionality: {'✅ PASSED' if admin_functionality_result else '❌ FAILED'}")
+    print(f"Improved Conversation Generation: {'✅ PASSED' if conversation_success else '❌ FAILED'}")
+    print(f"Enhanced Dynamic Conversation: {'✅ PASSED' if dynamic_conversation_success else '❌ FAILED'}")
+    print(f"Natural Expertise Demonstration: {'✅ PASSED' if natural_expertise_success else '❌ FAILED'}")
+    
+    print("="*80)
+    overall_result = all([
+        basic_api_health_result,
+        simulation_features_result,
+        translation_features_result,
+        avatar_generation_result,
+        admin_functionality_result,
+        conversation_success,
+        dynamic_conversation_success,
+        natural_expertise_success
+    ])
+    print(f"OVERALL RESULT: {'✅ PASSED' if overall_result else '❌ FAILED'}")
+    print("="*80)
+    
+    # Print detailed summary
+    print_summary()
     
     # Test the enhanced document generation system
     enhanced_doc_success, enhanced_doc_message = test_enhanced_document_generation()
