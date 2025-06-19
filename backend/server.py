@@ -7593,17 +7593,27 @@ async def generate_profile_avatar(request: dict, current_user: User = Depends(ge
 async def update_profile(profile_data: dict, current_user: User = Depends(get_current_user)):
     """Update user profile"""
     try:
+        if not current_user or not hasattr(current_user, 'id'):
+            raise HTTPException(status_code=401, detail="Invalid user")
+            
         user_id = current_user.id
         
-        # Extract profile data
-        name = profile_data.get("name", "")
-        email = profile_data.get("email", "")
-        bio = profile_data.get("bio", "")
-        picture = profile_data.get("picture", "")
+        # Validate profile_data is not None
+        if not profile_data or not isinstance(profile_data, dict):
+            raise HTTPException(status_code=400, detail="Invalid profile data")
+        
+        # Extract profile data with safe defaults
+        name = str(profile_data.get("name", "")).strip()
+        email = str(profile_data.get("email", "")).strip()
+        bio = str(profile_data.get("bio", "")).strip()
+        picture = str(profile_data.get("picture", "")).strip()
         
         # Validate required fields
-        if not name.strip():
+        if not name:
             raise HTTPException(status_code=400, detail="Name is required")
+        
+        # Log the incoming data for debugging
+        logging.info(f"Updating profile for user {user_id}: name='{name}', email='{email}', bio_length={len(bio)}, picture_length={len(picture)}")
         
         # Update user profile in database
         update_data = {
@@ -7622,7 +7632,7 @@ async def update_profile(profile_data: dict, current_user: User = Depends(get_cu
             upsert=True
         )
         
-        logging.info(f"Profile updated for user {user_id} - {result.modified_count} documents modified")
+        logging.info(f"Profile updated for user {user_id} - {result.modified_count} documents modified, {result.upserted_id is not None} documents upserted")
         
         return {
             "success": True,
