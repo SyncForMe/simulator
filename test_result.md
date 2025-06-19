@@ -369,6 +369,7 @@ test_plan:
     - "Modern UI Design Implementation"
     - "Test Login (Continue as Guest)"
     - "Analytics Endpoints"
+    - "Account Dropdown System"
   stuck_tasks:
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
     - "Admin Functionality"
@@ -377,6 +378,7 @@ test_plan:
     - "Natural Expertise Demonstration System"
     - "Enhanced Document Generation System"
     - "Enhanced Random Scenario Generation"
+    - "Account Dropdown System"
   test_all: false
   test_priority: "high_first"
 
