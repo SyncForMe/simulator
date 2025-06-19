@@ -2268,5 +2268,548 @@ def test_analytics_endpoints():
             print(f"  - {issue}")
         return False, {"issues": issues}
 
+def test_basic_api_health():
+    """Test basic API health endpoints"""
+    print("\n" + "="*80)
+    print("TESTING BASIC API HEALTH")
+    print("="*80)
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test API health without authentication")
+            return False, "Authentication failed"
+    
+    # Test 1: GET /api/agents
+    print("\nTest 1: GET /api/agents")
+    agents_test, agents_response = run_test(
+        "Get Agents",
+        "/agents",
+        method="GET",
+        auth=True,
+        measure_time=True
+    )
+    
+    # Test 2: GET /api/conversations
+    print("\nTest 2: GET /api/conversations")
+    conversations_test, conversations_response = run_test(
+        "Get Conversations",
+        "/conversations",
+        method="GET",
+        auth=True,
+        measure_time=True
+    )
+    
+    # Test 3: GET /api/simulation/state
+    print("\nTest 3: GET /api/simulation/state")
+    state_test, state_response = run_test(
+        "Get Simulation State",
+        "/simulation/state",
+        method="GET",
+        auth=True,
+        measure_time=True
+    )
+    
+    # Test 4: GET /api/usage
+    print("\nTest 4: GET /api/usage")
+    usage_test, usage_response = run_test(
+        "Get API Usage",
+        "/usage",
+        method="GET",
+        auth=True,
+        measure_time=True
+    )
+    
+    # Print summary
+    print("\nBASIC API HEALTH SUMMARY:")
+    
+    all_passed = agents_test and conversations_test and state_test and usage_test
+    
+    if all_passed:
+        print("✅ All basic API health endpoints are working correctly!")
+        return True, "All basic API health endpoints are working correctly"
+    else:
+        issues = []
+        if not agents_test:
+            issues.append("GET /api/agents endpoint is not working")
+        if not conversations_test:
+            issues.append("GET /api/conversations endpoint is not working")
+        if not state_test:
+            issues.append("GET /api/simulation/state endpoint is not working")
+        if not usage_test:
+            issues.append("GET /api/usage endpoint is not working")
+        
+        print("❌ Basic API health check has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, {"issues": issues}
+
+def test_simulation_features():
+    """Test simulation features including fast-forward"""
+    print("\n" + "="*80)
+    print("TESTING SIMULATION FEATURES")
+    print("="*80)
+    
+    global auth_token
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test simulation features without authentication")
+            return False, "Authentication failed"
+    
+    # Test 1: GET /api/simulation/state
+    print("\nTest 1: GET /api/simulation/state")
+    
+    state_test, state_response = run_test(
+        "Get Simulation State",
+        "/simulation/state",
+        method="GET",
+        auth=True
+    )
+    
+    if state_test and state_response:
+        print(f"✅ Successfully retrieved simulation state")
+        current_day = state_response.get("current_day", 0)
+        print(f"Current simulation day: {current_day}")
+    else:
+        print("❌ Failed to retrieve simulation state")
+    
+    # Test 2: POST /api/simulation/start
+    print("\nTest 2: POST /api/simulation/start")
+    
+    start_test, start_response = run_test(
+        "Start Simulation",
+        "/simulation/start",
+        method="POST",
+        auth=True,
+        expected_keys=["message", "state"]
+    )
+    
+    if start_test and start_response:
+        print(f"✅ Successfully started simulation")
+    else:
+        print("❌ Failed to start simulation")
+    
+    # Test 3: POST /api/simulation/set-scenario
+    print("\nTest 3: POST /api/simulation/set-scenario")
+    
+    scenario_data = {
+        "scenario": "Testing the simulation features",
+        "scenario_name": "API Test Scenario"
+    }
+    
+    scenario_test, scenario_response = run_test(
+        "Set Simulation Scenario",
+        "/simulation/set-scenario",
+        method="POST",
+        data=scenario_data,
+        auth=True,
+        expected_keys=["message", "scenario"]
+    )
+    
+    if scenario_test and scenario_response:
+        print(f"✅ Successfully set simulation scenario")
+    else:
+        print("❌ Failed to set simulation scenario")
+    
+    # Test 4: POST /api/simulation/fast-forward
+    print("\nTest 4: POST /api/simulation/fast-forward")
+    
+    fast_forward_data = {
+        "target_days": 2,
+        "conversations_per_period": 1
+    }
+    
+    fast_forward_test, fast_forward_response = run_test(
+        "Fast Forward Simulation",
+        "/simulation/fast-forward",
+        method="POST",
+        data=fast_forward_data,
+        auth=True,
+        expected_keys=["message", "days_advanced", "conversations_generated"]
+    )
+    
+    if fast_forward_test and fast_forward_response:
+        print(f"✅ Successfully fast-forwarded simulation")
+        days_advanced = fast_forward_response.get("days_advanced", 0)
+        conversations_generated = fast_forward_response.get("conversations_generated", 0)
+        print(f"Advanced {days_advanced} days and generated {conversations_generated} conversations")
+    else:
+        print("❌ Failed to fast-forward simulation")
+    
+    # Test 5: Verify simulation state after fast-forward
+    print("\nTest 5: Verify simulation state after fast-forward")
+    
+    state_after_test, state_after_response = run_test(
+        "Get Simulation State After Fast-Forward",
+        "/simulation/state",
+        method="GET",
+        auth=True
+    )
+    
+    if state_after_test and state_after_response:
+        print(f"✅ Successfully retrieved simulation state after fast-forward")
+        current_day_after = state_after_response.get("current_day", 0)
+        print(f"Current simulation day after fast-forward: {current_day_after}")
+        
+        if state_response and current_day_after > state_response.get("current_day", 0):
+            print(f"✅ Simulation day advanced from {state_response.get('current_day', 0)} to {current_day_after}")
+        else:
+            print(f"❌ Simulation day did not advance as expected")
+    else:
+        print("❌ Failed to retrieve simulation state after fast-forward")
+    
+    # Print summary
+    print("\nSIMULATION FEATURES SUMMARY:")
+    
+    # Check if all critical tests passed
+    get_state_works = state_test
+    start_simulation_works = start_test
+    set_scenario_works = scenario_test
+    fast_forward_works = fast_forward_test
+    verify_state_works = state_after_test
+    
+    if get_state_works and start_simulation_works and set_scenario_works and fast_forward_works and verify_state_works:
+        print("✅ Simulation features are working correctly!")
+        print("✅ GET /api/simulation/state endpoint is functioning properly")
+        print("✅ POST /api/simulation/start endpoint is functioning properly")
+        print("✅ POST /api/simulation/set-scenario endpoint is functioning properly")
+        print("✅ POST /api/simulation/fast-forward endpoint is functioning properly")
+        return True, "Simulation features are working correctly"
+    else:
+        issues = []
+        if not get_state_works:
+            issues.append("GET /api/simulation/state endpoint is not functioning properly")
+        if not start_simulation_works:
+            issues.append("POST /api/simulation/start endpoint is not functioning properly")
+        if not set_scenario_works:
+            issues.append("POST /api/simulation/set-scenario endpoint is not functioning properly")
+        if not fast_forward_works:
+            issues.append("POST /api/simulation/fast-forward endpoint is not functioning properly")
+        if not verify_state_works:
+            issues.append("Simulation state verification after fast-forward failed")
+        
+        print("❌ Simulation features have issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, {"issues": issues}
+
+def test_translation_features():
+    """Test translation features"""
+    print("\n" + "="*80)
+    print("TESTING TRANSLATION FEATURES")
+    print("="*80)
+    
+    global auth_token
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test translation features without authentication")
+            return False, "Authentication failed"
+    
+    # Test 1: POST /api/conversations/translate
+    print("\nTest 1: POST /api/conversations/translate")
+    
+    # Create a test conversation to translate
+    conversation_data = {
+        "title": f"Test Conversation {uuid.uuid4().hex[:8]}",
+        "participants": ["Test Agent 1", "Test Agent 2"],
+        "messages": [
+            {
+                "agent_name": "Test Agent 1",
+                "message": "Hello, this is a test message."
+            },
+            {
+                "agent_name": "Test Agent 2",
+                "message": "Hi there! This is a response to the test message."
+            }
+        ],
+        "language": "en",
+        "tags": ["test", "api"]
+    }
+    
+    save_conversation_test, save_conversation_response = run_test(
+        "Save Conversation for Translation",
+        "/conversation-history",
+        method="POST",
+        data=conversation_data,
+        auth=True,
+        expected_keys=["success", "conversation_id"]
+    )
+    
+    if save_conversation_test and save_conversation_response:
+        conversation_id = save_conversation_response.get("conversation_id")
+        print(f"✅ Successfully saved conversation with ID: {conversation_id}")
+        
+        # Translate the conversation
+        translate_data = {
+            "conversation_id": conversation_id,
+            "target_language": "es"  # Spanish
+        }
+        
+        translate_test, translate_response = run_test(
+            "Translate Conversation",
+            "/conversations/translate",
+            method="POST",
+            data=translate_data,
+            auth=True,
+            expected_keys=["success", "message"]
+        )
+        
+        if translate_test and translate_response:
+            print(f"✅ Successfully translated conversation")
+            
+            # Verify translation
+            get_translated_test, get_translated_response = run_test(
+                "Get Translated Conversation",
+                f"/conversation-history/{conversation_id}",
+                method="GET",
+                auth=True
+            )
+            
+            if get_translated_test and get_translated_response:
+                print(f"✅ Successfully retrieved translated conversation")
+                language = get_translated_response.get("language")
+                print(f"Conversation language: {language}")
+                
+                if language == "es":
+                    print("✅ Conversation was successfully translated to Spanish")
+                else:
+                    print(f"❌ Conversation language is {language}, expected 'es'")
+            else:
+                print("❌ Failed to retrieve translated conversation")
+        else:
+            print("❌ Failed to translate conversation")
+    else:
+        print("❌ Failed to save conversation for translation")
+        translate_test = False
+    
+    # Print summary
+    print("\nTRANSLATION FEATURES SUMMARY:")
+    
+    # Check if all critical tests passed
+    translation_works = translate_test if save_conversation_test else False
+    
+    if translation_works:
+        print("✅ Translation features are working correctly!")
+        print("✅ POST /api/conversations/translate endpoint is functioning properly")
+        return True, "Translation features are working correctly"
+    else:
+        issues = []
+        if not translation_works:
+            issues.append("POST /api/conversations/translate endpoint is not functioning properly")
+        
+        print("❌ Translation features have issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, {"issues": issues}
+
+def test_avatar_generation():
+    """Test avatar generation features"""
+    print("\n" + "="*80)
+    print("TESTING AVATAR GENERATION")
+    print("="*80)
+    
+    global auth_token
+    
+    # Login first to get auth token
+    if not auth_token:
+        if not test_login():
+            print("❌ Cannot test avatar generation without authentication")
+            return False, "Authentication failed"
+    
+    # Test 1: POST /api/avatars/generate
+    print("\nTest 1: POST /api/avatars/generate")
+    
+    avatar_data = {
+        "prompt": "Professional software engineer with glasses"
+    }
+    
+    avatar_test, avatar_response = run_test(
+        "Generate Avatar",
+        "/avatars/generate",
+        method="POST",
+        data=avatar_data,
+        auth=True,
+        expected_keys=["success", "image_url"]
+    )
+    
+    if avatar_test and avatar_response:
+        image_url = avatar_response.get("image_url")
+        print(f"✅ Successfully generated avatar")
+        print(f"Avatar URL: {image_url}")
+        
+        # Verify the image URL is accessible
+        if image_url:
+            try:
+                response = requests.head(image_url)
+                if response.status_code == 200:
+                    print("✅ Avatar image URL is accessible")
+                else:
+                    print(f"❌ Avatar image URL returned status code {response.status_code}")
+            except Exception as e:
+                print(f"❌ Error accessing avatar image URL: {e}")
+    else:
+        print("❌ Failed to generate avatar")
+    
+    # Print summary
+    print("\nAVATAR GENERATION SUMMARY:")
+    
+    # Check if all critical tests passed
+    avatar_generation_works = avatar_test
+    
+    if avatar_generation_works:
+        print("✅ Avatar generation is working correctly!")
+        print("✅ POST /api/avatars/generate endpoint is functioning properly")
+        return True, "Avatar generation is working correctly"
+    else:
+        issues = []
+        if not avatar_generation_works:
+            issues.append("POST /api/avatars/generate endpoint is not functioning properly")
+        
+        print("❌ Avatar generation has issues:")
+        for issue in issues:
+            print(f"  - {issue}")
+        return False, {"issues": issues}
+
+def test_admin_functionality():
+    """Test admin functionality"""
+    print("\n" + "="*80)
+    print("TESTING ADMIN FUNCTIONALITY")
+    print("="*80)
+    
+    # Try to login as admin
+    admin_email = "dino@cytonic.com"
+    admin_password = "Observerinho8"  # This is the password mentioned in the test_result.md
+    
+    login_data = {
+        "email": admin_email,
+        "password": admin_password
+    }
+    
+    admin_login_test, admin_login_response = run_test(
+        "Login as Admin",
+        "/auth/login",
+        method="POST",
+        data=login_data,
+        expected_keys=["access_token", "token_type", "user"]
+    )
+    
+    if admin_login_test and admin_login_response:
+        print("✅ Successfully logged in as admin")
+        admin_token = admin_login_response.get("access_token")
+        
+        # Test 1: GET /api/admin/dashboard/stats
+        print("\nTest 1: GET /api/admin/dashboard/stats")
+        
+        stats_test, stats_response = run_test(
+            "Get Admin Dashboard Stats",
+            "/admin/dashboard/stats",
+            method="GET",
+            auth=True,
+            headers={"Authorization": f"Bearer {admin_token}"}
+        )
+        
+        if stats_test and stats_response:
+            print(f"✅ Successfully retrieved admin dashboard stats")
+        else:
+            print("❌ Failed to retrieve admin dashboard stats")
+        
+        # Test 2: GET /api/admin/users
+        print("\nTest 2: GET /api/admin/users")
+        
+        users_test, users_response = run_test(
+            "Get Admin Users List",
+            "/admin/users",
+            method="GET",
+            auth=True,
+            headers={"Authorization": f"Bearer {admin_token}"}
+        )
+        
+        if users_test and users_response:
+            print(f"✅ Successfully retrieved admin users list")
+            user_count = len(users_response) if isinstance(users_response, list) else 0
+            print(f"Found {user_count} users")
+        else:
+            print("❌ Failed to retrieve admin users list")
+        
+        # Test 3: GET /api/admin/activity/recent
+        print("\nTest 3: GET /api/admin/activity/recent")
+        
+        activity_test, activity_response = run_test(
+            "Get Admin Recent Activity",
+            "/admin/activity/recent",
+            method="GET",
+            auth=True,
+            headers={"Authorization": f"Bearer {admin_token}"}
+        )
+        
+        if activity_test and activity_response:
+            print(f"✅ Successfully retrieved admin recent activity")
+        else:
+            print("❌ Failed to retrieve admin recent activity")
+        
+        # Test 4: Test regular user access to admin endpoints
+        print("\nTest 4: Test regular user access to admin endpoints")
+        
+        # Login as regular user
+        if not test_login():
+            print("❌ Cannot test regular user access without authentication")
+        else:
+            # Try to access admin dashboard stats
+            regular_stats_test, regular_stats_response = run_test(
+                "Regular User Access to Admin Dashboard Stats",
+                "/admin/dashboard/stats",
+                method="GET",
+                auth=True,
+                expected_status=403
+            )
+            
+            if regular_stats_test:
+                print("✅ Regular user correctly denied access to admin dashboard stats")
+            else:
+                print("❌ Regular user access to admin dashboard stats not properly restricted")
+        
+        # Print summary
+        print("\nADMIN FUNCTIONALITY SUMMARY:")
+        
+        # Check if all critical tests passed
+        admin_login_works = admin_login_test
+        stats_works = stats_test
+        users_works = users_test
+        activity_works = activity_test
+        access_restriction_works = regular_stats_test
+        
+        if admin_login_works and stats_works and users_works and activity_works and access_restriction_works:
+            print("✅ Admin functionality is working correctly!")
+            print("✅ Admin login is functioning properly")
+            print("✅ GET /api/admin/dashboard/stats endpoint is functioning properly")
+            print("✅ GET /api/admin/users endpoint is functioning properly")
+            print("✅ GET /api/admin/activity/recent endpoint is functioning properly")
+            print("✅ Admin access restrictions are functioning properly")
+            return True, "Admin functionality is working correctly"
+        else:
+            issues = []
+            if not admin_login_works:
+                issues.append("Admin login is not functioning properly")
+            if not stats_works:
+                issues.append("GET /api/admin/dashboard/stats endpoint is not functioning properly")
+            if not users_works:
+                issues.append("GET /api/admin/users endpoint is not functioning properly")
+            if not activity_works:
+                issues.append("GET /api/admin/activity/recent endpoint is not functioning properly")
+            if not access_restriction_works:
+                issues.append("Admin access restrictions are not functioning properly")
+            
+            print("❌ Admin functionality has issues:")
+            for issue in issues:
+                print(f"  - {issue}")
+            return False, {"issues": issues}
+    else:
+        print("❌ Failed to login as admin")
+        print("❌ Cannot test admin functionality without admin access")
+        return False, "Failed to login as admin"
 if __name__ == "__main__":
     main()
