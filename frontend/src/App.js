@@ -986,11 +986,7 @@ const UserProfile = ({ user, onLogout, handleOpenAnalytics, handleOpenProfile, h
 
                 <button
                   className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition-colors"
-                  onClick={handleMenuClick(() => {
-                    if (typeof window !== 'undefined' && window.open) {
-                      window.open('https://github.com/emergent-ai/feedback', '_blank');
-                    }
-                  })}
+                  onClick={handleMenuClick(handleOpenFeedback)}
                 >
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1l-4 4z" />
