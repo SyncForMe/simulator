@@ -3,9 +3,194 @@ import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const API = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+
 // Profile Settings Modal Component
 export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, token }) => {
+  const [formData, setFormData] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    bio: user?.bio || ''
+  });
+  const [profilePicture, setProfilePicture] = useState(user?.picture || '');
+  const [showPictureOptions, setShowPictureOptions] = useState(false);
+  const [avatarPrompt, setAvatarPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  
   if (!isOpen) return null;
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      alert('File size must be less than 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfilePicture(reader.result);
+        setShowPictureOptions(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Failed to upload file');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const generateAvatar = async () => {
+    if (!avatarPrompt.trim()) {
+      alert('Please enter a description for your avatar');
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const response = await axios.post(`${API}/agents/generate-avatar`, {
+        prompt: avatarPrompt,
+        style: 'professional'
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.avatar_url) {
+        setProfilePicture(response.data.avatar_url);
+        setAvatarPrompt('');
+        setShowPictureOptions(false);
+      }
+    } catch (error) {
+      console.error('Error generating avatar:', error);
+      alert('Failed to generate avatar. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const updateData = {
+        name: formData.name,
+        email: formData.email,
+        bio: formData.bio,
+        picture: profilePicture
+      };
+
+      const response = await axios.put(`${API}/auth/profile`, updateData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.success) {
+        alert('✅ Profile updated successfully!');
+        onClose();
+        // Optionally trigger a page refresh to update user data
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('❌ Failed to update profile. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleEnable2FA = async () => {
+    try {
+      const response = await axios.post(`${API}/auth/enable-2fa`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.qr_code) {
+        alert('Two-Factor Authentication setup initiated. Please scan the QR code with your authenticator app.');
+        // In a real app, you'd show a modal with the QR code
+        window.open(response.data.qr_code, '_blank');
+      }
+    } catch (error) {
+      console.error('Error enabling 2FA:', error);
+      alert('Failed to enable 2FA. This feature will be available soon.');
+    }
+  };
+
+  const handleChangePassword = () => {
+    const newPassword = prompt('Enter your new password:');
+    if (!newPassword) return;
+
+    if (newPassword.length < 8) {
+      alert('Password must be at least 8 characters long');
+      return;
+    }
+
+    // In a real app, you'd have a proper password change modal
+    axios.put(`${API}/auth/change-password`, {
+      new_password: newPassword
+    }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    }).then(() => {
+      alert('✅ Password changed successfully!');
+    }).catch((error) => {
+      console.error('Error changing password:', error);
+      alert('❌ Failed to change password. Please try again.');
+    });
+  };
+
+  const handleDataExport = async () => {
+    try {
+      const response = await axios.get(`${API}/auth/export-data`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      // Create a downloadable file
+      const blob = new Blob([JSON.stringify(response.data, null, 2)], {
+        type: 'application/json'
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `profile-data-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      alert('✅ Data exported successfully!');
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      alert('❌ Failed to export data. Please try again.');
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
@@ -32,27 +217,78 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
             {/* Profile Photo Section */}
             <div className="flex items-center space-x-6">
               <div className="relative">
-                {user?.picture ? (
+                {profilePicture ? (
                   <img 
-                    src={user.picture} 
-                    alt={user.name || 'User'}
-                    className="w-20 h-20 rounded-full border-4 border-blue-100"
+                    src={profilePicture} 
+                    alt={formData.name || 'User'}
+                    className="w-20 h-20 rounded-full border-4 border-blue-100 object-cover"
                   />
                 ) : (
                   <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-2xl font-bold border-4 border-blue-100">
-                    {(user?.name && user.name.charAt(0).toUpperCase()) || 'U'}
+                    {(formData.name && formData.name.charAt(0).toUpperCase()) || 'U'}
                   </div>
                 )}
-                <button className="absolute -bottom-1 -right-1 bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs hover:bg-blue-700 transition-colors">
+                <button 
+                  onClick={() => setShowPictureOptions(!showPictureOptions)}
+                  className="absolute -bottom-1 -right-1 bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs hover:bg-blue-700 transition-colors"
+                >
                   ✏️
                 </button>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">{user?.name || 'User'}</h3>
-                <p className="text-gray-600">{user?.email || 'No email'}</p>
-                <button className="text-blue-600 text-sm hover:text-blue-700 mt-1">Change profile photo</button>
+                <h3 className="text-lg font-semibold text-gray-800">{formData.name || 'User'}</h3>
+                <p className="text-gray-600">{formData.email || 'No email'}</p>
+                <button 
+                  onClick={() => setShowPictureOptions(!showPictureOptions)}
+                  className="text-blue-600 text-sm hover:text-blue-700 mt-1"
+                >
+                  Change profile photo
+                </button>
               </div>
             </div>
+
+            {/* Picture Options */}
+            {showPictureOptions && (
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <h4 className="font-medium text-gray-800 mb-3">Choose Profile Picture</h4>
+                <div className="space-y-3">
+                  {/* File Upload */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Upload Photo</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    {isUploading && <p className="text-sm text-blue-600 mt-1">Uploading...</p>}
+                  </div>
+
+                  {/* AI Avatar Generation */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Generate AI Avatar</label>
+                    <div className="flex space-x-2">
+                      <input
+                        type="text"
+                        value={avatarPrompt}
+                        onChange={(e) => setAvatarPrompt(e.target.value)}
+                        placeholder="Describe your ideal avatar (e.g., professional businessman, creative artist)"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        disabled={isGenerating}
+                      />
+                      <button
+                        onClick={generateAvatar}
+                        disabled={isGenerating || !avatarPrompt.trim()}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isGenerating ? 'Generating...' : 'Generate'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Basic Information */}
             <div className="space-y-4">
@@ -63,7 +299,9 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
                   <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                   <input
                     type="text"
-                    defaultValue={user?.name || ''}
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter your full name"
                   />
@@ -73,7 +311,9 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
                   <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                   <input
                     type="email"
-                    defaultValue={user?.email || ''}
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter your email"
                   />
@@ -83,6 +323,9 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
                 <textarea
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleInputChange}
                   rows="3"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Tell us about yourself..."
@@ -108,7 +351,7 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
                   <div className="text-sm text-purple-600">Documents</div>
                 </div>
                 <div className="bg-orange-50 p-4 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">7</div>
+                  <div className="text-2xl font-bold text-orange-600">{Math.ceil((user?.created_at ? (Date.now() - new Date(user.created_at)) / (1000 * 60 * 60 * 24) : 0))}</div>
                   <div className="text-sm text-orange-600">Days Active</div>
                 </div>
               </div>
@@ -124,7 +367,10 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
                     <div className="font-medium text-gray-800">Two-Factor Authentication</div>
                     <div className="text-sm text-gray-600">Add an extra layer of security to your account</div>
                   </div>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">
+                  <button 
+                    onClick={handleEnable2FA}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors"
+                  >
                     Enable
                   </button>
                 </div>
@@ -134,7 +380,10 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
                     <div className="font-medium text-gray-800">Change Password</div>
                     <div className="text-sm text-gray-600">Update your account password</div>
                   </div>
-                  <button className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors">
+                  <button 
+                    onClick={handleChangePassword}
+                    className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors"
+                  >
                     Change
                   </button>
                 </div>
@@ -144,7 +393,10 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
                     <div className="font-medium text-gray-800">Data Export</div>
                     <div className="text-sm text-gray-600">Download all your data and conversations</div>
                   </div>
-                  <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                  <button 
+                    onClick={handleDataExport}
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors"
+                  >
                     Export
                   </button>
                 </div>
@@ -156,11 +408,16 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
               <button
                 onClick={onClose}
                 className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                disabled={isSaving}
               >
                 Cancel
               </button>
-              <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                Save Changes
+              <button 
+                onClick={handleSave}
+                disabled={isSaving}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>
