@@ -54,13 +54,19 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
   };
 
   const generateAvatar = async () => {
+    console.log('🔍 generateAvatar function called!');
+    console.log('🔍 avatarPrompt:', avatarPrompt);
+    console.log('🔍 token:', token ? 'present' : 'missing');
+    
     if (!avatarPrompt.trim()) {
       alert('Please enter a description for your avatar');
       return;
     }
 
+    console.log('🔍 Starting avatar generation...');
     setIsGenerating(true);
     try {
+      console.log('🔍 Making API call to:', `${API}/auth/generate-profile-avatar`);
       const response = await axios.post(`${API}/auth/generate-profile-avatar`, {
         prompt: avatarPrompt,
         name: formData.name || 'User'
@@ -71,13 +77,15 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
         }
       });
 
+      console.log('🔍 API response:', response.data);
       if (response.data.avatar_url) {
         setProfilePicture(response.data.avatar_url);
         setAvatarPrompt('');
         setShowPictureOptions(false);
+        console.log('🔍 Avatar updated successfully!');
       }
     } catch (error) {
-      console.error('Error generating avatar:', error);
+      console.error('🔍 Error generating avatar:', error);
       alert('Failed to generate avatar. Please try again.');
     } finally {
       setIsGenerating(false);
