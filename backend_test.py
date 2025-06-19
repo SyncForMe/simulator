@@ -1961,6 +1961,9 @@ def main():
     # Test the enhanced document generation system
     enhanced_doc_success, enhanced_doc_message = test_enhanced_document_generation()
     
+    # Test the analytics endpoints
+    analytics_success, analytics_message = test_analytics_endpoints()
+    
     # Print summary of all tests
     print_summary()
     
