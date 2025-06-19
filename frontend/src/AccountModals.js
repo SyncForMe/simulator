@@ -3,11 +3,6 @@ import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
 
-import React, { useState } from 'react';
-import axios from 'axios';
-
-const API = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
-
 // Profile Settings Modal Component
 export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, token }) => {
   const [formData, setFormData] = useState({
