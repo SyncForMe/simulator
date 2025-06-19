@@ -6954,11 +6954,38 @@ function App() {
 
   const handleSendObserverMessage = async (message) => {
     try {
-      const response = await axios.post(`${API}/observer/send-message`, { observer_message: message });
+      const messageToSend = message || observerMessage;
+      if (!messageToSend.trim()) return;
+      
+      // Add user message to local state immediately
+      setObserverMessages(prev => [...prev, {
+        isUser: true,
+        message: messageToSend,
+        timestamp: new Date().toLocaleTimeString()
+      }]);
+      
+      // Clear input
+      setObserverMessage('');
+      
+      const response = await axios.post(`${API}/observer/send-message`, { 
+        observer_message: messageToSend 
+      });
+      
+      // Add agent responses to local state
+      if (response.data.agent_responses && response.data.agent_responses.messages) {
+        const agentMessages = response.data.agent_responses.messages.map(msg => ({
+          isUser: false,
+          message: `${msg.agent_name}: ${msg.message}`,
+          timestamp: new Date().toLocaleTimeString()
+        }));
+        
+        setObserverMessages(prev => [...prev, ...agentMessages]);
+      }
+      
       await refreshAllData();
     } catch (error) {
       console.error('Error sending observer message:', error);
-      alert('Error sending message. Make sure simulation is running.');
+      alert('Error sending message. Make sure simulation is running and agents are available.');
     }
   };
 
