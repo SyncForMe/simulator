@@ -345,6 +345,39 @@ const VoiceInput = ({
           {error}
         </div>
       )}
+
+      {/* Profile Settings Modal */}
+      <ProfileSettingsModal 
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        user={user}
+        analyticsData={analyticsData}
+        token={token}
+      />
+
+      {/* Preferences Modal */}
+      <PreferencesModal 
+        isOpen={showPreferencesModal}
+        onClose={() => setShowPreferencesModal(false)}
+        audioNarrativeEnabled={audioNarrativeEnabled}
+      />
+
+      {/* Help & Support Modal */}
+      <HelpSupportModal 
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
+        onOpenFeedback={() => {
+          setShowHelpModal(false);
+          setShowFeedbackModal(true);
+        }}
+      />
+
+      {/* Send Feedback Modal */}
+      <FeedbackModal 
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        token={token}
+      />
     </div>
   );
 };
