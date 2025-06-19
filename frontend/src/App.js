@@ -1104,17 +1104,20 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
         // Append transcribed text to existing scenario
         setScenario(prev => {
           const newText = prev ? prev + ' ' + response.data.text.trim() : response.data.text.trim();
+          console.log('Setting scenario text:', newText);
           return newText;
         });
         
         console.log('Transcription successful:', {
           language: response.data.language_detected,
           duration: response.data.duration_seconds,
-          wordCount: response.data.word_count
+          wordCount: response.data.word_count,
+          transcribedText: response.data.text
         });
         
         setVoiceError(""); // Clear any previous errors
       } else {
+        console.log('No text in response:', response.data);
         setVoiceError("🎤 No speech detected. Please try speaking again.");
       }
 
