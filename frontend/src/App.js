@@ -900,7 +900,7 @@ const UserProfile = ({ user, onLogout }) => {
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 z-40" 
+            className="fixed inset-0 z-[90]" 
             onClick={() => setShowDropdown(false)}
           />
           
