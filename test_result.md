@@ -278,6 +278,21 @@ backend:
         -agent: "testing"
         -comment: "Conducted testing of the random scenario generation functionality. The GET /api/simulation/random-scenario endpoint returns a 404 Not Found error, suggesting it's not implemented or has a different path. This prevents verification of the enhanced random scenario generation feature that was supposed to create ultra-detailed scenarios with rich context. The feature appears to be not implemented yet or is accessible through a different endpoint than expected. Further investigation is needed to determine the correct endpoint or to implement this feature."
 
+  - task: "Analytics Endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        -working: "NA"
+        -agent: "testing"
+        -comment: "Initial testing needed for analytics endpoints"
+        -working: true
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of the analytics endpoints. The GET /api/analytics/comprehensive endpoint returns comprehensive analytics including conversation counts, agent usage, document stats, daily activity over last 30 days, top agents, scenario distribution, and API usage data. The GET /api/analytics/weekly-summary endpoint returns a weekly summary including conversation counts, agents created, documents created, most active day, and daily breakdown for the last 7 days. Both endpoints require authentication and return a 403 Forbidden error for unauthenticated requests. The data structures returned by both endpoints match the expected schema with proper counts and analytics. All tests passed successfully."
+
 frontend:
   - task: "Modern UI Design Implementation"
     implemented: true
