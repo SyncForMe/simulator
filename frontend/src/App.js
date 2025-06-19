@@ -6685,7 +6685,7 @@ function App() {
           {/* Left Column - Agent Profiles */}
           <div className="lg:col-span-1">
             <AgentProfilesManager 
-              agents={agents}
+              agents={agents || []}
               onDeleteAll={handleDeleteAllAgents}
               onInitResearchStation={handleInitResearchStation}
               onTestBackgrounds={handleTestBackgrounds}
