@@ -572,6 +572,372 @@ const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
           </div>
         </div>
       )}
+
+      {/* Profile Settings Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold">👤 Profile Settings</h2>
+                  <p className="text-white/80 mt-1">Manage your account information and preferences</p>
+                </div>
+                <button
+                  onClick={() => setShowProfileModal(false)}
+                  className="text-white/70 hover:text-white text-2xl p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              <div className="space-y-6">
+                {/* Profile Photo Section */}
+                <div className="flex items-center space-x-6">
+                  <div className="relative">
+                    {user?.picture ? (
+                      <img 
+                        src={user.picture} 
+                        alt={user.name || 'User'}
+                        className="w-20 h-20 rounded-full border-4 border-blue-100"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-2xl font-bold border-4 border-blue-100">
+                        {(user?.name && user.name.charAt(0).toUpperCase()) || 'U'}
+                      </div>
+                    )}
+                    <button className="absolute -bottom-1 -right-1 bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs hover:bg-blue-700 transition-colors">
+                      ✏️
+                    </button>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">{user?.name || 'User'}</h3>
+                    <p className="text-gray-600">{user?.email || 'No email'}</p>
+                    <button className="text-blue-600 text-sm hover:text-blue-700 mt-1">Change profile photo</button>
+                  </div>
+                </div>
+
+                {/* Basic Information */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Basic Information</h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                      <input
+                        type="text"
+                        defaultValue={user?.name || ''}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your full name"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                      <input
+                        type="email"
+                        defaultValue={user?.email || ''}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter your email"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                    <textarea
+                      rows="3"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Tell us about yourself..."
+                    ></textarea>
+                  </div>
+                </div>
+
+                {/* Account Statistics */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Account Statistics</h4>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-blue-50 p-4 rounded-lg text-center">
+                      <div className="text-2xl font-bold text-blue-600">24</div>
+                      <div className="text-sm text-blue-600">Conversations</div>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-lg text-center">
+                      <div className="text-2xl font-bold text-green-600">8</div>
+                      <div className="text-sm text-green-600">Saved Agents</div>
+                    </div>
+                    <div className="bg-purple-50 p-4 rounded-lg text-center">
+                      <div className="text-2xl font-bold text-purple-600">12</div>
+                      <div className="text-sm text-purple-600">Documents</div>
+                    </div>
+                    <div className="bg-orange-50 p-4 rounded-lg text-center">
+                      <div className="text-2xl font-bold text-orange-600">7</div>
+                      <div className="text-sm text-orange-600">Days Active</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Security Settings */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Security & Privacy</h4>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <div className="font-medium text-gray-800">Two-Factor Authentication</div>
+                        <div className="text-sm text-gray-600">Add an extra layer of security to your account</div>
+                      </div>
+                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">
+                        Enable
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <div className="font-medium text-gray-800">Change Password</div>
+                        <div className="text-sm text-gray-600">Update your account password</div>
+                      </div>
+                      <button className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors">
+                        Change
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <div className="font-medium text-gray-800">Data Export</div>
+                        <div className="text-sm text-gray-600">Download all your data and conversations</div>
+                      </div>
+                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+                        Export
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => setShowProfileModal(false)}
+                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Preferences Modal */}
+      {showPreferencesModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold">⚙️ Preferences</h2>
+                  <p className="text-white/80 mt-1">Customize your AI simulation experience</p>
+                </div>
+                <button
+                  onClick={() => setShowPreferencesModal(false)}
+                  className="text-white/70 hover:text-white text-2xl p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Appearance Settings */}
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">🎨 Appearance</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Theme</label>
+                      <div className="grid grid-cols-3 gap-3">
+                        {['Light', 'Dark', 'Auto'].map((theme) => (
+                          <button
+                            key={theme}
+                            className={`p-3 border-2 rounded-lg text-sm font-medium transition-all ${
+                              theme === 'Light' 
+                                ? 'border-purple-500 bg-purple-50 text-purple-700' 
+                                : 'border-gray-300 hover:border-purple-300'
+                            }`}
+                          >
+                            {theme === 'Light' && '☀️'} {theme === 'Dark' && '🌙'} {theme === 'Auto' && '🔄'} {theme}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Color Scheme</label>
+                      <div className="grid grid-cols-4 gap-3">
+                        {[
+                          { name: 'Purple', color: 'bg-purple-500', selected: true },
+                          { name: 'Blue', color: 'bg-blue-500' },
+                          { name: 'Green', color: 'bg-green-500' },
+                          { name: 'Red', color: 'bg-red-500' }
+                        ].map((scheme) => (
+                          <button
+                            key={scheme.name}
+                            className={`p-3 rounded-lg border-2 transition-all ${
+                              scheme.selected 
+                                ? 'border-purple-500 ring-2 ring-purple-200' 
+                                : 'border-gray-300 hover:border-gray-400'
+                            }`}
+                          >
+                            <div className={`w-full h-8 rounded ${scheme.color} mb-2`}></div>
+                            <div className="text-xs text-gray-600">{scheme.name}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Language & Region */}
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">🌍 Language & Region</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Interface Language</label>
+                      <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="en">🇺🇸 English</option>
+                        <option value="es">🇪🇸 Spanish</option>
+                        <option value="fr">🇫🇷 French</option>
+                        <option value="de">🇩🇪 German</option>
+                        <option value="hr">🇭🇷 Croatian</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Time Zone</label>
+                      <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option>🌍 UTC (Coordinated Universal Time)</option>
+                        <option>🇺🇸 EST (Eastern Standard Time)</option>
+                        <option>🇺🇸 PST (Pacific Standard Time)</option>
+                        <option>🇪🇺 CET (Central European Time)</option>
+                        <option>🇭🇷 Croatia (Central European Time)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
+                      <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option>MM/DD/YYYY (US Format)</option>
+                        <option>DD/MM/YYYY (European Format)</option>
+                        <option>YYYY-MM-DD (ISO Format)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Notifications */}
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">🔔 Notifications</h3>
+                  
+                  <div className="space-y-4">
+                    {[
+                      { label: 'Email Notifications', desc: 'Receive updates via email', enabled: true },
+                      { label: 'Browser Notifications', desc: 'Show desktop notifications', enabled: false },
+                      { label: 'Conversation Updates', desc: 'Notify when agents finish conversations', enabled: true },
+                      { label: 'Document Generation', desc: 'Alert when documents are created', enabled: true },
+                      { label: 'Weekly Reports', desc: 'Send weekly analytics summaries', enabled: false }
+                    ].map((setting, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <div className="font-medium text-gray-800">{setting.label}</div>
+                          <div className="text-sm text-gray-600">{setting.desc}</div>
+                        </div>
+                        <label className="switch">
+                          <input type="checkbox" defaultChecked={setting.enabled} />
+                          <span className="slider"></span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* AI Settings */}
+                <div className="space-y-6">
+                  <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">🤖 AI Settings</h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Default Conversation Length</label>
+                      <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <option>Short (3-5 exchanges)</option>
+                        <option selected>Medium (8-12 exchanges)</option>
+                        <option>Long (15+ exchanges)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Agent Response Speed</label>
+                      <div className="flex items-center space-x-4">
+                        <span className="text-sm text-gray-600">Fast</span>
+                        <input type="range" min="1" max="5" defaultValue="3" className="flex-1" />
+                        <span className="text-sm text-gray-600">Thoughtful</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <div className="font-medium text-gray-800">Audio Narration</div>
+                          <div className="text-sm text-gray-600">Enable voice narration for conversations</div>
+                        </div>
+                        <label className="switch">
+                          <input type="checkbox" defaultChecked={audioNarrativeEnabled} />
+                          <span className="slider"></span>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <div className="font-medium text-gray-800">Auto-save Conversations</div>
+                          <div className="text-sm text-gray-600">Automatically save conversations to history</div>
+                        </div>
+                        <label className="switch">
+                          <input type="checkbox" defaultChecked={true} />
+                          <span className="slider"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-3 pt-6 mt-8 border-t border-gray-200">
+                <button
+                  onClick={() => setShowPreferencesModal(false)}
+                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                  Save Preferences
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
