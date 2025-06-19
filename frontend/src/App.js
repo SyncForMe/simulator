@@ -7458,6 +7458,208 @@ function App() {
           </div>
         )}
       </main>
+
+      {/* Analytics Modal */}
+      {showAnalyticsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold">📊 Usage & Analytics</h2>
+                  <p className="text-white/80 mt-1">Comprehensive insights into your AI simulation activity</p>
+                </div>
+                <button
+                  onClick={() => setShowAnalyticsModal(false)}
+                  className="text-white/70 hover:text-white text-2xl p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              {analyticsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading analytics data...</p>
+                  </div>
+                </div>
+              ) : analyticsData ? (
+                <div className="space-y-8">
+                  {/* Summary Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-blue-600 text-sm font-medium">Total Conversations</p>
+                          <p className="text-3xl font-bold text-blue-800">{analyticsData.summary.total_conversations}</p>
+                          <p className="text-blue-600 text-xs mt-1">+{analyticsData.summary.conversations_this_week} this week</p>
+                        </div>
+                        <div className="text-blue-500 text-2xl">💬</div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-green-600 text-sm font-medium">Saved Agents</p>
+                          <p className="text-3xl font-bold text-green-800">{analyticsData.summary.total_agents}</p>
+                          <p className="text-green-600 text-xs mt-1">+{analyticsData.summary.agents_this_week} this week</p>
+                        </div>
+                        <div className="text-green-500 text-2xl">🤖</div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-purple-600 text-sm font-medium">Documents Created</p>
+                          <p className="text-3xl font-bold text-purple-800">{analyticsData.summary.total_documents}</p>
+                          <p className="text-purple-600 text-xs mt-1">+{analyticsData.summary.documents_this_week} this week</p>
+                        </div>
+                        <div className="text-purple-500 text-2xl">📄</div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-lg border border-orange-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-orange-600 text-sm font-medium">API Usage Today</p>
+                          <p className="text-3xl font-bold text-orange-800">{analyticsData.api_usage.current_usage}</p>
+                          <p className="text-orange-600 text-xs mt-1">{analyticsData.api_usage.remaining} remaining</p>
+                        </div>
+                        <div className="text-orange-500 text-2xl">⚡</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Charts and Detailed Analytics */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Daily Activity Chart */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-4">📈 Daily Activity (Last 30 Days)</h3>
+                      <div className="h-64 flex items-end justify-between space-x-1">
+                        {analyticsData.daily_activity.slice(-30).map((day, index) => {
+                          const maxValue = Math.max(...analyticsData.daily_activity.map(d => d.conversations));
+                          const height = maxValue > 0 ? (day.conversations / maxValue) * 100 : 0;
+                          
+                          return (
+                            <div key={index} className="flex-1 flex flex-col items-center">
+                              <div 
+                                className="bg-gradient-to-t from-blue-500 to-blue-400 rounded-t w-full transition-all duration-300 hover:from-blue-600 hover:to-blue-500"
+                                style={{ height: `${Math.max(height, 2)}%` }}
+                                title={`${day.date}: ${day.conversations} conversations`}
+                              ></div>
+                              {index % 5 === 0 && (
+                                <span className="text-xs text-gray-500 mt-1 transform rotate-45">
+                                  {new Date(day.date).getMonth() + 1}/{new Date(day.date).getDate()}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Top Agents */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-4">🏆 Most Used Agents</h3>
+                      <div className="space-y-3">
+                        {analyticsData.agent_usage.slice(0, 6).map((agent, index) => (
+                          <div key={index} className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <span className="text-lg">{index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '👤'}</span>
+                              <div>
+                                <p className="font-medium text-gray-800">{agent.name}</p>
+                                <p className="text-sm text-gray-500 capitalize">{agent.archetype}</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-blue-600">{agent.usage_count}</p>
+                              <p className="text-xs text-gray-500">uses</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Scenario Distribution */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-4">🎭 Popular Scenarios</h3>
+                      <div className="space-y-3">
+                        {analyticsData.scenario_distribution.slice(0, 5).map((scenario, index) => {
+                          const maxCount = analyticsData.scenario_distribution[0]?.count || 1;
+                          const percentage = (scenario.count / maxCount) * 100;
+                          
+                          return (
+                            <div key={index} className="space-y-2">
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium text-gray-700 truncate flex-1 mr-2">
+                                  {scenario.scenario}
+                                </span>
+                                <span className="text-sm font-bold text-purple-600">{scenario.count}</span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div 
+                                  className="bg-gradient-to-r from-purple-500 to-purple-400 h-2 rounded-full transition-all duration-500"
+                                  style={{ width: `${percentage}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* API Usage Trend */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-4">⚡ API Usage Trend</h3>
+                      <div className="h-32 flex items-end justify-between space-x-1">
+                        {analyticsData.api_usage.history.slice(-14).map((day, index) => {
+                          const maxRequests = Math.max(...analyticsData.api_usage.history.map(d => d.requests));
+                          const height = maxRequests > 0 ? (day.requests / maxRequests) * 100 : 0;
+                          
+                          return (
+                            <div key={index} className="flex-1 flex flex-col items-center">
+                              <div 
+                                className="bg-gradient-to-t from-orange-500 to-orange-400 rounded-t w-full"
+                                style={{ height: `${Math.max(height, 2)}%` }}
+                                title={`${day.date}: ${day.requests} requests`}
+                              ></div>
+                              {index % 3 === 0 && (
+                                <span className="text-xs text-gray-500 mt-1">
+                                  {new Date(day.date).getMonth() + 1}/{new Date(day.date).getDate()}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div className="mt-4 flex justify-between text-sm text-gray-600">
+                        <span>Daily Usage: {analyticsData.api_usage.current_usage}/{analyticsData.api_usage.max_requests}</span>
+                        <span>Remaining: {analyticsData.api_usage.remaining}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Generated timestamp */}
+                  <div className="text-center text-xs text-gray-500 mt-8">
+                    Generated at: {new Date(analyticsData.generated_at).toLocaleString()}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">No analytics data available</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
