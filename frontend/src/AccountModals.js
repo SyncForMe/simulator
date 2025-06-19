@@ -94,14 +94,22 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
   };
 
   const handleSave = async () => {
+    console.log('🔍 handleSave function called');
+    console.log('🔍 formData:', formData);
+    console.log('🔍 profilePicture:', profilePicture);
+    console.log('🔍 token:', token ? 'present' : 'missing');
+    
     setIsSaving(true);
     try {
       const updateData = {
-        name: formData.name,
-        email: formData.email,
-        bio: formData.bio,
-        picture: profilePicture
+        name: formData.name || '',
+        email: formData.email || '',
+        bio: formData.bio || '',
+        picture: profilePicture || ''
       };
+
+      console.log('🔍 updateData to send:', updateData);
+      console.log('🔍 Making API call to:', `${API}/auth/profile`);
 
       const response = await axios.put(`${API}/auth/profile`, updateData, {
         headers: {
@@ -110,14 +118,19 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
         }
       });
 
-      if (response.data.success) {
+      console.log('🔍 Save response:', response.data);
+      if (response.data && response.data.success) {
         alert('✅ Profile updated successfully!');
         onClose();
         // Optionally trigger a page refresh to update user data
         window.location.reload();
+      } else {
+        console.error('🔍 Save failed - no success in response:', response.data);
+        alert('❌ Failed to save profile. Please try again.');
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error('🔍 Error updating profile:', error);
+      console.error('🔍 Error details:', error.response?.data);
       alert('❌ Failed to update profile. Please try again.');
     } finally {
       setIsSaving(false);
