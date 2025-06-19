@@ -7411,6 +7411,194 @@ function App() {
                 </div>
               </div>
             )}
+            />
+
+            {/* Control Buttons */}
+            <div className="flex justify-center space-x-4 my-6">
+              {/* Play/Pause Button */}
+              <div className="group relative">
+                <button
+                  onClick={() => {
+                    const currentAutoConversations = simulationState?.auto_conversations || false;
+                    setSimulationState(prev => ({
+                      ...prev,
+                      auto_conversations: !currentAutoConversations,
+                      conversation_interval: 10,
+                      auto_time: prev?.auto_time || false
+                    }));
+                  }}
+                  className={`p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-xl ${
+                    simulationState?.auto_conversations 
+                      ? 'bg-red-500 hover:bg-red-600' 
+                      : 'bg-green-500 hover:bg-green-600'
+                  } text-white`}
+                >
+                  {simulationState?.auto_conversations ? (
+                    // Pause icon
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                  ) : (
+                    // Play icon  
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  )}
+                </button>
+                {/* Tooltip */}
+                <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  {simulationState?.auto_conversations ? 'Pause Simulation' : 'Start Simulation'}
+                </div>
+              </div>
+
+              {/* Observer Chat Button */}
+              <div className="group relative">
+                <button
+                  onClick={() => setShowObserverCard(!showObserverCard)}
+                  className={`p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-xl ${
+                    showObserverCard 
+                      ? 'bg-purple-600 hover:bg-purple-700' 
+                      : 'bg-purple-500 hover:bg-purple-600'
+                  } text-white`}
+                >
+                  {/* Chat icon */}
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                  </svg>
+                </button>
+                {/* Tooltip */}
+                <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  {showObserverCard ? 'Hide Observer' : 'Open Observer Chat'}
+                </div>
+              </div>
+
+              {/* Fast Forward Button */}
+              <div className="group relative">
+                <button
+                  onClick={() => alert('⚡ Fast Forward feature is available in Pro version!')}
+                  className="p-4 rounded-full shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-xl bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  {/* Fast forward icon */}
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/>
+                  </svg>
+                </button>
+                {/* Tooltip */}
+                <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  Fast Forward Days (Pro)
+                </div>
+              </div>
+            </div>
+
+            {/* Observer Card */}
+            {showObserverCard && (
+              <div className="bg-white rounded-lg shadow-lg border-2 border-purple-200 mb-6 overflow-hidden">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                      </svg>
+                      <h3 className="text-lg font-semibold">Observer Console</h3>
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        simulationState?.auto_conversations 
+                          ? 'bg-green-500 text-white' 
+                          : 'bg-red-500 text-white'
+                      }`}>
+                        {simulationState?.auto_conversations ? 'ACTIVE' : 'PAUSED'}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setShowObserverCard(false)}
+                      className="text-white/70 hover:text-white transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Chat Interface */}
+                <div className="p-4">
+                  {/* Chat Messages */}
+                  <div className="bg-gray-50 rounded-lg p-4 h-64 overflow-y-auto mb-4">
+                    {observerMessages.length === 0 ? (
+                      <div className="text-center text-gray-500 flex items-center justify-center h-full">
+                        <div>
+                          <svg className="w-12 h-12 mx-auto mb-2 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                          </svg>
+                          <p className="text-sm">Start the simulation and chat with your agents!</p>
+                          <p className="text-xs text-gray-400 mt-1">Your messages will guide their conversations</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {observerMessages.map((message, index) => (
+                          <div key={index} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                              message.isUser 
+                                ? 'bg-purple-600 text-white' 
+                                : 'bg-white border border-gray-200 text-gray-800'
+                            }`}>
+                              {!message.isUser && (
+                                <div className="text-xs font-medium text-purple-600 mb-1">
+                                  {message.agent || 'System'}
+                                </div>
+                              )}
+                              <p className="text-sm">{message.text}</p>
+                              <div className={`text-xs mt-1 ${message.isUser ? 'text-purple-200' : 'text-gray-500'}`}>
+                                {new Date(message.timestamp).toLocaleTimeString()}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Input Area */}
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={observerMessage}
+                      onChange={(e) => setObserverMessage(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSendObserverMessage();
+                        }
+                      }}
+                      placeholder={
+                        simulationState?.auto_conversations 
+                          ? "Guide your agents... (e.g., 'Focus on the budget concerns')"
+                          : "Start simulation to interact with agents"
+                      }
+                      disabled={!simulationState?.auto_conversations}
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    />
+                    <button
+                      onClick={handleSendObserverMessage}
+                      disabled={!observerMessage.trim() || !simulationState?.auto_conversations}
+                      className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Status Message */}
+                  <div className="mt-2 text-xs text-gray-500 text-center">
+                    {simulationState?.auto_conversations 
+                      ? "💬 Real-time interaction enabled - your messages will influence the simulation"
+                      : "⏸️ Start the simulation to enable real-time interaction"
+                    }
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* Start New Simulation Button */}
             <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg shadow-md p-4 border-2 border-green-200">
