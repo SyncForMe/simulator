@@ -255,18 +255,23 @@ const VoiceInput = ({
   const isDisabledDueToAuth = !token;
 
   return (
-    <div className={`relative ${className}`}>
-      {!isRecording && !isProcessing ? (
-        <button
-          type="button"
-          onClick={startRecording}
-          disabled={disabled || isDisabledDueToAuth}
-          className={`${sizeClasses[size]} text-gray-600 hover:text-gray-800 disabled:opacity-50 transition-colors flex items-center justify-center`}
-          title={isDisabledDueToAuth ? "Sign in to use voice input" : "Voice input"}
-        >
-          <MicrophoneIcon className="w-full h-full" />
-        </button>
-      ) : isRecording ? (
+    <div className="relative">
+      <motion.button
+        onClick={isRecording ? stopRecording : startRecording}
+        disabled={disabled || isProcessing}
+        className={`${size === 'small' ? 'w-6 h-6' : 'w-8 h-8'} flex items-center justify-center rounded-full transition-all duration-200 ${
+          isRecording 
+            ? 'bg-red-500 text-white' 
+            : isProcessing 
+            ? 'bg-gray-300 text-gray-500'
+            : isDisabledDueToAuth
+            ? 'bg-gray-200 text-gray-400 cursor-help'
+            : 'bg-blue-500 text-white hover:bg-blue-600'
+        }`}
+        whileHover={!disabled && !isProcessing && !isDisabledDueToAuth ? { scale: 1.1 } : {}}
+        whileTap={!disabled && !isProcessing && !isDisabledDueToAuth ? { scale: 0.95 } : {}}
+        title={isDisabledDueToAuth ? "Voice input requires authentication - click 'Continue as Guest' to enable" : `Voice input for ${fieldType}`}>
+        {!isRecording && !isProcessing ? (
         <button
           type="button"
           onClick={stopRecording}
