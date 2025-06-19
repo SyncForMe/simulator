@@ -5243,9 +5243,29 @@ const ChatHistory = () => {
       const response = await axios.get(`${API}/conversation-history`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setConversations(response.data || []);
+      
+      // Add null checks and ensure proper data structure
+      const conversations = response.data || [];
+      
+      // Validate and clean the conversation data
+      const validConversations = conversations.filter(conv => 
+        conv && typeof conv === 'object' && conv.id
+      ).map(conv => ({
+        ...conv,
+        messages: Array.isArray(conv.messages) ? conv.messages : [],
+        scenario_name: conv.scenario_name || 'Unnamed Scenario',
+        created_at: conv.created_at || new Date().toISOString()
+      }));
+      
+      setConversations(validConversations);
     } catch (error) {
       console.error('Error fetching conversation history:', error);
+      // If endpoint doesn't exist, set empty array instead of failing
+      if (error.response?.status === 404) {
+        setConversations([]);
+      } else {
+        alert('Failed to load conversation history. Please try again.');
+      }
     }
     setLoading(false);
   };
