@@ -5516,7 +5516,7 @@ const ChatHistory = () => {
                                       {formatDate(conversation.created_at)}
                                     </span>
                                     <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                                      {conversation.messages?.length || 0} messages
+                                      {Array.isArray(conversation.messages) ? conversation.messages.length : 0} messages
                                     </span>
                                   </div>
                                   
