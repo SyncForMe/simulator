@@ -1647,7 +1647,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                       </span>
                       <span className="text-xs text-gray-700 truncate">{file?.filename || 'Unknown file'}</span>
                     </div>
-                    <span className="text-xs text-gray-500">{Math.round(file.size / 1024)}KB</span>
+                    <span className="text-xs text-gray-500">{file?.size ? Math.round(file.size / 1024) : 0}KB</span>
                   </div>
                 ))}
               </div>
