@@ -1081,18 +1081,22 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
           duration: response.data.duration_seconds,
           wordCount: response.data.word_count
         });
+        
+        setVoiceError(""); // Clear any previous errors
       } else {
-        setVoiceError("No speech detected. Please try speaking again.");
+        setVoiceError("🎤 No speech detected. Please try speaking again.");
       }
 
     } catch (error) {
       console.error('Error transcribing audio:', error);
       if (error.response?.status === 401) {
-        setVoiceError("Authentication failed. Please sign in again.");
-      } else if (error.response?.status === 400) {
-        setVoiceError("Invalid audio format. Please try again.");
+        setVoiceError("🔐 Authentication failed. Please sign in to use voice input.");
+      } else if (error.response?.status === 404) {
+        setVoiceError("🚧 Voice transcription service is not available. Please type your scenario instead.");
+      } else if (error.response?.status === 429) {
+        setVoiceError("⏱️ Too many requests. Please wait a moment and try again.");
       } else {
-        setVoiceError("Transcription failed. Please check your internet connection and try again.");
+        setVoiceError("🎤 Transcription failed: " + (error.response?.data?.detail || error.message));
       }
     } finally {
       setIsTranscribing(false);
