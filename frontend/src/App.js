@@ -842,43 +842,164 @@ const UserProfile = ({ user, onLogout }) => {
 
   return (
     <div className="relative">
-      <button
+      <motion.button
         onClick={() => setShowDropdown(!showDropdown)}
-        className="flex items-center space-x-2 bg-white rounded-lg p-2 shadow-md hover:shadow-lg transition-shadow"
+        className="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-white/70 hover:text-white hover:bg-white/10"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         {user.picture ? (
           <img 
             src={user.picture} 
             alt={user.name}
-            className="w-8 h-8 rounded-full"
+            className="w-6 h-6 rounded-full border border-white/20"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-            {user.name.charAt(0).toUpperCase()}
+          <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">
+            {user.name?.charAt(0).toUpperCase() || 'U'}
           </div>
         )}
-        <span className="text-sm font-medium text-gray-700">{user.name}</span>
-        <span className="text-gray-400">▼</span>
-      </button>
+        <span className="hidden sm:inline">{user.name?.split(' ')[0] || 'User'}</span>
+        <motion.span 
+          className="text-xs"
+          animate={{ rotate: showDropdown ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          ▼
+        </motion.span>
+      </motion.button>
 
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-50">
-          <div className="p-3 border-b">
-            <p className="text-sm font-medium text-gray-900">{user.name}</p>
-            <p className="text-xs text-gray-500">{user.email}</p>
-          </div>
-          <div className="p-1">
-            <button
-              onClick={() => {
-                onLogout();
-                setShowDropdown(false);
-              }}
-              className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setShowDropdown(false)}
+          />
+          
+          {/* Dropdown Menu */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden"
+          >
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4">
+              <div className="flex items-center space-x-3">
+                {user.picture ? (
+                  <img 
+                    src={user.picture} 
+                    alt={user.name}
+                    className="w-10 h-10 rounded-full border-2 border-white/20"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">
+                    {user.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{user.name || 'User'}</p>
+                  <p className="text-xs text-white/80 truncate">{user.email || 'No email'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Menu Items */}
+            <div className="py-2">
+              <div className="px-4 py-2 border-b border-gray-100">
+                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Account</h4>
+              </div>
+              
+              <button
+                className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition-colors"
+                onClick={() => {
+                  alert('Profile settings coming soon!');
+                  setShowDropdown(false);
+                }}
+              >
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>Profile Settings</span>
+              </button>
+
+              <button
+                className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition-colors"
+                onClick={() => {
+                  alert('Preferences coming soon!');
+                  setShowDropdown(false);
+                }}
+              >
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Preferences</span>
+              </button>
+
+              <button
+                className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition-colors"
+                onClick={() => {
+                  alert('Usage statistics coming soon!');
+                  setShowDropdown(false);
+                }}
+              >
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <span>Usage & Analytics</span>
+              </button>
+
+              <div className="border-t border-gray-100 mt-2 pt-2">
+                <div className="px-4 py-2">
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Support</h4>
+                </div>
+                
+                <button
+                  className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition-colors"
+                  onClick={() => {
+                    alert('Help & Documentation coming soon!');
+                    setShowDropdown(false);
+                  }}
+                >
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Help & Support</span>
+                </button>
+
+                <button
+                  className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-3 transition-colors"
+                  onClick={() => {
+                    window.open('https://github.com/emergent-ai/feedback', '_blank');
+                    setShowDropdown(false);
+                  }}
+                >
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1l-4 4z" />
+                  </svg>
+                  <span>Send Feedback</span>
+                </button>
+              </div>
+
+              <div className="border-t border-gray-100 mt-2 pt-2">
+                <button
+                  onClick={() => {
+                    onLogout();
+                    setShowDropdown(false);
+                  }}
+                  className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-3 transition-colors"
+                >
+                  <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </>
       )}
     </div>
   );
