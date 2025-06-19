@@ -335,6 +335,7 @@ test_plan:
     - "Enhanced Random Scenario Generation"
     - "Modern UI Design Implementation"
     - "Test Login (Continue as Guest)"
+    - "Analytics Endpoints"
   stuck_tasks:
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
     - "Admin Functionality"
