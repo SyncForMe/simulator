@@ -7075,6 +7075,23 @@ function App() {
     }
   };
 
+  // Handle other account modals
+  const handleOpenProfile = () => {
+    setShowProfileModal(true);
+  };
+
+  const handleOpenPreferences = () => {
+    setShowPreferencesModal(true);
+  };
+
+  const handleOpenHelp = () => {
+    setShowHelpModal(true);
+  };
+
+  const handleOpenFeedback = () => {
+    setShowFeedbackModal(true);
+  };
+
   // Show login page if not authenticated
   if (!isAuthenticated) {
     return <HomePage onAuthenticated={handleAuthentication} />;
