@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 import axios from 'axios';
 import { motion, useAnimationControls, AnimatePresence } from 'framer-motion';
+import './ModernApp.css';
 import './App.css';
 import { ProfileSettingsModal, PreferencesModal, HelpSupportModal, FeedbackModal } from './AccountModals';
 import HomePage from './HomePage';
