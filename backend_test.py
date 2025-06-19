@@ -1964,6 +1964,18 @@ def main():
     # Test the analytics endpoints
     analytics_success, analytics_message = test_analytics_endpoints()
     
+    if analytics_success:
+        print("✅ Analytics endpoints are working correctly")
+        print("✅ Comprehensive analytics endpoint returns proper data structure")
+        print("✅ Weekly summary endpoint returns proper data structure")
+        print("✅ Authentication is properly enforced for analytics endpoints")
+    else:
+        if isinstance(analytics_message, dict) and "issues" in analytics_message:
+            for issue in analytics_message["issues"]:
+                print(f"❌ {issue}")
+        else:
+            print(f"❌ {analytics_message}")
+    
     # Print summary of all tests
     print_summary()
     
