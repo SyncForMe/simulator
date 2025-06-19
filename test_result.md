@@ -335,7 +335,7 @@ frontend:
         
   - task: "Account Dropdown System"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
@@ -356,6 +356,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Fixed syntax errors in App.js by removing duplicate closing curly braces and adding missing imports. The account dropdown system is now working correctly. The user profile button appears after login and clicking it opens the dropdown menu with all expected items: Profile Settings, Preferences, Usage & Analytics, Help & Support, and Send Feedback. Each modal opens correctly when its corresponding menu item is clicked. The modals have proper styling and close buttons work as expected."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted comprehensive testing of the account dropdown menu buttons. The dropdown menu itself opens correctly when clicking the user profile icon in the top right corner. However, most of the buttons in the dropdown do not function as expected. Only the 'Usage & Analytics' button works correctly, opening a modal with comprehensive analytics data. The 'Profile Settings', 'Preferences', 'Help & Support', and 'Send Feedback' buttons do not open their respective modals when clicked. There is a JavaScript error in the console related to HTML structure: 'In HTML, %s cannot be a descendant of <%s>. This will cause a hydration error.' The error specifically mentions a button being a descendant of another button, which is invalid HTML structure. This suggests there might be an issue with how the modals are being triggered or with the event handlers for these buttons."
 
 metadata:
   created_by: "testing_agent"
