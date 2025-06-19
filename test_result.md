@@ -411,6 +411,7 @@ test_plan:
     - "Natural Expertise Demonstration System"
     - "Enhanced Document Generation System"
     - "Enhanced Random Scenario Generation"
+    - "Account Dropdown System"
   test_all: false
   test_priority: "high_first"
 
