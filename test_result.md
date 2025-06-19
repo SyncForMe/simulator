@@ -335,7 +335,7 @@ frontend:
         
   - task: "Account Dropdown System"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
@@ -374,6 +374,9 @@ frontend:
         -working: true
         -agent: "testing"
         -comment: "Conducted comprehensive testing of the Profile Settings modal with a focus on the fixes and improvements mentioned in the review request. Successfully logged in as guest and accessed the Profile Settings modal through the user profile dropdown. The AI avatar generation feature works correctly - clicking the edit button (✏️) on the profile picture shows options for AI generation, entering a custom prompt 'creative artist with glasses' and clicking Generate button successfully attempts to generate an avatar. The loading state appears during generation and the avatar gets updated. The form save functionality works as expected - editing the name and bio fields and clicking Save Changes shows the 'Saving...' state. The Change Email feature is available in the Security & Privacy section and prompts for current password and new email when clicked. The Enhanced Change Password feature works correctly, asking for current password, new password, and confirmation. Other security features like Two-Factor Authentication and Data Export are functional. The modal can be closed properly using the close button. All features in the Profile Settings modal are working as expected, confirming that the fixes and improvements have been successfully implemented."
+        -working: false
+        -agent: "testing"
+        -comment: "Conducted testing of the profile avatar generation functionality. Successfully logged in as guest and accessed the Profile Settings modal through the user profile dropdown. The modal displays correctly with all expected sections. When clicking the edit button (✏️) on the profile picture, the picture options are displayed correctly with both file upload and AI avatar generation options. Entered a custom prompt 'creative artist with glasses' and clicked the Generate button, but the avatar generation did not work as expected. The 'Generating...' state was not detected, and no API calls were made to the avatar generation endpoint. Checked the network tab and found no requests to the '/api/auth/generate-profile-avatar' endpoint. There were console errors related to HTML structure: 'In HTML, %s cannot be a descendant of <%s>. This will cause a hydration error.' specifically mentioning a button being a descendant of another button in the CurrentScenarioCard component. This HTML structure issue might be affecting other components as well. The profile avatar generation functionality is not working, likely due to the API endpoint not being called correctly or issues with the event handlers."
 
 metadata:
   created_by: "testing_agent"
