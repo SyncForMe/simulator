@@ -6677,6 +6677,8 @@ function App() {
           />
         ) : activeTab === 'chat-history' ? (
           <ChatHistory />
+        ) : activeTab === 'file-center' ? (
+          <FileCenter />
         ) : activeTab === 'admin' ? (
           <AdminDashboard />
         ) : (
