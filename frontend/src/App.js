@@ -6219,6 +6219,9 @@ function App() {
     return localStorage.getItem('audioNarrativeEnabled') !== 'false';
   });
   const [autoExpandCurrentScenario, setAutoExpandCurrentScenario] = useState(false);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
 
   // Check if current user is admin
   const isAdmin = user && user.email && user.email.toLowerCase() === 'dino@cytonic.com';
