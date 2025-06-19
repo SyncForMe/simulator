@@ -1650,7 +1650,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                     </div>
                     <span className="text-xs text-gray-500">{file?.size ? Math.round(file.size / 1024) : 0}KB</span>
                   </div>
-                ))}
+                ) : null)}
               </div>
               <div className="text-xs text-blue-600 mt-2">
                 💡 Agents will use these files for context and reference during conversations.
