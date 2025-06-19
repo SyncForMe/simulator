@@ -909,7 +909,7 @@ const UserProfile = ({ user, onLogout }) => {
             initial={{ opacity: 0, scale: 0.95, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden"
+            className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-[100] overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4">
