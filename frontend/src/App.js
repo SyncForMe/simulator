@@ -4,7 +4,6 @@ import { motion, useAnimationControls, AnimatePresence } from 'framer-motion';
 import './App.css';
 import { ProfileSettingsModal, PreferencesModal, HelpSupportModal, FeedbackModal } from './AccountModals';
 import HomePage from './HomePage';
-import HomePage from './HomePage';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
