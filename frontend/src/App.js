@@ -844,6 +844,7 @@ const UserProfile = ({ user, onLogout, handleOpenAnalytics, handleOpenProfile, h
 
   // Add safety checks for user object
   if (!user || typeof user !== 'object') {
+    console.warn('UserProfile: Invalid user object:', user);
     return null;
   }
 
