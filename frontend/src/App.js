@@ -5221,6 +5221,318 @@ const FileCenter = ({ onRefresh }) => {
   );
 };
 
+const ChatHistory = () => {
+  const { user, token } = useAuth();
+  const [conversations, setConversations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedConversations, setSelectedConversations] = useState(new Set());
+  const [expandedScenarios, setExpandedScenarios] = useState(new Set());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('date'); // 'date', 'scenario', 'messages'
+  const [sortOrder, setSortOrder] = useState('desc'); // 'asc', 'desc'
+
+  useEffect(() => {
+    fetchConversationHistory();
+  }, [token]);
+
+  const fetchConversationHistory = async () => {
+    if (!token) return;
+    
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/conversation-history`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setConversations(response.data || []);
+    } catch (error) {
+      console.error('Error fetching conversation history:', error);
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteConversation = async (conversationId) => {
+    try {
+      await axios.delete(`${API}/conversation-history/${conversationId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      await fetchConversationHistory();
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      alert('Failed to delete conversation. Please try again.');
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedConversations.size === 0) return;
+    
+    const confirmed = window.confirm(`Are you sure you want to delete ${selectedConversations.size} conversation(s)?`);
+    if (!confirmed) return;
+
+    try {
+      for (const id of selectedConversations) {
+        await axios.delete(`${API}/conversation-history/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      setSelectedConversations(new Set());
+      await fetchConversationHistory();
+    } catch (error) {
+      console.error('Error bulk deleting conversations:', error);
+      alert('Failed to delete conversations. Please try again.');
+    }
+  };
+
+  const toggleScenarioExpanded = (scenarioName) => {
+    const newExpanded = new Set(expandedScenarios);
+    if (newExpanded.has(scenarioName)) {
+      newExpanded.delete(scenarioName);
+    } else {
+      newExpanded.add(scenarioName);
+    }
+    setExpandedScenarios(newExpanded);
+  };
+
+  const toggleConversationSelected = (conversationId) => {
+    const newSelected = new Set(selectedConversations);
+    if (newSelected.has(conversationId)) {
+      newSelected.delete(conversationId);
+    } else {
+      newSelected.add(conversationId);
+    }
+    setSelectedConversations(newSelected);
+  };
+
+  const selectAllInScenario = (scenarioConversations) => {
+    const newSelected = new Set(selectedConversations);
+    scenarioConversations.forEach(conv => newSelected.add(conv.id));
+    setSelectedConversations(newSelected);
+  };
+
+  const deselectAllInScenario = (scenarioConversations) => {
+    const newSelected = new Set(selectedConversations);
+    scenarioConversations.forEach(conv => newSelected.delete(conv.id));
+    setSelectedConversations(newSelected);
+  };
+
+  // Group conversations by scenario
+  const groupedConversations = conversations.reduce((acc, conv) => {
+    const scenarioName = conv.scenario_name || 'Unnamed Scenario';
+    if (!acc[scenarioName]) {
+      acc[scenarioName] = [];
+    }
+    acc[scenarioName].push(conv);
+    return acc;
+  }, {});
+
+  // Filter and sort
+  const filteredGrouped = Object.entries(groupedConversations)
+    .filter(([scenarioName]) => 
+      scenarioName.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort(([a], [b]) => {
+      if (sortOrder === 'asc') {
+        return a.localeCompare(b);
+      }
+      return b.localeCompare(a);
+    });
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center py-20">
+            <div className="text-6xl mb-6">🔒</div>
+            <h2 className="text-2xl font-bold text-white mb-4">Sign In Required</h2>
+            <p className="text-white/80">Please sign in to view your conversation history.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">💬 Chat History</h1>
+          <p className="text-white/80">Browse and manage your AI simulation conversations</p>
+        </div>
+
+        {/* Controls */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            {/* Search */}
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Search scenarios..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center space-x-4">
+              {selectedConversations.size > 0 && (
+                <button
+                  onClick={handleBulkDelete}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-medium"
+                >
+                  Delete Selected ({selectedConversations.size})
+                </button>
+              )}
+              <button
+                onClick={fetchConversationHistory}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium disabled:opacity-50"
+              >
+                {loading ? '⏳ Loading...' : '🔄 Refresh'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <div className="text-4xl mb-4">⏳</div>
+            <p className="text-gray-600">Loading conversation history...</p>
+          </div>
+        ) : filteredGrouped.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <div className="text-6xl mb-6">📭</div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">No Conversations Found</h3>
+            <p className="text-gray-600">
+              {searchTerm ? 'No scenarios match your search.' : 'Start a simulation to see your conversations here!'}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredGrouped.map(([scenarioName, scenarioConversations]) => {
+              const isExpanded = expandedScenarios.has(scenarioName);
+              const allSelected = scenarioConversations.every(conv => selectedConversations.has(conv.id));
+              const someSelected = scenarioConversations.some(conv => selectedConversations.has(conv.id));
+
+              return (
+                <div key={scenarioName} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                  {/* Scenario Header */}
+                  <div className="bg-gray-50 p-4 border-b border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => toggleScenarioExpanded(scenarioName)}
+                          className="text-gray-600 hover:text-gray-800 transition-transform duration-200"
+                          style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                        <div>
+                          <h3 className="font-bold text-gray-800 text-lg">{scenarioName}</h3>
+                          <p className="text-sm text-gray-600">{scenarioConversations.length} conversation(s)</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={allSelected}
+                          ref={input => {
+                            if (input) input.indeterminate = someSelected && !allSelected;
+                          }}
+                          onChange={() => {
+                            if (allSelected) {
+                              deselectAllInScenario(scenarioConversations);
+                            } else {
+                              selectAllInScenario(scenarioConversations);
+                            }
+                          }}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-600">Select All</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Conversations */}
+                  {isExpanded && (
+                    <div className="p-4 space-y-3">
+                      {scenarioConversations
+                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                        .map((conversation) => (
+                          <div key={conversation.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-start space-x-3 flex-1">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedConversations.has(conversation.id)}
+                                  onChange={() => toggleConversationSelected(conversation.id)}
+                                  className="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                />
+                                <div className="flex-1">
+                                  <div className="flex items-center space-x-2 mb-2">
+                                    <span className="text-sm text-gray-500">
+                                      {formatDate(conversation.created_at)}
+                                    </span>
+                                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                      {conversation.messages?.length || 0} messages
+                                    </span>
+                                  </div>
+                                  
+                                  {/* Show first few messages */}
+                                  {conversation.messages && conversation.messages.length > 0 && (
+                                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                                      {conversation.messages.slice(0, 3).map((message, idx) => (
+                                        <div key={idx} className="text-sm">
+                                          <span className="font-semibold text-gray-700">{message.agent_name}:</span>
+                                          <span className="text-gray-600 ml-2">{message.content.substring(0, 150)}{message.content.length > 150 ? '...' : ''}</span>
+                                        </div>
+                                      ))}
+                                      {conversation.messages.length > 3 && (
+                                        <p className="text-xs text-gray-500 italic">...and {conversation.messages.length - 3} more messages</p>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              
+                              <button
+                                onClick={() => handleDeleteConversation(conversation.id)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors ml-4"
+                                title="Delete conversation"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 function App() {
   // Handle OAuth callback
   useEffect(() => {
