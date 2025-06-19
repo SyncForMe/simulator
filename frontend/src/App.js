@@ -348,8 +348,6 @@ const VoiceInput = ({
     </div>
   );
 };
-  );
-};
 
 // Animated Observer Logo Component
 const ObserverLogo = () => {
