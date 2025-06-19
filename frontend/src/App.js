@@ -455,6 +455,9 @@ const ObserverLogo = () => {
 
 const CurrentScenarioCard = ({ currentScenario, autoExpand }) => {
   const [isExpanded, setIsExpanded] = useState(false); // Default to collapsed
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showPreferencesModal, setShowPreferencesModal] = useState(false);
+  const [audioNarrativeEnabled, setAudioNarrativeEnabled] = useState(false);
 
   // Don't auto-expand by default, let user control it
   // Removed auto-expand functionality to keep it collapsed by default
