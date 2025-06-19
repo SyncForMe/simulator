@@ -1265,12 +1265,22 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
             
             {/* Voice Input Controls - Fixed positioning with more spacing */}
             <div className="absolute right-6 top-3 flex flex-col space-y-1">
+              {!token && (
+                <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded mb-1 whitespace-nowrap">
+                  💡 Sign in to enable voice input
+                </div>
+              )}
               {!isRecording ? (
                 <button
                   type="button"
                   onClick={startRecording}
-                  className="w-6 h-6 text-gray-600 hover:text-gray-800 transition-colors flex items-center justify-center"
-                  title="Voice input"
+                  disabled={!token}
+                  className={`w-6 h-6 transition-colors flex items-center justify-center ${
+                    !token 
+                      ? 'text-gray-400 cursor-not-allowed' 
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                  title={!token ? "Sign in to use voice input" : "Voice input"}
                 >
                   <svg
                     viewBox="0 0 24 24"
