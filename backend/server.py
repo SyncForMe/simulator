@@ -7496,6 +7496,53 @@ async def get_weekly_summary(current_user: User = Depends(get_current_user)):
         logging.error(f"Error getting weekly summary: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to get weekly summary: {str(e)}")
 
+@api_router.post("/feedback/send")
+async def send_feedback(feedback_data: dict, current_user: User = Depends(get_current_user)):
+    """Send user feedback via email"""
+    try:
+        user_id = current_user.id
+        user_email = current_user.email
+        user_name = current_user.name
+        
+        # Extract feedback data
+        subject = feedback_data.get("subject", "User Feedback")
+        message = feedback_data.get("message", "")
+        feedback_type = feedback_data.get("type", "general")
+        
+        if not message.strip():
+            raise HTTPException(status_code=400, detail="Message cannot be empty")
+        
+        # Store feedback in database
+        feedback_record = {
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "user_email": user_email,
+            "user_name": user_name,
+            "subject": subject,
+            "message": message,
+            "type": feedback_type,
+            "created_at": datetime.utcnow(),
+            "status": "submitted"
+        }
+        
+        await db.feedback.insert_one(feedback_record)
+        
+        # For now, just log the feedback (in production, you would send email)
+        logging.info(f"Feedback received from {user_name} ({user_email}): {subject}")
+        logging.info(f"Feedback message: {message}")
+        
+        return {
+            "success": True,
+            "message": "Thank you for your feedback! We'll review it and get back to you soon.",
+            "feedback_id": feedback_record["id"]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error sending feedback: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to send feedback: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
