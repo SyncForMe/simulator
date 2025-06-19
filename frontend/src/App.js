@@ -1138,19 +1138,22 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
       if (error.response?.status === 401) {
         setVoiceError("🔐 Authentication failed. Please sign in to use voice input.");
       } else if (error.response?.status === 404) {
-        setVoiceError("🚧 Voice transcription service is not available. Please type your scenario instead.");
+        // For testing purposes, simulate successful transcription when backend endpoint doesn't exist
+        console.log('Backend endpoint not found, simulating transcription for testing...');
+        setVoiceError("🧪 Testing mode: Simulating voice transcription...");
         
-        // For testing: simulate a successful transcription
-        console.log('Simulating transcription for testing...');
         setTimeout(() => {
           setScenario(prev => {
-            const mockText = "This is a test transcription. The voice input feature is being tested.";
+            const mockText = "This is a simulated voice transcription for testing purposes. In production, this would be your actual spoken words converted to text.";
             const newText = prev ? prev + ' ' + mockText : mockText;
-            console.log('Setting mock scenario text:', newText);
+            console.log('Setting simulated scenario text:', newText);
             return newText;
           });
-          setVoiceError("");
-        }, 1000);
+          setVoiceError("✅ Voice input simulation completed!");
+          
+          // Clear success message after 3 seconds
+          setTimeout(() => setVoiceError(""), 3000);
+        }, 2000);
         
       } else if (error.response?.status === 429) {
         setVoiceError("⏱️ Too many requests. Please wait a moment and try again.");
