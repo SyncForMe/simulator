@@ -1636,16 +1636,16 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                 </button>
               </div>
               <div className="space-y-1 max-h-32 overflow-y-auto">
-                {uploadedFiles.map((file) => (
+                {uploadedFiles.map((file) => file && file.id ? (
                   <div key={file.id} className="flex items-center justify-between bg-white rounded px-2 py-1">
                     <div className="flex items-center space-x-2">
                       <span className="text-xs">
-                        {file.file_type === 'image' ? '🖼️' : 
-                         file.file_type === 'pdf' ? '📄' : 
-                         file.file_type === 'excel' ? '📊' : 
-                         file.file_type === 'text' ? '📝' : '📄'}
+                        {file && file.file_type === 'image' ? '🖼️' : 
+                         file && file.file_type === 'pdf' ? '📄' : 
+                         file && file.file_type === 'excel' ? '📊' : 
+                         file && file.file_type === 'text' ? '📝' : '📄'}
                       </span>
-                      <span className="text-xs text-gray-700 truncate">{file.filename}</span>
+                      <span className="text-xs text-gray-700 truncate">{file?.filename || 'Unknown file'}</span>
                     </div>
                     <span className="text-xs text-gray-500">{Math.round(file.size / 1024)}KB</span>
                   </div>
