@@ -221,15 +221,15 @@ const VoiceInput = ({
         formData.append('language', language);
       }
 
-      const response = await axios.post(`${API}/speech/transcribe-and-summarize`, formData, {
+      const response = await axios.post(`${API}/speech/transcribe-scenario`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      if (response.data.success && response.data.formatted_text) {
-        onTextUpdate(response.data.formatted_text);
+      if (response.data.success && response.data.text) {
+        onTextUpdate(response.data.text);
         setError(""); // Clear any previous errors
       } else {
         setError("No speech detected");
