@@ -6213,6 +6213,8 @@ function App() {
             onAddAgent={handleCreateAgent}
             onRemoveAgent={handleRemoveAgent}
           />
+        ) : activeTab === 'chat-history' ? (
+          <ChatHistory />
         ) : activeTab === 'admin' ? (
           <AdminDashboard />
         ) : (
