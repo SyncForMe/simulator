@@ -837,7 +837,7 @@ const LoginModal = ({ isOpen, onClose }) => {
   );
 };
 
-const UserProfile = ({ user, onLogout, handleOpenAnalytics }) => {
+const UserProfile = ({ user, onLogout, handleOpenAnalytics, handleOpenProfile, handleOpenPreferences, handleOpenHelp, handleOpenFeedback }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   // Add safety checks for user object
