@@ -230,6 +230,7 @@ const VoiceInput = ({
 
       if (response.data.success && response.data.formatted_text) {
         onTextUpdate(response.data.formatted_text);
+        setError(""); // Clear any previous errors
       } else {
         setError("No speech detected");
       }
@@ -237,9 +238,13 @@ const VoiceInput = ({
     } catch (error) {
       console.error('Error processing audio:', error);
       if (error.response?.status === 401) {
-        setError("Please sign in");
+        setError("Authentication failed - please sign in");
+      } else if (error.response?.status === 404) {
+        setError("Voice service not available");
+      } else if (error.response?.status === 429) {
+        setError("Too many requests - please wait");
       } else {
-        setError("Processing failed");
+        setError("Processing failed: " + (error.response?.data?.detail || error.message));
       }
     } finally {
       setIsProcessing(false);
