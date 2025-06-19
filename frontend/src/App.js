@@ -242,16 +242,25 @@ const VoiceInput = ({
       if (error.response?.status === 401) {
         setError("Authentication failed - please sign in");
       } else if (error.response?.status === 404) {
-        setError("Voice service not available");
+        // For testing purposes, simulate successful transcription when backend endpoint doesn't exist
+        console.log('Backend endpoint not found, simulating agent voice input for testing...');
+        setError("🧪 Testing mode: Simulating voice input...");
         
-        // For testing: simulate a successful transcription
-        console.log('Simulating agent voice input for testing...');
         setTimeout(() => {
-          const mockText = `Test voice input for ${fieldType}`;
-          console.log('Setting mock agent text:', mockText);
+          const mockTexts = {
+            goal: "Create innovative solutions to solve complex problems and improve user experiences",
+            expertise: "Machine Learning, Data Analysis, User Experience Design",
+            background: "10+ years of experience in technology and innovation, with a focus on practical applications of AI and machine learning"
+          };
+          
+          const mockText = mockTexts[fieldType] || `Professional ${fieldType} content from voice input simulation`;
+          console.log('Setting simulated agent text for', fieldType, ':', mockText);
           onTextUpdate(mockText);
-          setError("");
-        }, 1000);
+          setError("✅ Voice input simulation completed!");
+          
+          // Clear success message after 3 seconds
+          setTimeout(() => setError(""), 3000);
+        }, 2000);
         
       } else if (error.response?.status === 429) {
         setError("Too many requests - please wait");
