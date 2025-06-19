@@ -5271,6 +5271,8 @@ const ChatHistory = () => {
   };
 
   const handleDeleteConversation = async (conversationId) => {
+    if (!conversationId || !token) return;
+    
     try {
       await axios.delete(`${API}/conversation-history/${conversationId}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -5278,27 +5280,39 @@ const ChatHistory = () => {
       await fetchConversationHistory();
     } catch (error) {
       console.error('Error deleting conversation:', error);
-      alert('Failed to delete conversation. Please try again.');
+      if (error.response?.status === 404) {
+        // If conversation doesn't exist, just refresh the list
+        await fetchConversationHistory();
+      } else {
+        alert('Failed to delete conversation. Please try again.');
+      }
     }
   };
 
   const handleBulkDelete = async () => {
-    if (selectedConversations.size === 0) return;
+    if (selectedConversations.size === 0 || !token) return;
     
     const confirmed = window.confirm(`Are you sure you want to delete ${selectedConversations.size} conversation(s)?`);
     if (!confirmed) return;
 
     try {
       for (const id of selectedConversations) {
-        await axios.delete(`${API}/conversation-history/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        if (id) { // Only delete if id exists
+          try {
+            await axios.delete(`${API}/conversation-history/${id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+          } catch (error) {
+            // Continue with other deletions even if one fails
+            console.error(`Failed to delete conversation ${id}:`, error);
+          }
+        }
       }
       setSelectedConversations(new Set());
       await fetchConversationHistory();
     } catch (error) {
       console.error('Error bulk deleting conversations:', error);
-      alert('Failed to delete conversations. Please try again.');
+      alert('Some conversations could not be deleted. Please try again.');
     }
   };
 
