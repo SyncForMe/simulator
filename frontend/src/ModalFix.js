@@ -17,13 +17,25 @@ const AccountModals = ({
   audioNarrativeEnabled,
   handleOpenFeedback
 }) => {
+  console.log('🔍 AccountModals component rendered with props:', {
+    showProfileModal,
+    showPreferencesModal,
+    showHelpModal,
+    showFeedbackModal,
+    user: user ? 'present' : 'missing',
+    token: token ? 'present' : 'missing'
+  });
+  
   return (
     <>
       {/* Profile Settings Modal */}
       {showProfileModal && (
         <ProfileSettingsModal
           isOpen={showProfileModal}
-          onClose={() => setShowProfileModal(false)}
+          onClose={() => {
+            console.log('🔍 Profile modal close handler called');
+            setShowProfileModal(false);
+          }}
           user={user}
           analyticsData={analyticsData}
           token={token}
@@ -34,7 +46,10 @@ const AccountModals = ({
       {showPreferencesModal && (
         <PreferencesModal
           isOpen={showPreferencesModal}
-          onClose={() => setShowPreferencesModal(false)}
+          onClose={() => {
+            console.log('🔍 Preferences modal close handler called');
+            setShowPreferencesModal(false);
+          }}
           audioNarrativeEnabled={audioNarrativeEnabled}
         />
       )}
@@ -43,7 +58,10 @@ const AccountModals = ({
       {showHelpModal && (
         <HelpSupportModal
           isOpen={showHelpModal}
-          onClose={() => setShowHelpModal(false)}
+          onClose={() => {
+            console.log('🔍 Help modal close handler called');
+            setShowHelpModal(false);
+          }}
           onOpenFeedback={handleOpenFeedback}
         />
       )}
@@ -52,7 +70,10 @@ const AccountModals = ({
       {showFeedbackModal && (
         <FeedbackModal
           isOpen={showFeedbackModal}
-          onClose={() => setShowFeedbackModal(false)}
+          onClose={() => {
+            console.log('🔍 Feedback modal close handler called');
+            setShowFeedbackModal(false);
+          }}
           token={token}
         />
       )}
