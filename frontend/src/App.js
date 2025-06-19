@@ -1,11 +1,8 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 import axios from 'axios';
-import { motion, useAnimationControls, AnimatePresence } from 'framer-motion';
-import AgentLibrary from './AgentLibrary';
-import HomePage from './HomePage';
-import AdminDashboard from './AdminDashboard';
-import './ModernApp.css';
+import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
+import { ProfileSettingsModal, PreferencesModal, HelpSupportModal, FeedbackModal } from './AccountModals';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
