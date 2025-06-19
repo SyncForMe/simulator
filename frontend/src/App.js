@@ -1595,9 +1595,9 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
             <div className="border-t pt-3 mt-3">
               <div className="text-sm font-medium text-gray-700 mb-2">Uploaded Files:</div>
               <div className="space-y-1">
-                {uploadedFiles.map((file) => (
+                {uploadedFiles.map((file) => file && file.id ? (
                   <div key={file.id} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                    <span className="text-sm text-gray-600">{file.name}</span>
+                    <span className="text-sm text-gray-600">{file?.name || 'Unknown file'}</span>
                     <button
                       onClick={() => removeFile(file.id)}
                       className="text-red-500 hover:text-red-700 text-xs"
@@ -1606,7 +1606,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
                       ✕
                     </button>
                   </div>
-                ))}
+                ) : null)}
               </div>
             </div>
           )}
