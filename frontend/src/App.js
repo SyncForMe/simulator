@@ -6694,7 +6694,7 @@ function App() {
               onShowAgentLibrary={() => setShowAgentLibrary(true)}
             />
             
-            {simulationState && (
+            {simulationState && typeof simulationState === 'object' && (
               <SimulationStatusBar 
                 simulationState={simulationState}
                 onToggleAutoConversations={toggleAutoConversations}
