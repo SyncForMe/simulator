@@ -7132,7 +7132,15 @@ function App() {
 
         <div className="flex items-center space-x-4">
           {user ? (
-            <UserProfile user={user} onLogout={logout} handleOpenAnalytics={handleOpenAnalytics} />
+            <UserProfile 
+              user={user} 
+              onLogout={logout} 
+              handleOpenAnalytics={handleOpenAnalytics}
+              handleOpenProfile={handleOpenProfile}
+              handleOpenPreferences={handleOpenPreferences}
+              handleOpenHelp={handleOpenHelp}
+              handleOpenFeedback={handleOpenFeedback}
+            />
           ) : (
             <motion.button
               onClick={() => setShowLoginModal(true)}
