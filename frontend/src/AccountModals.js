@@ -58,6 +58,9 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
     console.log('🔍 avatarPrompt:', avatarPrompt);
     console.log('🔍 token:', token ? 'present' : 'missing');
     
+    // Add alert to confirm function is being called
+    alert('Avatar generation function called with prompt: ' + avatarPrompt);
+    
     if (!avatarPrompt.trim()) {
       alert('Please enter a description for your avatar');
       return;
@@ -83,10 +86,11 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
         setAvatarPrompt('');
         setShowPictureOptions(false);
         console.log('🔍 Avatar updated successfully!');
+        alert('Avatar generated successfully!');
       }
     } catch (error) {
       console.error('🔍 Error generating avatar:', error);
-      alert('Failed to generate avatar. Please try again.');
+      alert('Failed to generate avatar: ' + (error.response?.data?.message || error.message));
     } finally {
       setIsGenerating(false);
     }
