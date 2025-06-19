@@ -2039,7 +2039,7 @@ def main():
     
     print("="*80)
     
-    return conversation_success and enhanced_doc_success and dynamic_conversation_success and natural_expertise_success
+    return conversation_success and enhanced_doc_success and dynamic_conversation_success and natural_expertise_success and analytics_success
 
 def test_analytics_endpoints():
     """Test the analytics endpoints"""
