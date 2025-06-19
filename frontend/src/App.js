@@ -5336,6 +5336,8 @@ const ChatHistory = () => {
 
   // Group conversations by scenario
   const groupedConversations = conversations.reduce((acc, conv) => {
+    if (!conv || !conv.id) return acc; // Skip invalid conversations
+    
     const scenarioName = conv.scenario_name || 'Unnamed Scenario';
     if (!acc[scenarioName]) {
       acc[scenarioName] = [];
@@ -5344,16 +5346,16 @@ const ChatHistory = () => {
     return acc;
   }, {});
 
-  // Filter and sort
+  // Filter and sort with null checks
   const filteredGrouped = Object.entries(groupedConversations)
     .filter(([scenarioName]) => 
-      scenarioName.toLowerCase().includes(searchTerm.toLowerCase())
+      scenarioName && scenarioName.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort(([a], [b]) => {
       if (sortOrder === 'asc') {
-        return a.localeCompare(b);
+        return (a || '').localeCompare(b || '');
       }
-      return b.localeCompare(a);
+      return (b || '').localeCompare(a || '');
     });
 
   const formatDate = (dateString) => {
