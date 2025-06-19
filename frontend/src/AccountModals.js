@@ -60,9 +60,9 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
 
     setIsGenerating(true);
     try {
-      const response = await axios.post(`${API}/agents/generate-avatar`, {
+      const response = await axios.post(`${API}/auth/generate-profile-avatar`, {
         prompt: avatarPrompt,
-        style: 'professional'
+        name: formData.name || 'User'
       }, {
         headers: {
           'Authorization': `Bearer ${token}`,
