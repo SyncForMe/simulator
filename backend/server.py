@@ -7543,6 +7543,178 @@ async def send_feedback(feedback_data: dict, current_user: User = Depends(get_cu
         logging.error(f"Error sending feedback: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to send feedback: {str(e)}")
 
+@api_router.put("/auth/profile")
+async def update_profile(profile_data: dict, current_user: User = Depends(get_current_user)):
+    """Update user profile"""
+    try:
+        user_id = current_user.id
+        
+        # Extract profile data
+        name = profile_data.get("name", "")
+        email = profile_data.get("email", "")
+        bio = profile_data.get("bio", "")
+        picture = profile_data.get("picture", "")
+        
+        # Validate required fields
+        if not name.strip():
+            raise HTTPException(status_code=400, detail="Name is required")
+        
+        # Update user profile in database
+        update_data = {
+            "name": name,
+            "email": email,
+            "bio": bio,
+            "picture": picture,
+            "updated_at": datetime.utcnow()
+        }
+        
+        # For this demo, we'll store in a user_profiles collection
+        await db.user_profiles.update_one(
+            {"user_id": user_id},
+            {"$set": update_data},
+            upsert=True
+        )
+        
+        logging.info(f"Profile updated for user {user_id}")
+        
+        return {
+            "success": True,
+            "message": "Profile updated successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error updating profile: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to update profile: {str(e)}")
+
+@api_router.post("/auth/enable-2fa")
+async def enable_2fa(current_user: User = Depends(get_current_user)):
+    """Enable two-factor authentication"""
+    try:
+        user_id = current_user.id
+        
+        # Generate a secret key for 2FA
+        import secrets
+        secret = secrets.token_hex(16)
+        
+        # Store 2FA secret in database
+        await db.user_2fa.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "secret": secret,
+                "enabled": False,  # Will be enabled after verification
+                "created_at": datetime.utcnow()
+            }},
+            upsert=True
+        )
+        
+        # Generate QR code URL (simplified version)
+        qr_code_url = f"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ3aGl0ZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiPjJGQSBRUiBDb2RlPC90ZXh0Pjwvc3ZnPg=="
+        
+        return {
+            "success": True,
+            "qr_code": qr_code_url,
+            "message": "2FA setup initiated"
+        }
+        
+    except Exception as e:
+        logging.error(f"Error enabling 2FA: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to enable 2FA: {str(e)}")
+
+@api_router.put("/auth/change-password")
+async def change_password(password_data: dict, current_user: User = Depends(get_current_user)):
+    """Change user password"""
+    try:
+        user_id = current_user.id
+        new_password = password_data.get("new_password", "")
+        
+        if len(new_password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+        
+        # Hash the password (simplified for demo)
+        import hashlib
+        hashed_password = hashlib.sha256(new_password.encode()).hexdigest()
+        
+        # Update password in database
+        await db.user_passwords.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "password_hash": hashed_password,
+                "updated_at": datetime.utcnow()
+            }},
+            upsert=True
+        )
+        
+        logging.info(f"Password changed for user {user_id}")
+        
+        return {
+            "success": True,
+            "message": "Password changed successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error changing password: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to change password: {str(e)}")
+
+@api_router.get("/auth/export-data")
+async def export_user_data(current_user: User = Depends(get_current_user)):
+    """Export all user data"""
+    try:
+        user_id = current_user.id
+        
+        # Collect user data from various collections
+        user_data = {
+            "user_info": {
+                "id": user_id,
+                "name": current_user.name,
+                "email": current_user.email,
+                "export_date": datetime.utcnow().isoformat()
+            },
+            "conversations": [],
+            "agents": [],
+            "documents": [],
+            "profile": None
+        }
+        
+        # Get conversations
+        conversations = await db.conversation_history.find({"user_id": user_id}).to_list(length=1000)
+        for conv in conversations:
+            if '_id' in conv:
+                conv['_id'] = str(conv['_id'])
+            user_data["conversations"].append(conv)
+        
+        # Get saved agents
+        agents = await db.saved_agents.find({"user_id": user_id}).to_list(length=1000)
+        for agent in agents:
+            if '_id' in agent:
+                agent['_id'] = str(agent['_id'])
+            user_data["agents"].append(agent)
+        
+        # Get documents
+        documents = await db.documents.find({"user_id": user_id}).to_list(length=1000)
+        for doc in documents:
+            if '_id' in doc:
+                doc['_id'] = str(doc['_id'])
+            user_data["documents"].append(doc)
+        
+        # Get profile data
+        profile = await db.user_profiles.find_one({"user_id": user_id})
+        if profile:
+            if '_id' in profile:
+                profile['_id'] = str(profile['_id'])
+            user_data["profile"] = profile
+        
+        logging.info(f"Data exported for user {user_id}")
+        
+        return user_data
+        
+    except Exception as e:
+        logging.error(f"Error exporting user data: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to export data: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
