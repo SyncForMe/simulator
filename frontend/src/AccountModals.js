@@ -83,6 +83,128 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
     }
   };
 
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const updateData = {
+        name: formData.name,
+        email: formData.email,
+        bio: formData.bio,
+        picture: profilePicture
+      };
+
+      const response = await axios.put(`${API}/auth/profile`, updateData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.success) {
+        alert('✅ Profile updated successfully!');
+        onClose();
+        // Optionally trigger a page refresh to update user data
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('❌ Failed to update profile. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleEnable2FA = async () => {
+    try {
+      const response = await axios.post(`${API}/auth/enable-2fa`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.qr_code) {
+        alert('Two-Factor Authentication setup initiated. Please scan the QR code with your authenticator app.');
+        // In a real app, you'd show a modal with the QR code
+        window.open(response.data.qr_code, '_blank');
+      }
+    } catch (error) {
+      console.error('Error enabling 2FA:', error);
+      alert('Failed to enable 2FA. This feature will be available soon.');
+    }
+  };
+
+  const handleChangeEmail = async () => {
+    const currentPassword = prompt('Enter your current password to change email:');
+    if (!currentPassword) return;
+
+    const newEmail = prompt('Enter your new email address:');
+    if (!newEmail) return;
+
+    if (!/\S+@\S+\.\S+/.test(newEmail)) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    try {
+      const response = await axios.put(`${API}/auth/change-email`, {
+        current_password: currentPassword,
+        new_email: newEmail
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.success) {
+        alert('✅ Email changed successfully! Please check your new email for verification.');
+        setFormData({ ...formData, email: newEmail });
+      }
+    } catch (error) {
+      console.error('Error changing email:', error);
+      alert('❌ Failed to change email. Please check your password and try again.');
+    }
+  };
+
+  const handleChangePassword = async () => {
+    const currentPassword = prompt('Enter your current password:');
+    if (!currentPassword) return;
+
+    const newPassword = prompt('Enter your new password:');
+    if (!newPassword) return;
+
+    if (newPassword.length < 8) {
+      alert('Password must be at least 8 characters long');
+      return;
+    }
+
+    const confirmPassword = prompt('Confirm your new password:');
+    if (newPassword !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    try {
+      const response = await axios.put(`${API}/auth/change-password`, {
+        current_password: currentPassword,
+        new_password: newPassword
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.success) {
+        alert('✅ Password changed successfully!');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      alert('❌ Failed to change password. Please check your current password and try again.');
+    }
+  };
+
   const handleChangeEmail = async () => {
     const currentPassword = prompt('Enter your current password to change email:');
     if (!currentPassword) return;
