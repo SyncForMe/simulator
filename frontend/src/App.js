@@ -6951,7 +6951,7 @@ function App() {
         ) : activeTab === 'chat-history' ? (
           <ChatHistory />
         ) : activeTab === 'file-center' ? (
-          <FileCenter />
+          <FileCenterPage />
         ) : activeTab === 'admin' ? (
           <AdminDashboard />
         ) : (
