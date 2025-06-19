@@ -1267,7 +1267,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
         className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
-        <h3 className="text-lg font-bold">🎭 Custom Scenario</h3>
+        <h3 className="text-lg font-bold">Custom Scenario</h3>
         <button
           type="button"
           className="text-gray-500 hover:text-gray-700 transition-transform duration-200"
