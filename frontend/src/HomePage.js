@@ -249,6 +249,24 @@ const HomePage = ({ onAuthenticated }) => {
                 </svg>
                 <span>Continue with Google</span>
               </button>
+              
+              <button
+                onClick={async () => {
+                  setLoading(true);
+                  try {
+                    const response = await axios.post(`${API}/auth/test-login`);
+                    console.log('✅ TEST LOGIN SUCCESS:', response.data);
+                    onAuthenticated(response.data.access_token, response.data.user);
+                  } catch (error) {
+                    console.error('❌ TEST LOGIN ERROR:', error);
+                    setError('Guest login failed. Please try again.');
+                  }
+                  setLoading(false);
+                }}
+                className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2"
+              >
+                <span>🧪 Continue as Guest</span>
+              </button>
             </div>
 
             <div className="mt-8 text-center">
