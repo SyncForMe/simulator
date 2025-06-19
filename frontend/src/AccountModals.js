@@ -405,6 +405,19 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
+                    <div className="font-medium text-gray-800">Change Email</div>
+                    <div className="text-sm text-gray-600">Update your email address with password verification</div>
+                  </div>
+                  <button 
+                    onClick={handleChangeEmail}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-colors"
+                  >
+                    Change
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
                     <div className="font-medium text-gray-800">Two-Factor Authentication</div>
                     <div className="text-sm text-gray-600">Add an extra layer of security to your account</div>
                   </div>
@@ -419,7 +432,7 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
                     <div className="font-medium text-gray-800">Change Password</div>
-                    <div className="text-sm text-gray-600">Update your account password</div>
+                    <div className="text-sm text-gray-600">Update your account password with current password verification</div>
                   </div>
                   <button 
                     onClick={handleChangePassword}
