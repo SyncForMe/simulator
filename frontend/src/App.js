@@ -7247,6 +7247,8 @@ function App() {
               onTestBackgrounds={handleTestBackgrounds}
               onCreateAgent={handleCreateAgent}
               onDeleteAgent={handleDeleteAgent}
+              onEditAgent={handleEditAgent}
+              onSaveAgent={handleSaveAgent}
               onShowAgentLibrary={() => setShowAgentLibrary(true)}
             />
             
