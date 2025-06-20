@@ -23,6 +23,7 @@ const HomePage = ({ onAuthenticated }) => {
   };
 
   const handleSubmit = async (e) => {
+    if (!e) return;
     e.preventDefault();
     setLoading(true);
     setError('');
