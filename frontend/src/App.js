@@ -7440,7 +7440,6 @@ function App() {
                 </div>
               </div>
             )}
-            />
 
             {/* Control Buttons */}
             <div className="flex justify-center space-x-4 my-6">
