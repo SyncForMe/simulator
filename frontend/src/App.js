@@ -7719,6 +7719,87 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Pre-Configuration Modal */}
+      {showPreConfigModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-bold mb-4">🚀 Start New Simulation</h3>
+            <p className="text-gray-600 mb-4">Configure your simulation settings:</p>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Time Limit</label>
+                <select 
+                  id="timeLimit"
+                  className="w-full p-2 border rounded-lg"
+                  defaultValue={24}
+                >
+                  <option value={24}>1 Day</option>
+                  <option value={72}>3 Days</option>
+                  <option value={168}>1 Week</option>
+                  <option value={0}>No Limit</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Language</label>
+                <select 
+                  id="language"
+                  className="w-full p-2 border rounded-lg"
+                  defaultValue="english"
+                >
+                  <option value="english">English</option>
+                  <option value="spanish">Spanish</option>
+                  <option value="french">French</option>
+                  <option value="german">German</option>
+                  <option value="italian">Italian</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="flex items-center space-x-2">
+                  <input 
+                    id="audioNarrative"
+                    type="checkbox" 
+                    defaultChecked 
+                  />
+                  <span className="text-sm">Enable AI voice narration</span>
+                </label>
+              </div>
+            </div>
+            
+            <div className="flex space-x-2 mt-6">
+              <button
+                onClick={() => setShowPreConfigModal(false)}
+                className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const timeLimitElement = document.getElementById('timeLimit');
+                  const languageElement = document.getElementById('language');
+                  const audioNarrativeElement = document.getElementById('audioNarrative');
+                  
+                  if (timeLimitElement && languageElement && audioNarrativeElement) {
+                    const config = {
+                      timeLimit: parseInt(timeLimitElement.value),
+                      timeLimitDisplay: timeLimitElement.options[timeLimitElement.selectedIndex].text,
+                      language: languageElement.value,
+                      audioNarrative: audioNarrativeElement.checked
+                    };
+                    handleStartWithConfig(config);
+                  }
+                }}
+                className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+              >
+                Start Simulation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
