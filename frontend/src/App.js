@@ -4091,12 +4091,20 @@ const AvatarCreator = ({ onCreateAgent, archetypes }) => {
 
   return (
     <div className="avatar-creator">
-      <button
-        onClick={() => setIsOpen(true)}
-        className="w-full bg-emerald-600 text-white px-3 py-2 rounded hover:bg-emerald-700 text-sm transition-colors"
-      >
-        ➕ Add Agent
-      </button>
+      <div className="group relative">
+        <button
+          onClick={() => setIsOpen(true)}
+          className="bg-emerald-600 text-white p-2 rounded-full hover:bg-emerald-700 transition-colors shadow-lg hover:shadow-xl hover:scale-110"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </button>
+        {/* Tooltip */}
+        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+          Add Agent
+        </div>
+      </div>
       
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
