@@ -5597,14 +5597,18 @@ const ChatHistory = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">💬 Chat History</h1>
-          <p className="text-white/80">Browse and manage your AI simulation conversations</p>
+        {/* Header with gradient background matching AgentLibrary */}
+        <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 rounded-t-lg mb-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">💬 Chat History</h1>
+              <p className="text-purple-100 mt-1">Browse and manage your AI simulation conversations</p>
+            </div>
+          </div>
         </div>
 
         {/* Controls */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="bg-white shadow-lg p-6 mb-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Search */}
             <div className="flex-1">
