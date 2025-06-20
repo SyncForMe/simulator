@@ -7528,7 +7528,16 @@ function App() {
               </div>
             )}
 
-                {/* Chat Interface */}
+            <ConversationViewer 
+              conversations={conversations}
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+              audioNarrativeEnabled={audioNarrativeEnabled}
+            />
+
+          </div>
+
+          {/* Right Column - Custom Scenario & Documents */}
                 <div className="p-4">
                   {/* Chat Messages */}
                   <div className="bg-gray-50 rounded-lg p-4 h-64 overflow-y-auto mb-4">
