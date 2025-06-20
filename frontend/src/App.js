@@ -7623,10 +7623,8 @@ function App() {
 
           {/* Right Column - Custom Scenario & Documents */}
           <div className="lg:col-span-1 space-y-6">
-            <ScenarioInput onSetScenario={handleSetScenario} currentScenario={currentScenario} onScenarioCollapse={handleScenarioCollapse} />
             
-            {/* Translation functionality will be added later */}
-          </div>
+            {/* Start New Simulation Button */}
         </div>
         </>
         )}
