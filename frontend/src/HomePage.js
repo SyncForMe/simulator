@@ -15,6 +15,7 @@ const HomePage = ({ onAuthenticated }) => {
   const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
+    if (!e || !e.target) return;
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
