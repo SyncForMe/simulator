@@ -7379,18 +7379,7 @@ function App() {
                 </div>
               </div>
             )}
-                    </div>
-                    <button
-                      onClick={() => setShowObserverCard(false)}
-                      className="text-white/70 hover:text-white transition-colors"
-                    >
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
+            
             <ConversationViewer 
               conversations={conversations}
               selectedLanguage={selectedLanguage}
@@ -7401,7 +7390,7 @@ function App() {
           </div>
 
           {/* Right Column - Custom Scenario & Documents */}
-                <div className="p-4">
+          <div className="lg:col-span-1 space-y-6">
                   {/* Chat Messages */}
                   <div className="bg-gray-50 rounded-lg p-4 h-64 overflow-y-auto mb-4">
                     {observerMessages.length === 0 ? (
