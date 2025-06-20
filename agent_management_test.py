@@ -501,7 +501,7 @@ def test_delete_saved_agent():
             auth=True
         )
         
-        if get_saved_agents_test and get_saved_agents_response:
+        if get_saved_agents_test and get_saved_agents_response is not None:
             # Check if the deleted agent is still in the list
             agent_found = False
             for agent in get_saved_agents_response:
