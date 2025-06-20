@@ -7379,13 +7379,6 @@ function App() {
                 </div>
               </div>
             )}
-            
-            <ConversationViewer 
-              conversations={conversations}
-              selectedLanguage={selectedLanguage}
-              onLanguageChange={handleLanguageChange}
-              audioNarrativeEnabled={audioNarrativeEnabled}
-            />
 
           </div>
 
@@ -7393,7 +7386,27 @@ function App() {
           <div className="lg:col-span-1 space-y-6">
             
             {/* Start New Simulation Button */}
-              <div className="bg-gray-100 border border-gray-300 rounded p-3 mb-4">
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg shadow-md p-4 border-2 border-green-200">
+              <button
+                onClick={handleStartSimulation}
+                className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 py-3 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all font-bold shadow-lg"
+              >
+                Start New Simulation
+              </button>
+              <p className="text-xs text-gray-600 mt-2 text-center">
+                Resets all conversations and opens configuration modal
+              </p>
+            </div>
+
+            <ScenarioInput onSetScenario={handleSetScenario} currentScenario={currentScenario} onScenarioCollapse={handleScenarioCollapse} />
+            
+            {/* Translation functionality will be added later */}
+          </div>
+        </div>
+        </>
+        )}
+
+        {/* Pre-Configuration Modal */}
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Observer Chat</span>
                   <button
