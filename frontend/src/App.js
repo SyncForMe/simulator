@@ -7409,39 +7409,42 @@ function App() {
         {/* Pre-Configuration Modal */}
         {showPreConfigModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  {observerMessages.length === 0 ? (
-                    <p className="text-gray-500 text-center mt-2">Chat with agents...</p>
-                  ) : (
-                    observerMessages.map((message, index) => (
-                      <div key={index} className="mb-1">
-                        <span className={message.isUser ? "text-blue-600" : "text-gray-700"}>
-                          {message.isUser ? "You: " : "Agent: "}{message.message}
-                        </span>
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                <div className="flex gap-1">
-                  <input
-                    type="text"
-                    value={observerMessage}
-                    onChange={(e) => setObserverMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendObserverMessage()}
-                    placeholder="Type message..."
-                    disabled={!simulationState?.auto_conversations}
-                    className="flex-1 px-2 py-1 text-xs border rounded disabled:bg-gray-100"
-                  />
-                  <button
-                    onClick={handleSendObserverMessage}
-                    disabled={!observerMessage.trim() || !simulationState?.auto_conversations}
-                    className="px-2 py-1 bg-gray-600 text-white rounded text-xs disabled:bg-gray-400"
-                  >
-                    Send
-                  </button>
-                </div>
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <div className="bg-white border rounded p-2 h-24 overflow-y-auto mb-2 text-xs">
+                {observerMessages.length === 0 ? (
+                  <p className="text-gray-500 text-center mt-2">Chat with agents...</p>
+                ) : (
+                  observerMessages.map((message, index) => (
+                    <div key={index} className="mb-1">
+                      <span className={message.isUser ? "text-blue-600" : "text-gray-700"}>
+                        {message.isUser ? "You: " : "Agent: "}{message.message}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
-            )}
+
+              <div className="flex gap-1">
+                <input
+                  type="text"
+                  value={observerMessage}
+                  onChange={(e) => setObserverMessage(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendObserverMessage()}
+                  placeholder="Type message..."
+                  disabled={!simulationState?.auto_conversations}
+                  className="flex-1 px-2 py-1 text-xs border rounded disabled:bg-gray-100"
+                />
+                <button
+                  onClick={handleSendObserverMessage}
+                  disabled={!observerMessage.trim() || !simulationState?.auto_conversations}
+                  className="px-2 py-1 bg-gray-600 text-white rounded text-xs disabled:bg-gray-400"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
           </div>
 
