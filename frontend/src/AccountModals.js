@@ -952,7 +952,7 @@ export const FeedbackModal = ({ isOpen, onClose, token }) => {
       if (response.data.success) {
         alert('✅ Thank you for your feedback! We\'ll review it and get back to you soon.');
         onClose();
-        e.target.reset();
+        e.target && e.target.reset();
       }
     } catch (error) {
       alert('❌ Failed to send feedback. Please try again or contact support directly.');
