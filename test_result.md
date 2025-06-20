@@ -265,6 +265,9 @@ backend:
         -working: true
         -agent: "testing"
         -comment: "Conducted testing of the test-login (Continue as Guest) functionality. The POST /api/auth/test-login endpoint works correctly, returning a valid JWT token and user data. The token contains the 'sub' field but is missing the 'user_id' field that is present in tokens from the email/password login. Despite this difference, the token is accepted by the GET /api/auth/me endpoint, which correctly returns the user's profile data. This suggests that the backend properly handles tokens from the test-login endpoint. The test-login functionality provides a quick way for users to access the application without creating an account, which is useful for demonstration purposes."
+        -working: true
+        -agent: "testing"
+        -comment: "Conducted additional testing of the 'Continue as Guest' functionality with a dedicated test script. The POST /api/auth/test-login endpoint works correctly, returning a valid JWT token and user data. The token contains the 'sub' field (test-user-123) but doesn't include the 'user_id' field that's present in tokens from email/password login. This is expected behavior for guest login. The token is properly validated by the backend and can be used to access protected endpoints like GET /api/auth/me, which correctly returns the guest user's profile data. The guest user is properly created in the database if it doesn't exist, or updated with a new last_login timestamp if it does. This functionality provides a seamless way for users to try the application without creating an account."
 
   - task: "Enhanced Random Scenario Generation"
     implemented: false
