@@ -5882,14 +5882,18 @@ const FileCenterPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">📁 File Center</h1>
-          <p className="text-white/80">Documents organized by simulation scenario</p>
+        {/* Header with gradient background matching AgentLibrary */}
+        <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 rounded-t-lg mb-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">📁 File Center</h1>
+              <p className="text-purple-100 mt-1">Documents organized by simulation scenario</p>
+            </div>
+          </div>
         </div>
 
         {/* Controls */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="bg-white shadow-lg p-6 mb-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             {/* Search and Filter */}
             <div className="flex flex-col sm:flex-row gap-4 flex-1">
