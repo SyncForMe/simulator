@@ -7380,9 +7380,7 @@ function App() {
               </div>
             )}
 
-          </div>
-
-          {/* Right Column - Custom Scenario & Documents */}
+        {/* Right Column - Custom Scenario & Documents */}
           <div className="lg:col-span-1 space-y-6">
             
             {/* Start New Simulation Button */}
