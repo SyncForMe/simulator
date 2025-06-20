@@ -5896,7 +5896,7 @@ const FileCenterPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header with gradient background matching AgentLibrary */}
         <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 rounded-t-lg mb-0">
