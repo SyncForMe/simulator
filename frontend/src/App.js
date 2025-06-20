@@ -7157,11 +7157,11 @@ function App() {
           
           <div className="flex items-center space-x-2">
             {[
-              { id: 'home', label: '🏠 Simulation', icon: '🤖' },
-              { id: 'agents', label: '👥 Agent Library', icon: '📚' },
-              { id: 'chat-history', label: '💬 Chat History', icon: '📜' },
-              { id: 'file-center', label: '📁 File Center', icon: '🗂️' },
-              { id: 'admin', label: '⚙️ Admin', icon: '🛠️', adminOnly: true }
+              { id: 'home', label: 'Simulation', icon: '🏠' },
+              { id: 'agents', label: 'Agent Library', icon: '👥' },
+              { id: 'chat-history', label: 'Chat History', icon: '💬' },
+              { id: 'file-center', label: 'File Center', icon: '📁' },
+              { id: 'admin', label: 'Admin', icon: '⚙️', adminOnly: true }
             ].map((item) => {
               if (item.adminOnly && (!user || !user?.is_admin)) return null;
               
