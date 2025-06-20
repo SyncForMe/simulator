@@ -1518,6 +1518,69 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   });
   const timeoutRefs = useRef(new Map());
 
+  // Fetch saved agents
+  const fetchSavedAgents = async () => {
+    if (!token) return;
+    
+    setLoadingSavedAgents(true);
+    try {
+      const response = await axios.get(`${API}/saved-agents`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSavedAgents(response.data);
+    } catch (error) {
+      console.error('Error fetching saved agents:', error);
+    }
+    setLoadingSavedAgents(false);
+  };
+
+  // Fetch saved agents when component opens
+  useEffect(() => {
+    if (isOpen && token) {
+      fetchSavedAgents();
+    }
+  }, [isOpen, token]);
+
+  // Handle using a saved agent
+  const handleUseSavedAgent = async (agent) => {
+    try {
+      const agentData = {
+        name: agent.name,
+        archetype: agent.archetype,
+        personality: agent.personality,
+        goal: agent.goal,
+        expertise: agent.expertise,
+        background: agent.background,
+        avatar_url: agent.avatar_url,
+        avatar_prompt: agent.avatar_prompt
+      };
+      
+      if (onAddAgent) {
+        await onAddAgent(agentData);
+        alert(`${agent.name} has been added to your simulation!`);
+      }
+    } catch (error) {
+      console.error('Error using saved agent:', error);
+      alert('Failed to add agent to simulation.');
+    }
+  };
+
+  // Handle deleting a saved agent
+  const handleDeleteSavedAgent = async (agentId) => {
+    if (!window.confirm('Are you sure you want to delete this saved agent?')) return;
+    
+    try {
+      await axios.delete(`${API}/saved-agents/${agentId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSavedAgents(savedAgents.filter(agent => agent.id !== agentId));
+      alert('Saved agent deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting saved agent:', error);
+      alert('Failed to delete saved agent.');
+    }
+  };
+
   // Simple service worker registration for caching
   useEffect(() => {
     if ('serviceWorker' in navigator) {
