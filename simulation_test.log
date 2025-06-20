@@ -1,4 +1,4 @@
-Using API URL: https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api
+Using API URL: https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api
 
 ================================================================================
 TESTING SIMULATION WORKFLOW
@@ -9,7 +9,7 @@ TESTING COMPLETE SIMULATION WORKFLOW
 ================================================================================
 
 ================================================================================
-Testing: Register new test user (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/auth/register)
+Testing: Register new test user (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/auth/register)
 Status Code: 200
 Response: {
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LnVzZXIuOTVkMzFjNTAtMzlhZS00ODRhLWE1Y2QtYmVmNTc4NmE3NDAwQGV4YW1wbGUuY29tIiwidXNlcl9pZCI6ImU5MGUxNzNlLTUwNjctNGQwMi1iOTY0LWZhZmM1MTI1MjYzMSIsImV4cCI6MTc1MDE3OTM0N30.9HHsZoJd02eLBAM0ELGU_-oObnYNGAULLn0fdBl4FVA",
@@ -30,7 +30,7 @@ JWT Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LnVzZXIuOTVkMzFj
 Step 1: Start New Simulation
 
 ================================================================================
-Testing: Start New Simulation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/start)
+Testing: Start New Simulation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/start)
 Status Code: 200
 Response: {
   "message": "Simulation started with no time limit",
@@ -57,7 +57,7 @@ Test Result: PASSED
 Step 2: Get available agents from library
 
 ================================================================================
-Testing: Get Available Agents (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Get Available Agents (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response: []
 Test Result: PASSED
@@ -66,7 +66,7 @@ Test Result: PASSED
 Creating test agents...
 
 ================================================================================
-Testing: Create Scientist Agent (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Scientist Agent (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response: {
   "id": "5b99e4d4-5e14-474a-b15e-d3b186442c0d",
@@ -94,7 +94,7 @@ Test Result: PASSED
 ✅ Created scientist agent: Dr. Emma Watson
 
 ================================================================================
-Testing: Create Leader Agent (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Leader Agent (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response: {
   "id": "5507e9c6-3e9e-4b4f-ac20-1dc870e21c68",
@@ -122,7 +122,7 @@ Test Result: PASSED
 ✅ Created leader agent: Captain James Kirk
 
 ================================================================================
-Testing: Create Skeptic Agent (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Skeptic Agent (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response: {
   "id": "f1bcd3a9-b17d-495b-a336-885923ea9a90",
@@ -150,7 +150,7 @@ Test Result: PASSED
 ✅ Created skeptic agent: Dr. House
 
 ================================================================================
-Testing: Get Available Agents After Creation (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Get Available Agents After Creation (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response: [
   {
@@ -230,7 +230,7 @@ Available Agents (3):
 Step 3: Set Random Scenario
 
 ================================================================================
-Testing: Set Scenario (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-scenario)
+Testing: Set Scenario (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-scenario)
 Status Code: 200
 Response: {
   "message": "Scenario updated",
@@ -244,7 +244,7 @@ Step 4: Start Simulation (Play Button)
 Generating conversation (this may take a while)...
 
 ================================================================================
-Testing: Generate Conversation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)Waiting for conversation generation to complete...
+Testing: Generate Conversation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)Waiting for conversation generation to complete...
 
 Waiting for conversation generation to complete...
 Waiting for conversation generation to complete...
@@ -261,7 +261,7 @@ Waiting for conversation generation to complete...
 Checking if conversations were generated despite the timeout...
 
 ================================================================================
-Testing: Get Conversations After Timeout (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Get Conversations After Timeout (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: []
 Test Result: PASSED

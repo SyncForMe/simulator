@@ -1,8 +1,8 @@
-Using API URL: https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api
+Using API URL: https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api
 Starting API tests for the translation functionality...
 
 ================================================================================
-Testing: Basic API Health Check (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/)
+Testing: Basic API Health Check (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/)
 Status Code: 200
 Response: {
   "message": "AI Agent Simulation API"
@@ -18,7 +18,7 @@ CREATING TEST CONVERSATIONS
 ================================================================================
 
 ================================================================================
-Testing: Get Simulation State (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/state)
+Testing: Get Simulation State (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/state)
 Status Code: 200
 Response: {
   "_id": "6844a3ce877b6954066f792e",
@@ -34,7 +34,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Get Existing Conversations (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Get Existing Conversations (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -231,7 +231,7 @@ TESTING TRANSLATION PATH: en → es (English → Spanish)
 ================================================================================
 
 ================================================================================
-Testing: Set language to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to en",
@@ -240,7 +240,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from en to es (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from en to es (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to Spanish",
@@ -253,7 +253,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to es
 
 ================================================================================
-Testing: Verify conversations in es (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in es (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -450,7 +450,7 @@ TESTING TRANSLATION PATH: es → en (Spanish → English)
 ================================================================================
 
 ================================================================================
-Testing: Set language to es (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to es (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to es",
@@ -459,7 +459,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from es to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from es to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to en",
@@ -472,7 +472,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to en
 
 ================================================================================
-Testing: Verify conversations in en (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in en (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -669,7 +669,7 @@ TESTING TRANSLATION PATH: en → de (English → German)
 ================================================================================
 
 ================================================================================
-Testing: Set language to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to en",
@@ -678,7 +678,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from en to de (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from en to de (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to German",
@@ -691,7 +691,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to de
 
 ================================================================================
-Testing: Verify conversations in de (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in de (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -888,7 +888,7 @@ TESTING TRANSLATION PATH: de → en (German → English)
 ================================================================================
 
 ================================================================================
-Testing: Set language to de (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to de (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to de",
@@ -897,7 +897,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from de to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from de to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to en",
@@ -910,7 +910,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to en
 
 ================================================================================
-Testing: Verify conversations in en (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in en (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -1107,7 +1107,7 @@ TESTING TRANSLATION PATH: en → fr (English → French)
 ================================================================================
 
 ================================================================================
-Testing: Set language to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to en",
@@ -1116,7 +1116,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from en to fr (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from en to fr (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to French",
@@ -1129,7 +1129,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to fr
 
 ================================================================================
-Testing: Verify conversations in fr (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in fr (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -1326,7 +1326,7 @@ TESTING TRANSLATION PATH: fr → en (French → English)
 ================================================================================
 
 ================================================================================
-Testing: Set language to fr (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to fr (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to fr",
@@ -1335,7 +1335,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from fr to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from fr to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to en",
@@ -1348,7 +1348,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to en
 
 ================================================================================
-Testing: Verify conversations in en (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in en (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -1545,7 +1545,7 @@ TESTING TRANSLATION PATH: en → hr (English → Croatian)
 ================================================================================
 
 ================================================================================
-Testing: Set language to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to en",
@@ -1554,7 +1554,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from en to hr (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from en to hr (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to Croatian",
@@ -1567,7 +1567,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to hr
 
 ================================================================================
-Testing: Verify conversations in hr (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in hr (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -1764,7 +1764,7 @@ TESTING TRANSLATION PATH: hr → en (Croatian → English)
 ================================================================================
 
 ================================================================================
-Testing: Set language to hr (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to hr (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to hr",
@@ -1773,7 +1773,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from hr to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from hr to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to en",
@@ -1786,7 +1786,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to en
 
 ================================================================================
-Testing: Verify conversations in en (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in en (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -1983,7 +1983,7 @@ TESTING TRANSLATION PATH: en → ja (English → Japanese)
 ================================================================================
 
 ================================================================================
-Testing: Set language to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to en",
@@ -1992,7 +1992,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from en to ja (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from en to ja (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to Japanese",
@@ -2005,7 +2005,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to ja
 
 ================================================================================
-Testing: Verify conversations in ja (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in ja (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -2202,7 +2202,7 @@ TESTING TRANSLATION PATH: ja → en (Japanese → English)
 ================================================================================
 
 ================================================================================
-Testing: Set language to ja (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to ja (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to ja",
@@ -2211,7 +2211,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from ja to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from ja to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to en",
@@ -2224,7 +2224,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to en
 
 ================================================================================
-Testing: Verify conversations in en (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in en (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -2421,7 +2421,7 @@ TESTING TRANSLATION PATH: en → ar (English → Arabic)
 ================================================================================
 
 ================================================================================
-Testing: Set language to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to en",
@@ -2430,7 +2430,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from en to ar (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from en to ar (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to Arabic",
@@ -2443,7 +2443,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to ar
 
 ================================================================================
-Testing: Verify conversations in ar (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in ar (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -2640,7 +2640,7 @@ TESTING TRANSLATION PATH: ar → en (Arabic → English)
 ================================================================================
 
 ================================================================================
-Testing: Set language to ar (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to ar (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to ar",
@@ -2649,7 +2649,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from ar to en (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from ar to en (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to en",
@@ -2662,7 +2662,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to en
 
 ================================================================================
-Testing: Verify conversations in en (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in en (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -2859,7 +2859,7 @@ TESTING TRANSLATION PATH: es → de (Spanish → German)
 ================================================================================
 
 ================================================================================
-Testing: Set language to es (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to es (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to es",
@@ -2868,7 +2868,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from es to de (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from es to de (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to German",
@@ -2881,7 +2881,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to de
 
 ================================================================================
-Testing: Verify conversations in de (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in de (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -3078,7 +3078,7 @@ TESTING TRANSLATION PATH: de → fr (German → French)
 ================================================================================
 
 ================================================================================
-Testing: Set language to de (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to de (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to de",
@@ -3087,7 +3087,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from de to fr (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from de to fr (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to French",
@@ -3100,7 +3100,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to fr
 
 ================================================================================
-Testing: Verify conversations in fr (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in fr (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -3297,7 +3297,7 @@ TESTING TRANSLATION PATH: fr → hr (French → Croatian)
 ================================================================================
 
 ================================================================================
-Testing: Set language to fr (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to fr (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to fr",
@@ -3306,7 +3306,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from fr to hr (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from fr to hr (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to Croatian",
@@ -3319,7 +3319,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to hr
 
 ================================================================================
-Testing: Verify conversations in hr (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in hr (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {
@@ -3516,7 +3516,7 @@ TESTING TRANSLATION PATH: ja → ar (Japanese → Arabic)
 ================================================================================
 
 ================================================================================
-Testing: Set language to ja (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-language)
+Testing: Set language to ja (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-language)
 Status Code: 200
 Response: {
   "message": "Language set to ja",
@@ -3525,7 +3525,7 @@ Response: {
 Test Result: PASSED
 
 ================================================================================
-Testing: Translate from ja to ar (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations/translate)
+Testing: Translate from ja to ar (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations/translate)
 Status Code: 200
 Response: {
   "message": "Successfully translated 5 conversations to Arabic",
@@ -3538,7 +3538,7 @@ Test Result: PASSED
 ✅ Successfully translated 5 conversations to ar
 
 ================================================================================
-Testing: Verify conversations in ar (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Verify conversations in ar (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response: [
   {

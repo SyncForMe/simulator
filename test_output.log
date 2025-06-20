@@ -1,11 +1,11 @@
-Using API URL: https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api
+Using API URL: https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api
 
 ================================================================================
 RUNNING API TESTS
 ================================================================================
 
 ================================================================================
-Testing: Login with credentials (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/auth/login)
+Testing: Login with credentials (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/auth/login)
 Status Code: 401
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:34 GMT",
@@ -20,7 +20,7 @@ Response: {
 Test Result: FAILED
 
 ================================================================================
-Testing: Test Login Endpoint (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/auth/test-login)
+Testing: Test Login Endpoint (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/auth/test-login)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:34 GMT",
@@ -52,7 +52,7 @@ TESTING BASIC API HEALTH
 Test 1: GET /api/agents
 
 ================================================================================
-Testing: Get Agents (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Get Agents (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:34 GMT",
@@ -157,7 +157,7 @@ Test Result: PASSED
 Test 2: GET /api/conversations
 
 ================================================================================
-Testing: Get Conversations (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversations)
+Testing: Get Conversations (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversations)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:34 GMT",
@@ -369,7 +369,7 @@ Test Result: PASSED
 Test 3: GET /api/simulation/state
 
 ================================================================================
-Testing: Get Simulation State (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/state)
+Testing: Get Simulation State (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/state)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:34 GMT",
@@ -399,7 +399,7 @@ Test Result: PASSED
 Test 4: GET /api/usage
 
 ================================================================================
-Testing: Get API Usage (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/usage)
+Testing: Get API Usage (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/usage)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:35 GMT",
@@ -426,7 +426,7 @@ TESTING SIMULATION FEATURES
 Test 1: GET /api/simulation/state
 
 ================================================================================
-Testing: Get Simulation State (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/state)
+Testing: Get Simulation State (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/state)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:35 GMT",
@@ -457,7 +457,7 @@ Current simulation day: 1
 Test 2: POST /api/simulation/start
 
 ================================================================================
-Testing: Start Simulation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/start)
+Testing: Start Simulation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/start)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:35 GMT",
@@ -490,7 +490,7 @@ Test Result: PASSED
 Test 3: POST /api/simulation/set-scenario
 
 ================================================================================
-Testing: Set Simulation Scenario (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-scenario)
+Testing: Set Simulation Scenario (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-scenario)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:35 GMT",
@@ -510,7 +510,7 @@ Test Result: PASSED
 Test 4: POST /api/simulation/fast-forward
 
 ================================================================================
-Testing: Fast Forward Simulation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/fast-forward)
+Testing: Fast Forward Simulation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/fast-forward)
 Status Code: 400
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:35 GMT",
@@ -528,7 +528,7 @@ Test Result: FAILED
 Test 5: Verify simulation state after fast-forward
 
 ================================================================================
-Testing: Get Simulation State After Fast-Forward (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/state)
+Testing: Get Simulation State After Fast-Forward (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/state)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:35 GMT",
@@ -568,7 +568,7 @@ TESTING TRANSLATION FEATURES
 Test 1: POST /api/conversations/translate
 
 ================================================================================
-Testing: Save Conversation for Translation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation-history)
+Testing: Save Conversation for Translation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation-history)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:35 GMT",
@@ -596,7 +596,7 @@ TESTING AVATAR GENERATION
 Test 1: POST /api/avatars/generate
 
 ================================================================================
-Testing: Generate Avatar (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/avatars/generate)
+Testing: Generate Avatar (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/avatars/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:36 GMT",
@@ -624,7 +624,7 @@ TESTING ADMIN FUNCTIONALITY
 ================================================================================
 
 ================================================================================
-Testing: Login as Admin (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/auth/login)
+Testing: Login as Admin (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/auth/login)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:37 GMT",
@@ -651,7 +651,7 @@ Test Result: PASSED
 Test 1: GET /api/admin/dashboard/stats
 
 ================================================================================
-Testing: Get Admin Dashboard Stats (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/admin/dashboard/stats)
+Testing: Get Admin Dashboard Stats (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/admin/dashboard/stats)
 Status Code: 403
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:37 GMT",
@@ -669,7 +669,7 @@ Test Result: FAILED
 Test 2: GET /api/admin/users
 
 ================================================================================
-Testing: Get Admin Users List (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/admin/users)
+Testing: Get Admin Users List (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/admin/users)
 Status Code: 403
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:37 GMT",
@@ -687,7 +687,7 @@ Test Result: FAILED
 Test 3: GET /api/admin/activity/recent
 
 ================================================================================
-Testing: Get Admin Recent Activity (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/admin/activity/recent)
+Testing: Get Admin Recent Activity (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/admin/activity/recent)
 Status Code: 403
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:37 GMT",
@@ -705,7 +705,7 @@ Test Result: FAILED
 Test 4: Test regular user access to admin endpoints
 
 ================================================================================
-Testing: Login with credentials (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/auth/login)
+Testing: Login with credentials (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/auth/login)
 Status Code: 401
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:37 GMT",
@@ -720,7 +720,7 @@ Response: {
 Test Result: FAILED
 
 ================================================================================
-Testing: Test Login Endpoint (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/auth/test-login)
+Testing: Test Login Endpoint (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/auth/test-login)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:37 GMT",
@@ -746,7 +746,7 @@ Test login successful. User ID: test-user-123
 JWT Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LXVzZXItMTIzIiwiZXhwIjoxNzUwNDYwNDM3fQ.zZ1BM1Fc2dL-ASze2NeF_17Ul69ee2L2j60Qt-NYpyQ
 
 ================================================================================
-Testing: Regular User Access to Admin Dashboard Stats (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/admin/dashboard/stats)
+Testing: Regular User Access to Admin Dashboard Stats (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/admin/dashboard/stats)
 Status Code: 403
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:38 GMT",
@@ -774,7 +774,7 @@ TESTING IMPROVED CONVERSATION GENERATION SYSTEM
 Test 1: Creating a new simulation
 
 ================================================================================
-Testing: Start simulation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/start)
+Testing: Start simulation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/start)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:38 GMT",
@@ -807,7 +807,7 @@ Test Result: PASSED
 Test 2: Creating test agents
 
 ================================================================================
-Testing: Create Agent: Dr. James Wilson (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Agent: Dr. James Wilson (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:38 GMT",
@@ -842,7 +842,7 @@ Test Result: PASSED
 ✅ Created agent: Dr. James Wilson with ID: 0b4f3159-7763-4291-a443-aad749b0055f
 
 ================================================================================
-Testing: Create Agent: Sarah Johnson (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Agent: Sarah Johnson (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:38 GMT",
@@ -877,7 +877,7 @@ Test Result: PASSED
 ✅ Created agent: Sarah Johnson with ID: f2f0d6ab-5a23-4ea1-9c46-79e393d95eb4
 
 ================================================================================
-Testing: Create Agent: Michael Chen (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Agent: Michael Chen (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:38 GMT",
@@ -914,7 +914,7 @@ Test Result: PASSED
 Test 3: Setting a scenario
 
 ================================================================================
-Testing: Set Scenario (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-scenario)
+Testing: Set Scenario (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-scenario)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:38 GMT",
@@ -936,7 +936,7 @@ Test 4: Generating multiple conversation rounds
 Generating conversation round 1/5:
 
 ================================================================================
-Testing: Generate Conversation Round 1 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 1 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:49 GMT",
@@ -990,7 +990,7 @@ Test Result: PASSED
 Generating conversation round 2/5:
 
 ================================================================================
-Testing: Generate Conversation Round 2 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 2 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:00:59 GMT",
@@ -1044,7 +1044,7 @@ Test Result: PASSED
 Generating conversation round 3/5:
 
 ================================================================================
-Testing: Generate Conversation Round 3 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 3 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:10 GMT",
@@ -1098,7 +1098,7 @@ Test Result: PASSED
 Generating conversation round 4/5:
 
 ================================================================================
-Testing: Generate Conversation Round 4 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 4 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:22 GMT",
@@ -1152,7 +1152,7 @@ Test Result: PASSED
 Generating conversation round 5/5:
 
 ================================================================================
-Testing: Generate Conversation Round 5 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 5 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:32 GMT",
@@ -1227,7 +1227,7 @@ Later rounds decision focus: 6/9 (66.7%)
 Test 6: Testing fallback responses
 
 ================================================================================
-Testing: Generate Fallback Conversation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Fallback Conversation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:43 GMT",
@@ -1292,7 +1292,7 @@ TESTING ENHANCED DYNAMIC CONVERSATION SYSTEM
 Test 1: Creating a new simulation
 
 ================================================================================
-Testing: Start simulation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/start)
+Testing: Start simulation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/start)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:43 GMT",
@@ -1325,7 +1325,7 @@ Test Result: PASSED
 Test 2: Creating test agents with diverse expertise
 
 ================================================================================
-Testing: Create Agent: Dr. James Wilson (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Agent: Dr. James Wilson (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:43 GMT",
@@ -1360,7 +1360,7 @@ Test Result: PASSED
 ✅ Created agent: Dr. James Wilson with ID: 055f568e-29e3-49a2-9304-4977adbb4a67
 
 ================================================================================
-Testing: Create Agent: Sarah Johnson (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Agent: Sarah Johnson (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:43 GMT",
@@ -1395,7 +1395,7 @@ Test Result: PASSED
 ✅ Created agent: Sarah Johnson with ID: 1d4473d7-5f3a-45ae-8334-ab5212527147
 
 ================================================================================
-Testing: Create Agent: Michael Chen (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Agent: Michael Chen (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:43 GMT",
@@ -1430,7 +1430,7 @@ Test Result: PASSED
 ✅ Created agent: Michael Chen with ID: 18e1f9d3-baa9-4d6b-aee4-113f4ae081e9
 
 ================================================================================
-Testing: Create Agent: Emily Rodriguez (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/agents)
+Testing: Create Agent: Emily Rodriguez (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/agents)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:43 GMT",
@@ -1467,7 +1467,7 @@ Test Result: PASSED
 Test 3: Setting a scenario
 
 ================================================================================
-Testing: Set Scenario (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/set-scenario)
+Testing: Set Scenario (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/set-scenario)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:43 GMT",
@@ -1489,7 +1489,7 @@ Test 4: Generating multiple conversation rounds
 Generating conversation round 1/8:
 
 ================================================================================
-Testing: Generate Conversation Round 1 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 1 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:01:54 GMT",
@@ -1548,7 +1548,7 @@ Dr. James Wilson: Given the tight deadline and limited budget for this quantum c
 Generating conversation round 2/8:
 
 ================================================================================
-Testing: Generate Conversation Round 2 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 2 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:05 GMT",
@@ -1607,7 +1607,7 @@ Dr. James Wilson: Given the tight deadline and limited budget for this quantum c
 Generating conversation round 3/8:
 
 ================================================================================
-Testing: Generate Conversation Round 3 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 3 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:15 GMT",
@@ -1666,7 +1666,7 @@ Sarah Johnson: Okay, let's cut to the chase. Given the tight deadline and budget
 Generating conversation round 4/8:
 
 ================================================================================
-Testing: Generate Conversation Round 4 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 4 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:25 GMT",
@@ -1725,7 +1725,7 @@ Michael Chen: Sarah Johnson raises valid points, though I remain concerned about
 Generating conversation round 5/8:
 
 ================================================================================
-Testing: Generate Conversation Round 5 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 5 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:36 GMT",
@@ -1784,7 +1784,7 @@ Sarah Johnson: Okay, let's cut to the chase. Given the tight deadline and limite
 Generating conversation round 6/8:
 
 ================================================================================
-Testing: Generate Conversation Round 6 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 6 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:47 GMT",
@@ -1845,7 +1845,7 @@ Sarah Johnson: Okay, team, let's cut to the chase. Given the tight deadline and 
 Generating conversation round 7/8:
 
 ================================================================================
-Testing: Generate Conversation Round 7 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 7 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 200
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:57 GMT",
@@ -1904,7 +1904,7 @@ Sarah Johnson: Okay, with the tight deadline and limited budget, a successful ro
 Generating conversation round 8/8:
 
 ================================================================================
-Testing: Generate Conversation Round 8 (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/conversation/generate)
+Testing: Generate Conversation Round 8 (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/conversation/generate)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2018,7 +2018,7 @@ TESTING NATURAL EXPERTISE DEMONSTRATION SYSTEM
 Test 1: Creating a new simulation
 
 ================================================================================
-Testing: Start simulation (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/simulation/start)
+Testing: Start simulation (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/simulation/start)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2105,7 +2105,7 @@ TESTING ENHANCED DOCUMENT GENERATION SYSTEM
 Test 1: Testing quality gate with budget/financial discussions
 
 ================================================================================
-Testing: Quality Gate - Budget Discussion (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/documents/quality-check)
+Testing: Quality Gate - Budget Discussion (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/documents/quality-check)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2120,7 +2120,7 @@ Test Result: FAILED
 Test 2: Testing quality gate with timeline/milestone discussions
 
 ================================================================================
-Testing: Quality Gate - Timeline Discussion (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/documents/quality-check)
+Testing: Quality Gate - Timeline Discussion (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/documents/quality-check)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2135,7 +2135,7 @@ Test Result: FAILED
 Test 3: Testing quality gate with risk assessment discussions
 
 ================================================================================
-Testing: Quality Gate - Risk Assessment Discussion (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/documents/quality-check)
+Testing: Quality Gate - Risk Assessment Discussion (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/documents/quality-check)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2150,7 +2150,7 @@ Test Result: FAILED
 Test 4: Testing quality gate with substantive content without perfect consensus phrases
 
 ================================================================================
-Testing: Quality Gate - Substantive Content (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/documents/quality-check)
+Testing: Quality Gate - Substantive Content (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/documents/quality-check)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2165,7 +2165,7 @@ Test Result: FAILED
 Test 5: Testing chart embedding in budget document
 
 ================================================================================
-Testing: Create Budget Document (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/documents/create)
+Testing: Create Budget Document (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/documents/create)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2180,7 +2180,7 @@ Test Result: FAILED
 Test 6: Testing chart embedding in timeline document
 
 ================================================================================
-Testing: Create Timeline Document (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/documents/create)
+Testing: Create Timeline Document (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/documents/create)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2195,7 +2195,7 @@ Test Result: FAILED
 Test 7: Testing chart embedding in risk document
 
 ================================================================================
-Testing: Create Risk Document (POST https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/documents/create)
+Testing: Create Risk Document (POST https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/documents/create)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2217,7 +2217,7 @@ TESTING ANALYTICS ENDPOINTS
 Test 1: Testing comprehensive analytics endpoint
 
 ================================================================================
-Testing: Comprehensive Analytics (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/analytics/comprehensive)
+Testing: Comprehensive Analytics (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/analytics/comprehensive)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2232,7 +2232,7 @@ Test Result: FAILED
 Test 2: Testing weekly summary endpoint
 
 ================================================================================
-Testing: Weekly Summary (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/analytics/weekly-summary)
+Testing: Weekly Summary (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/analytics/weekly-summary)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2247,7 +2247,7 @@ Test Result: FAILED
 Test 3: Testing authentication requirements
 
 ================================================================================
-Testing: Comprehensive Analytics Without Authentication (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/analytics/comprehensive)
+Testing: Comprehensive Analytics Without Authentication (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/analytics/comprehensive)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
@@ -2260,7 +2260,7 @@ Test Result: FAILED
 ❌ Comprehensive analytics endpoint does not properly enforce authentication
 
 ================================================================================
-Testing: Weekly Summary Without Authentication (GET https://a985bc5b-b2e4-4dfa-b7b1-059accd4e9ea.preview.emergentagent.com/api/analytics/weekly-summary)
+Testing: Weekly Summary Without Authentication (GET https://ceb1040f-47be-4ea5-aa05-81bfb7cce94d.preview.emergentagent.com/api/analytics/weekly-summary)
 Status Code: 502
 Response Headers: {
   "Date": "Thu, 19 Jun 2025 23:02:59 GMT",
