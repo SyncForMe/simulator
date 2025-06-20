@@ -3919,24 +3919,6 @@ const AgentProfilesManager = ({
                     </div>
                     <div className="flex items-center space-x-2 ml-4">
                       <button
-                        onClick={() => onEditAgent(agent)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-                        title="Edit Agent"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => onSaveAgent(agent)}
-                        className="p-2 text-purple-600 hover:bg-purple-50 rounded-full transition-colors"
-                        title="Save Agent to Library"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                        </svg>
-                      </button>
-                      <button
                         onClick={() => onDeleteAgent(agent.id, agent.name)}
                         className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
                         title="Delete Agent"
