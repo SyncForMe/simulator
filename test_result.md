@@ -490,14 +490,11 @@ test_plan:
     - "Authentication Flow for Agent Management"
     - "Agent Management Integration"
   stuck_tasks:
-    - "DELETE /api/documents/bulk - Bulk Delete Documents"
-    - "Admin Functionality"
     - "Improved Conversation Generation System"
     - "Enhanced Dynamic Conversation System"
     - "Natural Expertise Demonstration System"
     - "Enhanced Document Generation System"
     - "Enhanced Random Scenario Generation"
-    - "Account Dropdown System"
   test_all: false
   test_priority: "high_first"
 
