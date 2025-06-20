@@ -7331,24 +7331,54 @@ function App() {
                 </div>
               </div>
             </div>
-            
-            {/* Start New Simulation Button */}
-              <div className="bg-white rounded-lg shadow-lg border-2 border-purple-200 mb-6 overflow-hidden">
-                {/* Header */}
-                <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                      </svg>
-                      <h3 className="text-lg font-semibold">Observer Console</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        simulationState?.auto_conversations 
-                          ? 'bg-green-500 text-white' 
-                          : 'bg-red-500 text-white'
-                      }`}>
-                        {simulationState?.auto_conversations ? 'ACTIVE' : 'PAUSED'}
-                      </span>
+
+            {/* Observer Chat */}
+            {showObserverCard && (
+              <div className="bg-gray-100 border border-gray-300 rounded p-3 mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Observer Chat</span>
+                  <button
+                    onClick={() => setShowObserverCard(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    ×
+                  </button>
+                </div>
+                
+                <div className="bg-white border rounded p-2 h-24 overflow-y-auto mb-2 text-xs">
+                  {observerMessages.length === 0 ? (
+                    <p className="text-gray-500 text-center mt-2">Chat with agents...</p>
+                  ) : (
+                    observerMessages.map((message, index) => (
+                      <div key={index} className="mb-1">
+                        <span className={message.isUser ? "text-blue-600" : "text-gray-700"}>
+                          {message.isUser ? "You: " : "Agent: "}{message.message}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                <div className="flex gap-1">
+                  <input
+                    type="text"
+                    value={observerMessage}
+                    onChange={(e) => setObserverMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSendObserverMessage()}
+                    placeholder="Type message..."
+                    disabled={!simulationState?.auto_conversations}
+                    className="flex-1 px-2 py-1 text-xs border rounded disabled:bg-gray-100"
+                  />
+                  <button
+                    onClick={handleSendObserverMessage}
+                    disabled={!observerMessage.trim() || !simulationState?.auto_conversations}
+                    className="px-2 py-1 bg-gray-600 text-white rounded text-xs disabled:bg-gray-400"
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            )}
                     </div>
                     <button
                       onClick={() => setShowObserverCard(false)}
