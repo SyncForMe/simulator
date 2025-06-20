@@ -3257,6 +3257,69 @@ async def delete_saved_agent(agent_id: str, current_user: User = Depends(get_cur
         raise HTTPException(status_code=404, detail="Agent not found")
     return {"message": "Agent deleted successfully"}
 
+@api_router.put("/agents/{agent_id}")
+async def update_agent(agent_id: str, agent_data: dict):
+    """Update an existing agent's details"""
+    try:
+        # Find and update the agent
+        result = await db.agents.update_one(
+            {"id": agent_id},
+            {"$set": {
+                "name": agent_data.get("name"),
+                "archetype": agent_data.get("archetype"),
+                "personality": agent_data.get("personality", {}),
+                "goal": agent_data.get("goal"),
+                "background": agent_data.get("background"),
+                "avatar_url": agent_data.get("avatar_url", ""),
+                "avatar_prompt": agent_data.get("avatar_prompt", ""),
+                "updated_at": datetime.utcnow()
+            }}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Agent not found")
+        
+        # Return updated agent
+        updated_agent = await db.agents.find_one({"id": agent_id})
+        return Agent(**updated_agent)
+        
+    except Exception as e:
+        logging.error(f"Error updating agent: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to update agent: {str(e)}")
+
+@api_router.put("/saved-agents/{agent_id}")
+async def update_saved_agent(agent_id: str, agent_data: SavedAgentCreate, current_user: User = Depends(get_current_user)):
+    """Update a saved agent's details"""
+    try:
+        # Prepare update data
+        update_data = {
+            "name": agent_data.name,
+            "archetype": agent_data.archetype,
+            "personality": agent_data.personality.dict() if agent_data.personality else {},
+            "goal": agent_data.goal,
+            "background": agent_data.background,
+            "avatar_url": agent_data.avatar_url,
+            "avatar_prompt": agent_data.avatar_prompt,
+            "updated_at": datetime.utcnow()
+        }
+        
+        # Update the saved agent
+        result = await db.saved_agents.update_one(
+            {"id": agent_id, "user_id": current_user.id},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Saved agent not found")
+        
+        # Return updated agent
+        updated_agent = await db.saved_agents.find_one({"id": agent_id, "user_id": current_user.id})
+        return SavedAgent(**updated_agent)
+        
+    except Exception as e:
+        logging.error(f"Error updating saved agent: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to update saved agent: {str(e)}")
+
 # Conversation History Endpoints
 @api_router.get("/conversation-history", response_model=List[ConversationHistory])
 async def get_conversation_history(current_user: User = Depends(get_current_user)):
