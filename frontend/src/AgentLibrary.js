@@ -1920,6 +1920,70 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
           <div className="flex h-[600px]">
             {/* Sidebar */}
             <div className="w-64 bg-gray-50 border-r p-4">
+              {/* MY AGENTS section */}
+              <div 
+                className="flex justify-between items-center cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-colors mb-4"
+                onClick={() => setIsMyAgentsExpanded(!isMyAgentsExpanded)}
+              >
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">MY AGENTS</h3>
+                <button
+                  type="button"
+                  className="text-gray-500 hover:text-gray-700 transition-transform duration-200"
+                  style={{ transform: isMyAgentsExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+              
+              {/* My Agents list - conditionally rendered */}
+              {isMyAgentsExpanded && (
+                <div className="space-y-2 mb-6 max-h-48 overflow-y-auto">
+                  {loadingSavedAgents ? (
+                    <div className="text-center py-4 text-gray-500">Loading your agents...</div>
+                  ) : savedAgents.length === 0 ? (
+                    <div className="text-center py-4 text-gray-500 text-sm">
+                      No saved agents yet.<br/>
+                      Create and save agents to see them here.
+                    </div>
+                  ) : (
+                    savedAgents.map((agent) => (
+                      <div
+                        key={agent.id}
+                        className="w-full text-left p-3 rounded-lg transition-colors text-gray-700 hover:bg-gray-100 border cursor-pointer"
+                        onClick={() => {
+                          setSelectedMyAgent(agent);
+                          setSelectedQuickTeam(null);
+                          setSelectedSector(null);
+                          setSelectedCategory(null);
+                        }}
+                      >
+                        <div className="flex items-center space-x-2">
+                          {agent.avatar_url ? (
+                            <img 
+                              src={agent.avatar_url} 
+                              alt={agent.name}
+                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                              <span className="text-purple-600 text-sm font-bold">
+                                {agent.name.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-sm truncate">{agent.name}</div>
+                            <div className="text-xs text-gray-500 truncate">{agent.archetype}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+
               {/* QUICK TEAM BUILDERS header with expandable button */}
               <div 
                 className="flex justify-between items-center cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-colors mb-4"
