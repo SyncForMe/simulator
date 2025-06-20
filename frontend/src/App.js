@@ -3917,6 +3917,22 @@ const AgentProfilesManager = ({
                     </div>
                     <div className="flex items-center space-x-2 ml-4">
                       <button
+                        onClick={() => onEditAgent(agent)}
+                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                        title="Edit Agent"
+                        style={{ fontSize: '0.75rem' }}
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => onSaveAgent(agent)}
+                        className="p-1 text-purple-600 hover:text-purple-800 transition-colors"
+                        title="Save Agent to Library"
+                        style={{ fontSize: '0.75rem' }}
+                      >
+                        💾
+                      </button>
+                      <button
                         onClick={() => onDeleteAgent(agent.id, agent.name)}
                         className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
                         title="Delete Agent"
