@@ -7393,11 +7393,6 @@ function App() {
           <div className="lg:col-span-1 space-y-6">
             
             {/* Start New Simulation Button */}
-              </div>
-            )}
-            
-            {/* Observer Chat */}
-            {showObserverCard && (
               <div className="bg-gray-100 border border-gray-300 rounded p-3 mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Observer Chat</span>
