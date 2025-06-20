@@ -2086,7 +2086,75 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
 
             {/* Main Content */}
             <div className="flex-1 p-6 overflow-y-auto">
-              {selectedQuickTeam ? (
+              {selectedMyAgent ? (
+                // My Agent Detail View
+                <div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-6">
+                    👤 {selectedMyAgent.name}
+                  </h3>
+                  <p className="text-gray-600 mb-6">Your saved agent - {selectedMyAgent.archetype}</p>
+                  
+                  <div className="mb-6 flex space-x-3">
+                    <button
+                      onClick={() => handleUseSavedAgent(selectedMyAgent)}
+                      className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 font-medium"
+                    >
+                      Add to Simulation
+                    </button>
+                    <button
+                      onClick={() => handleDeleteSavedAgent(selectedMyAgent.id)}
+                      className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-medium"
+                    >
+                      Delete Agent
+                    </button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <div className="flex items-start space-x-4">
+                        {selectedMyAgent.avatar_url ? (
+                          <img 
+                            src={selectedMyAgent.avatar_url} 
+                            alt={selectedMyAgent.name}
+                            className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                            <span className="text-purple-600 text-xl font-bold">
+                              {selectedMyAgent.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <h4 className="text-lg font-semibold text-gray-800 mb-2">{selectedMyAgent.name}</h4>
+                          <div className="space-y-2 text-sm">
+                            <p><span className="font-medium text-gray-600">Archetype:</span> {selectedMyAgent.archetype}</p>
+                            <p><span className="font-medium text-gray-600">Goal:</span> {selectedMyAgent.goal}</p>
+                            {selectedMyAgent.expertise && (
+                              <p><span className="font-medium text-gray-600">Expertise:</span> {selectedMyAgent.expertise}</p>
+                            )}
+                            {selectedMyAgent.background && (
+                              <p><span className="font-medium text-gray-600">Background:</span> {selectedMyAgent.background}</p>
+                            )}
+                            {selectedMyAgent.personality && (
+                              <div>
+                                <span className="font-medium text-gray-600">Personality Traits:</span>
+                                <div className="mt-1 grid grid-cols-2 gap-2 text-xs">
+                                  <div>Extroversion: {selectedMyAgent.personality.extroversion}/10</div>
+                                  <div>Optimism: {selectedMyAgent.personality.optimism}/10</div>
+                                  <div>Curiosity: {selectedMyAgent.personality.curiosity}/10</div>
+                                  <div>Cooperativeness: {selectedMyAgent.personality.cooperativeness}/10</div>
+                                  <div>Energy: {selectedMyAgent.personality.energy}/10</div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : selectedQuickTeam ? (
                 // Quick Team View
                 <div>
                   <h3 className="text-xl font-bold text-gray-800 mb-6">
