@@ -7407,15 +7407,7 @@ function App() {
         )}
 
         {/* Pre-Configuration Modal */}
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">Observer Chat</span>
-                  <button
-                    onClick={() => setShowObserverCard(false)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    ×
-                  </button>
-                </div>
+        {showPreConfigModal && (
                 
                 <div className="bg-white border rounded p-2 h-24 overflow-y-auto mb-2 text-xs">
                   {observerMessages.length === 0 ? (
