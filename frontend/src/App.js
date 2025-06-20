@@ -3829,7 +3829,9 @@ const AgentProfilesManager = ({
   onInitResearchStation, 
   onTestBackgrounds,
   onShowAgentLibrary,
-  onDeleteAgent
+  onDeleteAgent,
+  onEditAgent,
+  onSaveAgent
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
