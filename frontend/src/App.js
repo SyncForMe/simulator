@@ -1658,15 +1658,15 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
             </div>
           )}
 
-        <div className="flex space-x-2">
+        <div className="flex justify-center space-x-4">
           {/* Set New Scenario - Play button (triangle pointing right) */}
-          <div className="group relative flex-1">
+          <div className="group relative">
             <button
               type="submit"
               disabled={loading || !scenario.trim() || !scenarioName.trim() || justSubmitted || randomLoading || isRecording || isTranscribing}
-              className="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center justify-center"
+              className="bg-purple-600 text-white p-3 rounded-full hover:bg-purple-700 disabled:opacity-50 transition-colors shadow-lg hover:shadow-xl hover:scale-110"
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>
               </svg>
             </button>
@@ -1677,14 +1677,14 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
           </div>
           
           {/* Random Scenario - Dice button */}
-          <div className="group relative flex-1">
+          <div className="group relative">
             <button
               type="button"
               onClick={handleGenerateRandomScenario}
               disabled={loading || justSubmitted || randomLoading || isRecording || isTranscribing}
-              className="w-full bg-gray-400 text-white p-3 rounded-lg hover:bg-gray-500 disabled:opacity-50 transition-colors flex items-center justify-center"
+              className="bg-gray-400 text-white p-3 rounded-full hover:bg-gray-500 disabled:opacity-50 transition-colors shadow-lg hover:shadow-xl hover:scale-110"
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 18C6.67 18 6 17.33 6 16.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/>
               </svg>
             </button>
