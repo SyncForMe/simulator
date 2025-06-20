@@ -5877,10 +5877,18 @@ const FileCenterPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-20">
+          <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 rounded-t-lg mb-0">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold">📁 File Center</h1>
+                <p className="text-purple-100 mt-1">Documents organized by simulation scenario</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white shadow-lg p-8 text-center rounded-b-lg">
             <div className="text-6xl mb-6">🔒</div>
-            <h2 className="text-2xl font-bold text-white mb-4">Sign In Required</h2>
-            <p className="text-white/80">Please sign in to access your team's documents.</p>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Sign In Required</h2>
+            <p className="text-gray-600">Please sign in to access your team's documents.</p>
           </div>
         </div>
       </div>
