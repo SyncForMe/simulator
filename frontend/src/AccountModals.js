@@ -930,6 +930,7 @@ export const FeedbackModal = ({ isOpen, onClose, token }) => {
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
+    if (!e || !e.target) return;
     e.preventDefault();
     setIsSubmitting(true);
 
