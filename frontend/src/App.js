@@ -351,105 +351,19 @@ const VoiceInput = ({
 
 // Animated Observer Logo Component
 const ObserverLogo = () => {
-  const pupilControls = useAnimationControls();
-
-  useEffect(() => {
-    // Animation sequences
-    const animatePupil = async () => {
-      while (true) {
-        // Random chance for different movements
-        const movementType = Math.random();
-        
-        if (movementType < 0.4) {
-          // Scanning motion (40% chance) - reduced range to prevent touching outline
-          await pupilControls.start({
-            x: -4,
-            y: Math.random() * 2 + 6, // 6-8px (reduced range)
-            transition: {
-              type: "spring",
-              stiffness: 60,
-              damping: 20
-            }
-          });
-          
-          await new Promise(resolve => setTimeout(resolve, 200));
-          
-          await pupilControls.start({
-            x: 4,
-            y: Math.random() * 2 + 6, // 6-8px (reduced range)
-            transition: {
-              type: "spring",
-              stiffness: 60,
-              damping: 20
-            }
-          });
-          
-          await new Promise(resolve => setTimeout(resolve, 200));
-        } else {
-          // Random movement (60% chance) - reduced range to prevent touching outline
-          await pupilControls.start({
-            x: (Math.random() * 8 - 4),
-            y: (Math.random() * 4 + 5),
-            transition: {
-              type: "spring",
-              stiffness: 60,
-              damping: 20
-            }
-          });
-          
-          await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
-        }
-      }
-    };
-    
-    // Start animation
-    animatePupil();
-    
-    // Cleanup function
-    return () => {
-      pupilControls.stop();
-    };
-  }, [pupilControls]);
-
-  // Blinking animation
-  const [isBlinking, setIsBlinking] = useState(false);
-  
-  useEffect(() => {
-    const blinkInterval = setInterval(() => {
-      setIsBlinking(true);
-      setTimeout(() => setIsBlinking(false), 200);
-    }, Math.random() * 5000 + 5000); // Random interval between 5-10 seconds
-    
-    return () => clearInterval(blinkInterval);
-  }, []);
-
   return (
     <div className="flex items-center">
-      <div className="text-4xl font-bold tracking-tight relative">
-        <div className="relative inline-block w-10 h-10 mr-1">
-          {/* Eye */}
-          <div className="absolute inset-0 bg-white rounded-full border-2 border-gray-800 overflow-hidden">
-            {/* Pupil */}
-            <motion.div 
-              className="w-4 h-4 bg-black rounded-full absolute"
-              style={{ top: '50%', left: '50%', marginLeft: -8, marginTop: -8 }}
-              animate={pupilControls}
-            />
-            
-            {/* Eyelid (only visible when blinking) */}
-            <div 
-              className={`absolute inset-0 bg-gray-400 border-b-2 border-gray-600 transition-transform duration-200 ${isBlinking ? 'translate-y-0' : 'translate-y-[-100%]'}`}
-              style={{ borderRadius: '50% 50% 0 0' }}
-            >
-              {/* Eyelashes */}
-              <div className="absolute bottom-0 left-1 w-1 h-1 bg-gray-600 rounded-full" />
-              <div className="absolute bottom-0 left-3 w-1 h-1 bg-gray-600 rounded-full" />
-              <div className="absolute bottom-0 left-5 w-1 h-1 bg-gray-600 rounded-full" />
-              <div className="absolute bottom-0 left-7 w-1 h-1 bg-gray-600 rounded-full" />
-            </div>
+      <div className="flex items-center text-2xl font-bold tracking-tight text-white">
+        {/* Circular Logo Icon */}
+        <div className="relative inline-block w-8 h-8 mr-3">
+          {/* Outer Circle */}
+          <div className="absolute inset-0 bg-white rounded-full border-2 border-white">
+            {/* Inner Dot */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-black rounded-full" />
           </div>
         </div>
-        bserver
+        {/* Observer Text */}
+        <span className="text-white font-bold">Observer</span>
       </div>
     </div>
   );
