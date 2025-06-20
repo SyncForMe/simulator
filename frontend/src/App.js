@@ -1658,23 +1658,42 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
             </div>
           )}
 
-        <div className="space-y-2">
-          <button
-            type="submit"
-            disabled={loading || !scenario.trim() || !scenarioName.trim() || justSubmitted || randomLoading || isRecording || isTranscribing}
-            className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50 transition-colors"
-          >
-            {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Set New Scenario"}
-          </button>
+        <div className="flex space-x-2">
+          {/* Set New Scenario - Play button (triangle pointing right) */}
+          <div className="group relative flex-1">
+            <button
+              type="submit"
+              disabled={loading || !scenario.trim() || !scenarioName.trim() || justSubmitted || randomLoading || isRecording || isTranscribing}
+              className="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center justify-center"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </button>
+            {/* Tooltip */}
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              {loading ? "Setting Scenario..." : justSubmitted ? "Scenario Applied!" : "Start New Scenario"}
+            </div>
+          </div>
           
-          <button
-            type="button"
-            onClick={handleGenerateRandomScenario}
-            disabled={loading || justSubmitted || randomLoading || isRecording || isTranscribing}
-            className="w-full bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 disabled:opacity-50 transition-colors"
-          >
-            {randomLoading ? "Generating & Applying..." : "Random Scenario"}
-          </button>
+          {/* Random Scenario - Dice button */}
+          <div className="group relative flex-1">
+            <button
+              type="button"
+              onClick={handleGenerateRandomScenario}
+              disabled={loading || justSubmitted || randomLoading || isRecording || isTranscribing}
+              className="w-full bg-gray-400 text-white p-3 rounded-lg hover:bg-gray-500 disabled:opacity-50 transition-colors flex items-center justify-center"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M5 3H4a1 1 0 0 0-1 1v1c0 5.55 2.72 10.74 7.39 13.76a1 1 0 0 0 1.22 0C16.28 15.74 19 10.55 19 5V4a1 1 0 0 0-1-1h-1M12 8.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                <path d="M4 13h3a3 3 0 0 1 3 3v3a1 1 0 0 1-2 0v-3a1 1 0 0 0-1-1H4a1 1 0 0 1 0-2Zm16 0h-3a3 3 0 0 0-3 3v3a1 1 0 0 0 2 0v-3a1 1 0 0 1 1-1h3a1 1 0 0 0 0-2Z"/>
+              </svg>
+            </button>
+            {/* Tooltip */}
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              {randomLoading ? "Generating & Applying..." : "Generate Random Scenario"}
+            </div>
+          </div>
         </div>
         </form>
         </div>
