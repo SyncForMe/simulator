@@ -7408,8 +7408,7 @@ function App() {
 
         {/* Pre-Configuration Modal */}
         {showPreConfigModal && (
-                
-                <div className="bg-white border rounded p-2 h-24 overflow-y-auto mb-2 text-xs">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                   {observerMessages.length === 0 ? (
                     <p className="text-gray-500 text-center mt-2">Chat with agents...</p>
                   ) : (
