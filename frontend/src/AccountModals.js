@@ -338,7 +338,7 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
                       <input
                         type="text"
                         value={avatarPrompt}
-                        onChange={(e) => setAvatarPrompt(e.target.value)}
+                        onChange={(e) => e?.target && setAvatarPrompt(e.target.value)}
                         placeholder="Describe your ideal avatar (e.g., professional businessman, creative artist)"
                         className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         disabled={isGenerating}
