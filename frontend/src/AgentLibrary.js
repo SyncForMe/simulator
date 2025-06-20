@@ -1469,7 +1469,7 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   // Don't render if not open
   if (!isOpen) return null;
 
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [selectedSector, setSelectedSector] = useState(null); // Changed to null to show nothing by default
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedAgentDetails, setSelectedAgentDetails] = useState(null);
@@ -1479,7 +1479,11 @@ const AgentLibrary = ({ isOpen, onClose, onAddAgent, onRemoveAgent }) => {
   const [imageLoadingStates, setImageLoadingStates] = useState(new Map());
   const [isSectorsExpanded, setIsSectorsExpanded] = useState(true);
   const [isQuickTeamBuildersExpanded, setIsQuickTeamBuildersExpanded] = useState(false);
+  const [isMyAgentsExpanded, setIsMyAgentsExpanded] = useState(true); // My Agents expanded by default
   const [selectedQuickTeam, setSelectedQuickTeam] = useState(null); // New state for quick team selection
+  const [savedAgents, setSavedAgents] = useState([]);
+  const [loadingSavedAgents, setLoadingSavedAgents] = useState(false);
+  const [selectedMyAgent, setSelectedMyAgent] = useState(null);
   const [quickTeams, setQuickTeams] = useState({
     research: {
       name: "Research Team",
