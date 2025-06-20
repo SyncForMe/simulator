@@ -29,6 +29,7 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
   };
 
   const handleFileUpload = async (e) => {
+    if (!e || !e.target || !e.target.files) return;
     const file = e.target.files[0];
     if (!file) return;
 
