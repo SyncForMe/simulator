@@ -7462,6 +7462,17 @@ function App() {
         token={token}
       />
 
+      {/* Edit Agent Modal */}
+      {editingAgent && (
+        <EditAgentModal 
+          agent={editingAgent}
+          isOpen={!!editingAgent}
+          onClose={() => setEditingAgent(null)}
+          onSave={handleUpdateAgent}
+          archetypes={archetypes}
+        />
+      )}
+
       {/* Fast Forward Modal */}
       <FastForwardModal 
         isOpen={showFastForward}
