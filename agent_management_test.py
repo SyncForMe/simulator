@@ -340,29 +340,23 @@ def test_save_agent_to_library():
             print("❌ Cannot test saving agent without a test agent")
             return False
     
-    # Get the agent details
-    get_agent_test, get_agent_response = run_test(
-        "Get Agent Details",
-        f"/agents/{created_agent_id}",
-        method="GET",
-        auth=True,
-        expected_keys=["id", "name", "archetype"]
-    )
-    
-    if not get_agent_test or not get_agent_response:
-        print("❌ Failed to get agent details")
-        return False
-    
-    # Save the agent to library
+    # Since there's no GET endpoint for individual agents, we'll create a new agent data
+    # directly for saving to the library
     save_data = {
-        "name": get_agent_response.get("name"),
-        "archetype": get_agent_response.get("archetype"),
-        "personality": get_agent_response.get("personality"),
-        "goal": get_agent_response.get("goal"),
-        "expertise": get_agent_response.get("expertise", ""),
-        "background": get_agent_response.get("background", ""),
-        "avatar_url": get_agent_response.get("avatar_url", ""),
-        "avatar_prompt": get_agent_response.get("avatar_prompt", ""),
+        "name": f"Saved Agent {uuid.uuid4().hex[:8]}",
+        "archetype": "scientist",
+        "personality": {
+            "extroversion": 7,
+            "optimism": 8,
+            "curiosity": 9,
+            "cooperativeness": 6,
+            "energy": 7
+        },
+        "goal": "To test the saved agent functionality",
+        "expertise": "Software Testing",
+        "background": "Experienced in testing APIs and backend systems",
+        "avatar_url": "",
+        "avatar_prompt": "A professional software tester with glasses",
         "is_template": False
     }
     
