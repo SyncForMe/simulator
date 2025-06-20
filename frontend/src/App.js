@@ -7331,8 +7331,8 @@ function App() {
                 </div>
               </div>
             </div>
-            {/* Observer Card */}
-            {showObserverCard && (
+            
+            {/* Start New Simulation Button */}
               <div className="bg-white rounded-lg shadow-lg border-2 border-purple-200 mb-6 overflow-hidden">
                 {/* Header */}
                 <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4">
