@@ -1685,8 +1685,7 @@ const ScenarioInput = ({ onSetScenario, currentScenario, onScenarioCollapse }) =
               className="w-full bg-gray-400 text-white p-3 rounded-lg hover:bg-gray-500 disabled:opacity-50 transition-colors flex items-center justify-center"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M5 3H4a1 1 0 0 0-1 1v1c0 5.55 2.72 10.74 7.39 13.76a1 1 0 0 0 1.22 0C16.28 15.74 19 10.55 19 5V4a1 1 0 0 0-1-1h-1M12 8.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-                <path d="M4 13h3a3 3 0 0 1 3 3v3a1 1 0 0 1-2 0v-3a1 1 0 0 0-1-1H4a1 1 0 0 1 0-2Zm16 0h-3a3 3 0 0 0-3 3v3a1 1 0 0 0 2 0v-3a1 1 0 0 1 1-1h3a1 1 0 0 0 0-2Z"/>
+                <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 18C6.67 18 6 17.33 6 16.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/>
               </svg>
             </button>
             {/* Tooltip */}
