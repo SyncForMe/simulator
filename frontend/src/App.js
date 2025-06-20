@@ -7250,9 +7250,6 @@ function App() {
               onShowAgentLibrary={() => setShowAgentLibrary(true)}
             />
 
-            {/* My Agents Library */}
-            <SavedAgentsLibrary onCreateAgent={handleCreateAgent} />
-            
             {simulationState && typeof simulationState === 'object' && (
               <SimulationStatusBar 
                 simulationState={simulationState}
