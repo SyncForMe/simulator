@@ -409,6 +409,11 @@ test_plan:
     - "Test Login (Continue as Guest)"
     - "Analytics Endpoints"
     - "Account Dropdown System"
+    - "Agent Update Endpoint"
+    - "Saved Agent Update Endpoint"
+    - "Existing Saved Agents Endpoints"
+    - "Authentication Flow for Agent Management"
+    - "Agent Management Integration"
   stuck_tasks:
     - "DELETE /api/documents/bulk - Bulk Delete Documents"
     - "Admin Functionality"
