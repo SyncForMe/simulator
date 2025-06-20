@@ -21,6 +21,7 @@ export const ProfileSettingsModal = ({ isOpen, onClose, user, analyticsData, tok
   if (!isOpen) return null;
 
   const handleInputChange = (e) => {
+    if (!e || !e.target) return;
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
