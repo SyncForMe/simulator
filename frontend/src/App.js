@@ -5615,8 +5615,6 @@ const ChatHistory = () => {
       </>
     );
   }
-    </>
-  );
 
   return (
     <>
