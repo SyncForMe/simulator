@@ -5793,7 +5793,7 @@ const FileCenterPage = () => {
                     </button>
                   )}
                   <button
-                    onClick={() => fetchScenarioDocuments(true)}
+                    onClick={() => fetchConversationHistory()}
                     disabled={loading}
                     className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm font-medium disabled:opacity-50"
                   >
