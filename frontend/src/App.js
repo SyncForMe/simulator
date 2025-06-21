@@ -5797,7 +5797,7 @@ const FileCenterPage = () => {
                     disabled={loading}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium disabled:opacity-50"
                   >
-                    {loading ? 'Loading...' : 'Refresh'}
+                    {loading ? '🔄 Refresh' : 'Refresh'}
                   </button>
                 </div>
               </div>
