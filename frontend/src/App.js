@@ -5785,7 +5785,7 @@ const FileCenterPage = () => {
                 <div className="flex items-center space-x-4">
                   {selectedConversations.size > 0 && (
                     <button
-                      onClick={() => handleDeleteDocuments(Array.from(selectedDocuments))}
+                      onClick={() => handleBulkDelete()}
                       disabled={deleting}
                       className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-medium disabled:opacity-50"
                     >
