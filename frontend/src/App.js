@@ -5786,7 +5786,7 @@ const FileCenterPage = () => {
                   {selectedConversations.size > 0 && (
                     <button
                       onClick={() => handleBulkDelete()}
-                      disabled={deleting}
+                      disabled={loading}
                       className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-medium disabled:opacity-50"
                     >
                       {deleting ? 'Deleting...' : `Delete Selected (${selectedDocuments.size})`}
