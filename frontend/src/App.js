@@ -5869,3 +5869,16 @@ const FileCenterPage = () => {
     </div>
   );
 };
+
+// Main App Component Wrapper with Authentication
+const AppWithAuth = () => {
+  return (
+    <div className="App">
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </div>
+  );
+};
+
+export default AppWithAuth;
