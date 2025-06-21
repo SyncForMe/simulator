@@ -5783,7 +5783,7 @@ const FileCenterPage = () => {
 
                 {/* Actions */}
                 <div className="flex items-center space-x-4">
-                  {selectedDocuments.size > 0 && (
+                  {selectedConversations.size > 0 && (
                     <button
                       onClick={() => handleDeleteDocuments(Array.from(selectedDocuments))}
                       disabled={deleting}
