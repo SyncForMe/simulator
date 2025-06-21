@@ -7608,7 +7608,7 @@ function App() {
             {/* Translation functionality will be added later */}
           </div>
         </div>
-        </>
+        </div>
         )}
       </main>
 
