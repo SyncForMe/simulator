@@ -5763,10 +5763,8 @@ const FileCenterPage = () => {
                 {loading ? '⏳ Loading...' : '🔄 Refresh'}
               </button>
             </div>
-          </div>
 
-          {/* Content */}
-          <div className="p-6 h-[600px] overflow-y-auto">
+            {/* Conversation List */}
             {loading ? (
               <div className="bg-white rounded-lg shadow-lg p-8 text-center">
                 <div className="text-4xl mb-4">⏳</div>
