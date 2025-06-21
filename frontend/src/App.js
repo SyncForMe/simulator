@@ -5806,7 +5806,7 @@ const FileCenterPage = () => {
             {/* Conversation List */}
             {loading ? (
               <div className="text-center py-8">
-                <div className="text-2xl mb-2">📋</div>
+                <div className="text-2xl mb-2">⏳</div>
                 <p className="text-gray-500">Loading documents...</p>
               </div>
             ) : Object.keys(groupedDocuments).length === 0 ? (
