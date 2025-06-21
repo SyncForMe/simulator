@@ -5582,21 +5582,37 @@ const ChatHistory = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-green-500 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 rounded-t-lg mb-0">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold">💬 Chat History</h1>
-                <p className="text-purple-100 mt-1">Browse and manage your AI simulation conversations</p>
+      <>
+        {/* Main Chat History Modal */}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden shadow-2xl">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold">💬 Chat History</h2>
+                  <p className="text-purple-100 mt-1">Browse and manage your AI simulation conversations</p>
+                </div>
+                <button
+                  onClick={() => window.location.hash = '#home'}
+                  className="text-white hover:text-purple-200 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-700 transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              <div className="bg-white shadow-lg p-8 text-center rounded-lg">
+                <div className="text-6xl mb-6">🔒</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Sign In Required</h2>
+                <p className="text-gray-600">Please sign in to view your conversation history.</p>
               </div>
             </div>
           </div>
-          <div className="bg-white shadow-lg p-8 text-center rounded-b-lg">
-            <div className="text-6xl mb-6">🔒</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Sign In Required</h2>
-            <p className="text-gray-600">Please sign in to view your conversation history.</p>
-          </div>
+        </div>
+      </>
         </div>
       </div>
     );
