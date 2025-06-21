@@ -5744,6 +5744,125 @@ const ChatHistory = () => {
 };
 
 const FileCenterPage = () => {
+  const { user, token } = useAuth();
+  const [scenarioDocuments, setScenarioDocuments] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDocuments, setSelectedDocuments] = useState(new Set());
+  const [selectAll, setSelectAll] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [documents, setDocuments] = useState([]);
+
+  useEffect(() => {
+    if (user && token) {
+      fetchScenarioDocuments();
+    }
+  }, [user, token]);
+
+  const fetchScenarioDocuments = async (refresh = false) => {
+    if (!token) return;
+    
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/documents`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Process and validate documents
+      const validDocuments = (response.data || []).filter(
+        doc => doc && typeof doc === 'object'
+      ).map(doc => ({
+        ...doc,
+        title: doc.title || 'Untitled Document',
+        content: doc.content || '',
+        scenario_name: doc.scenario_name || 'General',
+        category: doc.category || 'Reference'
+      }));
+      
+      setScenarioDocuments(validDocuments);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      if (error.response?.status === 404) {
+        setScenarioDocuments([]);
+      }
+    }
+    setLoading(false);
+  };
+
+  const handleDeleteDocuments = async (documentIds) => {
+    if (!token || !documentIds.length) return;
+    
+    setDeleting(true);
+    try {
+      for (const id of documentIds) {
+        await axios.delete(`${API}/documents/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      await fetchScenarioDocuments(true);
+      setSelectedDocuments(new Set());
+      setSelectAll(false);
+      alert(`${documentIds.length} document(s) deleted successfully!`);
+    } catch (error) {
+      console.error('Error deleting documents:', error);
+      alert('Failed to delete some documents.');
+    }
+    setDeleting(false);
+  };
+
+  const filteredDocuments = scenarioDocuments.filter(doc =>
+    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    doc.scenario_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    doc.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const groupedDocuments = filteredDocuments.reduce((acc, doc) => {
+    const key = doc.scenario_name;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(doc);
+    return acc;
+  }, {});
+
+  if (!user) {
+    return (
+      <div>
+        {/* Main File Center Modal */}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden shadow-2xl">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold">📁 File Center</h2>
+                  <p className="text-purple-100 mt-1">Documents organized by simulation scenario</p>
+                </div>
+                <button
+                  onClick={() => window.location.hash = '#home'}
+                  className="text-white hover:text-purple-200 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-700 transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              <div className="bg-white shadow-lg p-8 text-center rounded-lg">
+                <div className="text-6xl mb-6">🔒</div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Sign In Required</h2>
+                <p className="text-gray-600">Please sign in to access your team's documents.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Main File Center Modal */}
@@ -5774,146 +5893,128 @@ const FileCenterPage = () => {
                 <div className="flex-1">
                   <input
                     type="text"
-                    placeholder="Search scenarios..."
+                    placeholder="Search documents..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
 
                 {/* Actions */}
                 <div className="flex items-center space-x-4">
-                  {selectedConversations.size > 0 && (
+                  {selectedDocuments.size > 0 && (
                     <button
-                      onClick={() => handleBulkDelete()}
-                      disabled={loading}
+                      onClick={() => handleDeleteDocuments(Array.from(selectedDocuments))}
+                      disabled={deleting}
                       className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-medium disabled:opacity-50"
                     >
-                      {loading ? "⏳ Loading..." : `Delete Selected (${selectedConversations.size})`}
+                      {deleting ? 'Deleting...' : `Delete Selected (${selectedDocuments.size})`}
                     </button>
                   )}
                   <button
-                    onClick={() => fetchConversationHistory()}
+                    onClick={() => fetchScenarioDocuments(true)}
                     disabled={loading}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium disabled:opacity-50"
+                    className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm font-medium disabled:opacity-50"
                   >
-                    {loading ? "⏳ Loading..." : 'Refresh'}
+                    {loading ? 'Loading...' : 'Refresh'}
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Conversation List */}
+            {/* Documents */}
             {loading ? (
               <div className="text-center py-8">
-                <div className="text-4xl mb-4">⏳</div>
-                <p className="text-gray-600">Loading conversation history...</p>
+                <div className="text-4xl mb-4">📋</div>
+                <p className="text-gray-600">Loading documents...</p>
               </div>
-            ) : filteredGrouped.length === 0 ? (
+            ) : Object.keys(groupedDocuments).length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-6xl mb-6">📭</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">No Conversations Found</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">No Documents Found</h3>
                 <p className="text-gray-600">
-                  {searchTerm ? 'No scenarios match your search.' : 'Start a simulation to see your conversations here!'}
+                  {searchTerm ? 'No documents match your search.' : 'Start a simulation to generate documents!'}
                 </p>
               </div>
             ) : (
               <div className="space-y-6">
-                {filteredGrouped.map(({ scenarioName, conversations: scenarioConversations }) => {
-                  const allSelected = scenarioConversations.every(conv => selectedConversations.has(conv.id));
-                  
-                  return (
-                    <div key={scenarioName} className="bg-white rounded-lg shadow-lg overflow-hidden">
-                      {/* Scenario Header */}
-                      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-bold text-lg">{scenarioName}</h3>
-                            <p className="text-sm text-blue-100">{scenarioConversations.length} conversation(s)</p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              checked={allSelected}
-                              onChange={() => {
-                                const conversationIds = scenarioConversations.map(conv => conv.id);
-                                if (allSelected) {
-                                  setSelectedConversations(prev => {
-                                    const newSet = new Set(prev);
-                                    conversationIds.forEach(id => newSet.delete(id));
-                                    return newSet;
-                                  });
-                                } else {
-                                  setSelectedConversations(prev => {
-                                    const newSet = new Set(prev);
-                                    conversationIds.forEach(id => newSet.add(id));
-                                    return newSet;
-                                  });
-                                }
-                              }}
-                              className="text-blue-600"
-                            />
-                            <span className="text-sm">Select All</span>
-                          </div>
+                {Object.entries(groupedDocuments).map(([scenarioName, docs]) => (
+                  <div key={scenarioName} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    {/* Scenario Header */}
+                    <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-bold text-lg">{scenarioName}</h3>
+                          <p className="text-sm text-purple-100">{docs.length} document(s)</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={docs.every(doc => selectedDocuments.has(doc.id))}
+                            onChange={() => {
+                              const docIds = docs.map(doc => doc.id);
+                              const allSelected = docs.every(doc => selectedDocuments.has(doc.id));
+                              if (allSelected) {
+                                setSelectedDocuments(prev => {
+                                  const newSet = new Set(prev);
+                                  docIds.forEach(id => newSet.delete(id));
+                                  return newSet;
+                                });
+                              } else {
+                                setSelectedDocuments(prev => {
+                                  const newSet = new Set(prev);
+                                  docIds.forEach(id => newSet.add(id));
+                                  return newSet;
+                                });
+                              }
+                            }}
+                            className="text-purple-600"
+                          />
+                          <span className="text-sm">Select All</span>
                         </div>
                       </div>
-                      
-                      {/* Conversations List */}
-                      <div className="divide-y divide-gray-200">
-                        {scenarioConversations.map((conversation) => (
+                    </div>
+                    
+                    {/* Documents Grid */}
+                    <div className="p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {docs.map((doc) => (
                           <div
-                            key={conversation.id}
-                            className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
-                              selectedConversations.has(conversation.id) ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                            key={doc.id}
+                            className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
+                              selectedDocuments.has(doc.id) ? 'border-purple-500 bg-purple-50' : 'border-gray-200'
                             }`}
                             onClick={() => {
-                              const newSelected = new Set(selectedConversations);
-                              if (newSelected.has(conversation.id)) {
-                                newSelected.delete(conversation.id);
+                              const newSelected = new Set(selectedDocuments);
+                              if (newSelected.has(doc.id)) {
+                                newSelected.delete(doc.id);
                               } else {
-                                newSelected.add(conversation.id);
+                                newSelected.add(doc.id);
                               }
-                              setSelectedConversations(newSelected);
+                              setSelectedDocuments(newSelected);
                             }}
                           >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center space-x-2 mb-2">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedConversations.has(conversation.id)}
-                                    onChange={() => {}}
-                                    className="text-blue-600"
-                                  />
-                                  <h4 className="font-medium text-gray-800">
-                                    {conversation.scenario_name || 'Untitled Scenario'}
-                                  </h4>
-                                  <span className="text-xs text-gray-500">
-                                    {new Date(conversation.created_at).toLocaleDateString()}
-                                  </span>
-                                </div>
-                                
-                                <div className="text-sm text-gray-600 mb-3">
-                                  <p><strong>Agents:</strong> {conversation.agent_count || 0}</p>
-                                  <p><strong>Messages:</strong> {conversation.message_count || 0}</p>
-                                  <p><strong>Duration:</strong> {conversation.duration || 'Unknown'}</p>
-                                </div>
-                                
-                                {conversation.messages && conversation.messages.length > 0 && (
-                                  <div className="bg-gray-50 rounded p-3 text-xs">
-                                    <p className="text-gray-600 line-clamp-2">
-                                      <strong>Latest:</strong> {conversation.messages[conversation.messages.length - 1]?.content?.substring(0, 100)}...
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
+                            <div className="flex items-start justify-between mb-2">
+                              <h4 className="font-medium text-gray-800 text-sm line-clamp-2">
+                                {doc.title}
+                              </h4>
+                              <input
+                                type="checkbox"
+                                checked={selectedDocuments.has(doc.id)}
+                                onChange={() => {}}
+                                className="ml-2 text-purple-600"
+                              />
                             </div>
+                            <p className="text-xs text-gray-500 mb-2">{doc.category}</p>
+                            <p className="text-xs text-gray-600 line-clamp-3">
+                              {doc.content.substring(0, 100)}...
+                            </p>
                           </div>
                         ))}
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             )}
           </div>
