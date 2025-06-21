@@ -5812,7 +5812,7 @@ const FileCenterPage = () => {
             ) : Object.keys(filteredGrouped).length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-4">📭</div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">No Documents Found</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">No Conversations Found</h3>
                 <p className="text-gray-500">No documents match your search criteria.</p>
               </div>
             ) : (
