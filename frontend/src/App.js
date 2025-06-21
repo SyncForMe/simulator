@@ -5813,7 +5813,7 @@ const FileCenterPage = () => {
               <div className="text-center py-8">
                 <div className="text-4xl mb-4">📭</div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">No Conversations Found</h3>
-                <p className="text-gray-500">No documents match your search criteria.</p>
+                <p className="text-gray-500">No scenarios match your search. Start a simulation to see your conversations here!</p>
               </div>
             ) : (
               <div className="space-y-6">
