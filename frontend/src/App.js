@@ -5795,7 +5795,7 @@ const FileCenterPage = () => {
                   <button
                     onClick={() => fetchConversationHistory()}
                     disabled={loading}
-                    className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm font-medium disabled:opacity-50"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm font-medium disabled:opacity-50"
                   >
                     {loading ? 'Loading...' : 'Refresh'}
                   </button>
