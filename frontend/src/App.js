@@ -5806,62 +5806,114 @@ const FileCenterPage = () => {
             {/* Conversation List */}
             {loading ? (
               <div className="text-center py-8">
-                <div className="text-2xl mb-2">⏳</div>
-                <p className="text-gray-500">Loading conversation history...</p>
+                <div className="text-4xl mb-4">⏳</div>
+                <p className="text-gray-600">Loading conversation history...</p>
               </div>
-            ) : Object.keys(filteredGrouped).length === 0 ? (
+            ) : filteredGrouped.length === 0 ? (
               <div className="text-center py-8">
-                <div className="text-4xl mb-4">📭</div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">No Conversations Found</h3>
-                <p className="text-gray-500">No scenarios match your search. Start a simulation to see your conversations here!</p>
+                <div className="text-6xl mb-6">📭</div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">No Conversations Found</h3>
+                <p className="text-gray-600">
+                  {searchTerm ? 'No scenarios match your search.' : 'Start a simulation to see your conversations here!'}
+                </p>
               </div>
             ) : (
               <div className="space-y-6">
-                {filteredGrouped.map(({ scenarioName, conversations: scenarioConversations }) => (
-                  <div key={scenarioName} className="bg-white rounded-lg border shadow-sm">
-                    <div className="bg-gray-50 px-4 py-3 border-b">
-                      <h3 className="font-semibold text-gray-800">{scenarioName}</h3>
-                      <p className="text-sm text-gray-500">{docs.length} document(s)</p>
-                    </div>
-                    <div className="p-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {docs.map((doc) => (
+                {filteredGrouped.map(({ scenarioName, conversations: scenarioConversations }) => {
+                  const allSelected = scenarioConversations.every(conv => selectedConversations.has(conv.id));
+                  
+                  return (
+                    <div key={scenarioName} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                      {/* Scenario Header */}
+                      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-bold text-lg">{scenarioName}</h3>
+                            <p className="text-sm text-blue-100">{scenarioConversations.length} conversation(s)</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              checked={allSelected}
+                              onChange={() => {
+                                const conversationIds = scenarioConversations.map(conv => conv.id);
+                                if (allSelected) {
+                                  setSelectedConversations(prev => {
+                                    const newSet = new Set(prev);
+                                    conversationIds.forEach(id => newSet.delete(id));
+                                    return newSet;
+                                  });
+                                } else {
+                                  setSelectedConversations(prev => {
+                                    const newSet = new Set(prev);
+                                    conversationIds.forEach(id => newSet.add(id));
+                                    return newSet;
+                                  });
+                                }
+                              }}
+                              className="text-blue-600"
+                            />
+                            <span className="text-sm">Select All</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Conversations List */}
+                      <div className="divide-y divide-gray-200">
+                        {scenarioConversations.map((conversation) => (
                           <div
-                            key={doc.id}
-                            className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
-                              selectedDocuments.has(doc.id) ? 'border-purple-500 bg-purple-50' : 'border-gray-200'
+                            key={conversation.id}
+                            className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
+                              selectedConversations.has(conversation.id) ? 'bg-blue-50 border-l-4 border-blue-500' : ''
                             }`}
                             onClick={() => {
-                              const newSelected = new Set(selectedDocuments);
-                              if (newSelected.has(doc.id)) {
-                                newSelected.delete(doc.id);
+                              const newSelected = new Set(selectedConversations);
+                              if (newSelected.has(conversation.id)) {
+                                newSelected.delete(conversation.id);
                               } else {
-                                newSelected.add(doc.id);
+                                newSelected.add(conversation.id);
                               }
-                              setSelectedDocuments(newSelected);
+                              setSelectedConversations(newSelected);
                             }}
                           >
-                            <div className="flex items-start justify-between mb-2">
-                              <h4 className="font-medium text-gray-800 text-sm line-clamp-2">
-                                {doc.title}
-                              </h4>
-                              <input
-                                type="checkbox"
-                                checked={selectedDocuments.has(doc.id)}
-                                onChange={() => {}}
-                                className="ml-2 text-purple-600"
-                              />
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedConversations.has(conversation.id)}
+                                    onChange={() => {}}
+                                    className="text-blue-600"
+                                  />
+                                  <h4 className="font-medium text-gray-800">
+                                    {conversation.scenario_name || 'Untitled Scenario'}
+                                  </h4>
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(conversation.created_at).toLocaleDateString()}
+                                  </span>
+                                </div>
+                                
+                                <div className="text-sm text-gray-600 mb-3">
+                                  <p><strong>Agents:</strong> {conversation.agent_count || 0}</p>
+                                  <p><strong>Messages:</strong> {conversation.message_count || 0}</p>
+                                  <p><strong>Duration:</strong> {conversation.duration || 'Unknown'}</p>
+                                </div>
+                                
+                                {conversation.messages && conversation.messages.length > 0 && (
+                                  <div className="bg-gray-50 rounded p-3 text-xs">
+                                    <p className="text-gray-600 line-clamp-2">
+                                      <strong>Latest:</strong> {conversation.messages[conversation.messages.length - 1]?.content?.substring(0, 100)}...
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <p className="text-xs text-gray-500 mb-2">{doc.category}</p>
-                            <p className="text-xs text-gray-600 line-clamp-3">
-                              {doc.content.substring(0, 100)}...
-                            </p>
                           </div>
                         ))}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
