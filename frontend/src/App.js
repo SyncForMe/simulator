@@ -5764,14 +5764,152 @@ const FileCenterPage = () => {
               </button>
             </div>
           </div>
-        </div>
 
-        {/* Content */}
-        {loading ? (
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="text-4xl mb-4">⏳</div>
-            <p className="text-gray-600">Loading conversation history...</p>
+          {/* Content */}
+          <div className="p-6 h-[600px] overflow-y-auto">
+            {loading ? (
+              <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+                <div className="text-4xl mb-4">⏳</div>
+                <p className="text-gray-600">Loading conversation history...</p>
+              </div>
+            ) : filteredGrouped.length === 0 ? (
+              <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+                <div className="text-6xl mb-6">📭</div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">No Conversations Found</h3>
+                <p className="text-gray-600">
+                  {searchTerm ? 'No scenarios match your search.' : 'Start a simulation to see your conversations here!'}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {filteredGrouped.map(({ scenarioName, conversations: scenarioConversations }) => {
+                  const allSelected = scenarioConversations.every(conv => selectedConversations.has(conv.id));
+                  
+                  return (
+                    <div key={scenarioName} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
+                        <div className="flex items-center justify-between">
+                          <button
+                            onClick={() => {
+                              const conversationIds = scenarioConversations.map(conv => conv.id);
+                              if (allSelected) {
+                                setSelectedConversations(prev => {
+                                  const newSet = new Set(prev);
+                                  conversationIds.forEach(id => newSet.delete(id));
+                                  return newSet;
+                                });
+                              } else {
+                                setSelectedConversations(prev => {
+                                  const newSet = new Set(prev);
+                                  conversationIds.forEach(id => newSet.add(id));
+                                  return newSet;
+                                });
+                              }
+                            }}
+                            className="text-white hover:text-blue-200 mr-3"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={allSelected}
+                              onChange={() => {}}
+                              className="mr-2"
+                            />
+                          </button>
+                          <div>
+                            <h3 className="font-bold text-gray-800 text-lg">{scenarioName}</h3>
+                            <p className="text-sm text-gray-600">{scenarioConversations.length} conversation(s)</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={allSelected}
+                            onChange={() => {
+                              const conversationIds = scenarioConversations.map(conv => conv.id);
+                              if (allSelected) {
+                                setSelectedConversations(prev => {
+                                  const newSet = new Set(prev);
+                                  conversationIds.forEach(id => newSet.delete(id));
+                                  return newSet;
+                                });
+                              } else {
+                                setSelectedConversations(prev => {
+                                  const newSet = new Set(prev);
+                                  conversationIds.forEach(id => newSet.add(id));
+                                  return newSet;
+                                });
+                              }
+                            }}
+                            className="text-blue-600"
+                          />
+                          <span className="text-sm">Select All ({scenarioConversations.length})</span>
+                        </div>
+                      </div>
+                      
+                      <div className="divide-y divide-gray-200">
+                        {scenarioConversations.map((conversation) => (
+                          <div
+                            key={conversation.id}
+                            className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
+                              selectedConversations.has(conversation.id) ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                            }`}
+                            onClick={() => {
+                              const newSelected = new Set(selectedConversations);
+                              if (newSelected.has(conversation.id)) {
+                                newSelected.delete(conversation.id);
+                              } else {
+                                newSelected.add(conversation.id);
+                              }
+                              setSelectedConversations(newSelected);
+                            }}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedConversations.has(conversation.id)}
+                                    onChange={() => {}}
+                                    className="text-blue-600"
+                                  />
+                                  <h4 className="font-medium text-gray-800">
+                                    {conversation.scenario_name || 'Untitled Scenario'}
+                                  </h4>
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(conversation.created_at).toLocaleDateString()}
+                                  </span>
+                                </div>
+                                
+                                <div className="text-sm text-gray-600 mb-3">
+                                  <p><strong>Agents:</strong> {conversation.agent_count || 0}</p>
+                                  <p><strong>Messages:</strong> {conversation.message_count || 0}</p>
+                                  <p><strong>Duration:</strong> {conversation.duration || 'Unknown'}</p>
+                                </div>
+                                
+                                {conversation.messages && conversation.messages.length > 0 && (
+                                  <div className="bg-gray-50 rounded p-3 text-xs">
+                                    <p className="text-gray-600 line-clamp-2">
+                                      <strong>Latest:</strong> {conversation.messages[conversation.messages.length - 1]?.content?.substring(0, 100)}...
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
+        </div>
+      </div>
+    </>
+  );
+};
         ) : filteredGrouped.length === 0 ? (
           <div className="bg-white rounded-lg shadow-lg p-8 text-center">
             <div className="text-6xl mb-6">📭</div>
