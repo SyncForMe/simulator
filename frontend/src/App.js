@@ -5866,7 +5866,7 @@ const FileCenterPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
     
