@@ -5620,6 +5620,8 @@ const ChatHistory = () => {
       </div>
     </>
   );
+    </>
+  );
 
   return (
     <>
