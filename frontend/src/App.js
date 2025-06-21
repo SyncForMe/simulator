@@ -5817,7 +5817,7 @@ const FileCenterPage = () => {
               </div>
             ) : (
               <div className="space-y-6">
-                {Object.entries(groupedDocuments).map(([scenarioName, docs]) => (
+                {filteredGrouped.map(({ scenarioName, conversations: scenarioConversations }) => (
                   <div key={scenarioName} className="bg-white rounded-lg border shadow-sm">
                     <div className="bg-gray-50 px-4 py-3 border-b">
                       <h3 className="font-semibold text-gray-800">{scenarioName}</h3>
