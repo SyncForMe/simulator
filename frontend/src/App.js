@@ -5910,6 +5910,7 @@ const FileCenterPage = () => {
     </>
   );
 };
+
 const FileCenterPage = () => {
   const { user, token } = useAuth();
   const [scenarioDocuments, setScenarioDocuments] = useState([]);
